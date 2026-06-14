@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B3 — Modélisation (Edit Mode) · Atelier Game Art</title>
+  <meta name="description" content="Modéliser dans Blender : Edit Mode, extrude, inset, bevel, loop cut, knife, snapping et bonnes pratiques de topologie pour le jeu.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Modélisation</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B3 — Modélisation (Edit Mode)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b02-interface.html">B2 — Interface</a> et <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a> (vertices, edges, faces, topologie).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Basculer en <b>Edit Mode</b> et sélectionner par vertices, edges ou faces.</li>
+                <li>Utiliser les opérations cœur&nbsp;: <b>Extrude, Inset, Bevel, Loop Cut, Knife</b> — et <em>ce qu'elles font</em>.</li>
+                <li>Travailler proprement avec le <b>snapping</b> et les vues orthographiques.</li>
+                <li>Modéliser un objet simple en gardant une <b>topologie en quads</b> exploitable pour le jeu.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La modélisation, c'est là qu'un asset prend forme. Mais en jeu, «&nbsp;ça a la bonne silhouette&nbsp;» ne suffit pas&nbsp;: la <b>topologie</b> (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>) conditionne le dépliage UV, le baking, la déformation à l'animation et le rendu propre des courbes. Maîtriser une poignée d'opérations bien comprises permet de construire presque n'importe quel objet hard-surface tout en gardant un maillage propre.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Object Mode vs Edit Mode</h3>
+            <p>En <b>Object Mode</b>, on manipule l'objet en bloc (position, rotation, échelle). En <span class="gloss">Edit Mode</span> (touche <span class="kbd">Tab</span>), on édite sa <b>géométrie interne</b>&nbsp;: ses vertices, edges et faces. On choisit le mode de sélection avec <span class="kbd">1</span> (vertices), <span class="kbd">2</span> (edges), <span class="kbd">3</span> (faces). C'est une distinction fondamentale : déplacer un objet ≠ déformer son maillage.</p>
+
+            <h3>2. Les opérations cœur (et leur effet réel)</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Opération</th><th>Raccourci</th><th>Ce qu'elle fait</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Extrude</b></td><td><span class="kbd">E</span></td><td>Crée de la nouvelle géométrie en «&nbsp;tirant&nbsp;» une face/arête, reliée à l'originale. L'outil de base pour faire pousser une forme.</td></tr>
+                  <tr><td><b>Inset</b></td><td><span class="kbd">I</span></td><td>Crée une face plus petite à l'intérieur d'une face existante (utile pour cadres, biseaux, détails).</td></tr>
+                  <tr><td><b>Bevel</b></td><td><span class="kbd">Ctrl</span>+<span class="kbd">B</span></td><td>Adoucit une arête vive en la remplaçant par plusieurs (chanfrein). Indispensable : aucune arête réelle n'est parfaitement vive, le bevel capte la lumière.</td></tr>
+                  <tr><td><b>Loop Cut</b></td><td><span class="kbd">Ctrl</span>+<span class="kbd">R</span></td><td>Insère une boucle d'arêtes (<span class="gloss">edge loop</span>) qui fait le tour&nbsp;: ajoute du détail ou contrôle une déformation.</td></tr>
+                  <tr><td><b>Knife</b></td><td><span class="kbd">K</span></td><td>Découpe manuellement des arêtes là où on clique. Puissant mais à manier avec soin (peut créer des n-gons).</td></tr>
+                  <tr><td><b>Merge / Dissolve</b></td><td><span class="kbd">M</span> / <span class="kbd">Ctrl</span>+<span class="kbd">X</span></td><td>Fusionner des vertices, ou supprimer une arête en gardant la face (nettoyage de topologie).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>L'astuce mentale&nbsp;: la plupart des objets hard-surface se construisent en partant d'une primitive, puis en alternant <b>Extrude</b> (pousser la forme), <b>Loop Cut</b> (ajouter du contrôle) et <b>Bevel</b> (adoucir les arêtes).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Effet de extrude, inset, bevel et loop cut sur une face">
+                <g class="svg-text" font-size="11">
+                  <text x="80" y="28" text-anchor="middle" font-weight="700">Extrude (E)</text>
+                  <rect x="40" y="40" width="80" height="50" fill="none" stroke="#2e425f"/>
+                  <rect x="40" y="40" width="80" height="50" fill="#e0a14b" fill-opacity="0.2" stroke="#e0a14b" transform="translate(0,-22)"/>
+                  <line x1="40" y1="40" x2="40" y2="18" stroke="#e0a14b"/><line x1="120" y1="40" x2="120" y2="18" stroke="#e0a14b"/>
+
+                  <text x="240" y="28" text-anchor="middle" font-weight="700">Inset (I)</text>
+                  <rect x="200" y="40" width="80" height="50" fill="none" stroke="#2e425f"/>
+                  <rect x="214" y="50" width="52" height="30" fill="#38bdf8" fill-opacity="0.2" stroke="#38bdf8"/>
+
+                  <text x="400" y="28" text-anchor="middle" font-weight="700">Bevel (Ctrl+B)</text>
+                  <path d="M360 90 L360 55 L370 45 L430 45 L440 55 L440 90 Z" fill="#4ade80" fill-opacity="0.18" stroke="#4ade80"/>
+                  <text x="400" y="108" text-anchor="middle" class="svg-dim" font-size="9">arête vive → chanfrein</text>
+
+                  <text x="560" y="28" text-anchor="middle" font-weight="700">Loop Cut (Ctrl+R)</text>
+                  <rect x="520" y="40" width="80" height="50" fill="none" stroke="#2e425f"/>
+                  <line x1="560" y1="40" x2="560" y2="90" stroke="#c084fc" stroke-width="2"/>
+                </g>
+                <text x="320" y="150" text-anchor="middle" class="svg-dim" font-size="11">Quatre opérations, et déjà presque tout le hard-surface : pousser, creuser, adoucir, subdiviser.</text>
+                <text x="320" y="172" text-anchor="middle" class="svg-dim" font-size="11">On modélise en quads pour garder un maillage propre (renvoi F4).</text>
+              </svg>
+              <figcaption>Les opérations de base et leur effet. En les combinant sur des quads, on construit la majorité des objets.</figcaption>
+            </figure>
+
+            <h3>3. Snapping et précision</h3>
+            <p>Le <b>snapping</b> (aimant, touche <span class="kbd">Maj</span>+<span class="kbd">Tab</span> ou l'icône aimant en haut du viewport) fait coller les éléments à des cibles&nbsp;: <em>Vertex, Edge, Face, Increment, Grid</em>. C'est essentiel pour aligner des pièces, fermer des trous, raccorder proprement. Combiné aux vues orthographiques (<span class="kbd">1</span>/<span class="kbd">3</span>/<span class="kbd">7</span>), il rend la modélisation précise.</p>
+
+            <h3>4. Garder une topologie propre</h3>
+            <p>On modélise en <b>quads</b> autant que possible (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>)&nbsp;: ils se subdivisent et se déforment proprement. On évite les <span class="gloss">n-gon</span> sur les surfaces qui seront déformées ou subdivisées. On surveille les <b>doubles vertices</b> (Merge by Distance pour les fusionner) et on recalcule les <b>normales</b> (<span class="kbd">Maj</span>+<span class="kbd">N</span>) si des faces s'affichent sombres (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>).</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: une caisse en bois</h2>
+            <ol>
+              <li>Pars du cube de départ. <span class="kbd">Tab</span> pour entrer en Edit Mode. Passe en sélection de faces (<span class="kbd">3</span>).</li>
+              <li>Sélectionne la face du dessus, fais <span class="kbd">I</span> (Inset) et tire légèrement vers l'intérieur pour créer un cadre.</li>
+              <li>Avec la face intérieure sélectionnée, <span class="kbd">E</span> (Extrude) puis <span class="kbd">Z</span> et tire vers le bas pour creuser l'intérieur de la caisse.</li>
+              <li>Sélectionne toutes les arêtes vives (vue d'ensemble), <span class="kbd">Ctrl</span>+<span class="kbd">B</span> (Bevel) et un petit segment pour adoucir les bords (molette pour ajouter des segments).</li>
+              <li>Ajoute des planches&nbsp;: <span class="kbd">Ctrl</span>+<span class="kbd">R</span> (Loop Cut) sur les côtés pour marquer les lattes, puis un léger bevel ou inset pour creuser les rainures.</li>
+              <li>Vérifie&nbsp;: <span class="menu-path">Mesh<span class="arrow">▸</span>Merge<span class="arrow">▸</span>By Distance</span> pour éliminer d'éventuels doublons&nbsp;; <span class="kbd">Maj</span>+<span class="kbd">N</span> pour recalculer les normales. <span class="kbd">Tab</span> pour revenir en Object Mode.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des faces apparaissent noires ou « à l'envers ».</div>
+                <div class="pi-cause"><b>Cause</b>Normales inversées (souvent après extrude/inset complexes).</div>
+                <div class="pi-fix"><b>Correction</b><span class="kbd">A</span> (tout sélectionner) puis <span class="kbd">Maj</span>+<span class="kbd">N</span> (Recalculate Outside)&nbsp;; active l'overlay <em>Face Orientation</em> pour vérifier.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'extrude et il reste de la géométrie en double à l'intérieur.</div>
+                <div class="pi-cause"><b>Cause</b>Extrude annulé au clavier sans bouger laisse des vertices superposés.</div>
+                <div class="pi-fix"><b>Correction</b><span class="menu-path">Mesh<span class="arrow">▸</span>Merge<span class="arrow">▸</span>By Distance</span> pour fusionner les doublons.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet se déforme mal après subdivision ou animation.</div>
+                <div class="pi-cause"><b>Cause</b>Topologie sale&nbsp;: n-gons, triangles mal placés, boucles incohérentes.</div>
+                <div class="pi-fix"><b>Correction</b>Reprends en quads, place des loops aux zones de déformation (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Les arêtes sont parfaitement vives et l'objet paraît « CGI cheap ».</div>
+                <div class="pi-cause"><b>Cause</b>Aucun bevel&nbsp;: dans la réalité aucune arête n'est infiniment vive.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute un léger bevel sur les arêtes principales pour qu'elles accrochent la lumière.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Modélise une caisse en bois comme dans la démo, en restant en quads.</li>
+                <li>Modélise un second objet hard-surface au choix (tonneau, lanterne, table) en n'utilisant que Extrude/Inset/Bevel/Loop Cut.</li>
+                <li>Contrôle&nbsp;: pas de doublons (Merge by Distance), normales correctes, arêtes principales biseautées.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le maillage est majoritairement en quads, sans n-gon sur les surfaces clés.</li>
+                  <li>Les arêtes vives sont légèrement biseautées (lecture de la lumière).</li>
+                  <li>Aucune face noire (normales OK), aucun doublon de vertices.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><span class="kbd">Tab</span> bascule Object/Edit&nbsp;; <span class="kbd">1</span>/<span class="kbd">2</span>/<span class="kbd">3</span> = vertices/edges/faces.</li>
+                <li>Cœur du hard-surface&nbsp;: <b>Extrude, Inset, Bevel, Loop Cut</b> (+ Knife au besoin).</li>
+                <li>Le <b>snapping</b> et les vues orthographiques donnent la précision.</li>
+                <li>Vise une <b>topologie en quads</b>, recalcule les normales, fusionne les doublons.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Extrude</b> — opération qui prolonge une face/arête en créant de la géométrie reliée.</p>
+              <p><b>Inset</b> — création d'une face plus petite à l'intérieur d'une face.</p>
+              <p><b>Bevel (chanfrein)</b> — remplacement d'une arête vive par plusieurs pour l'adoucir.</p>
+              <p><b>Loop Cut</b> — insertion d'une boucle d'arêtes faisant le tour du maillage.</p>
+              <p><b>Snapping</b> — aimantation des éléments à des cibles (vertex, grille…) pour la précision.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b04-modifiers.html">B4 — Les modifiers</a>&nbsp;: modéliser en non destructif (Mirror, Subdivision…).</li>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>&nbsp;: la théorie de la topologie.</li>
+              <li><a href="../../cours/blender/b06-uv.html">B6 — UV unwrap</a>&nbsp;: l'étape qui suit la modélisation.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

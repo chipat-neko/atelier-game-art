@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier Game Art — Graphisme & création d'assets pour Unity et Unreal</title>
+  <meta name="description" content="Cours complet, local et hors-ligne, pour apprendre la création de graphismes et d'assets de jeu vidéo : fondamentaux, logiciels, Unity 6.3 et Unreal Engine 5.7.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="";</script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <a class="brand" href="index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme & assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true">
+      <kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <!-- ===== CONTENU ===== -->
+    <main class="content-wrap">
+      <section class="hero">
+        <span class="eyebrow">Atelier 100% local &middot; hors-ligne</span>
+        <h1>Crée des <span class="grad">graphismes &amp; assets</span> pour le jeu vidéo</h1>
+        <p class="lede">Un cours complet et ultra-détaillé, du pixel jusqu'au moteur. On t'explique le <b>pourquoi</b> autant que le <b>comment</b> — avec deux parcours parallèles : <b>Unity&nbsp;6.3</b> et <b>Unreal&nbsp;Engine&nbsp;5.7</b>.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="cours/fondamentaux/f01-image-numerique.html">Commencer par les fondamentaux
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a class="btn btn-ghost" href="a-propos.html">Comment utiliser le site</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b>7</b><span>parcours complets</span></div>
+          <div class="stat"><b id="stat-lessons">63</b><span>leçons détaillées</span></div>
+          <div class="stat"><b>4</b><span>logiciels en profondeur</span></div>
+          <div class="stat"><b>∞</b><span>hors-ligne, sans build</span></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Les 5 parcours</h2>
+        <p class="section-sub">Suis-les dans l'ordre, ou pioche selon ton besoin. Ta progression est enregistrée localement dans ton navigateur.</p>
+        <div class="piste-grid" id="piste-grid"></div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Pensé pour apprendre en profondeur</h2>
+        <p class="section-sub">Pas de recettes creuses : chaque notion est expliquée, illustrée et mise en pratique.</p>
+        <div class="feature-grid">
+          <div class="feature">
+            <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+            <h4>Le pourquoi, pas que le comment</h4>
+            <p>On explique les mécanismes (gamma, normales, conservation de l'énergie…), pas juste « clique ici ».</p>
+          </div>
+          <div class="feature">
+            <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+            <h4>Schémas faits main</h4>
+            <p>Des diagrammes SVG clairs (pipeline, anatomie d'un mesh, branchements de nœuds) pour visualiser l'abstrait.</p>
+          </div>
+          <div class="feature">
+            <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <h4>Pièges &amp; exercices</h4>
+            <p>Chaque leçon anticipe les erreurs courantes et propose un exercice avec des critères de réussite.</p>
+          </div>
+          <div class="feature">
+            <div class="f-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z"/></svg></div>
+            <h4>Données à jour &amp; datées</h4>
+            <p>Unity 6.3 LTS, Unreal Engine 5.7, la marketplace Fab : les versions sont affichées pour rester repérables dans le temps.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <div class="sf-inner">
+          <span>Atelier Game Art — cours hors-ligne. Aucune donnée n'est envoyée : tout vit dans ton navigateur.</span>
+          <span><a href="glossaire.html">Glossaire</a> &middot; <a href="a-propos.html">À propos</a></span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ===== SCRIPTS (ordre important) ===== -->
+  <script src="js/site-data.js"></script>
+  <script src="js/glossaire-data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/main.js"></script>
+  <script src="assets/vendor/highlight-mini.js"></script>
+  <script>
+    // Rendu des cartes de pistes (avec progression).
+    (function () {
+      var grid = document.getElementById("piste-grid");
+      var ICONS = window.SITE_ICONS || {};
+      if (document.getElementById("stat-lessons")) document.getElementById("stat-lessons").textContent = window.SITE_DATA.totalLecons;
+      window.SITE_DATA.pistes.forEach(function (p) {
+        var done = window.Progress.countDone(p.lecons.map(function (l) { return l.id; }));
+        var pct = p.lecons.length ? Math.round(done / p.lecons.length * 100) : 0;
+        var first = p.lecons[0];
+        var a = document.createElement("a");
+        a.className = "piste-card";
+        a.style.setProperty("--pc", p.couleur);
+        a.href = p.dossier + first.fichier;
+        a.innerHTML =
+          '<div class="pc-top">' +
+            '<span class="pc-ico">' + (ICONS[p.icone] || "") + '</span>' +
+            '<div><div class="pc-kicker">' + p.kicker + '</div><h3>' + p.titre + '</h3></div>' +
+          '</div>' +
+          '<p>' + p.desc + '</p>' +
+          '<div class="pc-meta"><span>' + p.lecons.length + ' leçons</span><span>' + done + '/' + p.lecons.length + ' fait' + (done > 1 ? 's' : '') + '</span></div>' +
+          '<div class="pc-bar"><i style="width:' + pct + '%"></i></div>';
+        grid.appendChild(a);
+      });
+    })();
+  </script>
+</body>
+</html>

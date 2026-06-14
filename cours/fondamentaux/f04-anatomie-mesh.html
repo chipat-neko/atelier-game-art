@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F4 — Anatomie d'un modèle 3D · Atelier Game Art</title>
+  <meta name="description" content="Vertices, edges, faces, tris/quads/n-gons, normales, smoothing groups, topologie et edge flow : pourquoi une bonne topologie est cruciale.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Anatomie d'un modèle 3D</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F4 — Anatomie d'un modèle 3D</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun. C'est la base de toute la modélisation.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Nommer et expliquer les trois briques d'un maillage&nbsp;: <b>vertex</b>, <b>edge</b>, <b>face</b>, et dire quelles <b>données</b> un vertex transporte.</li>
+                <li>Distinguer <b>triangles</b>, <b>quads</b> et <b>n-gons</b>, et expliquer <em>pourquoi</em> le GPU ne connaît que des triangles alors qu'on modélise en quads.</li>
+                <li>Comprendre ce qu'est une <b>normale</b>, pourquoi des faces deviennent noires ou invisibles, et comment recalculer les normales.</li>
+                <li>Expliquer comment une seule donnée de normale par sommet crée des arêtes <b>douces</b> (smooth) ou <b>dures</b> (hard), et le lien avec les <b>smoothing groups</b>.</li>
+                <li>Lire une <b>topologie</b>&nbsp;: suivre des <b>edge loops</b>, repérer les <b>pôles</b>, et dire pourquoi tout ça conditionne l'animation, la déformation et la subdivision.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un modèle 3D n'est pas une «&nbsp;forme&nbsp;» magique&nbsp;: c'est un <b>maillage</b> (<span class="term">mesh</span>), un assemblage de points reliés par des segments qui délimitent des surfaces. Tout ce que tu feras ensuite — déplier les <span class="gloss">UV</span> (F6), peindre les textures, rigger et animer (F10), optimiser pour le moteur (F12) — s'appuie sur la <b>qualité de cet assemblage</b>. On parle de <span class="term">topologie</span>.</p>
+            <p>Dans un studio, un personnage modélisé avec une mauvaise topologie va se déchirer aux coudes dès qu'on l'anime, refuser de se subdiviser proprement, et produire des UV impossibles à déplier sans étirement. À l'inverse, un asset à la topologie propre traverse tout le pipeline sans accroc. La topologie n'est donc pas un détail d'esthète&nbsp;: c'est ce qui décide si ton modèle est <b>utilisable</b> ou bon à refaire. Comprendre l'anatomie d'un mesh, c'est apprendre à parler la langue commune de tous les artistes 3D et de tous les moteurs.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les trois briques&nbsp;: vertex, edge, face</h3>
+            <p>Un maillage est construit à partir de trois éléments hiérarchiques. On les manipule en permanence&nbsp;; dans Blender on bascule entre eux avec les touches <code>1</code>, <code>2</code>, <code>3</code> en mode édition.</p>
+            <ul>
+              <li><b>Vertex</b> (pluriel <em>vertices</em>) — un <b>point</b> dans l'espace 3D. C'est l'élément fondamental&nbsp;; tout le reste en découle.</li>
+              <li><b>Edge</b> (arête) — un <b>segment</b> qui relie exactement <b>deux</b> vertices. Une arête n'a pas de surface&nbsp;; c'est juste un fil.</li>
+              <li><b>Face</b> (face, ou polygone) — une <b>surface</b> fermée délimitée par un cycle d'arêtes (au minimum trois). C'est la face, et elle seule, qui est <b>visible</b> et qui reçoit la lumière et la texture.</li>
+            </ul>
+            <p>L'analogie la plus parlante&nbsp;: une tente de camping. Les <b>vertices</b> sont les piquets plantés au sol et les pointes des mâts&nbsp;; les <b>edges</b> sont les arceaux et les tendeurs qui relient ces points&nbsp;; les <b>faces</b> sont les pans de toile tendus entre les arceaux. Tu ne vois que la toile (les faces), mais c'est la position des piquets (vertices) qui décide de toute la forme.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Anatomie d'un quad annoté avec quatre vertices, quatre edges et une face, à côté d'un cube en fil de fer">
+                <text x="20" y="26" class="svg-text" font-weight="700" font-size="15">Un quad (face à 4 côtés)</text>
+                <!-- quad -->
+                <g transform="translate(40,50)">
+                  <polygon points="20,20 200,20 200,180 20,180" fill="#59b0ff" fill-opacity="0.13" stroke="#313c4c" stroke-width="2"/>
+                  <!-- edges -->
+                  <line x1="20" y1="20" x2="200" y2="20" stroke="#5ad19a" stroke-width="3"/>
+                  <line x1="200" y1="20" x2="200" y2="180" stroke="#5ad19a" stroke-width="3"/>
+                  <line x1="200" y1="180" x2="20" y2="180" stroke="#5ad19a" stroke-width="3"/>
+                  <line x1="20" y1="180" x2="20" y2="20" stroke="#5ad19a" stroke-width="3"/>
+                  <!-- face label -->
+                  <text x="110" y="105" text-anchor="middle" class="svg-text" font-size="13" font-weight="700" fill="#59b0ff">FACE</text>
+                  <text x="110" y="122" text-anchor="middle" class="svg-dim" font-size="11">la surface visible</text>
+                  <!-- edge label -->
+                  <text x="110" y="14" text-anchor="middle" font-size="11" font-weight="700" fill="#5ad19a">edge (arête)</text>
+                  <!-- vertices -->
+                  <circle cx="20" cy="20" r="6" fill="#f2b441"/>
+                  <circle cx="200" cy="20" r="6" fill="#f2b441"/>
+                  <circle cx="200" cy="180" r="6" fill="#f2b441"/>
+                  <circle cx="20" cy="180" r="6" fill="#f2b441"/>
+                  <text x="14" y="200" font-size="11" font-weight="700" fill="#f2b441">vertex (point)</text>
+                </g>
+                <text x="360" y="26" class="svg-text" font-weight="700" font-size="15">Un cube en fil de fer</text>
+                <!-- cube wireframe -->
+                <g transform="translate(360,50)">
+                  <!-- back face -->
+                  <polygon points="70,40 200,40 200,160 70,160" fill="none" stroke="#717c8c" stroke-width="1.4" stroke-dasharray="4 3"/>
+                  <!-- front face -->
+                  <polygon points="20,80 150,80 150,200 20,200" fill="#c89bff" fill-opacity="0.10" stroke="#313c4c" stroke-width="2"/>
+                  <!-- connecting edges -->
+                  <line x1="20" y1="80" x2="70" y2="40" class="svg-stroke" stroke-width="1.6"/>
+                  <line x1="150" y1="80" x2="200" y2="40" class="svg-stroke" stroke-width="1.6"/>
+                  <line x1="150" y1="200" x2="200" y2="160" class="svg-stroke" stroke-width="1.6"/>
+                  <line x1="20" y1="200" x2="70" y2="160" stroke="#717c8c" stroke-width="1.4" stroke-dasharray="4 3"/>
+                  <!-- 8 vertices -->
+                  <g fill="#f2b441">
+                    <circle cx="20" cy="80" r="4.5"/><circle cx="150" cy="80" r="4.5"/>
+                    <circle cx="150" cy="200" r="4.5"/><circle cx="20" cy="200" r="4.5"/>
+                    <circle cx="70" cy="40" r="4.5"/><circle cx="200" cy="40" r="4.5"/>
+                    <circle cx="200" cy="160" r="4.5"/><circle cx="70" cy="160" r="4.5"/>
+                  </g>
+                  <text x="110" y="232" text-anchor="middle" class="svg-dim" font-size="11">8 vertices · 12 edges · 6 faces</text>
+                </g>
+              </svg>
+              <figcaption>À gauche&nbsp;: les trois briques sur un seul quad. À droite&nbsp;: un cube est simplement 8 points reliés par 12 arêtes formant 6 faces. Tout modèle, aussi complexe soit-il, n'est qu'une multiplication de ce principe.</figcaption>
+            </figure>
+
+            <h3>2. Ce qu'un vertex transporte vraiment (ce n'est pas qu'une position)</h3>
+            <p>Erreur de débutant fréquente&nbsp;: croire qu'un vertex n'est qu'une coordonnée XYZ. En réalité, dans un moteur de jeu, un vertex est un <b>paquet de données</b> attaché à un point. Le GPU lit ces attributs pour savoir comment dessiner la surface. Les plus importants&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Attribut du vertex</th><th>Ce qu'il contient</th><th>À quoi ça sert</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Position</b></td><td>3 nombres (X, Y, Z)</td><td>Où se trouve le point dans l'espace.</td></tr>
+                  <tr><td><b>Normale</b></td><td>1 vecteur (direction)</td><td>Vers où «&nbsp;regarde&nbsp;» la surface → réaction à la lumière.</td></tr>
+                  <tr><td><b>Coordonnées UV</b></td><td>2 nombres (U, V)</td><td>Quel point de la texture 2D colle à ce sommet (voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>).</td></tr>
+                  <tr><td><b>Couleur de sommet</b> (<em>vertex color</em>)</td><td>RVBA par sommet</td><td>Teinte ou masque peint directement sur le mesh (mélange de textures, ombrage, vent du feuillage…).</td></tr>
+                  <tr><td><b>Poids de skinning</b></td><td>indices + poids d'os</td><td>À quel(s) os ce sommet est rattaché, pour l'animation (F10).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Cette idée — «&nbsp;un vertex porte plusieurs données&nbsp;» — est la clé pour comprendre la suite. En particulier, le fait que la <b>normale</b> et les <b>UV</b> soient stockées <em>par sommet</em> explique des comportements qui paraissent mystérieux (arêtes dures, comptage de vertices «&nbsp;gonflé&nbsp;» à l'export). On y revient.</p>
+
+            <h3>3. Tris, quads et n-gons&nbsp;: la grande règle de la modélisation</h3>
+            <p>Une face peut avoir un nombre variable de côtés. Trois familles dominent&nbsp;:</p>
+            <ul>
+              <li><b>Triangle</b> (<span class="term">tri</span>) — 3 côtés. C'est la face la plus simple qui existe.</li>
+              <li><b>Quadrilatère</b> (<span class="term">quad</span>) — 4 côtés. Le format de travail standard de l'artiste 3D.</li>
+              <li><b>N-gon</b> — une face à <b>5 côtés ou plus</b>. Pratique pour boucher un trou, dangereuse partout ailleurs.</li>
+            </ul>
+
+            <h4>Pourquoi le GPU ne rend que des triangles</h4>
+            <p>Un fait fondamental&nbsp;: ta carte graphique <b>ne sait dessiner que des triangles</b>. Pourquoi&nbsp;? Parce qu'un triangle est <b>toujours plat</b>&nbsp;: trois points définissent forcément un seul plan. Un quad, lui, peut être «&nbsp;voilé&nbsp;» (ses 4 points ne sont pas dans le même plan), et il n'existe pas de définition unique de sa surface ni de sa normale. Le triangle est donc l'unité géométrique indivisible, rapide à interpoler et sans ambiguïté.</p>
+            <p>Conséquence&nbsp;: tout ce que tu modélises est <b>triangulé</b> au moment du rendu. Un quad devient 2 triangles, un n-gon à 6 côtés devient 4 triangles. Quand on compte le <b>budget</b> d'un modèle (voir <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>), on compte en <b>triangles</b>, pas en quads&nbsp;: un personnage «&nbsp;à 10&nbsp;000 polys&nbsp;» se mesure en tris.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Si tout finit en triangles, pourquoi s'embêter avec les quads&nbsp;?</div>
+              <p>Parce que la triangulation est faite <b>pour</b> le rendu, mais le <b>travail</b> (modélisation, déformation, subdivision) se fait <b>avant</b>. Les quads donnent un contrôle, une lisibilité et une déformation que les triangles bruts ne permettent pas. On modélise propre&nbsp;; la machine triangule à la fin.</p>
+            </div>
+
+            <h4>Pourquoi on modélise en quads</h4>
+            <p>Trois raisons concrètes font du quad le standard&nbsp;:</p>
+            <ol>
+              <li><b>La subdivision.</b> Les algorithmes de lissage (<span class="gloss">subdivision surface</span>, type Catmull-Clark) sont conçus pour les quads&nbsp;: chaque quad se divise proprement en 4 quads plus petits, la surface reste lisse et prévisible. Donne un triangle ou un n-gon à un subdiviseur et tu obtiens des <b>pincements</b> et des artefacts.</li>
+              <li><b>La déformation.</b> Quand un personnage plie le coude, la surface doit s'étirer et se comprimer régulièrement. Une grille de quads se déforme proprement&nbsp;; les triangles, eux, créent des plis durs et des «&nbsp;cassures&nbsp;» dans l'ombrage car ils ne se réorganisent pas de façon homogène.</li>
+              <li><b>La lisibilité (edge loops).</b> Les quads s'enchaînent en <b>boucles d'arêtes</b> continues qu'on peut sélectionner, déplacer et suivre d'un coup. On voit «&nbsp;couler&nbsp;» la géométrie autour d'un œil ou d'une bouche. Un maillage de triangles est illisible&nbsp;: aucune boucle nette à suivre.</li>
+            </ol>
+
+            <h4>Pourquoi les n-gons sont à proscrire (sauf exception)</h4>
+            <p>Un <span class="term">n-gon</span> n'est pas «&nbsp;interdit&nbsp;» par la loi, mais il est <b>imprévisible</b>. Comme le GPU doit le trianguler, et qu'il n'existe pas de découpe unique, le logiciel choisit lui-même — souvent mal. Sur une surface plane et figée (un mur, le dessous d'une caisse), un n-gon ne fait aucun mal. Mais sur une surface <b>déformée</b> (visage, vêtement) ou <b>exportée</b> vers un moteur, la triangulation automatique peut produire des plis bizarres, un ombrage sale, et un résultat <b>différent</b> entre ton logiciel et le moteur. Règle de production&nbsp;: <b>pas de n-gon sur ce qui bouge ou ce qui s'exporte</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Comparaison entre un triangle, un quad subdivisé proprement, et un n-gon triangulé de façon imprévisible">
+                <!-- TRI -->
+                <g transform="translate(20,50)">
+                  <text x="80" y="-16" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Triangle</text>
+                  <polygon points="80,10 150,150 10,150" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a" stroke-width="2.5"/>
+                  <text x="80" y="185" text-anchor="middle" class="svg-dim" font-size="11">3 côtés · toujours plat</text>
+                  <text x="80" y="202" text-anchor="middle" class="svg-dim" font-size="11">l'unité du GPU</text>
+                </g>
+                <!-- QUAD -->
+                <g transform="translate(230,50)">
+                  <text x="80" y="-16" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Quad</text>
+                  <rect x="10" y="10" width="140" height="140" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff" stroke-width="2.5"/>
+                  <!-- subdivision lines -->
+                  <line x1="80" y1="10" x2="80" y2="150" stroke="#59b0ff" stroke-width="1" stroke-dasharray="4 3"/>
+                  <line x1="10" y1="80" x2="150" y2="80" stroke="#59b0ff" stroke-width="1" stroke-dasharray="4 3"/>
+                  <text x="80" y="185" text-anchor="middle" class="svg-dim" font-size="11">4 côtés · se subdivise</text>
+                  <text x="80" y="202" text-anchor="middle" class="svg-dim" font-size="11">en 4 quads nets</text>
+                </g>
+                <!-- N-GON -->
+                <g transform="translate(440,50)">
+                  <text x="90" y="-16" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">N-gon (6 côtés)</text>
+                  <polygon points="60,10 140,30 170,110 110,160 30,140 10,60" fill="#ff6b6b" fill-opacity="0.13" stroke="#ff6b6b" stroke-width="2.5"/>
+                  <!-- chaotic triangulation -->
+                  <g stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3 3">
+                    <line x1="60" y1="10" x2="170" y2="110"/>
+                    <line x1="60" y1="10" x2="110" y2="160"/>
+                    <line x1="60" y1="10" x2="30" y2="140"/>
+                    <line x1="10" y1="60" x2="110" y2="160"/>
+                  </g>
+                  <text x="90" y="185" text-anchor="middle" class="svg-dim" font-size="11">triangulation imprévisible</text>
+                  <text x="90" y="202" text-anchor="middle" class="svg-dim" font-size="11">à éviter sur surface déformée</text>
+                </g>
+              </svg>
+              <figcaption>Le triangle est l'unité plate du GPU&nbsp;; le quad se subdivise proprement&nbsp;; le n-gon doit être découpé en triangles selon une logique qu'on ne contrôle pas (lignes pointillées rouges).</figcaption>
+            </figure>
+
+            <h3>4. Les normales&nbsp;: la direction qui décide de la lumière</h3>
+            <p>Une <span class="term">normale</span> est un <b>vecteur perpendiculaire</b> à une surface, qui indique vers quel côté cette surface «&nbsp;regarde&nbsp;». Imagine une flèche plantée bien droite sur une face&nbsp;: voilà sa normale. Ce n'est pas un détail&nbsp;: c'est <b>la</b> donnée qui décide de la réaction à la lumière.</p>
+            <p>Pourquoi&nbsp;? Le moteur calcule l'éclairage en comparant la direction de la normale avec la direction de la lumière. Une face dont la normale pointe <b>vers</b> la lampe est éclairée à fond&nbsp;; une face dont la normale est perpendiculaire à la lumière est sombre. Sans les normales, le moteur n'a aucun moyen de savoir comment ombrer la surface.</p>
+
+            <h4>Le sens de la normale et le backface culling</h4>
+            <p>Une normale a un <b>sens</b> (elle pointe vers l'«&nbsp;extérieur&nbsp;» ou vers l'«&nbsp;intérieur&nbsp;»), déterminé par l'ordre dans lequel les vertices de la face sont rangés (le <span class="term">winding order</span>, sens horaire ou antihoraire). Les moteurs utilisent ce sens pour le <span class="gloss">backface culling</span>&nbsp;: pour économiser, ils <b>ne dessinent pas</b> les faces qui «&nbsp;tournent le dos&nbsp;» à la caméra. C'est logique&nbsp;: l'intérieur d'un mur opaque est invisible, autant ne pas le calculer.</p>
+            <p>Mais si une normale est <b>inversée</b> par accident (elle pointe vers l'intérieur du modèle alors qu'elle devrait pointer dehors), la face devient&nbsp;:</p>
+            <ul>
+              <li><b>noire ou mal éclairée</b> — le moteur croit que la surface tourne le dos à la lumière&nbsp;;</li>
+              <li><b>invisible / transparente</b> de l'extérieur — le backface culling la supprime, on voit «&nbsp;à travers&nbsp;» le modèle (un trou).</li>
+            </ul>
+            <p>C'est l'un des bugs les plus courants de l'import dans Unity ou Unreal&nbsp;: «&nbsp;mon modèle a des trous, je vois l'intérieur&nbsp;». Neuf fois sur dix, ce sont des normales inversées. La correction tient en une commande&nbsp;: <b>recalculer les normales vers l'extérieur</b> (dans Blender&nbsp;: en mode édition, tout sélectionner puis <span class="menu-path">Mesh<span class="arrow">▸</span>Normals<span class="arrow">▸</span>Recalculate Outside</span>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 240" role="img" aria-label="Une face avec sa normale pointant correctement vers la lumière, comparée à une face dont la normale est inversée et qui apparaît noire">
+                <!-- correcte -->
+                <g transform="translate(40,40)">
+                  <text x="120" y="-8" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Normale correcte (vers l'extérieur)</text>
+                  <!-- light -->
+                  <circle cx="20" cy="20" r="14" fill="#f2b441"/>
+                  <text x="20" y="56" text-anchor="middle" class="svg-dim" font-size="10">lumière</text>
+                  <g stroke="#f2b441" stroke-width="1.4">
+                    <line x1="32" y1="30" x2="95" y2="95"/><line x1="40" y1="22" x2="100" y2="80"/>
+                  </g>
+                  <!-- face -->
+                  <rect x="100" y="80" width="120" height="90" fill="#5ad19a" fill-opacity="0.30" stroke="#5ad19a" stroke-width="2"/>
+                  <!-- normal arrow -->
+                  <defs>
+                    <marker id="ng" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#5ad19a"/></marker>
+                  </defs>
+                  <line x1="160" y1="125" x2="110" y2="60" stroke="#5ad19a" stroke-width="3" marker-end="url(#ng)"/>
+                  <text x="118" y="52" class="svg-text" font-size="11" fill="#5ad19a" font-weight="700">normale</text>
+                  <text x="160" y="195" text-anchor="middle" class="svg-dim" font-size="11">face éclairée, visible</text>
+                </g>
+                <!-- inversée -->
+                <g transform="translate(360,40)">
+                  <text x="120" y="-8" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Normale inversée (vers l'intérieur)</text>
+                  <circle cx="20" cy="20" r="14" fill="#f2b441"/>
+                  <text x="20" y="56" text-anchor="middle" class="svg-dim" font-size="10">lumière</text>
+                  <g stroke="#f2b441" stroke-width="1.4">
+                    <line x1="32" y1="30" x2="95" y2="95"/><line x1="40" y1="22" x2="100" y2="80"/>
+                  </g>
+                  <!-- face noire -->
+                  <rect x="100" y="80" width="120" height="90" fill="#1b2026" stroke="#ff6b6b" stroke-width="2"/>
+                  <!-- normal arrow pointing inward -->
+                  <defs>
+                    <marker id="nr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ff6b6b"/></marker>
+                  </defs>
+                  <line x1="160" y1="125" x2="210" y2="190" stroke="#ff6b6b" stroke-width="3" marker-end="url(#nr)"/>
+                  <text x="160" y="195" text-anchor="middle" font-size="11" fill="#ff6b6b" font-weight="700">face noire / invisible</text>
+                </g>
+              </svg>
+              <figcaption>À gauche&nbsp;: la normale pointe vers la lumière, la face s'éclaire. À droite&nbsp;: la même face, normale retournée → le moteur la croit «&nbsp;de dos&nbsp;», elle devient noire ou disparaît (backface culling).</figcaption>
+            </figure>
+
+            <h3>5. Smoothing&nbsp;: comment une normale par sommet crée du lisse ou des arêtes dures</h3>
+            <p>Voici un mécanisme subtil mais central. Un modèle low-poly (peu de faces) peut paraître soit <b>lisse</b> et arrondi, soit <b>facetté</b> avec des arêtes franches — <b>sans changer la géométrie</b>. La seule différence&nbsp;: comment les normales sont calculées aux sommets.</p>
+            <p>Rappel&nbsp;: chaque face a une normale «&nbsp;plate&nbsp;». Mais le rendu, lui, lit une normale <b>par vertex</b> et l'<b>interpole</b> en douceur sur toute la face. Du coup&nbsp;:</p>
+            <ul>
+              <li>Si un vertex partagé par plusieurs faces porte <b>une seule normale moyenne</b> (la moyenne des faces voisines), l'ombrage glisse en continu d'une face à l'autre&nbsp;: la surface paraît <b>lisse</b> (<em>soft / smooth shading</em>). C'est ainsi qu'un cylindre à 12 faces semble rond.</li>
+              <li>Si ce même point géométrique porte <b>deux normales distinctes</b> (une par face), l'ombrage casse net à l'arête&nbsp;: on voit une <b>arête dure</b> (<em>hard edge / flat shading</em>). C'est ce qu'on veut pour le bord d'une caisse ou le tranchant d'une lame.</li>
+            </ul>
+            <p>Les <span class="term">smoothing groups</span> (terme historique des formats comme le <span class="gloss">FBX</span>) sont exactement ça&nbsp;: une façon de dire «&nbsp;ces faces partagent des normales lissées entre elles, mais l'arête avec ce voisin reste dure&nbsp;». Blender exprime la même idée avec les notions de <em>Shade Smooth / Shade Flat</em> et les <b>arêtes marquées <em>sharp</em></b>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Pourquoi une arête dure «&nbsp;coûte&nbsp;» des vertices à l'export</div>
+              <p>Pour qu'un point porte <b>deux</b> normales (de chaque côté d'une arête dure), le moteur doit <b>dupliquer</b> ce vertex&nbsp;: un exemplaire par normale. Une même règle vaut pour les <b>coutures UV</b> (<span class="gloss">UV seams</span>)&nbsp;: deux UV différents au même endroit = deux vertices. C'est pourquoi le nombre de vertices «&nbsp;réel&nbsp;» d'un modèle exporté est souvent plus élevé que celui affiché dans le logiciel de modélisation.</p>
+            </div>
+
+            <h4>Le lien avec le baking</h4>
+            <p>Ce mécanisme a une conséquence directe sur le <span class="gloss">baking</span> de normal maps (cuisson des détails du modèle high-poly vers le low-poly, voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>). Le bake calcule les détails <b>par rapport aux normales lissées</b> du low-poly. Pour éviter des dégradés bizarres («&nbsp;waviness&nbsp;», gradients colorés disgracieux) sur les arêtes dures, la bonne pratique est de <b>faire coïncider chaque arête dure avec une couture UV</b>. Autrement dit&nbsp;: là où l'ombrage casse, l'UV doit casser aussi. On approfondit en F6 et F8&nbsp;; retiens dès maintenant le principe&nbsp;: <b>hard edge = UV seam</b>.</p>
+
+            <h3>6. Topologie et edge flow&nbsp;: la qualité de l'assemblage</h3>
+            <p>La <span class="term">topologie</span> désigne la <b>manière dont les arêtes et faces sont organisées</b> sur la surface — pas la forme elle-même, mais la «&nbsp;trame&nbsp;» qui la compose. Deux modèles peuvent avoir exactement la même silhouette et une topologie radicalement différente&nbsp;: l'un utilisable, l'autre catastrophique.</p>
+
+            <h4>Edge loops et edge flow</h4>
+            <p>Un <span class="term">edge loop</span> (boucle d'arêtes) est une suite continue d'arêtes qui se suivent à travers le maillage, en général jusqu'à former un anneau. Sur un bon modèle de personnage, les edge loops <b>épousent l'anatomie</b>&nbsp;: ils tournent en cercles concentriques autour des yeux et de la bouche, suivent la ligne des muscles, ceinturent les articulations. C'est ce qu'on appelle l'<b>edge flow</b> (l'«&nbsp;écoulement&nbsp;» des arêtes).</p>
+            <p>Pourquoi c'est vital&nbsp;? Parce que la déformation suit les arêtes. Si une boucle ceinture le coude exactement là où il plie, la peau se plisse proprement. Si les arêtes traversent l'articulation en travers, le coude se déchire et se pince à l'animation. De même autour d'une bouche&nbsp;: des loops circulaires permettent un sourire crédible&nbsp;; une grille rigide donne une bouche en carton. <b>La topologie est la condition de l'animation.</b></p>
+
+            <h4>Les pôles&nbsp;: là où le flux se réorganise</h4>
+            <p>Dans un maillage idéalement «&nbsp;en grille&nbsp;», chaque vertex intérieur touche <b>4 arêtes</b>. Un <span class="term">pôle</span> est un sommet qui en touche un nombre différent&nbsp;:</p>
+            <ul>
+              <li><b>Pôle E (5 arêtes)</b> — le plus utile. Il permet de <b>réorienter</b> le flux des loops (par exemple faire bifurquer une boucle pour contourner l'épaule). Bien placé, sur une zone peu déformée, il est inoffensif.</li>
+              <li><b>Pôle N (3 arêtes)</b> — utile pour <b>terminer</b> ou concentrer des boucles, mais à manier avec soin.</li>
+            </ul>
+            <p>Les pôles ne sont pas «&nbsp;mauvais&nbsp;»&nbsp;: ils sont <b>nécessaires</b> dès qu'on veut changer la densité ou la direction du maillage (impossible de tout garder en grille parfaite sur une forme organique). La règle est&nbsp;: <b>garde-les hors des zones de forte déformation</b> (loin du pli du coude, du coin de la bouche) et hors des surfaces qui doivent rester parfaitement lisses, car un pôle crée toujours une petite irrégularité lors de la subdivision.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 270" role="img" aria-label="Edge loops circulaires autour d'une forme, avec un pôle à cinq arêtes et un pôle à trois arêtes mis en évidence">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Edge flow et pôles sur une surface</text>
+                <!-- grid with loops -->
+                <g transform="translate(60,45)">
+                  <rect x="0" y="0" width="320" height="200" class="svg-surface" stroke="#313c4c"/>
+                  <!-- horizontal loops -->
+                  <g stroke="#717c8c" stroke-width="1">
+                    <path d="M0 40 H320"/><path d="M0 80 H320"/><path d="M0 120 H320"/><path d="M0 160 H320"/>
+                  </g>
+                  <!-- vertical loops -->
+                  <g stroke="#717c8c" stroke-width="1">
+                    <path d="M53 0 V200"/><path d="M107 0 V200"/><path d="M213 0 V200"/><path d="M267 0 V200"/>
+                  </g>
+                  <!-- highlighted loop around a "feature" -->
+                  <ellipse cx="160" cy="100" rx="55" ry="46" fill="none" stroke="#59b0ff" stroke-width="3"/>
+                  <text x="160" y="104" text-anchor="middle" font-size="11" fill="#59b0ff" font-weight="700">edge loop</text>
+                  <!-- extra edges converging to pole E (5) -->
+                  <g stroke="#717c8c" stroke-width="1">
+                    <path d="M160 54 L160 0"/><path d="M160 146 L160 200"/>
+                    <path d="M105 100 L160 54"/><path d="M215 100 L160 54"/>
+                  </g>
+                  <!-- pole E -->
+                  <circle cx="160" cy="54" r="7" fill="#c89bff"/>
+                  <text x="160" y="40" text-anchor="middle" font-size="10.5" fill="#c89bff" font-weight="700">pôle E (5)</text>
+                  <!-- pole N -->
+                  <circle cx="53" cy="160" r="7" fill="#f2b441"/>
+                  <text x="53" y="182" text-anchor="middle" font-size="10.5" fill="#f2b441" font-weight="700">pôle N (3)</text>
+                </g>
+                <text x="320" y="262" text-anchor="middle" class="svg-dim" font-size="11">Les boucles suivent la forme&nbsp;; les pôles réorientent le flux, à tenir hors des zones qui se déforment.</text>
+              </svg>
+              <figcaption>Le maillage «&nbsp;en grille&nbsp;» (4 arêtes par sommet) est interrompu par des pôles&nbsp;: un pôle E (violet, 5 arêtes) qui fait bifurquer le flux, un pôle N (or, 3 arêtes) qui le termine. La boucle bleue épouse une zone d'intérêt (œil, articulation…).</figcaption>
+            </figure>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Pour juger une topologie en un coup d'œil, active l'affichage <b>wireframe</b> et regarde si tu peux «&nbsp;suivre du doigt&nbsp;» des boucles continues autour des zones clés. Si tout est en triangles désordonnés sans boucle lisible, le modèle sera pénible à animer, à déplier et à subdiviser. Un bon maillage se lit comme une carte.</p>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Vérifions l'anatomie et les normales <b>dans Blender</b> sur un simple cube. L'objectif&nbsp;: voir les briques, casser puis recalculer les normales, et observer l'effet du smoothing.</p>
+            <ol>
+              <li>Ouvre Blender. Le cube de départ est là. Passe en mode édition avec <code>Tab</code>. Tu vois apparaître les <b>vertices</b> (points), les <b>edges</b> (arêtes) et les <b>faces</b>. Bascule entre les trois avec <code>1</code>, <code>2</code>, <code>3</code> — c'est la manipulation que tu feras des milliers de fois.</li>
+              <li>Active la visualisation des normales&nbsp;: en haut à droite du viewport, ouvre <span class="menu-path">Overlays<span class="arrow">▸</span>Normals</span> et active l'affichage des normales de face. De petites tiges apparaissent, perpendiculaires à chaque face&nbsp;: ce sont les normales. Note qu'elles pointent toutes <b>vers l'extérieur</b>.</li>
+              <li>Sélectionne tout (<code>A</code>), puis retourne les normales avec <span class="menu-path">Mesh<span class="arrow">▸</span>Normals<span class="arrow">▸</span>Flip</span>. Les tiges pointent maintenant vers l'<b>intérieur</b>. Sors du mode édition&nbsp;: si le backface culling est actif (<span class="menu-path">Viewport Shading<span class="arrow">▸</span>Backface Culling</span>), le cube paraît creux ou sombre. <b>C'est exactement le bug «&nbsp;trous dans le modèle&nbsp;»</b> qu'on voit après un mauvais import.</li>
+              <li>Corrige&nbsp;: reviens en mode édition, tout sélectionner, puis <span class="menu-path">Mesh<span class="arrow">▸</span>Normals<span class="arrow">▸</span>Recalculate Outside</span> (raccourci <code>Maj</code>+<code>N</code>). Blender remet toutes les normales dehors. Le cube redevient normal. Retiens ce réflexe&nbsp;: <b>face noire ou invisible → recalcule les normales</b>.</li>
+              <li>Observe le smoothing&nbsp;: en mode objet, clic droit <span class="menu-path">Shade Smooth</span>. Le cube tente de paraître «&nbsp;lisse&nbsp;» (les normales aux sommets sont moyennées) et devient bizarrement arrondi&nbsp;: la preuve qu'<b>une même géométrie</b> change d'apparence selon les normales. Repasse en <span class="menu-path">Shade Flat</span> pour retrouver les arêtes dures voulues sur un cube.</li>
+            </ol>
+            <p>Ce que tu viens de manipuler — briques, sens des normales, smoothing — est exactement ce qui se joue à l'import de tout asset dans Unity ou Unreal. Un modèle «&nbsp;qui a des trous&nbsp;» ou «&nbsp;trop facetté&nbsp;» n'est presque jamais cassé&nbsp;: ce sont ses normales et son smoothing qu'il faut corriger.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon modèle a des «&nbsp;trous&nbsp;», je vois l'intérieur ou des faces noires.</div>
+                <div class="pi-cause"><b>Cause</b>Normales inversées&nbsp;: le backface culling supprime les faces qui pointent vers l'intérieur, et la lumière les croit «&nbsp;de dos&nbsp;».</div>
+                <div class="pi-fix"><b>Correction</b>Sélectionne tout et <b>recalcule les normales vers l'extérieur</b> (Blender&nbsp;: <code>Maj</code>+<code>N</code>). Vérifie l'affichage des normales avant d'exporter.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon personnage se déchire / se pince au coude ou à l'épaule quand il s'anime.</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais edge flow&nbsp;: les arêtes traversent l'articulation au lieu de la ceinturer, et/ou un pôle est placé en pleine zone de pliure.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute des edge loops qui <b>encerclent</b> l'articulation, déplace les pôles hors de la zone de déformation, garde des quads réguliers là où ça plie.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>À la subdivision, ma surface fait des pincements ou des bosses inattendus.</div>
+                <div class="pi-cause"><b>Cause</b>Présence de triangles ou de n-gons dans la zone subdivisée&nbsp;: l'algorithme Catmull-Clark attend des quads.</div>
+                <div class="pi-fix"><b>Correction</b>Remets la zone en <b>quads propres</b>, repousse les rares triangles/pôles vers des zones plates et cachées.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes arêtes dures montrent des dégradés colorés sales après le bake de la normal map.</div>
+                <div class="pi-cause"><b>Cause</b>Une arête dure (hard edge) sans couture UV correspondante&nbsp;: le lissage des normales traverse une discontinuité.</div>
+                <div class="pi-fix"><b>Correction</b>Fais coïncider chaque <b>hard edge avec une UV seam</b>. Là où l'ombrage casse, l'UV doit casser aussi (voir F6/F8).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le moteur affiche un nombre de vertices bien plus grand que dans Blender.</div>
+                <div class="pi-cause"><b>Cause</b>Les hard edges et les UV seams <b>dupliquent</b> les vertices à l'export (deux normales ou deux UV au même point = deux sommets).</div>
+                <div class="pi-fix"><b>Correction</b>C'est normal&nbsp;: limite les hard edges et les coutures au strict nécessaire pour maîtriser le compte réel (budget en F12).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une face plane montre un ombrage tordu après import.</div>
+                <div class="pi-cause"><b>Cause</b>Un n-gon a été triangulé différemment par le moteur et par ton logiciel.</div>
+                <div class="pi-fix"><b>Correction</b>Triangule toi-même avant l'export, ou découpe le n-gon en quads/tris contrôlés sur les surfaces exportées.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans Blender (voir <a href="../../cours/logiciels/l01-blender.html">L1</a>), à partir d'un cylindre&nbsp;:</p>
+              <ol>
+                <li>Ajoute un cylindre à 16 segments. Active l'affichage des normales et vérifie qu'elles pointent toutes vers l'extérieur.</li>
+                <li>Applique <b>Shade Smooth</b>&nbsp;: le cylindre paraît rond. Puis marque les deux arêtes du haut et du bas comme <b>sharp</b> (arêtes dures) pour garder des bords nets sur les disques&nbsp;: observe la combinaison «&nbsp;corps lisse + bords durs&nbsp;».</li>
+                <li>Inverse volontairement les normales (Flip), active le backface culling, et constate le bug «&nbsp;trous&nbsp;». Recalcule ensuite vers l'extérieur pour réparer.</li>
+                <li>Passe le cylindre dans un modificateur <b>Subdivision Surface</b> et compare le résultat avec, puis sans, un n-gon volontairement créé sur une face&nbsp;: repère le pincement.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais afficher, inverser et recalculer les normales, et tu reconnais le bug «&nbsp;trous = normales inversées&nbsp;».</li>
+                  <li>Tu obtiens un cylindre au corps lisse avec des bords nets, et tu sais expliquer que seul le <b>smoothing</b> (pas la géométrie) a changé.</li>
+                  <li>Tu peux montrer concrètement qu'un n-gon dégrade la subdivision, et tu sais le corriger en quads.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un mesh = <b>vertices</b> (points) reliés par des <b>edges</b> (arêtes) délimitant des <b>faces</b> (surfaces). Un vertex porte plusieurs <b>données</b>&nbsp;: position, normale, UV, couleur, poids.</li>
+                <li>Le GPU ne rend que des <b>triangles</b> (toujours plats). On <b>modélise en quads</b> car ils se subdivisent, se déforment et se lisent proprement (edge loops). <b>Pas de n-gon</b> sur ce qui bouge ou s'exporte.</li>
+                <li>La <b>normale</b> décide de la réaction à la lumière. Normale inversée → face noire ou invisible (backface culling)&nbsp;: <b>recalcule vers l'extérieur</b>.</li>
+                <li>Une normale <b>par sommet</b> crée le lissage&nbsp;: normale moyennée = surface lisse, normales séparées = arête dure. <b>Hard edge ⇒ UV seam</b> pour un baking propre.</li>
+                <li>La <b>topologie</b> (edge flow, pôles) conditionne animation, déformation et subdivision. Les boucles suivent l'anatomie&nbsp;; les pôles restent hors des zones qui se déforment.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Mesh (maillage)</b> — l'ensemble des vertices, edges et faces qui composent un objet 3D.</p>
+              <p><b>Vertex</b> — point de l'espace 3D portant des données (position, normale, UV, couleur, poids).</p>
+              <p><b>Edge</b> — arête, segment reliant deux vertices.</p>
+              <p><b>Face</b> — surface fermée (polygone) délimitée par des arêtes&nbsp;; seule partie visible.</p>
+              <p><b>Tri / Quad / N-gon</b> — face à 3, 4, ou 5+ côtés. Le GPU triangule tout&nbsp;; on modélise en quads.</p>
+              <p><b>Normale</b> — vecteur perpendiculaire à une surface qui détermine sa réaction à la lumière.</p>
+              <p><b>Winding order</b> — ordre des vertices d'une face, qui définit le sens de sa normale (avant/arrière).</p>
+              <p><b>Smoothing groups</b> — regroupement de faces partageant des normales lissées, séparées par des arêtes dures.</p>
+              <p><b>Topologie</b> — organisation des arêtes et faces sur une surface (indépendamment de la forme).</p>
+              <p><b>Edge loop</b> — boucle continue d'arêtes qui suit la forme&nbsp;; base de l'edge flow.</p>
+              <p><b>Pôle</b> — sommet touchant un nombre d'arêtes différent de 4 (5 = pôle E, 3 = pôle N).</p>
+              <p>Tous ces termes (et d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5 — Le pipeline d'un asset</a>&nbsp;: où s'insèrent modélisation, retopologie et export.</li>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: les coutures (seams), leur lien avec les hard edges et la densité de texels.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a>&nbsp;: pourquoi hard edge = UV seam évite les artefacts de normal map.</li>
+              <li><a href="../../cours/fondamentaux/f10-rigging-animation.html">F10 — Rigging &amp; animation</a>&nbsp;: comment l'edge flow conditionne la déformation à l'animation.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: le budget de triangles et le compte réel de vertices après export.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

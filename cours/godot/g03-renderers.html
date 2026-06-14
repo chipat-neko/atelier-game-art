@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G3 — Renderers (Forward+ / Mobile / Compatibility) · Atelier Game Art</title>
+  <meta name="description" content="Les trois backends de rendu de Godot 4 : Forward+ (Vulkan desktop), Mobile (Vulkan mobile) et Compatibility (OpenGL/web) — différences, public visé, lequel choisir.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Renderers</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G3 — Renderers (Forward+ / Mobile / Compatibility)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g02-editeur.html">G2 — Éditeur</a>. Utile : <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Distinguer les trois <b>renderers</b> de Godot 4 et leur API graphique (Vulkan / OpenGL).</li>
+                <li>Choisir le bon selon ta <b>cible</b> (PC, mobile, web) et tes besoins visuels.</li>
+                <li>Comprendre les <b>conséquences</b> du choix (fonctionnalités disponibles, perfs).</li>
+                <li>Changer de renderer et savoir pourquoi on évite d'en changer en cours de projet.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Comme Unity a ses pipelines (URP/HDRP, renvoi <a href="../../cours/unity/u03-render-pipelines.html">U3</a>), Godot 4 propose <b>trois backends de rendu</b>. Le choix conditionne la <b>fidélité visuelle</b>, les <b>performances</b> et les <b>fonctionnalités disponibles</b> (certaines, comme le SDFGI, ne marchent que sur le renderer haut de gamme). C'est une décision à prendre <b>tôt</b>, au moment de créer le projet.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les trois renderers</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Renderer</th><th>API</th><th>Cible</th><th>Fonctionnalités</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Forward+</b></td><td>Vulkan</td><td>PC / consoles modernes</td><td>Le plus complet&nbsp;: SDFGI, VoxelGI, SSR, SSIL, volumétriques… Idéal pour la qualité 3D (défaut sur desktop).</td></tr>
+                  <tr><td><b>Mobile</b></td><td>Vulkan (mobile)</td><td>Smartphones / tablettes récents</td><td>Optimisé pour le mobile&nbsp;: certaines fonctions avancées en moins, meilleures perfs sur GPU mobiles.</td></tr>
+                  <tr><td><b>Compatibility</b></td><td>OpenGL / WebGL</td><td>Vieux matériel, web (HTML5), mobiles bas de gamme</td><td>Le plus compatible et léger&nbsp;; moins de fonctionnalités avancées, mais tourne presque partout.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>En clair&nbsp;: <b>Forward+</b> = qualité maximale sur PC&nbsp;; <b>Mobile</b> = compromis pour téléphones&nbsp;; <b>Compatibility</b> = «&nbsp;ça marche partout&nbsp;», notamment pour les <b>exports web</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 190" role="img" aria-label="Les trois renderers de Godot sur un axe compatibilité / fidélité">
+                <line x1="60" y1="150" x2="600" y2="150" class="svg-stroke" stroke-width="1.5"/>
+                <text x="60" y="172" class="svg-dim" font-size="11">+ compatible / + léger</text>
+                <text x="600" y="172" text-anchor="end" class="svg-dim" font-size="11">+ de fonctionnalités / + lourd</text>
+                <g class="svg-text" font-size="12">
+                  <circle cx="140" cy="150" r="6" fill="#4ade80"/><text x="140" y="120" text-anchor="middle" font-weight="700">Compatibility</text><text x="140" y="138" text-anchor="middle" class="svg-dim" font-size="10">OpenGL / web</text>
+                  <circle cx="360" cy="150" r="6" fill="#e0a14b"/><text x="360" y="120" text-anchor="middle" font-weight="700">Mobile</text><text x="360" y="138" text-anchor="middle" class="svg-dim" font-size="10">Vulkan mobile</text>
+                  <circle cx="560" cy="150" r="6" fill="#4f9bd9"/><text x="560" y="120" text-anchor="middle" font-weight="700">Forward+</text><text x="560" y="138" text-anchor="middle" class="svg-dim" font-size="10">Vulkan desktop</text>
+                </g>
+                <text x="320" y="40" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">SDFGI, SSR, volumétriques… → uniquement vers la droite</text>
+              </svg>
+              <figcaption>Plus on va vers Forward+, plus on a de fonctionnalités graphiques (mais plus on exige du matériel). Compatibility privilégie la portabilité.</figcaption>
+            </figure>
+
+            <h3>2. Vulkan vs OpenGL</h3>
+            <p><b>Vulkan</b> est l'API graphique moderne (bas niveau, performante) utilisée par Forward+ et Mobile&nbsp;; elle exige un GPU et des pilotes compatibles (la quasi-totalité du matériel récent). <b>OpenGL</b> (Compatibility) est plus ancienne et universelle, et c'est elle qui permet l'<b>export web</b> via WebGL. Le rendu de Godot 4 a été reconstruit autour de Vulkan, d'où le saut de qualité par rapport à Godot 3.</p>
+
+            <h3>3. Conséquences du choix</h3>
+            <ul>
+              <li>Certaines fonctionnalités d'<b>éclairage et de post-process</b> (SDFGI, SSIL, SSR de qualité — renvoi <a href="../../cours/godot/g07-eclairage.html">G7</a>, <a href="../../cours/godot/g08-environnement.html">G8</a>) ne sont disponibles qu'en <b>Forward+</b> (parfois Mobile).</li>
+              <li>Les <b>performances</b> diffèrent selon le matériel cible&nbsp;: Forward+ peut être plus lourd sur un GPU mobile que le renderer Mobile dédié.</li>
+              <li>Le rendu peut <b>légèrement différer</b> visuellement entre renderers&nbsp;: teste sur ta cible réelle.</li>
+            </ul>
+
+            <h3>4. Choisir et changer</h3>
+            <p>On choisit le renderer à la <b>création du projet</b> (Project Manager) et on peut le changer ensuite dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Renderer</span> (un menu en haut à droite de l'éditeur le bascule aussi). <b>Évite</b> d'en changer tard&nbsp;: des matériaux/effets configurés pour Forward+ peuvent ne pas se comporter pareil en Compatibility. Décide selon ta plateforme principale dès le début.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée trois projets de test, un par renderer (Forward+, Mobile, Compatibility) avec la même scène simple (un mesh + une lumière + un WorldEnvironment).</li>
+              <li>Compare l'aspect&nbsp;: ajoute un effet avancé (par ex. SDFGI dans le WorldEnvironment — renvoi <a href="../../cours/godot/g07-eclairage.html">G7</a>) et constate qu'il n'est disponible/efficace qu'en Forward+.</li>
+              <li>Dans le projet Compatibility, fais un <b>export web (HTML5)</b> de test pour voir l'intérêt de ce renderer.</li>
+              <li>Note dans chaque projet, via <span class="menu-path">Project Settings<span class="arrow">▸</span>Rendering</span>, les options disponibles selon le renderer.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une fonctionnalité (SDFGI, SSR…) est grisée ou sans effet.</div>
+                <div class="pi-cause"><b>Cause</b>Elle n'est pas supportée par le renderer choisi (souvent Compatibility).</div>
+                <div class="pi-fix"><b>Correction</b>Passe en Forward+ si ta cible le permet, ou utilise une alternative compatible (lightmaps).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon jeu ne se lance pas / écran noir au démarrage.</div>
+                <div class="pi-cause"><b>Cause</b>Vulkan non supporté par le GPU/pilotes (Forward+/Mobile).</div>
+                <div class="pi-fix"><b>Correction</b>Mets à jour les pilotes, ou bascule en Compatibility (OpenGL).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon rendu change d'aspect après avoir changé de renderer.</div>
+                <div class="pi-cause"><b>Cause</b>Les renderers ne gèrent pas les effets exactement pareil.</div>
+                <div class="pi-fix"><b>Correction</b>Fixe ton renderer tôt&nbsp;; re-règle/teste les matériaux et l'environnement après un changement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon export web ne marche pas en Forward+.</div>
+                <div class="pi-cause"><b>Cause</b>Le web passe par WebGL (OpenGL), donc le renderer Compatibility.</div>
+                <div class="pi-fix"><b>Correction</b>Pour cibler le web, choisis Compatibility dès le départ.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Pour un projet imaginaire (ex. « jeu 3D PC stylisé » ou « petit jeu web »), justifie le renderer à choisir.</li>
+                <li>Crée la scène test dans le renderer choisi et liste deux fonctionnalités d'éclairage disponibles.</li>
+                <li>Bascule temporairement en Compatibility et note ce qui change/disparaît.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Ton choix de renderer est justifié par la cible (PC/mobile/web).</li>
+                  <li>Tu sais citer une fonctionnalité exclusive à Forward+.</li>
+                  <li>Tu comprends pourquoi on fixe le renderer tôt.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Trois renderers&nbsp;: <b>Forward+</b> (Vulkan, PC, qualité max), <b>Mobile</b> (Vulkan mobile), <b>Compatibility</b> (OpenGL/web).</li>
+                <li>Les fonctions avancées (SDFGI, SSR, SSIL…) sont surtout en <b>Forward+</b>.</li>
+                <li>Le <b>web</b> passe par Compatibility (WebGL).</li>
+                <li>Choisis ton renderer <b>à la création</b> selon ta cible&nbsp;; évite d'en changer tard.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Forward+</b> — renderer Vulkan haut de gamme de Godot (desktop), le plus complet.</p>
+              <p><b>Mobile (renderer)</b> — renderer Vulkan optimisé pour les GPU mobiles.</p>
+              <p><b>Compatibility</b> — renderer OpenGL/WebGL, très portable, requis pour le web.</p>
+              <p><b>Vulkan</b> — API graphique moderne et performante utilisée par Forward+/Mobile.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines (Unity)</a>&nbsp;: le choix équivalent côté Unity.</li>
+              <li><a href="../../cours/godot/g07-eclairage.html">G7 — Éclairage (SDFGI)</a>&nbsp;: les fonctions liées au renderer.</li>
+              <li><a href="../../cours/godot/g04-projet.html">G4 — Créer un projet</a>&nbsp;: où l'on fixe le renderer.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

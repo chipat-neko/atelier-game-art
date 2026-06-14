@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B8 — Texture Paint & Baking · Atelier Game Art</title>
+  <meta name="description" content="Peindre des textures sur le mesh dans Blender et baker (normal, AO, combined) le high-poly sur le low-poly avec Selected to Active et une cage.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Texture Paint &amp; Baking</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B8 — Texture Paint &amp; Baking</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking (théorie)</a>, <a href="../../cours/blender/b06-uv.html">B6 — UV</a> et <a href="../../cours/blender/b07-shading.html">B7 — Shading</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Peindre une texture directement sur le mesh en <b>Texture Paint</b>.</li>
+                <li>Préparer un bake&nbsp;: image cible, espace colorimétrique, sélection <b>Selected to Active</b>.</li>
+                <li>Baker une <b>normal map</b>, une <b>AO</b> et d'autres maps du high-poly vers le low-poly avec une <b>cage</b>.</li>
+                <li>Éviter les artefacts de bake (skew, débordement, ray distance).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le <span class="gloss">baking</span> (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) est ce qui transfère le détail d'un sculpt high-poly (renvoi <a href="../../cours/blender/b05-sculpt-retopo.html">B5</a>) sur un low-poly léger, sous forme de textures. C'est l'étape qui rend un asset à la fois <b>détaillé et performant</b>. Blender sait baker nativement via Cycles, sans logiciel payant. Et le Texture Paint permet des retouches directes sur le modèle.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Texture Paint&nbsp;: peindre sur le mesh</h3>
+            <p>Dans le Workspace <em>Texture Paint</em>, on peint directement sur l'objet (qui doit être déplié — renvoi <a href="../../cours/blender/b06-uv.html">B6</a>). Il faut d'abord une <b>image cible</b>&nbsp;: on crée une texture (dans le Shader Editor, un Image Texture neuf, ou via <em>Texture Paint ▸ New Image</em>) et on la branche au matériau. On peint ensuite avec des brosses (couleur, masques, stencils). Utile pour des retouches, des salissures peintes à la main, des détails uniques que le procédural ne donne pas.</p>
+
+            <h3>2. Le principe du bake high → low</h3>
+            <p>Baker, c'est projeter par des rayons l'information de surface du high-poly sur les UV du low-poly (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>). Dans Blender, on utilise le moteur <b>Cycles</b> et l'option <b>Selected to Active</b>&nbsp;:</p>
+            <ul>
+              <li>On sélectionne <b>d'abord le high-poly</b>, puis <b>en dernier le low-poly</b> (qui devient l'objet «&nbsp;actif&nbsp;», surligné).</li>
+              <li>On coche <em>Selected to Active</em> dans <span class="menu-path">Render Properties<span class="arrow">▸</span>Bake</span>.</li>
+              <li>Blender projette le high (sélectionné) sur le low (actif), et écrit le résultat dans l'image cible assignée au low.</li>
+            </ul>
+
+            <h3>3. La cage et la distance de rayon</h3>
+            <p>La <span class="gloss">cage</span> (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) est une enveloppe légèrement gonflée du low-poly qui contrôle d'où partent les rayons et jusqu'où ils vont. Dans les options de Bake&nbsp;: <em>Cage</em> (on peut fournir un objet cage dédié, ou laisser Blender l'extruder via <em>Extrusion</em>) et <em>Max Ray Distance</em>. Bien réglée, elle évite que les rayons d'une pièce attrapent une pièce voisine, et corrige les artefacts près des angles.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Bake high-poly vers low-poly via la cage et Selected to Active">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Selected to Active : high (sélectionné) → low (actif)</text>
+                <!-- low poly -->
+                <path d="M120 150 L200 90 L300 150 Z" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                <text x="210" y="170" text-anchor="middle" class="svg-text" fill="#38bdf8" font-size="11">low-poly (actif)</text>
+                <!-- high poly ondulé -->
+                <path d="M120 150 q20 -22 40 -8 q20 -34 40 -22 q20 -28 40 -6 q20 -24 40 0" fill="none" stroke="#f87171" stroke-width="1.6" transform="translate(0,-6)"/>
+                <text x="210" y="60" text-anchor="middle" class="svg-text" fill="#f87171" font-size="11">high-poly (détaillé)</text>
+                <!-- cage -->
+                <path d="M112 156 L200 80 L308 156" fill="none" stroke="#e0a14b" stroke-width="1.4" stroke-dasharray="5 4"/>
+                <text x="300" y="92" class="svg-text" fill="#e0a14b" font-size="11">cage</text>
+                <!-- rayons -->
+                <g stroke="#a6b6ca" stroke-width="0.8">
+                  <line x1="160" y1="135" x2="160" y2="108"/><line x1="200" y1="120" x2="200" y2="86"/><line x1="240" y1="135" x2="240" y2="104"/>
+                </g>
+                <!-- texture cible -->
+                <rect x="420" y="70" width="120" height="80" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="480" y="106" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Normal map</text>
+                <text x="480" y="124" text-anchor="middle" class="svg-dim" font-size="10">écrite sur les UV du low</text>
+                <path d="M310 110 C 360 100, 380 105, 418 108" fill="none" stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b8a)"/>
+                <defs><marker id="b8a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+              </svg>
+              <figcaption>Les rayons partent du low (le long de la cage) vers le high&nbsp;; le détail capté est écrit dans la texture sur les UV du low-poly.</figcaption>
+            </figure>
+
+            <h3>4. Quelles maps baker</h3>
+            <p>Les types de bake utiles (menu <em>Bake Type</em>)&nbsp;: <b>Normal</b> (le détail de relief — image en <em>Non-Color</em> !), <b>Ambient Occlusion</b>, <b>Combined</b>/<b>Diffuse</b>, et via des configurations dédiées <em>Curvature</em>/<em>Position</em> (souvent obtenues par des nœuds ou des add-ons). Détail crucial&nbsp;: l'image de la <b>normal map doit être en Non-Color</b> (renvoi <a href="../../cours/blender/b07-shading.html">B7</a>) et baker avec un <em>Margin</em> (padding) pour éviter les coutures (renvoi <a href="../../cours/blender/b06-uv.html">B6</a>).</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: baker une normal map</h2>
+            <ol>
+              <li>Place le high-poly et le low-poly <b>exactement au même endroit</b> (superposés). Le low est déplié (UV propres).</li>
+              <li>Sur le low, crée une nouvelle image (ex. 2048×2048) dans son matériau via un nœud <em>Image Texture</em>, mets son Color Space en <b>Non-Color</b>, et laisse ce nœud <b>sélectionné</b> (c'est la cible du bake).</li>
+              <li>Passe le Render Engine en <b>Cycles</b> (<a href="../../cours/blender/b01-installation.html">B1</a> : GPU activé).</li>
+              <li>Dans <span class="menu-path">Render Properties<span class="arrow">▸</span>Bake</span> : <em>Bake Type = Normal</em>, coche <b>Selected to Active</b>, règle <em>Extrusion</em>/<em>Max Ray Distance</em> (ou fournis un objet <em>Cage</em>), et un <em>Margin</em> de quelques pixels.</li>
+              <li>Sélectionne le high-poly, puis <span class="kbd">Maj</span>+clic sur le low-poly (il devient actif). Clique <b>Bake</b>.</li>
+              <li>Sauvegarde l'image (<span class="menu-path">Image<span class="arrow">▸</span>Save As</span>) — elle n'est pas enregistrée sur disque automatiquement. Branche-la sur le Normal Map du matériau pour vérifier le relief.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map bakée est pleine d'artefacts / de zones noires.</div>
+                <div class="pi-cause"><b>Cause</b>Cage mal réglée (rayons trop courts/longs), low et high non superposés.</div>
+                <div class="pi-fix"><b>Correction</b>Aligne high et low, ajuste Extrusion/Max Ray Distance, utilise un objet cage si besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le détail apparaît incliné / « glissant » près des angles droits.</div>
+                <div class="pi-cause"><b>Cause</b>Skew (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) dû à la cage et aux hard edges non séparés par des seams.</div>
+                <div class="pi-fix"><b>Correction</b>Aligne hard edges et seams UV&nbsp;; ajuste la cage&nbsp;; au besoin, sépare (explose) les pièces pour le bake.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal donne un relief plat / faux en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Image bakée en sRGB au lieu de Non-Color, ou convention OpenGL/DirectX inadaptée au moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Image en <em>Non-Color</em>&nbsp;; Blender bake en OpenGL (Y+)&nbsp;: pour Unreal (DirectX), inverse le canal vert (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai baké mais l'image est restée vide / perdue après fermeture.</div>
+                <div class="pi-cause"><b>Cause</b>Le nœud Image Texture cible n'était pas sélectionné, ou l'image n'a pas été sauvegardée.</div>
+                <div class="pi-fix"><b>Correction</b>Sélectionne le nœud cible avant Bake&nbsp;; sauvegarde l'image sur disque (Save As).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Reprends le rocher (high) et son low-poly retopologisé (<a href="../../cours/blender/b05-sculpt-retopo.html">B5</a>).</li>
+                <li>Bake une <b>normal map</b> et une <b>AO</b> du high vers le low avec Selected to Active et une cage correcte.</li>
+                <li>Branche les maps bakées&nbsp;: le low-poly doit paraître presque aussi détaillé que le high.</li>
+                <li>Bonus&nbsp;: peins une salissure à la main en Texture Paint sur la Base Color.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La normal map est propre (sans artefacts majeurs), en Non-Color, avec margin.</li>
+                  <li>Le low-poly + maps bakées restitue l'essentiel du détail du high.</li>
+                  <li>Tu sais régler la cage et expliquer Selected to Active.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Texture Paint</b> peint sur le mesh (image cible déplié requise).</li>
+                <li>Bake dans Blender = <b>Cycles</b> + <b>Selected to Active</b> (high sélectionné, low actif) + image cible <b>Non-Color</b> sélectionnée.</li>
+                <li>La <b>cage</b> et la <b>ray distance</b> évitent les artefacts&nbsp;; ajoute un <b>Margin</b>.</li>
+                <li>Sauvegarde l'image bakée&nbsp;; pense à la convention de normal map selon le moteur (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Texture Paint</b> — mode de Blender pour peindre des textures directement sur le modèle.</p>
+              <p><b>Selected to Active</b> — option de bake projetant les objets sélectionnés sur l'objet actif (high → low).</p>
+              <p><b>Image cible</b> — texture (nœud Image Texture sélectionné) dans laquelle le bake écrit le résultat.</p>
+              <p><b>Margin (bake)</b> — débordement de couleur autour des îlots pour éviter les coutures.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a>&nbsp;: la théorie (tangent space, cage, artefacts, conventions).</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance Painter</a>&nbsp;: l'alternative dédiée au texturing/bake.</li>
+              <li><a href="../../cours/blender/b11-rendu-export.html">B11 — Rendu &amp; export</a>&nbsp;: exporter le low-poly + ses maps vers le moteur.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

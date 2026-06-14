@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U10 — Plugins & packages · Atelier Game Art</title>
+  <meta name="description" content="Gérer les dépendances dans Unity : Package Manager, registres, ajout via Git URL, Asset Store, et installation/désinstallation propre.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Plugins & packages</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U10 — Plugins & packages</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unity/u02-editeur.html">U2 — Éditeur</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ouvrir et lire le <b>Package Manager</b> (<span class="menu-path">Window<span class="arrow">▸</span>Package Manager</span>)&nbsp;: onglets <b>In Project</b>, <b>Unity Registry</b>, <b>My Assets</b>, <b>Built-in</b>.</li>
+                <li>Installer, mettre à jour et désinstaller un package proprement, et lire ses <b>dépendances</b>.</li>
+                <li>Comprendre le fichier <code>Packages/manifest.json</code> et le <b>versionnage sémantique</b> (<em>SemVer</em>).</li>
+                <li>Distinguer les <b>sources</b>&nbsp;: Unity Registry, Asset Store (My Assets), <b>Git URL</b>, disque local, et <b>scoped registries</b> (OpenUPM).</li>
+                <li>Acheter/importer un asset depuis l'<b>Asset Store</b> et comprendre ce qu'est un <code>.unitypackage</code>.</li>
+                <li>Reconnaître les packages utiles au graphiste&nbsp;: <b>ProBuilder</b>, <b>Cinemachine</b>, <b>FBX Exporter</b>, <b>Shader Graph</b>, <b>VFX Graph</b>.</li>
+                <li>Anticiper les <b>conflits de versions</b>, éviter de polluer un projet, et reconnaître un plugin <b>abandonné</b> ou incompatible.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Unity «&nbsp;nu&nbsp;» ne sait pas tout faire. Le moteur livré par défaut est volontairement <b>minimal</b>&nbsp;: il contient le rendu, la physique, l'éditeur de base, mais pas les caméras cinématiques, pas l'outil de modélisation in-editor, pas le système d'effets visuels nodal. Tout cela vit dans des <span class="term">packages</span> — des modules que tu ajoutes <b>à la demande</b>, projet par projet. Savoir gérer ces packages, c'est savoir <b>composer</b> ton Unity comme une boîte à outils&nbsp;: tu prends exactement ce dont la production a besoin, ni plus, ni moins.</p>
+            <p>Côté graphisme, c'est loin d'être accessoire. Le système de pipeline de rendu <span class="gloss">URP</span> ou <span class="gloss">HDRP</span> est un package&nbsp;; <b>Shader Graph</b> (créer des shaders sans code) est un package&nbsp;; <b>VFX Graph</b> (particules sur GPU) est un package&nbsp;; <b>ProBuilder</b> (bloquer un niveau directement dans l'éditeur) est un package&nbsp;; <b>Cinemachine</b> (caméras intelligentes) est un package. Si tu ne maîtrises pas le <b>Package Manager</b>, tu ne peux littéralement pas activer la moitié des outils graphiques de Unity.</p>
+            <p>Mais l'enjeu est aussi celui de la <b>propreté du projet</b>. En production, un projet qui s'alourdit de plugins mal choisis devient lent à ouvrir, lourd à versionner, et fragile&nbsp;: un seul plugin abandonné peut bloquer une mise à jour de Unity et faire perdre des jours à toute l'équipe. Apprendre à <b>ajouter</b> proprement, c'est aussi apprendre à <b>ne pas ajouter n'importe quoi</b> — la discipline qui sépare un projet maintenable d'un dépotoir.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Qu'est-ce qu'un package, au juste&nbsp;?</h3>
+            <p>Un <span class="term">package</span> est un <b>dossier autonome de fichiers</b> (scripts, shaders, assets, documentation) accompagné d'un manifeste qui décrit son <b>nom</b>, sa <b>version</b> et ses <b>dépendances</b>. Quand tu «&nbsp;installes&nbsp;» un package, Unity ne copie pas forcément des fichiers dans ton dossier <code>Assets/</code>&nbsp;: la plupart du temps il les place dans un <b>cache</b> partagé sur ta machine et y fait simplement <b>référence</b>. C'est une différence majeure avec l'ancien monde des <code>.unitypackage</code>, où tout était déversé en vrac dans le projet.</p>
+            <p>Le système qui orchestre cela s'appelle <span class="term">UPM</span> (<em>Unity Package Manager</em>, «&nbsp;gestionnaire de paquets Unity&nbsp;»). L'analogie la plus juste vient du développement logiciel&nbsp;: UPM est à Unity ce que <em>npm</em> est à JavaScript ou <em>pip</em> est à Python. Tu déclares «&nbsp;je veux la bibliothèque X en version Y&nbsp;», et le gestionnaire se charge de la télécharger, de résoudre ses dépendances, et de la rendre disponible. Tu ne gères plus des fichiers&nbsp;: tu gères des <b>déclarations de besoin</b>.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Package géré (UPM) vs asset importé</div>
+              <p>Retiens deux mondes. Un <b>package UPM</b> (URP, Cinemachine, un dépôt Git) est <b>référencé</b> et reste à l'extérieur de <code>Assets/</code>&nbsp;: tu peux le désinstaller en un clic sans laisser de trace. Un <b>asset importé</b> depuis un <code>.unitypackage</code> (souvent l'Asset Store) <b>copie ses fichiers dans <code>Assets/</code></b>&nbsp;: il devient «&nbsp;dans&nbsp;» ton projet, et le retirer proprement est bien plus pénible. Cette distinction explique pourquoi on privilégie les packages UPM quand on a le choix.</p>
+            </div>
+
+            <h3>2. Le Package Manager&nbsp;: anatomie de la fenêtre</h3>
+            <p>On ouvre la fenêtre par <span class="menu-path">Window<span class="arrow">▸</span>Package Manager</span>. En haut à gauche, un menu déroulant <b>Packages:</b> filtre la <b>source</b> affichée. C'est le réglage le plus important de la fenêtre&nbsp;; il change complètement ce que tu vois.</p>
+            <ul>
+              <li><b>In Project</b> — ce qui est <b>réellement installé</b> dans ce projet. C'est ta vérité&nbsp;: si un outil n'apparaît pas ici, il n'est pas disponible dans la scène. La liste se divise souvent en <em>Packages - Unity</em> et <em>Custom</em>.</li>
+              <li><b>Unity Registry</b> — le <b>catalogue officiel</b> de Unity&nbsp;: tous les packages maintenus par Unity (URP, HDRP, Shader Graph, VFX Graph, Cinemachine, ProBuilder, Input System, Timeline, FBX Exporter…). C'est ici que tu vas chercher 90&nbsp;% de ce dont un graphiste a besoin.</li>
+              <li><b>My Assets</b> — ta <b>bibliothèque Asset Store</b>&nbsp;: tout ce que tu as acheté ou récupéré gratuitement avec ton compte Unity, prêt à être téléchargé puis importé.</li>
+              <li><b>Built-in</b> — les <b>modules internes</b> du moteur (physique, audio, terrain, particules «&nbsp;legacy&nbsp;»…). On les active/désactive rarement, mais les couper allège un build minimaliste.</li>
+            </ul>
+            <p>À droite, le <b>panneau de détail</b> affiche pour le package sélectionné&nbsp;: sa <b>description</b>, sa <b>version</b> et le sélecteur de versions, ses <b>dépendances</b> (les autres packages qu'il tire derrière lui), un onglet <b>Samples</b> (exemples optionnels à importer), et les boutons d'action <b>Install / Update / Remove</b>. Le verbe change selon l'état&nbsp;: <em>Install</em> si absent, <em>Update to x.y.z</em> si une version plus récente existe, <em>Remove</em> si présent.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 360" role="img" aria-label="Sources de packages convergeant vers le Package Manager puis le projet : Unity Registry, Asset Store My Assets, Git URL et disque local entrent dans UPM, qui écrit le manifest.json et alimente le projet">
+                <!-- sources colonne gauche -->
+                <g font-size="11">
+                  <rect x="18" y="26" width="170" height="50" rx="8" fill="#59b0ff" fill-opacity="0.12" stroke="#59b0ff"/>
+                  <text x="103" y="48" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Unity Registry</text>
+                  <text x="103" y="65" text-anchor="middle" class="svg-dim" font-size="10">URP, Cinemachine, ProBuilder…</text>
+
+                  <rect x="18" y="90" width="170" height="50" rx="8" fill="#5ad19a" fill-opacity="0.12" stroke="#5ad19a"/>
+                  <text x="103" y="112" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Asset Store</text>
+                  <text x="103" y="129" text-anchor="middle" class="svg-dim" font-size="10">My Assets · .unitypackage</text>
+
+                  <rect x="18" y="154" width="170" height="50" rx="8" fill="#c89bff" fill-opacity="0.12" stroke="#c89bff"/>
+                  <text x="103" y="176" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Git URL</text>
+                  <text x="103" y="193" text-anchor="middle" class="svg-dim" font-size="10">dépôt GitHub d'un outil</text>
+
+                  <rect x="18" y="218" width="170" height="50" rx="8" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441"/>
+                  <text x="103" y="240" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Disque local</text>
+                  <text x="103" y="257" text-anchor="middle" class="svg-dim" font-size="10">dossier sur la machine</text>
+
+                  <rect x="18" y="282" width="170" height="50" rx="8" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441"/>
+                  <text x="103" y="304" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Scoped registry</text>
+                  <text x="103" y="321" text-anchor="middle" class="svg-dim" font-size="10">OpenUPM…</text>
+                </g>
+                <!-- flèches vers UPM -->
+                <g stroke="#717c8c" stroke-width="1.8" fill="none">
+                  <path d="M188 51 C 240 51, 250 150, 300 168"/>
+                  <path d="M188 115 C 240 115, 255 155, 300 175"/>
+                  <path d="M188 179 L 300 179"/>
+                  <path d="M188 243 C 240 243, 255 205, 300 188"/>
+                  <path d="M188 307 C 240 307, 250 215, 300 195"/>
+                </g>
+                <!-- UPM central -->
+                <rect x="300" y="135" width="150" height="92" rx="10" class="svg-surface" stroke="#313c4c" stroke-width="1.6"/>
+                <text x="375" y="165" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Package</text>
+                <text x="375" y="183" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Manager (UPM)</text>
+                <text x="375" y="205" text-anchor="middle" class="svg-dim" font-size="10">résout les dépendances</text>
+                <!-- flèche UPM -> manifest -->
+                <path d="M450 165 L 500 150" stroke="#717c8c" stroke-width="1.8" fill="none" marker-end="url(#au)"/>
+                <path d="M450 197 L 500 250" stroke="#717c8c" stroke-width="1.8" fill="none" marker-end="url(#au)"/>
+                <defs><marker id="au" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#717c8c"/></marker></defs>
+                <!-- manifest -->
+                <rect x="502" y="120" width="120" height="56" rx="8" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                <text x="562" y="143" text-anchor="middle" class="svg-text" font-weight="700" font-size="11">manifest.json</text>
+                <text x="562" y="160" text-anchor="middle" class="svg-dim" font-size="9.5">la liste de besoins</text>
+                <!-- projet -->
+                <rect x="502" y="226" width="120" height="56" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/>
+                <text x="562" y="249" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Projet</text>
+                <text x="562" y="266" text-anchor="middle" class="svg-dim" font-size="9.5">outils disponibles</text>
+                <text x="320" y="22" class="svg-dim" font-size="11">Cinq sources, un seul point d'entrée&nbsp;: le Package Manager</text>
+              </svg>
+              <figcaption>Toutes les sources de packages convergent vers le Package Manager. Il <b>résout les dépendances</b>, met à jour le <code>manifest.json</code> (la déclaration de besoins du projet) et rend les outils disponibles dans le projet.</figcaption>
+            </figure>
+
+            <h3>3. Les sources&nbsp;: d'où viennent les packages</h3>
+            <p>Comprendre les sources, c'est comprendre la <b>confiance</b> et le <b>risque</b> que chacune implique.</p>
+            <h4>Unity Registry — le terrain sûr</h4>
+            <p>C'est le catalogue maintenu par Unity. Les packages y sont <b>testés contre la version du moteur</b>, versionnés proprement, et leurs dépendances sont garanties cohérentes. Quand le Registry te propose une version «&nbsp;verified&nbsp;» ou recommandée pour ta version d'éditeur, c'est celle qui a été validée&nbsp;: prends-la par défaut. C'est la source que tu utiliseras le plus.</p>
+            <h4>Asset Store / My Assets — le marché</h4>
+            <p>L'<span class="term">Asset Store</span> (<code>assetstore.unity.com</code>, dans le navigateur) est la place de marché de Unity&nbsp;: modèles 3D, textures, shaders, outils, musiques. On y «&nbsp;achète&nbsp;» (gratuit ou payant) avec son compte Unity&nbsp;; l'asset rejoint alors la <b>bibliothèque</b> du compte. De retour dans l'éditeur, l'onglet <b>My Assets</b> du Package Manager liste cette bibliothèque&nbsp;: on y <b>télécharge</b> puis on <b>importe</b>. Beaucoup d'assets du Store sont encore distribués en <code>.unitypackage</code> — ils copient leurs fichiers dans <code>Assets/</code>, d'où l'importance d'<b>importer sélectivement</b> (voir plus bas).</p>
+            <h4>Git URL — l'outil de la communauté</h4>
+            <p>Énormément d'outils gratuits de la communauté vivent sur <b>GitHub</b>. UPM sait installer un package <b>directement depuis l'URL d'un dépôt Git</b>&nbsp;: pas besoin de télécharger un zip à la main, ni de copier des fichiers. Tu colles l'adresse du dépôt, Unity le clone et l'ajoute comme package référencé. C'est puissant et propre — à condition d'<b>épingler une version</b> (voir SemVer) pour ne pas te réveiller un matin avec un commit qui casse tout.</p>
+            <h4>Disque local — le développement</h4>
+            <p>On peut pointer un package vers un <b>dossier local</b> de la machine. C'est le mode du développement d'outils maison&nbsp;: tu travailles sur le package dans un dossier, et le projet le voit en direct. Utile pour partager un package interne entre plusieurs projets sans le republier à chaque modification.</p>
+            <h4>Scoped registries (OpenUPM) — l'écosystème ouvert</h4>
+            <p>Une <span class="term">scoped registry</span> est un <b>registre tiers</b> que tu déclares en plus du Registry officiel, avec une «&nbsp;portée&nbsp;» (les préfixes de noms qu'il fournit). Le plus connu est <b>OpenUPM</b>, qui héberge des centaines de packages open source à la manière de npm. Une fois la registry ajoutée dans les <b>Project Settings <span class="arrow">▸</span> Package Manager</b>, ses packages apparaissent comme s'ils étaient natifs. C'est confortable, mais cela ajoute une <b>dépendance à un service externe</b>&nbsp;: à garder à l'esprit pour la pérennité.</p>
+
+            <h3>4. Le manifest.json et le versionnage sémantique</h3>
+            <p>Tout ce que tu fais dans le Package Manager se traduit, en coulisses, par l'écriture d'un fichier texte&nbsp;: <code>Packages/manifest.json</code>. C'est la <b>source de vérité</b> du projet&nbsp;: la liste de tout ce qu'il réclame, avec les versions exactes. Comprendre ce fichier, c'est cesser d'avoir peur du Package Manager — il n'y a aucune magie, juste une liste.</p>
+            <div class="codeblock" data-lang="JSON"><pre><code>{
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "14.0.9",
+    "com.unity.cinemachine": "2.9.7",
+    "com.unity.probuilder": "5.1.1",
+    "com.unity.shadergraph": "14.0.9",
+    "com.mon-outil.super-tool": "https://github.com/auteur/super-tool.git#1.2.0"
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [ "com.cysharp" ]
+    }
+  ]
+}</code></pre></div>
+            <p>Chaque ligne de <code>dependencies</code> associe un <b>nom inversé</b> (style <code>com.unity.cinemachine</code>, garanti unique) à une <b>version</b>. La version suit le <span class="term">versionnage sémantique</span> (<em>SemVer</em>), un standard universel en trois nombres&nbsp;: <code>MAJEUR.MINEUR.CORRECTIF</code> (par ex. <code>14.0.9</code>).</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Segment</th><th>Exemple</th><th>Ce que ça signifie — et pourquoi t'en soucier</th></tr></thead>
+                <tbody>
+                  <tr><td><b>MAJEUR</b></td><td>14.x.x</td><td>Changement <b>cassant</b>&nbsp;: l'API change, du code qui marchait peut ne plus compiler. Passer de 13 à 14 demande des tests.</td></tr>
+                  <tr><td><b>MINEUR</b></td><td>x.2.x</td><td>Nouvelles fonctions <b>compatibles</b>&nbsp;: rien ne casse, on gagne des features. Mise à jour généralement sûre.</td></tr>
+                  <tr><td><b>CORRECTIF</b></td><td>x.x.9</td><td>Corrections de bugs uniquement. Très sûr&nbsp;: on prend presque toujours le dernier correctif.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Le manifest se modifie au Package Manager, pas à la main</div>
+              <p>On peut éditer <code>manifest.json</code> dans un éditeur de texte (utile pour ajouter une scoped registry vite fait), mais 99&nbsp;% du temps tu passes par la fenêtre&nbsp;: elle <b>valide la syntaxe</b> et <b>résout les dépendances</b> pour toi. Une virgule en trop ou une accolade manquante dans ce fichier, et Unity refuse d'ouvrir le projet&nbsp;: garde-le sous contrôle de version pour pouvoir revenir en arrière.</p>
+            </div>
+
+            <h3>5. Dépendances et conflits&nbsp;: le cœur du sujet</h3>
+            <p>Un package en tire souvent d'autres. Quand tu installes <b>URP</b>, tu n'installes pas qu'URP&nbsp;: il <b>dépend</b> de <b>Shader Graph</b> et de <b>Core RP Library</b>, qui s'installent automatiquement. C'est le rôle central d'UPM&nbsp;: il lit l'arbre de dépendances et tire tout ce qu'il faut, sans que tu aies à le savoir.</p>
+            <p>Le problème surgit quand deux packages réclament le <b>même package en versions différentes</b>. Imagine que ton outil A exige Core RP Library 13, mais que ton URP fraîchement installé exige Core RP Library 14. UPM doit <b>arbitrer</b>&nbsp;: il choisit en général la version la plus élevée compatible, mais si A ne supporte vraiment pas la 14, tu obtiens des <b>erreurs de compilation</b>. C'est le fameux «&nbsp;conflit de versions&nbsp;» — la première cause de projets qui ne compilent plus après l'ajout d'un plugin.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Arbre de dépendances : Universal Render Pipeline dépend de Shader Graph et Core RP Library ; Shader Graph dépend aussi de Core RP Library, montrant une dépendance partagée">
+                <defs><marker id="ad" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#59b0ff"/></marker></defs>
+                <!-- racine -->
+                <rect x="210" y="22" width="220" height="54" rx="9" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/>
+                <text x="320" y="44" text-anchor="middle" class="svg-text" font-weight="700" font-size="12.5">Universal Render Pipeline</text>
+                <text x="320" y="62" text-anchor="middle" class="svg-dim" font-size="10.5">com.unity.render-pipelines.universal · 14.0.9</text>
+                <!-- niveau 2 gauche : Shader Graph -->
+                <rect x="60" y="128" width="200" height="54" rx="9" fill="#c89bff" fill-opacity="0.14" stroke="#c89bff"/>
+                <text x="160" y="150" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Shader Graph</text>
+                <text x="160" y="168" text-anchor="middle" class="svg-dim" font-size="10">com.unity.shadergraph · 14.0.9</text>
+                <!-- niveau 2 droite : autre -->
+                <rect x="392" y="128" width="200" height="54" rx="9" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                <text x="492" y="150" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Render Graph / autres</text>
+                <text x="492" y="168" text-anchor="middle" class="svg-dim" font-size="10">tirés automatiquement</text>
+                <!-- niveau 3 : Core RP, partagé -->
+                <rect x="226" y="226" width="188" height="54" rx="9" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                <text x="320" y="248" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Core RP Library</text>
+                <text x="320" y="266" text-anchor="middle" class="svg-dim" font-size="10">com.unity.render-pipelines.core · 14.0.9</text>
+                <!-- liens -->
+                <g stroke="#59b0ff" stroke-width="1.8" fill="none">
+                  <path d="M270 76 C 220 100, 190 110, 165 126" marker-end="url(#ad)"/>
+                  <path d="M375 76 C 430 100, 460 110, 488 126" marker-end="url(#ad)"/>
+                  <path d="M180 182 C 210 205, 250 215, 280 224" marker-end="url(#ad)"/>
+                  <path d="M470 182 C 430 205, 390 215, 362 224" marker-end="url(#ad)"/>
+                </g>
+                <text x="320" y="300" text-anchor="middle" fill="#ff6b6b" font-size="11" font-weight="700">⚠ dépendance partagée — même version pour tout le monde</text>
+              </svg>
+              <figcaption>Installer <b>URP</b> tire <b>Shader Graph</b> et d'autres packages, et tous finissent par dépendre de <b>Core RP Library</b>. C'est cette dépendance <b>partagée</b> qui doit être à la <b>même version</b> partout&nbsp;: si deux outils en exigent des versions incompatibles, le projet ne compile plus.</figcaption>
+            </figure>
+
+            <h3>6. Garder à jour… mais pas n'importe comment</h3>
+            <p>Mettre à jour n'est pas une fin en soi. La bonne discipline&nbsp;:</p>
+            <ul>
+              <li><b>Correctifs</b> (dernier chiffre) — prends-les, ils corrigent des bugs sans risque.</li>
+              <li><b>Mineures</b> (chiffre du milieu) — généralement sûres&nbsp;; teste vite après coup.</li>
+              <li><b>Majeures</b> (premier chiffre) — <b>jamais en plein milieu d'une production</b> sans une fenêtre de test. Une majeure peut renommer des API, déplacer des réglages, casser des shaders. On la planifie.</li>
+            </ul>
+            <p>Et la règle d'or, valable côté graphisme comme code&nbsp;: <b>aligner les versions des packages d'un même groupe</b>. URP, Shader Graph, VFX Graph et Core RP Library appartiennent à la même famille SRP&nbsp;; ils doivent <b>tous</b> être dans la même version majeure que ta version d'éditeur. Mélanger URP 14 et Shader Graph 12, c'est l'assurance de shaders qui ne se compilent pas.</p>
+
+            <h3>7. Les packages utiles au graphiste</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Package</th><th>À quoi il sert</th><th>Pourquoi tu le veux</th></tr></thead>
+                <tbody>
+                  <tr><td><b>ProBuilder</b></td><td>Modéliser et bloquer un niveau <b>dans l'éditeur</b>.</td><td>Faire un <em>blockout</em> (maquette de niveau en volumes simples) sans aller-retour avec Blender. Idéal pour tester le level design tôt.</td></tr>
+                  <tr><td><b>Cinemachine</b></td><td>Caméras intelligentes (suivi, cadrage, transitions).</td><td>Des mouvements de caméra de qualité ciné sans scripter à la main&nbsp;: travelling, focus, cinématiques.</td></tr>
+                  <tr><td><b>Shader Graph</b></td><td>Créer des shaders en <b>nœuds</b>, sans code.</td><td>Le matériau personnalisé du graphiste&nbsp;: dissolve, eau, hologramme, sans écrire de HLSL.</td></tr>
+                  <tr><td><b>VFX Graph</b></td><td>Effets de particules calculés sur <b>GPU</b>.</td><td>Des millions de particules (fumée, étincelles, magie) impossibles avec le vieux système CPU.</td></tr>
+                  <tr><td><b>FBX Exporter</b></td><td>Renvoyer des objets de Unity <b>vers</b> un DCC en <span class="term">FBX</span>.</td><td>Boucler l'aller-retour&nbsp;: bloquer dans ProBuilder, exporter en FBX, finir dans Blender.</td></tr>
+                  <tr><td><b>Post Processing</b></td><td>Effets d'image (bloom, vignette, color grading).</td><td>Donner le «&nbsp;look&nbsp;» final à l'image. En URP/HDRP c'est intégré&nbsp;; en pipeline intégré c'est un package.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Tu remarques que tous ces noms reviennent dans les autres leçons Unity&nbsp;: c'est normal. Le Package Manager est le <b>robinet</b> par lequel ils entrent. Maîtriser ce robinet, c'est débloquer tout le reste.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Fil rouge&nbsp;: <b>installer ProBuilder depuis le Registry</b>, puis <b>ajouter un outil via une Git URL</b>, et vérifier l'effet sur le <code>manifest.json</code>.</p>
+            <ol>
+              <li><b>Ouvrir le gestionnaire.</b> <span class="menu-path">Window<span class="arrow">▸</span>Package Manager</span>. La fenêtre s'ouvre&nbsp;; en haut à gauche, le menu <b>Packages:</b> est sans doute sur <em>In Project</em> — tu vois ce qui est déjà installé.</li>
+              <li><b>Passer au catalogue Unity.</b> Clique sur <b>Packages:</b> et choisis <b>Unity Registry</b>. La liste se remplit du catalogue officiel. Utilise la <b>barre de recherche</b> en haut et tape <code>ProBuilder</code>.</li>
+              <li><b>Lire avant d'installer.</b> Sélectionne <b>ProBuilder</b>&nbsp;: le panneau de droite affiche sa <b>description</b>, la <b>version</b> proposée, et la section <b>Dependencies</b>. C'est l'étape que les débutants sautent&nbsp;: regarde ce qui va être tiré derrière.</li>
+              <li><b>Installer.</b> Clique sur <b>Install</b> (en bas à droite). Unity télécharge ProBuilder et ses dépendances, met à jour <code>manifest.json</code>, puis recompile. ProBuilder bascule alors dans <b>In Project</b> et un menu <span class="menu-path">Tools<span class="arrow">▸</span>ProBuilder</span> apparaît dans la barre de menus&nbsp;: c'est la preuve que l'outil est actif.</li>
+              <li><b>Importer un exemple (optionnel).</b> Toujours sur la fiche ProBuilder, déroule <b>Samples</b> s'il y en a et clique <b>Import</b>&nbsp;: les exemples atterrissent dans <code>Assets/Samples/</code>. Ils sont optionnels et tu peux les supprimer ensuite&nbsp;; ne les importe que si tu veux étudier un cas.</li>
+              <li><b>Ajouter un package par Git URL.</b> En haut à gauche, clique sur le bouton <b>+</b> puis <span class="menu-path">Add package from git URL…</span>. Un champ apparaît&nbsp;: colle l'adresse <code>.git</code> du dépôt, idéalement en <b>épinglant une version</b> avec <code>#1.2.0</code> à la fin (le <em>tag</em> ou la branche). Valide avec <b>Add</b>.</li>
+              <li><b>Observer la résolution.</b> Unity clone le dépôt, lit son manifeste, tire ses dépendances et recompile. Le nouvel outil apparaît dans <b>In Project <span class="arrow">▸</span> Custom</b>. Si une erreur s'affiche dans la <b>Console</b>, c'est souvent une incompatibilité de version&nbsp;: lis le message, il nomme le package fautif.</li>
+              <li><b>Vérifier le manifest.</b> Ouvre <code>Packages/manifest.json</code> (dans l'Explorateur, à côté de <code>Assets/</code>). Tu y vois deux nouvelles lignes&nbsp;: <code>com.unity.probuilder</code> avec un numéro de version, et ton outil Git avec l'URL complète. Tu viens de visualiser <b>exactement</b> ce que tes clics ont écrit.</li>
+              <li><b>Désinstaller proprement.</b> Pour retirer un package&nbsp: sélectionne-le dans <b>In Project</b> et clique <b>Remove</b>. La ligne disparaît du manifest, le cache n'est pas touché, et le projet redevient propre — aucun fichier orphelin dans <code>Assets/</code>. C'est tout l'intérêt d'un package UPM par rapport à un <code>.unitypackage</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon projet a triplé de taille et met une éternité à s'ouvrir après un import.</div>
+                <div class="pi-cause"><b>Cause</b>J'ai importé un <b>asset Asset Store géant</b> en entier (démos, scènes, textures 4K), qui a déversé des milliers de fichiers dans <code>Assets/</code>.</div>
+                <div class="pi-fix"><b>Correction</b>À l'import du <code>.unitypackage</code>, <b>décoche</b> les dossiers de démos/exemples et ne garde que ce que tu utilises. Supprime ensuite les dossiers d'exemples inutiles.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Après avoir ajouté un plugin, le projet ne compile plus&nbsp;: «&nbsp;version conflict&nbsp;».</div>
+                <div class="pi-cause"><b>Cause</b>Un <b>conflit de dépendances</b>&nbsp;: deux packages exigent la même bibliothèque (souvent Core RP) en versions incompatibles.</div>
+                <div class="pi-fix"><b>Correction</b>Lis le message de la Console&nbsp;; il nomme le package et les versions. Aligne les versions, ou retire le plugin fautif. <b>Sauvegarde le manifest avant</b> d'expérimenter.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un outil Git installé «&nbsp;marchait&nbsp;» et un jour il a cassé tout seul.</div>
+                <div class="pi-cause"><b>Cause</b>La Git URL pointait sur une <b>branche</b> (pas un tag)&nbsp;: un nouveau commit en amont a changé l'outil sans prévenir.</div>
+                <div class="pi-fix"><b>Correction</b><b>Épingle une version</b> précise avec <code>#1.2.0</code> à la fin de l'URL. Tu figes l'outil&nbsp;; tu décides quand monter de version.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Unity refuse d'ouvrir le projet et parle d'erreur dans <code>manifest.json</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Le <b>manifest a été cassé</b>&nbsp;: virgule en trop, accolade manquante après une édition à la main.</div>
+                <div class="pi-fix"><b>Correction</b>Restaure la dernière version saine via ton contrôle de version (Git). Édite ce fichier avec un éditeur qui valide le JSON, ou passe par le Package Manager.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le plugin star de mon projet est incompatible avec la nouvelle version d'Unity.</div>
+                <div class="pi-cause"><b>Cause</b>Plugin <b>abandonné</b> par son auteur&nbsp;: plus de mises à jour, il ne suit pas les évolutions du moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Avant d'adopter un plugin, vérifie sa <b>date de dernière mise à jour</b> et les versions d'Unity supportées. Préfère un équivalent maintenu&nbsp;; évite d'en faire un pilier critique.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un coéquipier ne peut pas ouvrir le projet&nbsp;: il manque un asset payant.</div>
+                <div class="pi-cause"><b>Cause</b>Dépendance à un <b>asset payant non versionné</b> lié à <b>ton</b> compte&nbsp;: il n'est ni dans le dépôt, ni dans la bibliothèque du coéquipier.</div>
+                <div class="pi-fix"><b>Correction</b>Documente les assets payants requis et les licences. Vérifie que chaque membre y a accès, ou substitue une solution libre pour les dépendances critiques.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Sur un projet de test (jamais sur une vraie production), prends en main le Package Manager de bout en bout&nbsp;:</p>
+              <ol>
+                <li>Note la <b>taille</b> du dossier projet et le contenu de <code>Packages/manifest.json</code> <b>avant</b> toute action (capture ou copie).</li>
+                <li>Installe <b>ProBuilder</b> depuis le <b>Unity Registry</b> en lisant d'abord ses <b>dépendances</b> dans le panneau de droite.</li>
+                <li>Crée un cube ProBuilder dans la scène (<span class="menu-path">Tools<span class="arrow">▸</span>ProBuilder<span class="arrow">▸</span>New Shape</span>) pour vérifier que l'outil est bien actif.</li>
+                <li>Ajoute un package <b>via Git URL</b> en <b>épinglant une version</b> avec <code>#</code> à la fin de l'adresse.</li>
+                <li>Ouvre <code>manifest.json</code> et <b>compare</b> avec l'état initial&nbsp;: identifie les lignes ajoutées et explique chacune.</li>
+                <li><b>Désinstalle</b> ProBuilder via <b>Remove</b> et vérifie que <code>Assets/</code> ne contient aucun fichier orphelin.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu peux <b>pointer</b>, dans le manifest, la ligne ajoutée par ProBuilder et celle ajoutée par la Git URL.</li>
+                  <li>Ta Git URL contient un <code>#version</code> et tu sais expliquer pourquoi ce n'est pas une branche.</li>
+                  <li>Tu sais nommer au moins <b>une dépendance</b> tirée automatiquement par un package installé.</li>
+                  <li>Après <b>Remove</b>, le projet compile sans erreur et aucun dossier orphelin ne traîne dans <code>Assets/</code>.</li>
+                  <li>Tu sais expliquer la différence entre un <b>package UPM</b> et un <b>.unitypackage</b> de l'Asset Store.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Unity s'étend par <b>packages</b> via le <b>Package Manager</b> (<span class="menu-path">Window<span class="arrow">▸</span>Package Manager</span>)&nbsp;; <b>In Project</b> = ce qui est réellement installé.</li>
+                <li>Cinq sources&nbsp;: <b>Unity Registry</b> (sûr), <b>Asset Store / My Assets</b>, <b>Git URL</b>, <b>disque local</b>, <b>scoped registries</b> (OpenUPM).</li>
+                <li>La vérité du projet est dans <code>Packages/manifest.json</code>&nbsp;; les versions suivent le <b>SemVer</b> <code>MAJEUR.MINEUR.CORRECTIF</code>.</li>
+                <li>Un package <b>tire ses dépendances</b>&nbsp;; les versions d'une même famille (URP/Shader Graph/Core RP) doivent <b>s'aligner</b>.</li>
+                <li>Pour une Git URL, <b>épingle une version</b> avec <code>#x.y.z</code> pour ne pas casser au prochain commit.</li>
+                <li><b>N'ajoute pas n'importe quoi</b>&nbsp;: méfie-toi des assets géants, des plugins abandonnés et des dépendances payantes non partageables.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Package</b> — module autonome de fichiers (scripts, shaders, assets) avec un manifeste décrivant son nom, sa version et ses dépendances, ajouté à la demande dans un projet Unity.</p>
+              <p><b>UPM (Unity Package Manager)</b> — système qui télécharge, référence et résout les packages d'un projet, à la manière de npm ou pip. La fenêtre porte le même nom.</p>
+              <p><b>Unity Registry</b> — catalogue officiel des packages maintenus et testés par Unity (URP, Cinemachine, ProBuilder, Shader Graph…).</p>
+              <p><b>Asset Store</b> — place de marché de Unity (<code>assetstore.unity.com</code>) où l'on acquiert des assets, retrouvés ensuite dans l'onglet <b>My Assets</b> du Package Manager.</p>
+              <p><b>.unitypackage</b> — archive d'assets qui copie ses fichiers directement dans <code>Assets/</code> à l'import, par opposition à un package UPM seulement référencé.</p>
+              <p><b>Git URL</b> — adresse d'un dépôt Git que le Package Manager peut installer directement comme package, idéalement épinglée à une version avec <code>#x.y.z</code>.</p>
+              <p><b>Scoped registry</b> — registre tiers déclaré en plus du Registry officiel (ex. OpenUPM) qui fournit des packages selon une portée de noms.</p>
+              <p><b>manifest.json</b> — fichier texte (<code>Packages/manifest.json</code>) listant toutes les dépendances et versions du projet&nbsp;: sa source de vérité.</p>
+              <p><b>Versionnage sémantique (SemVer)</b> — convention de version en trois nombres <code>MAJEUR.MINEUR.CORRECTIF</code> indiquant la nature des changements (cassant, compatible, correctif).</p>
+              <p><b>Dépendance</b> — package qu'un autre réclame pour fonctionner et qu'UPM installe automatiquement (ex. URP qui tire Shader Graph et Core RP Library).</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Pipelines de rendu</a>&nbsp;: URP et HDRP sont des packages&nbsp;; comprendre lequel choisir avant de les installer.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: la suite logique pour faire entrer tes modèles et textures dans le projet.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux</a>&nbsp;: Shader Graph en action, une fois le package installé.</li>
+              <li><a href="../../cours/unity/u09-vfx.html">U9 — VFX</a>&nbsp;: VFX Graph, le package d'effets GPU, et son installation.</li>
+              <li><a href="../../cours/unity/u11-optimisation.html">U11 — Optimisation</a>&nbsp;: pourquoi limiter les plugins allège le projet et le build.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>&nbsp;: le rôle du FBX Exporter dans l'aller-retour avec un DCC.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U9 — Particules & VFX · Atelier Game Art</title>
+  <meta name="description" content="Les deux systèmes d'effets d'Unity : Particle System (Shuriken, CPU) et VFX Graph (GPU), et comment construire un effet simple.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Particules & VFX</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U9 — Particules & VFX</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f11-vfx-particules.html">F11 — VFX (concepts)</a> et <a href="../../cours/unity/u06-materiaux.html">U6</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Distinguer les <b>deux systèmes d'effets d'Unity</b> — <b>Particle System</b> (Shuriken, CPU) et <b>VFX Graph</b> (GPU) — et choisir le bon pour un effet donné.</li>
+                <li>Décrire les <b>modules empilables</b> du Particle System (Main, Emission, Shape, …over Lifetime, Noise, Collision, Renderer) et ce que chacun pilote.</li>
+                <li>Utiliser <b>courbes</b>, <b>gradients</b> et <b>bursts</b> pour donner du rythme et de la vie à un effet.</li>
+                <li>Comprendre l'architecture en <b>contextes</b> du VFX Graph (Spawn → Initialize → Update → Output) et pourquoi elle permet des millions de particules.</li>
+                <li>Régler un <b>matériau de particule</b> (additif vs alpha, soft particles) dans le module Renderer.</li>
+                <li>Construire pas à pas un effet d'<b>étincelles / feu de camp</b> et anticiper les pièges de performance (overdraw, tri, espace de simulation).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tu as vu dans <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a> les <em>concepts</em> universels du VFX&nbsp;: émetteur, durée de vie, courbes, billboard, additif, overdraw. Cette leçon-ci les met en <b>pratique dans Unity</b> avec les deux outils concrets que le moteur fournit. Savoir lequel ouvrir — et ne pas se tromper — est une vraie compétence de production.</p>
+            <p>Pourquoi deux systèmes&nbsp;? Parce qu'ils répondent à deux problèmes différents. Le <span class="term">Particle System</span> (surnommé <b>Shuriken</b>, d'après l'icône historique) est un <b>component</b> que tu poses sur un <span class="gloss">GameObject</span>&nbsp;: il est simulé par le <b>CPU</b>, simple, lisible, parfait pour 99&nbsp;% des effets d'un jeu indépendant (impacts, fumée, poussière, magie courante). Le <span class="term">VFX Graph</span> est un éditeur de nœuds qui déporte la simulation sur le <b>GPU</b>&nbsp;: il encaisse des <b>millions</b> de particules pour les effets spectaculaires (tempêtes, brasiers, sorts volumétriques), mais demande plus de mise en place et un <span class="gloss">render pipeline</span> moderne (URP ou HDRP).</p>
+            <p>Choisir le bon outil, c'est éviter deux gaspillages symétriques&nbsp;: dégainer le VFX Graph pour dix étincelles (sur-ingénierie, temps perdu) ou s'acharner sur Shuriken pour simuler un million de flocons (le CPU s'écroule). Comprendre <em>pourquoi</em> chacun existe te fait gagner ce réflexe.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Deux moteurs, deux philosophies</h3>
+            <p>La différence fondamentale tient à <b>où la simulation est calculée</b>. Rappel de <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>&nbsp;: «&nbsp;simuler&nbsp;» une particule, c'est calculer image après image sa nouvelle position, sa taille, sa couleur, à partir de son âge et des forces qui s'appliquent.</p>
+            <p>Le <b>Particle System</b> fait ce calcul sur le <b>processeur (CPU)</b>, particule par particule, en boucle. C'est flexible et facile à connecter au <em>gameplay</em> (une particule peut entrer en collision avec le monde, déclencher un sous-système, être lue par un script C#), mais le CPU traite les particules plus ou moins une à une&nbsp;: au-delà de quelques milliers, le coût explose et le <span class="gloss">frame rate</span> chute.</p>
+            <p>Le <b>VFX Graph</b> déporte le calcul sur la <b>carte graphique (GPU)</b>, via des <em>compute shaders</em> (petits programmes massivement parallèles). Le GPU traite des milliers de particules <em>en même temps</em>&nbsp;: on passe sans peine à des centaines de milliers, voire des millions d'éléments. Le revers&nbsp;: les données vivent dans la mémoire du GPU, donc l'interaction avec le code C# du gameplay devient plus indirecte, et l'outil exige URP ou HDRP (il n'existe pas sur le vieux <em>Built-in Render Pipeline</em>).</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le bon réflexe par défaut</div>
+              <p>Commence <b>toujours</b> par le Particle System. Il est plus rapide à itérer, marche dans tous les pipelines, et se branche facilement au gameplay. Ne passe au VFX Graph que lorsque le <b>nombre de particules</b> ou la complexité de simulation le réclament vraiment. «&nbsp;Quand le CPU sue, appelle le GPU&nbsp;» — pas avant.</p>
+            </div>
+
+            <h3>2. Le Particle System (Shuriken)&nbsp;: une pile de modules</h3>
+            <p>Quand tu sélectionnes un Particle System, l'<span class="gloss">Inspector</span> affiche une <b>liste de modules</b> qu'on peut cocher ou décocher. C'est l'idée géniale de Shuriken&nbsp;: chaque module est une <b>brique de comportement</b> indépendante, et l'effet final naît de leur <b>empilement</b>. Un module désactivé n'a aucun coût&nbsp;; tu n'actives que ce dont tu as besoin. Passons-les en revue dans l'ordre où ils s'appliquent.</p>
+
+            <h4>Main (module principal)</h4>
+            <p>Toujours actif, il fixe les <b>valeurs initiales</b> et globales&nbsp;: <span class="menu-path">Duration</span> (durée d'un cycle d'émission), <span class="menu-path">Looping</span> (en boucle ou un seul tir), <span class="menu-path">Start Lifetime</span> (durée de vie de chaque particule), <span class="menu-path">Start Speed</span>, <span class="menu-path">Start Size</span>, <span class="menu-path">Start Color</span>, <span class="menu-path">Gravity Modifier</span> (force de pesanteur), <span class="menu-path">Max Particles</span> (plafond de sécurité). C'est aussi ici qu'on règle le <span class="term">Simulation Space</span> (espace de simulation), un réglage capital qu'on détaille au point 5.</p>
+
+            <h4>Emission&nbsp;: combien, et comment</h4>
+            <p>Ce module décide du <b>débit</b>. <span class="menu-path">Rate over Time</span> = X particules par seconde (flux continu&nbsp;: fumée, torche). <span class="menu-path">Rate over Distance</span> = X particules par mètre parcouru (poussière sous un véhicule qui ne s'émet que s'il bouge). Et surtout les <span class="term">Bursts</span> (salves)&nbsp;: N particules émises d'un coup à un instant T. C'est l'outil des impacts et explosions&nbsp;: tout naît au même moment, puis plus rien.</p>
+
+            <h4>Shape&nbsp;: d'où et dans quelle direction</h4>
+            <p>Le module <span class="menu-path">Shape</span> définit la <b>forme d'émission</b>&nbsp;: cône, sphère, hemisphere, boîte, cercle, ou le bord/la surface d'un mesh. La forme décide à la fois de la <b>position de naissance</b> et de la <b>direction initiale</b> des particules. Un cône donne un jet directionnel (lance-flammes, étincelles d'impact)&nbsp;; une sphère, une bouffée omnidirectionnelle (explosion)&nbsp;; un cercle plat, un anneau (onde de choc au sol).</p>
+
+            <h4>Les modules «&nbsp;over Lifetime&nbsp;»&nbsp;: l'évolution dans le temps</h4>
+            <p>C'est le cœur expressif du système, et le prolongement direct des <b>courbes sur l'âge normalisé</b> vues en F11 (0 = naissance, 1 = mort). Chacun pilote une propriété au fil de la vie de la particule&nbsp;:</p>
+            <ul>
+              <li><span class="menu-path">Velocity over Lifetime</span> — ajoute une vélocité qui change avec l'âge (par exemple une poussée vers le haut qui faiblit). Variante <span class="menu-path">Limit Velocity over Lifetime</span> = freinage (drag).</li>
+              <li><span class="menu-path">Color over Lifetime</span> — un <span class="term">gradient</span> de couleur ET d'alpha. C'est <b>l'outil n°1</b>&nbsp;: on y fait passer une braise du blanc-jaune chaud à l'orange refroidi, et surtout on fait <b>descendre l'alpha à 0</b> en fin de vie pour un fondu propre (jamais de «&nbsp;pop&nbsp;»).</li>
+              <li><span class="menu-path">Size over Lifetime</span> — une <b>courbe</b> de taille. Une fumée part petite et grossit (l'air l'étale)&nbsp;; une étincelle garde sa taille ou rétrécit.</li>
+              <li><span class="menu-path">Rotation over Lifetime</span> — fait tourner les sprites, pour casser la répétition et l'effet «&nbsp;tampon&nbsp;».</li>
+            </ul>
+
+            <h4>Noise&nbsp;: l'ingrédient organique</h4>
+            <p>Le module <span class="menu-path">Noise</span> applique un champ de <b>turbulence</b> (bruit cohérent) qui fait onduler les trajectoires. Sans lui, une fumée monte en colonne rectiligne, artificielle. Avec un peu de bruit, elle <b>serpente</b> comme de la vraie fumée. C'est l'un des réglages qui transforme le plus vite un effet «&nbsp;programmé&nbsp;» en effet «&nbsp;vivant&nbsp;».</p>
+
+            <h4>Collision&nbsp;: réagir au monde</h4>
+            <p>Le module <span class="menu-path">Collision</span> (mode <em>World</em>) permet aux particules de <b>rebondir</b> sur la géométrie de la scène&nbsp;: des étincelles qui ricochent sur le sol, de la pluie qui éclabousse. C'est un avantage typiquement <b>CPU</b>&nbsp;: cette interaction fine avec le monde est bien plus simple dans Shuriken que dans le VFX Graph.</p>
+
+            <h4>Renderer&nbsp;: comment ça s'affiche</h4>
+            <p>Le dernier module, toujours présent, gère le <b>rendu</b>. On y assigne le <b>matériau</b> de la particule (donc son shader et son mode de blending) et le <span class="menu-path">Render Mode</span>&nbsp;: <b>Billboard</b> (quad face caméra, le défaut), <b>Stretched Billboard</b> (étiré selon la vélocité, pour les étincelles filantes), <b>Mesh</b> (vrais débris 3D), ou <b>Horizontal/Vertical Billboard</b>. C'est aussi ici que vit le réglage de <span class="menu-path">Sorting</span> (tri) qui pèse sur la transparence.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 430" role="img" aria-label="Pile des modules d'un Particle System Unity : Main, Emission, Shape, modules over Lifetime, Noise, Collision, Renderer, traversés par le flux de simulation des particules">
+                <text x="20" y="26" class="svg-text" font-weight="700" font-size="15">Particle System (Shuriken) — pile de modules</text>
+                <text x="20" y="44" class="svg-dim" font-size="11">la simulation traverse les modules de haut en bas, image après image</text>
+
+                <!-- fleche de flux verticale -->
+                <defs>
+                  <marker id="ah" markerWidth="9" markerHeight="9" refX="5" refY="3" orient="auto"><path d="M0 0 L5 3 L0 6 z" fill="#59b0ff"/></marker>
+                </defs>
+                <line x1="40" y1="64" x2="40" y2="396" stroke="#59b0ff" stroke-width="2.5" marker-end="url(#ah)"/>
+
+                <!-- modules empiles -->
+                <g font-size="12">
+                  <!-- Main -->
+                  <rect x="70" y="60" width="400" height="40" rx="6" class="svg-surface" stroke="#f2b441" stroke-width="1.6"/>
+                  <text x="86" y="85" class="svg-text" font-weight="700">Main</text>
+                  <text x="240" y="85" class="svg-dim" font-size="11">valeurs de départ&nbsp;: lifetime, speed, size, color, gravité</text>
+                  <!-- Emission -->
+                  <rect x="70" y="106" width="400" height="40" rx="6" class="svg-surface" stroke="#f2b441" stroke-width="1.6"/>
+                  <text x="86" y="131" class="svg-text" font-weight="700">Emission</text>
+                  <text x="240" y="131" class="svg-dim" font-size="11">débit&nbsp;: rate over time / distance + bursts</text>
+                  <!-- Shape -->
+                  <rect x="70" y="152" width="400" height="40" rx="6" class="svg-surface" stroke="#f2b441" stroke-width="1.6"/>
+                  <text x="86" y="177" class="svg-text" font-weight="700">Shape</text>
+                  <text x="240" y="177" class="svg-dim" font-size="11">où / direction&nbsp;: cône, sphère, mesh…</text>
+                  <!-- over lifetime -->
+                  <rect x="70" y="198" width="400" height="54" rx="6" class="svg-surface" stroke="#c89bff" stroke-width="1.6"/>
+                  <text x="86" y="220" class="svg-text" font-weight="700">…over Lifetime</text>
+                  <text x="240" y="218" class="svg-dim" font-size="11">Velocity · Color (gradient)</text>
+                  <text x="240" y="234" class="svg-dim" font-size="11">Size (courbe) · Rotation</text>
+                  <text x="86" y="240" class="svg-text" fill="#c89bff" font-size="10.5">évolution sur l'âge 0→1</text>
+                  <!-- Noise -->
+                  <rect x="70" y="258" width="400" height="36" rx="6" class="svg-surface" stroke="#5ad19a" stroke-width="1.6"/>
+                  <text x="86" y="281" class="svg-text" font-weight="700">Noise</text>
+                  <text x="240" y="281" class="svg-dim" font-size="11">turbulence → trajectoires organiques</text>
+                  <!-- Collision -->
+                  <rect x="70" y="300" width="400" height="36" rx="6" class="svg-surface" stroke="#5ad19a" stroke-width="1.6"/>
+                  <text x="86" y="323" class="svg-text" font-weight="700">Collision</text>
+                  <text x="240" y="323" class="svg-dim" font-size="11">rebond sur la géométrie du monde (atout CPU)</text>
+                  <!-- Renderer -->
+                  <rect x="70" y="356" width="400" height="40" rx="6" class="svg-surface" stroke="#59b0ff" stroke-width="1.9"/>
+                  <text x="86" y="381" class="svg-text" font-weight="700">Renderer</text>
+                  <text x="240" y="381" class="svg-dim" font-size="11">matériau + blend + billboard / mesh + tri</text>
+                </g>
+
+                <!-- legende sortie -->
+                <text x="490" y="380" class="svg-text" font-size="11" fill="#59b0ff">→ pixels</text>
+              </svg>
+              <figcaption>Chaque module est une brique cochable. Le flux de simulation (flèche bleue) les traverse de haut en bas&nbsp;: <b>Main</b> fixe le départ, <b>Emission</b> et <b>Shape</b> créent et orientent, les modules <b>over Lifetime</b> font évoluer, <b>Noise/Collision</b> ajoutent du réalisme, et le <b>Renderer</b> transforme tout en pixels.</figcaption>
+            </figure>
+
+            <h3>3. Courbes, gradients et bursts en pratique</h3>
+            <p>Dans l'Inspector, beaucoup de champs ont une petite <b>flèche déroulante</b> à droite. Elle change le <em>mode</em> de la valeur, et c'est un réflexe à acquérir&nbsp;:</p>
+            <ul>
+              <li><b>Constant</b>&nbsp;: une seule valeur fixe.</li>
+              <li><b>Curve</b> (courbe)&nbsp;: la valeur suit une courbe sur l'âge normalisé de la particule (c'est ce qu'utilisent les modules over Lifetime).</li>
+              <li><b>Random Between Two Constants</b>&nbsp;: une valeur tirée au hasard entre deux bornes — indispensable pour la variété (durées de vie, tailles, vitesses qui diffèrent d'une particule à l'autre).</li>
+              <li><b>Random Between Two Curves</b>&nbsp;: le meilleur des deux mondes, une enveloppe haute et basse entre lesquelles chaque particule tire sa propre courbe.</li>
+            </ul>
+            <p>Le <span class="term">gradient</span>, lui, est l'équivalent «&nbsp;couleur&nbsp;» de la courbe&nbsp;: une bande où l'on place des <b>marqueurs de couleur</b> (en bas) et des <b>marqueurs d'alpha</b> (en haut) le long de l'âge. C'est dans <span class="menu-path">Color over Lifetime</span> qu'il révèle toute sa puissance&nbsp;: un seul gradient encode la dérive de teinte ET le fondu de sortie.</p>
+            <p>Pourquoi insister&nbsp;? Parce que la différence entre un effet d'amateur et un effet pro tient presque entièrement à l'usage des courbes et de l'aléatoire. Des valeurs constantes donnent un effet <b>mécanique et répétitif</b>&nbsp;; des courbes bien réglées donnent le <em>rythme</em> (montée rapide, retombée lente) et l'aléatoire donne la <em>variété</em> qui empêche l'œil de repérer le motif.</p>
+
+            <h3>4. Le VFX Graph&nbsp;: une simulation GPU en nœuds</h3>
+            <p>Le VFX Graph se présente comme un <b>graphe de nœuds</b> (familier si tu as vu le <a href="../../cours/unity/u06-materiaux.html">Shader Graph en U6</a>). Sa structure repose sur quatre <span class="term">contextes</span>, qui correspondent aux étapes du cycle de vie d'une particule&nbsp;:</p>
+            <ul>
+              <li><b>Spawn</b> — décide <b>combien</b> de particules naissent et <b>quand</b> (l'équivalent de l'Emission de Shuriken&nbsp;: taux constant, bursts…).</li>
+              <li><b>Initialize</b> — donne les <b>valeurs de départ</b> à chaque nouvelle particule (position dans une forme, vitesse, couleur, taille, durée de vie). Joué <b>une seule fois</b>, à la naissance.</li>
+              <li><b>Update</b> — exécuté <b>à chaque image</b> pour chaque particule vivante&nbsp;: applique les forces (gravité, turbulence, drag), la collision, l'évolution des attributs. C'est le cœur de la simulation GPU.</li>
+              <li><b>Output</b> — décrit le <b>rendu</b>&nbsp;: type (quad/billboard, mesh, ruban), matériau, blending. Il peut y avoir plusieurs Output pour superposer des couches (braises + fumée).</li>
+            </ul>
+            <p>À l'intérieur de chaque contexte, on empile des <span class="term">blocks</span> (blocs)&nbsp;: «&nbsp;Add Gravity&nbsp;», «&nbsp;Turbulence&nbsp;», «&nbsp;Set Color over Life&nbsp;»… Chaque bloc lit et modifie des <span class="term">attributs</span> (position, velocity, color, size, age, lifetime…), qui sont les variables portées par chaque particule. Les <b>property</b> exposées en haut du graphe permettent de piloter l'effet depuis l'Inspector ou par script, et le graphe sait <b>échantillonner des textures et des maps</b> (par exemple lire une texture pour positionner les particules selon une image, ou une <em>point cache</em>).</p>
+            <p>Le <em>pourquoi</em> de cette architecture&nbsp;: en séparant nettement «&nbsp;à la naissance&nbsp;» (Initialize, exécuté une fois) de «&nbsp;à chaque image&nbsp;» (Update, exécuté en masse), le GPU peut paralléliser l'Update sur des millions d'éléments sans jamais repasser par le CPU. C'est précisément ce découpage qui débloque l'échelle.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Comparaison Particle System CPU simple contre VFX Graph GPU massif, sur un axe horizontal du nombre de particules et de la complexité, avec zones d'usage recommandées">
+                <text x="20" y="26" class="svg-text" font-weight="700" font-size="15">Quel système&nbsp;? — selon le nombre de particules</text>
+
+                <!-- axe -->
+                <line x1="40" y1="150" x2="600" y2="150" class="svg-stroke" stroke-width="1.6"/>
+                <defs>
+                  <marker id="ax" markerWidth="9" markerHeight="9" refX="5" refY="3" orient="auto"><path d="M0 0 L5 3 L0 6 z" class="svg-stroke" fill="currentColor"/></marker>
+                </defs>
+                <line x1="40" y1="150" x2="610" y2="150" class="svg-stroke" stroke-width="1.6" marker-end="url(#ax)"/>
+                <text x="40" y="172" class="svg-dim" font-size="10.5">10</text>
+                <text x="190" y="172" class="svg-dim" font-size="10.5">1 000</text>
+                <text x="350" y="172" class="svg-dim" font-size="10.5">100 000</text>
+                <text x="520" y="172" class="svg-dim" font-size="10.5">1 000 000+</text>
+                <text x="300" y="192" text-anchor="middle" class="svg-dim" font-size="11">nombre de particules &amp; complexité de simulation →</text>
+
+                <!-- zone Particle System -->
+                <rect x="40" y="92" width="240" height="40" rx="6" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a" stroke-width="1.6"/>
+                <text x="160" y="110" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Particle System (CPU)</text>
+                <text x="160" y="126" text-anchor="middle" class="svg-dim" font-size="10.5">simple · gameplay · collision facile</text>
+
+                <!-- zone VFX Graph -->
+                <rect x="320" y="92" width="280" height="40" rx="6" fill="#c89bff" fill-opacity="0.16" stroke="#c89bff" stroke-width="1.6"/>
+                <text x="460" y="110" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">VFX Graph (GPU)</text>
+                <text x="460" y="126" text-anchor="middle" class="svg-dim" font-size="10.5">massif · tempêtes · magie volumétrique</text>
+
+                <!-- zone de chevauchement / bascule -->
+                <line x1="300" y1="80" x2="300" y2="150" stroke="#f2b441" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <text x="300" y="74" text-anchor="middle" class="svg-text" fill="#f2b441" font-size="11" font-weight="700">zone de bascule</text>
+
+                <!-- pieges aux extremes -->
+                <g font-size="10.5">
+                  <rect x="40" y="216" width="270" height="56" rx="6" class="svg-surface" stroke="#ff6b6b" stroke-width="1.3"/>
+                  <text x="52" y="236" class="svg-text" fill="#ff6b6b" font-weight="700" font-size="11">Sur-ingénierie</text>
+                  <text x="52" y="253" class="svg-dim">VFX Graph pour 10 particules&nbsp;:</text>
+                  <text x="52" y="267" class="svg-dim">temps perdu, dur à brancher au gameplay.</text>
+
+                  <rect x="330" y="216" width="270" height="56" rx="6" class="svg-surface" stroke="#ff6b6b" stroke-width="1.3"/>
+                  <text x="342" y="236" class="svg-text" fill="#ff6b6b" font-weight="700" font-size="11">Sous-dimensionnement</text>
+                  <text x="342" y="253" class="svg-dim">Shuriken pour 1 million&nbsp;:</text>
+                  <text x="342" y="267" class="svg-dim">le CPU s'effondre, frame rate en chute.</text>
+                </g>
+              </svg>
+              <figcaption>Un axe, deux outils. À gauche (effets modestes, besoin de gameplay), le <b>Particle System</b>. À droite (densité massive, simulation lourde), le <b>VFX Graph</b>. Les deux extrêmes — VFX Graph pour une poignée de particules, Shuriken pour un million — sont les erreurs de choix les plus fréquentes.</figcaption>
+            </figure>
+
+            <h3>5. Matériaux VFX et espace de simulation</h3>
+            <p>Le rendu d'une particule dépend de son <b>matériau</b>, et tout ce que tu as appris en F11 s'applique tel quel. Rappel express&nbsp;:</p>
+            <ul>
+              <li><b>Additif</b> (le matériau ajoute sa couleur au fond)&nbsp;: pour tout ce qui <b>émet de la lumière</b> (feu, étincelles, magie, halos). Bonus&nbsp;: insensible à l'ordre de tri.</li>
+              <li><b>Alpha blend</b> (transparence classique)&nbsp;: pour ce qui <b>occulte</b> (fumée dense, poussière). Plus joli pour l'opacité, mais dépend du tri.</li>
+              <li><b>Soft particles</b>&nbsp;: atténue l'alpha là où le quad coupe la géométrie, pour éviter l'arête nette quand la fumée touche le sol. Dans URP/HDRP, ça suppose que le <em>depth</em> (tampon de profondeur) soit activé dans les réglages du pipeline.</li>
+            </ul>
+            <p>Dans Unity, ces matériaux utilisent en URP/HDRP un shader de la famille <em>Particles</em> (ou un Shader Graph), où l'on choisit <span class="menu-path">Surface Type</span> = Transparent et le <span class="menu-path">Blending Mode</span> = Additive ou Alpha. On l'assigne ensuite dans le module <b>Renderer</b> (Shuriken) ou le contexte <b>Output</b> (VFX Graph).</p>
+
+            <h4>World space vs Local space&nbsp;: un piège classique</h4>
+            <p>Le réglage <span class="term">Simulation Space</span> (dans le module Main) décide si les particules, une fois nées, <b>suivent leur émetteur</b> ou non. C'est subtil mais décisif&nbsp;:</p>
+            <ul>
+              <li><b>Local</b>&nbsp;: les particules sont attachées au repère de l'objet. Si l'émetteur bouge, <b>toutes les particules bougent avec lui</b>, comme accrochées. Parfait pour un halo magique qui entoure un personnage, une aura qui doit rester collée.</li>
+              <li><b>World</b>&nbsp;: une fois émises, les particules vivent dans le <b>monde</b> et ignorent les déplacements de l'émetteur. Parfait pour de la fumée laissée derrière soi, des étincelles qui restent là où elles sont tombées — bref, une <b>traînée</b>.</li>
+            </ul>
+            <p>L'erreur typique&nbsp;: une torche en <em>Local</em> que l'on déplace, et dont la fumée «&nbsp;téléporte&nbsp;» avec le personnage au lieu de rester en l'air&nbsp;; ou inversement, une aura en <em>World</em> qui se détache du héros quand il court. Le bon choix dépend uniquement de la question&nbsp;: «&nbsp;ces particules doivent-elles suivre l'objet, ou rester dans le monde&nbsp;?&nbsp;»</p>
+
+            <h3>6. Performance&nbsp;: l'overdraw, toujours</h3>
+            <p>Le principal coût d'un VFX n'est presque jamais le nombre de particules en soi, mais l'<span class="gloss">overdraw</span> (vu en F11 et <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>)&nbsp;: chaque quad transparent oblige le GPU à <b>relire et recombiner</b> le pixel déjà dessiné. Empile 30 grandes particules plein écran et chaque pixel est traité 30 fois&nbsp;: le <em>fill rate</em> explose. Un VFX Graph qui simule un million de minuscules étincelles peut coûter <em>moins</em> qu'une poignée de gros quads de fumée qui couvrent l'écran. La leçon&nbsp;: surveille la <b>surface couverte × le nombre de couches</b>, pas seulement le compteur de particules. Unity offre une vue de débogage <em>Overdraw</em> pour visualiser ces zones rouges.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Construisons un effet d'<b>étincelles de feu de camp</b> avec le <b>Particle System</b>&nbsp;: de fines braises chaudes qui montent du foyer, ondulent un peu, puis s'éteignent en fondu. Chaque étape dit <em>ce qui se passe</em> et <em>pourquoi</em>, pas juste «&nbsp;clique&nbsp;».</p>
+            <ol>
+              <li><b>Créer l'émetteur.</b> <span class="menu-path">GameObject<span class="arrow">▸</span>Effects<span class="arrow">▸</span>Particle System</span>. Un système par défaut apparaît (un jet blanc vers le haut), avec sa fenêtre de prévisualisation en bas à droite de la <em>Scene view</em>. <em>Ce qui se passe&nbsp;:</em> un GameObject portant le component Particle System est ajouté&nbsp;; tu vas le sculpter module par module.</li>
+              <li><b>Régler le module Main.</b> Mets <span class="menu-path">Start Lifetime</span> sur «&nbsp;Random Between Two Constants&nbsp;» (0,8 à 1,5&nbsp;s), <span class="menu-path">Start Speed</span> faible (les braises montent doucement), <span class="menu-path">Start Size</span> petit (0,02–0,06), et <span class="menu-path">Gravity Modifier</span> légèrement <b>négatif</b> (env. −0,05) pour que la chaleur les fasse <b>monter</b>. <em>Pourquoi&nbsp;:</em> une braise est petite, lente et portée vers le haut par l'air chaud.</li>
+              <li><b>Choisir l'espace de simulation.</b> Toujours dans Main, passe <span class="menu-path">Simulation Space</span> sur <b>World</b>. <em>Pourquoi&nbsp;:</em> les braises doivent rester dans l'air et dériver, pas se téléporter si le feu (ou son parent) bouge.</li>
+              <li><b>Calmer l'émission.</b> Dans <span class="menu-path">Emission</span>, baisse le <span class="menu-path">Rate over Time</span> autour de 15–25. <em>Pourquoi&nbsp;:</em> un feu de camp crache quelques braises éparses, pas un torrent — et moins de particules = moins d'overdraw.</li>
+              <li><b>Orienter avec un cône étroit.</b> Dans <span class="menu-path">Shape</span>, choisis <b>Cone</b> avec un petit angle et un rayon proche de la taille du foyer. <em>Ce qui se passe&nbsp;:</em> les braises naissent au-dessus des flammes et partent globalement vers le haut, en s'évasant un peu.</li>
+              <li><b>Faire fondre couleur et alpha.</b> Active <span class="menu-path">Color over Lifetime</span> et règle le <b>gradient</b>&nbsp;: blanc-jaune vif au début (âge 0), virant orange puis rouge sombre, avec l'<b>alpha qui descend à 0</b> sur le dernier tiers. <em>Pourquoi&nbsp;:</em> une braise refroidit en montant&nbsp;; le fondu d'alpha évite le «&nbsp;pop&nbsp;» de fin qui trahit l'amateur.</li>
+              <li><b>Réduire la taille en fin de vie.</b> Active <span class="menu-path">Size over Lifetime</span> avec une <b>courbe décroissante</b> (1 → 0). <em>Pourquoi&nbsp;:</em> en s'éteignant, la braise paraît rétrécir&nbsp;; combiné au fondu d'alpha, l'extinction est douce et crédible.</li>
+              <li><b>Ajouter du désordre organique.</b> Active <span class="menu-path">Noise</span> avec une force et une fréquence faibles. <em>Ce qui se passe&nbsp;:</em> les braises ne montent plus en ligne droite mais <b>serpentent</b> sous l'effet des courants d'air. C'est ce qui rend l'effet vivant.</li>
+              <li><b>Régler le rendu en additif.</b> Dans <span class="menu-path">Renderer</span>, assigne un matériau de particule <b>Additive</b> avec un petit sprite rond et flou (un point lumineux), et laisse le <span class="menu-path">Render Mode</span> sur <b>Billboard</b>. <em>Pourquoi&nbsp;:</em> une braise <em>émet</em> de la lumière&nbsp;; l'additif la fait briller et règle d'office tout souci de tri.</li>
+            </ol>
+            <p>Résultat&nbsp;: un filet de petites braises chaudes qui s'élèvent, ondulent légèrement, refroidissent du blanc au rouge et s'éteignent en fondu. Tu as mobilisé presque tous les modules&nbsp;: Main (départ + gravité négative + World space), Emission (débit), Shape (cône), Color &amp; Size over Lifetime (gradient + courbe), Noise (turbulence) et Renderer (additif, billboard). Pour aller plus loin, tu pourrais superposer un <b>second</b> Particle System en alpha blend pour la <b>fumée</b> grise qui monte au-dessus.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Le frame rate s'effondre quand l'effet remplit l'écran, surtout en s'approchant.</div>
+                <div class="pi-cause"><b>Cause</b> — Overdraw&nbsp;: de grands quads transparents superposés, chaque pixel recombiné des dizaines de fois.</div>
+                <div class="pi-fix"><b>Correction</b> — Réduis taille et densité, évite les particules plein écran, active la vue de débogage <b>Overdraw</b> pour cibler les zones rouges, et coupe l'effet à distance.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Des particules de fumée scintillent / clignotent au premier ou à l'arrière-plan selon l'angle.</div>
+                <div class="pi-cause"><b>Cause</b> — Tri de transparence imparfait en alpha blend (particules qui s'interpénètrent, ordre instable).</div>
+                <div class="pi-fix"><b>Correction</b> — Quand c'est de la lumière, passe en <b>additif</b> (insensible au tri). Sinon, limite les chevauchements et ajuste le tri du Renderer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — J'ai construit un VFX Graph de 200 lignes pour une dizaine d'étincelles d'impact.</div>
+                <div class="pi-cause"><b>Cause</b> — Sur-ingénierie&nbsp;: on a sorti l'outil GPU massif pour un effet que Shuriken ferait en 5 minutes.</div>
+                <div class="pi-fix"><b>Correction</b> — Pour de petits effets liés au gameplay, reste sur le <b>Particle System</b>&nbsp;: plus rapide à itérer, collision et lecture par script bien plus simples.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Mon Particle System rame et plafonne dès que je veux une tempête de neige très dense.</div>
+                <div class="pi-cause"><b>Cause</b> — Sous-dimensionnement&nbsp;: le CPU ne peut pas simuler des centaines de milliers de particules par image.</div>
+                <div class="pi-fix"><b>Correction</b> — Passe au <b>VFX Graph</b> (simulation GPU). C'est exactement le cas pour lequel il existe.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes particules sont des carrés noirs opaques, ou totalement invisibles, au lieu de briller.</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais shader/blend&nbsp;: matériau opaque au lieu de transparent, ou mode additif/alpha inadapté.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie que le matériau est <b>Transparent</b> avec le bon <b>Blending Mode</b> (Additive pour la lumière), et que le shader appartient bien à la famille particules de ton pipeline.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma fumée «&nbsp;suit&nbsp;» le personnage et se téléporte avec lui (ou mon aura se détache quand il court).</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais <b>Simulation Space</b>&nbsp;: Local pour une traînée, ou World pour un effet qui devait rester collé.</div>
+                <div class="pi-fix"><b>Correction</b>Traînée/dérive → <b>World</b>&nbsp;; aura/halo accroché à l'objet → <b>Local</b>. Pose-toi la question «&nbsp;ça suit, ou ça reste&nbsp;?&nbsp;».</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans un projet Unity en URP, recrée l'effet d'<b>étincelles de feu de camp</b> de la démonstration, puis pousse l'analyse&nbsp;:</p>
+              <ol>
+                <li>Construis le système&nbsp;: Main (lifetime aléatoire 0,8–1,5&nbsp;s, gravité négative, <b>World space</b>), Emission ~20/s, Shape en cône étroit, Color over Lifetime (gradient blanc-jaune → rouge avec alpha qui tombe à 0), Size over Lifetime décroissante, Noise faible, Renderer <b>additif</b> en Billboard.</li>
+                <li>Déplace l'émetteur dans la scène pendant la lecture et observe la dérive des braises&nbsp;; passe en <b>Local</b> et constate la différence de comportement.</li>
+                <li>Active la vue de débogage <b>Overdraw</b>, puis multiplie la taille des particules par 5 et regarde l'écran virer au rouge. Reviens à une taille raisonnable.</li>
+                <li>Superpose un <b>second</b> Particle System en alpha blend pour une fine fumée grise qui monte au-dessus des braises.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les braises montent, ondulent grâce au Noise, refroidissent en couleur et s'éteignent en fondu (aucun «&nbsp;pop&nbsp;»).</li>
+                  <li>Tu peux expliquer pourquoi tu as choisi <b>World space</b> ici, et dans quel cas tu prendrais Local.</li>
+                  <li>Tu sais lire la vue Overdraw et relier les zones rouges à la taille/densité des particules.</li>
+                  <li>Tu peux justifier l'usage de l'additif pour les braises et de l'alpha blend pour la fumée.</li>
+                  <li>Tu saurais dire à partir de quelle échelle tu basculerais ce système vers un VFX Graph.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Unity offre <b>deux</b> systèmes&nbsp;: <b>Particle System</b> (Shuriken, CPU, simple, gameplay) et <b>VFX Graph</b> (GPU, massif, URP/HDRP). Commence par Shuriken&nbsp;; passe au Graph quand le nombre l'exige.</li>
+                <li>Le Particle System est une <b>pile de modules</b> cochables&nbsp;: Main, Emission, Shape, …over Lifetime, Noise, Collision, Renderer — chacun pilotant un aspect de l'effet.</li>
+                <li><b>Courbes</b>, <b>gradients</b> et <b>bursts</b> donnent le rythme et la variété&nbsp;; les valeurs constantes donnent des effets mécaniques.</li>
+                <li>Le VFX Graph s'articule en <b>contextes</b> (Spawn → Initialize → Update → Output) avec des <b>blocks</b> agissant sur des <b>attributs</b>&nbsp;: ce découpage rend la simulation GPU parallélisable.</li>
+                <li>Le <b>matériau</b> (additif vs alpha, soft particles) et le <b>Simulation Space</b> (World vs Local) sont deux réglages décisifs et sources de pièges.</li>
+                <li>L'<b>overdraw</b> reste le tueur de performance n°1&nbsp;: surveille la surface couverte × le nombre de couches.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Particle System (Shuriken)</b> — système de particules d'Unity sous forme de component sur un GameObject, simulé par le CPU&nbsp;; simple et adapté à la grande majorité des effets.</p>
+              <p><b>VFX Graph</b> — éditeur de nœuds d'Unity (URP/HDRP) où la simulation tourne sur le GPU, pour des centaines de milliers à des millions de particules.</p>
+              <p><b>Module (Shuriken)</b> — brique de comportement cochable du Particle System (Main, Emission, Shape, Renderer…)&nbsp;; l'effet naît de leur empilement.</p>
+              <p><b>Burst</b> — salve&nbsp;: émission de N particules d'un coup à un instant donné, par opposition au flux continu (rate).</p>
+              <p><b>Gradient</b> — bande de couleurs et d'alpha répartis le long de l'âge de la particule, utilisée notamment dans Color over Lifetime.</p>
+              <p><b>Contexte (VFX Graph)</b> — étape du cycle de vie dans le graphe&nbsp;: Spawn (combien/quand), Initialize (valeurs de départ), Update (chaque image), Output (rendu).</p>
+              <p><b>Block (VFX Graph)</b> — opération empilée dans un contexte (Add Gravity, Turbulence…) qui lit et modifie les attributs des particules.</p>
+              <p><b>Attribut (VFX Graph)</b> — variable portée par chaque particule (position, velocity, color, size, age, lifetime…).</p>
+              <p><b>Simulation Space</b> — réglage World/Local décidant si les particules suivent leur émetteur (Local) ou vivent dans le monde une fois émises (World).</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f11-vfx-particules.html">F11 — VFX &amp; particules (concepts)</a>&nbsp;: les notions universelles (émetteur, courbes, additif, flipbook) derrière les outils Unity.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux</a>&nbsp;: shaders, Shader Graph et modes de blending utilisés par les matériaux de particules.</li>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>&nbsp;: URP vs HDRP, indispensable pour savoir si le VFX Graph est disponible.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: overdraw, draw calls et budget GPU pour cadrer le coût des effets.</li>
+              <li><a href="../../cours/unreal/e08-niagara.html">E8 — Niagara</a>&nbsp;: l'équivalent d'Unreal, pour comparer les deux approches.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

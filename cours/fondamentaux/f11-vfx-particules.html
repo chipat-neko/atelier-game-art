@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F11 — VFX & particules (concepts) · Atelier Game Art</title>
+  <meta name="description" content="Systèmes de particules, sprites vs meshes émis, shaders pour VFX, flipbooks et atlas d'animation.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>VFX & particules (concepts)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F11 — VFX & particules (concepts)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux & shaders</a> et <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> (alpha).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Décomposer un <b>système de particules</b> en ses pièces&nbsp;: <em>émetteur</em>, naissance/mort, durée de vie, et propriétés qui évoluent dans le temps.</li>
+                <li>Distinguer ce qui est <b>émis</b>&nbsp;: <em>sprites</em> (billboards), <em>meshes</em>, <em>ribbons/trails</em>, et savoir quand utiliser chacun.</li>
+                <li>Choisir le bon <b>mode de fusion</b> (blend)&nbsp;: <em>additif</em> pour le lumineux, <em>alpha blend</em> pour la fumée, et comprendre pourquoi.</li>
+                <li>Expliquer ce qu'est un <b>flipbook</b> (atlas animé) et pourquoi il économise des <em>draw calls</em>.</li>
+                <li>Nommer l'ennemi n°1 des VFX, l'<b>overdraw</b>, dire d'où il vient et comment le contenir.</li>
+                <li>Différencier les particules <b>CPU</b> (simples) des particules <b>GPU</b> (millions, VFX Graph / Niagara).</li>
+                <li>Reconstituer la recette d'une <b>étincelle</b>&nbsp;: burst, gravité, fondu de l'alpha sur la durée de vie.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le feu d'un lance-flammes, la poussière qui se soulève sous les pas, la traînée d'une roquette, l'aura magique d'un boss&nbsp;: tout cela, ce sont des <b>VFX</b> (<em>visual effects</em>, effets visuels temps réel), et presque toujours des <span class="term">particules</span>. C'est l'une des dernières couches qu'on pose sur une scène, celle qui fait passer un environnement de «&nbsp;correct&nbsp;» à «&nbsp;vivant&nbsp;». Sans VFX, un coup d'épée ne claque pas, une explosion fait pschitt, une scène reste figée.</p>
+            <p>Mais c'est aussi la couche la plus <b>traître pour les performances</b>. Un artiste 3D qui maîtrise son budget de polygones peut, en deux minutes de réglages de particules, faire chuter une scène de 60 à 15 images par seconde sans s'en apercevoir — parce que le coût des VFX ne se voit pas dans le compteur de triangles, il se cache dans l'<b>overdraw</b>, ces couches de transparence empilées que le GPU recolorie encore et encore. Comprendre les <em>concepts</em> avant de toucher à <a href="../../cours/unity/u09-vfx.html">l'outillage d'Unity (U9)</a> ou de <a href="../../cours/unreal/e08-niagara.html">Niagara dans Unreal (E8)</a>, c'est s'éviter ce piège.</p>
+            <p>Bonne nouvelle&nbsp;: le vocabulaire et les mécanismes que l'on voit ici sont <b>transférables</b>. Émetteur, durée de vie, courbes sur la vie, additif vs alpha, flipbook, overdraw&nbsp;: ces idées sont les mêmes dans Unity et dans Unreal. Seuls les noms d'outils et de panneaux changent. On apprend une fois, on réutilise partout.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'anatomie d'un système de particules</h3>
+            <p>Un <span class="term">système de particules</span> n'affiche pas un effet «&nbsp;tout fait&nbsp;»&nbsp;: il <b>simule une foule de petits objets</b> autonomes (les particules) selon des règles, puis les dessine. L'analogie la plus juste, c'est une <b>fontaine</b>&nbsp;: une buse crache des gouttes, chaque goutte suit sa trajectoire, grossit, retombe, puis disparaît. La buse, ce sont les règles d'émission&nbsp;; les gouttes, ce sont les particules.</p>
+
+            <h4>L'émetteur&nbsp;: la source qui fabrique les particules</h4>
+            <p>L'<span class="term">émetteur</span> (<em>emitter</em>) est le cœur du système&nbsp;: c'est lui qui <b>fait naître</b> les particules, à un certain rythme, à un certain endroit, avec une certaine vitesse de départ. Deux grands régimes d'émission&nbsp;:</p>
+            <ul>
+              <li><b>Émission continue</b>&nbsp;: on lâche X particules par seconde, en flux constant. Idéal pour la fumée d'une cheminée, un brasier, une cascade — tout ce qui dure.</li>
+              <li><b>Émission en rafale (<span class="term">burst</span>)</b>&nbsp;: on crache d'un coup un paquet de N particules à un instant précis, puis plus rien. C'est le régime des évènements ponctuels&nbsp;: une explosion, une étincelle d'impact, un éclat de verre.</li>
+            </ul>
+            <p>L'émetteur a aussi une <b>forme</b> (<em>shape</em>)&nbsp;: un point, un cône, une sphère, une ligne, un volume de mesh. La forme décide <em>d'où</em> et <em>dans quelle direction</em> les particules partent. Un cône donne un jet (lance-flammes)&nbsp;; une sphère donne une bouffée qui part dans toutes les directions (explosion).</p>
+
+            <h4>La durée de vie&nbsp;: naissance, vie, mort</h4>
+            <p>Chaque particule a une <span class="term">durée de vie</span> (<em>lifetime</em>) — par exemple 2 secondes. À sa <b>naissance</b> (<em>spawn</em>), le système lui attribue ses valeurs de départ&nbsp;: position, vélocité, taille, couleur, rotation. Pendant sa <b>vie</b>, elle est simulée image par image&nbsp;: sa position avance selon sa vélocité, des forces la modifient (gravité, vent, turbulence), ses propriétés évoluent. À sa <b>mort</b>, quand sa durée de vie est écoulée, elle est recyclée&nbsp;: elle disparaît et son emplacement mémoire est réutilisé pour une future particule. Cette idée de recyclage (un <em>pool</em> de particules réutilisées) est ce qui permet d'en afficher des milliers sans saturer la mémoire.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>«&nbsp;Sur la durée de vie&nbsp;»&nbsp;: l'expression à retenir</div>
+              <p>En VFX, on parle sans arrêt de propriétés «&nbsp;<b>over lifetime</b>&nbsp;» (sur la durée de vie). Cela signifie qu'une valeur n'est pas fixe&nbsp;: elle est lue le long d'une <b>courbe</b> ou d'un <b>dégradé</b> en fonction de l'âge de la particule, normalisé de 0 (naissance) à 1 (mort). «&nbsp;Taille over lifetime&nbsp;», «&nbsp;couleur over lifetime&nbsp;»&nbsp;: ce sont des courbes que tu dessines.</p>
+            </div>
+
+            <h4>Les propriétés qui évoluent&nbsp;: les courbes</h4>
+            <p>C'est ici que naît la <b>vie</b> d'un effet. Une particule statique est inerte&nbsp;; une particule dont les propriétés <em>changent</em> dans le temps raconte quelque chose. Les propriétés animables les plus utiles&nbsp;:</p>
+            <ul>
+              <li><b>Taille over lifetime</b>&nbsp;: une bouffée de fumée naît petite, grossit en montant, puis se dilue. On dessine une courbe qui part bas, monte, et se stabilise.</li>
+              <li><b>Couleur et alpha over lifetime</b>&nbsp;: une étincelle naît blanc-jaune brûlant, vire à l'orange, puis au rouge sombre avant de s'éteindre. L'<span class="gloss">alpha</span> (l'opacité, voir <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>) descend vers 0 en fin de vie pour un <b>fondu</b> propre — sans ça, les particules «&nbsp;pop&nbsp;» en disparaissant brutalement.</li>
+              <li><b>Vélocité / vitesse over lifetime</b>&nbsp;: un débris part vite et ralentit (frottement de l'air), ou accélère vers le bas (gravité).</li>
+              <li><b>Rotation over lifetime</b>&nbsp;: un flocon, une feuille, un fragment de fumée tournent lentement, ce qui casse l'aspect «&nbsp;timbre-poste figé&nbsp;».</li>
+            </ul>
+            <p>Le <b>pourquoi</b> est essentiel&nbsp;: la nature n'a pas de valeurs constantes. Un vrai feu fluctue, une vraie fumée se dilate, une vraie étincelle s'éteint. Les courbes sont l'outil qui injecte cette variation organique dans une simulation, sinon mécanique.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Anatomie d'un système de particules : un émetteur conique projette des particules dont les vecteurs vélocité divergent ; à droite, deux courbes montrent la taille et l'alpha en fonction de la durée de vie">
+                <defs>
+                  <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#f2b441"/></marker>
+                </defs>
+                <!-- emetteur -->
+                <rect x="14" y="130" width="58" height="58" rx="8" fill="#c89bff" fill-opacity="0.18" stroke="#c89bff" stroke-width="2"/>
+                <text x="43" y="120" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Émetteur</text>
+                <text x="43" y="205" text-anchor="middle" class="svg-dim" font-size="10">cône / burst</text>
+                <!-- cone de directions -->
+                <path d="M72 159 L150 96" fill="none" stroke="#313c4c" stroke-width="1" stroke-dasharray="3 3"/>
+                <path d="M72 159 L150 222" fill="none" stroke="#313c4c" stroke-width="1" stroke-dasharray="3 3"/>
+                <!-- particules + vecteurs velocite -->
+                <circle cx="120" cy="120" r="6" fill="#f2b441" fill-opacity="0.85"/>
+                <line x1="126" y1="118" x2="156" y2="104" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                <circle cx="135" cy="159" r="8" fill="#f2b441" fill-opacity="0.8"/>
+                <line x1="143" y1="159" x2="178" y2="159" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                <circle cx="120" cy="198" r="6" fill="#f2b441" fill-opacity="0.85"/>
+                <line x1="126" y1="200" x2="156" y2="214" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                <circle cx="180" cy="135" r="5" fill="#ff6b6b" fill-opacity="0.7"/>
+                <line x1="185" y1="134" x2="210" y2="126" stroke="#f2b441" stroke-width="1.6" marker-end="url(#ar)"/>
+                <circle cx="195" cy="180" r="4" fill="#ff6b6b" fill-opacity="0.6"/>
+                <text x="150" y="250" text-anchor="middle" class="svg-dim" font-size="10.5">particules + vecteurs vélocité (la flèche = direction × vitesse)</text>
+                <text x="150" y="266" text-anchor="middle" class="svg-dim" font-size="10.5">elles vieillissent, grossissent, pâlissent</text>
+
+                <!-- separation -->
+                <line x1="300" y1="20" x2="300" y2="300" stroke="#313c4c" stroke-width="1" stroke-dasharray="4 4"/>
+
+                <!-- courbe taille over lifetime -->
+                <text x="470" y="34" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Propriétés « over lifetime »</text>
+                <g transform="translate(340,52)">
+                  <rect x="0" y="0" width="260" height="92" rx="7" class="svg-surface" stroke="#313c4c"/>
+                  <text x="10" y="18" class="svg-dim" font-size="10.5">Taille</text>
+                  <line x1="28" y1="78" x2="248" y2="78" stroke="#313c4c" stroke-width="1"/>
+                  <line x1="28" y1="20" x2="28" y2="78" stroke="#313c4c" stroke-width="1"/>
+                  <path d="M28 70 C 80 30, 150 24, 200 40 S 248 64, 248 66" fill="none" stroke="#5ad19a" stroke-width="2.5"/>
+                  <text x="28" y="90" class="svg-dim" font-size="9">0 (naissance)</text>
+                  <text x="248" y="90" text-anchor="end" class="svg-dim" font-size="9">1 (mort)</text>
+                </g>
+                <!-- courbe alpha over lifetime -->
+                <g transform="translate(340,160)">
+                  <rect x="0" y="0" width="260" height="92" rx="7" class="svg-surface" stroke="#313c4c"/>
+                  <text x="10" y="18" class="svg-dim" font-size="10.5">Alpha (opacité)</text>
+                  <line x1="28" y1="78" x2="248" y2="78" stroke="#313c4c" stroke-width="1"/>
+                  <line x1="28" y1="20" x2="28" y2="78" stroke="#313c4c" stroke-width="1"/>
+                  <path d="M28 30 L70 26 L150 40 L248 76" fill="none" stroke="#59b0ff" stroke-width="2.5"/>
+                  <text x="28" y="90" class="svg-dim" font-size="9">opaque au début</text>
+                  <text x="248" y="90" text-anchor="end" class="svg-dim" font-size="9">fond vers 0 = pas de « pop »</text>
+                </g>
+                <text x="470" y="276" text-anchor="middle" class="svg-dim" font-size="10.5">axe horizontal = âge normalisé de la particule (0 → 1)</text>
+              </svg>
+              <figcaption>Anatomie d'un système&nbsp;: l'<b>émetteur</b> (violet) projette des particules suivant des <b>vecteurs vélocité</b>. À droite, deux <b>courbes over lifetime</b>&nbsp;: la <b>taille</b> (vert) grossit puis se stabilise, l'<b>alpha</b> (bleu) descend vers 0 pour un fondu propre.</figcaption>
+            </figure>
+
+            <h3>2. Ce qui est émis&nbsp;: sprites, meshes, ribbons</h3>
+            <p>Une particule, ce n'est pas forcément un point lumineux. C'est avant tout une <b>chose qu'on dessine</b> à la position simulée. Trois grandes natures d'émis, et le choix conditionne le rendu <em>et</em> le coût.</p>
+
+            <h4>Les sprites (billboards)&nbsp;: le cas le plus courant</h4>
+            <p>Un <span class="term">sprite</span> est un petit rectangle plat (un <b>quad</b>, deux triangles) sur lequel on plaque une image. Pour qu'il paraisse «&nbsp;volumétrique&nbsp;» sans l'être, on le force à toujours <b>faire face à la caméra</b>&nbsp;: c'est le <span class="term">billboard</span> (panneau publicitaire). Où que tu te déplaces, le quad pivote pour te présenter sa face. C'est une <b>illusion</b> bon marché&nbsp;: une image plate qui simule un objet 3D.</p>
+            <p>C'est la technique reine de la fumée, des étincelles, des flammes, de la poussière, des halos lumineux, des éclats magiques — l'immense majorité des VFX. Pourquoi&nbsp;? Parce qu'un quad ne coûte presque rien en géométrie (4 sommets), et que la richesse vient de la <b>texture</b> et du <b>shader</b>, pas du maillage. Le revers, on le verra&nbsp;: empiler beaucoup de quads transparents génère de l'overdraw.</p>
+
+            <h4>Les meshes&nbsp;: quand il faut du vrai volume</h4>
+            <p>On peut aussi émettre de vrais <b>maillages 3D</b> (voir <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>) à la place des quads. Chaque particule devient une petite géométrie&nbsp;: un caillou pour des débris d'explosion, une douille qui vole, un projectile, une feuille morte, des cristaux de glace. L'avantage&nbsp;: un vrai volume, qui réagit à la lumière sous tous les angles et ne «&nbsp;s'aplatit&nbsp;» pas quand on tourne autour. L'inconvénient&nbsp;: chaque mesh coûte plus de sommets, donc on en émet beaucoup moins que de sprites.</p>
+
+            <h4>Les ribbons et trails&nbsp;: relier les particules dans le temps</h4>
+            <p>Un <span class="term">ribbon</span> (ruban) ou <span class="term">trail</span> (traînée) est une bande continue construite en <b>reliant les positions successives</b> d'une particule (ou d'une chaîne de particules) au fil du temps. C'est ainsi qu'on fabrique la traînée d'une épée qui fend l'air, le sillage d'une roquette, la queue d'une comète, un éclair. Plutôt que des points isolés, on génère une géométrie en bande qui suit le mouvement.</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type émis</th><th>Coût géométrie</th><th>Cas typiques</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Sprite / billboard</b></td><td>Très faible (1 quad)</td><td>Fumée, étincelles, feu, poussière, halos</td></tr>
+                  <tr><td><b>Mesh</b></td><td>Élevé (selon le modèle)</td><td>Débris, douilles, projectiles, feuilles, glace</td></tr>
+                  <tr><td><b>Ribbon / trail</b></td><td>Moyen (bande continue)</td><td>Traînée d'épée, sillage, éclair, comète</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3. Les shaders de VFX&nbsp;: comment la transparence se mélange</h3>
+            <p>La plupart des VFX sont <b>transparents</b>&nbsp;: on voit au travers. La question décisive devient&nbsp;: <em>comment</em> la couleur d'une particule se mélange-t-elle avec ce qu'il y a derrière&nbsp;? C'est le <span class="term">mode de fusion</span> (<em>blend mode</em>), et c'est le réglage qui change le plus l'aspect d'un effet. Deux modes dominent.</p>
+
+            <h4>L'additif&nbsp;: pour tout ce qui émet de la lumière</h4>
+            <p>Le mode <span class="term">additif</span> (<em>additive</em>) <b>ajoute</b> la couleur de la particule à celle du fond&nbsp;: résultat = fond + particule. Comme on ajoute toujours, le rendu ne fait que <b>s'éclaircir</b>&nbsp;: empiler plusieurs particules additives crée des zones de plus en plus lumineuses, jusqu'au blanc. C'est exactement le comportement de la lumière réelle&nbsp;: deux faisceaux qui se superposent sont plus brillants.</p>
+            <p>L'additif est donc parfait pour tout ce qui <b>émet</b>&nbsp;: feu, étincelles, magie, lasers, halos, lueurs. Avantage technique majeur&nbsp;: comme l'addition est <b>commutative</b> (a+b = b+a), l'<b>ordre de dessin n'a pas d'importance</b>. Les particules additives <b>ignorent le tri de transparence</b>, ce qui élimine d'un coup toute une catégorie de bugs visuels. En revanche, l'additif <b>ne peut jamais assombrir</b>&nbsp;: il est inutilisable pour de la fumée sombre, et il «&nbsp;se lave&nbsp;» (devient blanc délavé) sur un fond déjà clair.</p>
+
+            <h4>L'alpha blend&nbsp;: pour tout ce qui occulte</h4>
+            <p>Le mode <span class="term">alpha blend</span> (fusion par transparence) <b>interpole</b> entre le fond et la particule selon son alpha&nbsp;: résultat = fond × (1−alpha) + particule × alpha. À alpha = 1, la particule recouvre totalement&nbsp;; à alpha = 0, elle est invisible. Ce mode peut <b>assombrir comme éclaircir</b>&nbsp;: c'est le mode de la <b>fumée</b>, de la poussière, des nuages, du brouillard, des décals — tout ce qui <em>cache</em> l'arrière-plan.</p>
+            <p>Le prix à payer&nbsp;: l'alpha blend dépend de l'ordre de dessin. Pour un résultat correct, il faut dessiner les particules <b>de l'arrière vers l'avant</b> (back-to-front), ce qui oblige le moteur à les <b>trier</b> à chaque image. C'est ce tri qui, mal réglé, produit les clignotements et inversions de profondeur classiques.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Le réflexe de production&nbsp;: <b>«&nbsp;ça brille&nbsp;? → additif. Ça cache&nbsp;? → alpha blend.&nbsp;»</b> Le feu et les étincelles brillent (additif)&nbsp;; la fumée et la poussière cachent (alpha). Beaucoup d'effets combinent les deux en couches&nbsp;: un cœur additif lumineux <em>plus</em> une enveloppe de fumée en alpha.</p>
+            </div>
+
+            <h4>Les raffinements qui font la différence</h4>
+            <p>Au-delà du blend, plusieurs techniques de shader rendent les particules crédibles&nbsp;:</p>
+            <ul>
+              <li><b>Soft particles (particules douces)</b>&nbsp;: sans elles, un quad plat traverse le sol ou un mur avec une <b>ligne de coupure</b> nette et disgracieuse, qui trahit l'illusion 2D. Le shader lit le <span class="term">depth buffer</span> (tampon de profondeur&nbsp;: la distance des pixels opaques déjà dessinés) et <b>fond progressivement</b> l'alpha de la particule à mesure qu'elle approche d'une surface. La coupure dure disparaît&nbsp;: la fumée «&nbsp;épouse&nbsp;» le sol.</li>
+              <li><b>Distortion / heat haze (déformation, brume de chaleur)</b>&nbsp;: au-dessus d'un feu ou d'un réacteur, l'air ondule. Le shader ne dessine pas une couleur, il <b>déplace</b> les coordonnées d'échantillonnage de l'image déjà rendue, créant ce miroitement. C'est un effet «&nbsp;invisible&nbsp;» (il n'ajoute pas de couleur, il tord ce qui est derrière).</li>
+              <li><b>Dissolve (dissolution)</b>&nbsp;: pour qu'une particule disparaisse de façon organique plutôt qu'en fondu uniforme, le shader utilise une texture de bruit pour <b>effacer des trous</b> de plus en plus grands au fil de la vie. Indispensable pour les bords de flammes qui se «&nbsp;mangent&nbsp;» ou les apparitions magiques.</li>
+            </ul>
+
+            <h3>4. Flipbook et atlas&nbsp;: animer une image dans le temps</h3>
+            <p>Une étincelle est un point&nbsp;; mais une explosion, une flamme qui ondule, une fumée qui roule sur elle-même sont des phénomènes <b>animés</b>. Plaquer une seule image fixe sur un quad ne suffit pas. La solution standard&nbsp;: le <span class="term">flipbook</span>.</p>
+            <p>Un flipbook est une <b>grille d'images</b> rangées dans une seule texture (un <span class="term">atlas</span>) — typiquement 4×4, 8×8 — où chaque case (chaque <b>frame</b>) est un instant d'une animation. Le shader <b>défile</b> les cases dans le temps&nbsp;: il affiche la case 0, puis 1, puis 2… exactement comme un folioscope (ce petit carnet où l'on feuillette des dessins pour créer du mouvement). Pour une explosion de 64 frames, on stocke une seule image 8×8 et le shader la lit case par case sur la durée de vie de la particule.</p>
+
+            <h4>Pourquoi un atlas plutôt que 64 images séparées&nbsp;?</h4>
+            <p>Le bénéfice est double, et c'est du concret de production&nbsp;:</p>
+            <ul>
+              <li><b>Économie de <span class="gloss">draw calls</span>.</b> Un <em>draw call</em> est un ordre de dessin envoyé du processeur (CPU) à la carte graphique (GPU)&nbsp;: «&nbsp;dessine ça, avec cette texture&nbsp;». Changer de texture coûte cher. Si chaque frame était une image distincte, afficher l'animation imposerait de changer de texture (donc de lot de dessin) à répétition. Avec un atlas unique, <b>toutes les frames partagent la même texture</b>&nbsp;: on dessine tout le système en un minimum d'appels. C'est aligné avec les principes vus en <a href="../../cours/fondamentaux/f12-optimisation.html">F12 (optimisation)</a>.</li>
+              <li><b>Cohérence et simplicité.</b> Une seule ressource à gérer, à charger, à compresser.</li>
+            </ul>
+            <p>Détail de qualité&nbsp;: pour éviter les saccades quand le flipbook a peu de frames, on active souvent l'<b>interpolation entre frames</b> (<em>frame blending</em>)&nbsp;: le shader affiche un mélange entre la frame courante et la suivante, ce qui lisse l'animation comme un fondu enchaîné. C'est ce qui transforme une explosion «&nbsp;qui claque&nbsp;» en explosion fluide.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 290" role="img" aria-label="Atlas de flipbook : une grille 4 sur 4 de seize cases d'explosion numérotées de 0 à 15, lues dans le temps de gauche à droite et de haut en bas, le shader passant d'une case à la suivante au fil de la durée de vie">
+                <defs><marker id="fb" markerWidth="10" markerHeight="10" refX="6.5" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#59b0ff"/></marker></defs>
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Flipbook 4×4 — explosion (16 frames dans UNE texture)</text>
+                <!-- grille 4x4 -->
+                <g transform="translate(40,40)">
+                  <!-- ligne 0 -->
+                  <rect x="0" y="0" width="60" height="50" rx="4" fill="#f2b441" fill-opacity="0.12" stroke="#313c4c"/><circle cx="30" cy="25" r="6" fill="#f2b441" fill-opacity="0.6"/><text x="6" y="14" class="svg-dim" font-size="9">0</text>
+                  <rect x="66" y="0" width="60" height="50" rx="4" fill="#f2b441" fill-opacity="0.16" stroke="#313c4c"/><circle cx="96" cy="25" r="9" fill="#f2b441" fill-opacity="0.6"/><text x="72" y="14" class="svg-dim" font-size="9">1</text>
+                  <rect x="132" y="0" width="60" height="50" rx="4" fill="#f2b441" fill-opacity="0.2" stroke="#313c4c"/><circle cx="162" cy="25" r="13" fill="#f2b441" fill-opacity="0.55"/><text x="138" y="14" class="svg-dim" font-size="9">2</text>
+                  <rect x="198" y="0" width="60" height="50" rx="4" fill="#f2b441" fill-opacity="0.22" stroke="#313c4c"/><circle cx="228" cy="25" r="17" fill="#f2b441" fill-opacity="0.5"/><text x="204" y="14" class="svg-dim" font-size="9">3</text>
+                  <!-- ligne 1 -->
+                  <rect x="0" y="56" width="60" height="50" rx="4" fill="#f2b441" fill-opacity="0.2" stroke="#313c4c"/><circle cx="30" cy="81" r="19" fill="#f2b441" fill-opacity="0.45"/><text x="6" y="70" class="svg-dim" font-size="9">4</text>
+                  <rect x="66" y="56" width="60" height="50" rx="4" fill="#ff6b6b" fill-opacity="0.2" stroke="#313c4c"/><circle cx="96" cy="81" r="20" fill="#ff6b6b" fill-opacity="0.4"/><text x="72" y="70" class="svg-dim" font-size="9">5</text>
+                  <rect x="132" y="56" width="60" height="50" rx="4" fill="#ff6b6b" fill-opacity="0.18" stroke="#313c4c"/><circle cx="162" cy="81" r="20" fill="#ff6b6b" fill-opacity="0.35"/><text x="138" y="70" class="svg-dim" font-size="9">6</text>
+                  <rect x="198" y="56" width="60" height="50" rx="4" fill="#ff6b6b" fill-opacity="0.16" stroke="#313c4c"/><circle cx="228" cy="81" r="20" fill="#ff6b6b" fill-opacity="0.3"/><text x="204" y="70" class="svg-dim" font-size="9">7</text>
+                  <!-- ligne 2 -->
+                  <rect x="0" y="112" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.16" stroke="#313c4c"/><circle cx="30" cy="137" r="20" fill="#717c8c" fill-opacity="0.4"/><text x="6" y="126" class="svg-dim" font-size="9">8</text>
+                  <rect x="66" y="112" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.14" stroke="#313c4c"/><circle cx="96" cy="137" r="20" fill="#717c8c" fill-opacity="0.34"/><text x="72" y="126" class="svg-dim" font-size="9">9</text>
+                  <rect x="132" y="112" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.12" stroke="#313c4c"/><circle cx="162" cy="137" r="20" fill="#717c8c" fill-opacity="0.28"/><text x="138" y="126" class="svg-dim" font-size="9">10</text>
+                  <rect x="198" y="112" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.1" stroke="#313c4c"/><circle cx="228" cy="137" r="20" fill="#717c8c" fill-opacity="0.22"/><text x="204" y="126" class="svg-dim" font-size="9">11</text>
+                  <!-- ligne 3 -->
+                  <rect x="0" y="168" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.09" stroke="#313c4c"/><circle cx="30" cy="193" r="19" fill="#717c8c" fill-opacity="0.18"/><text x="6" y="182" class="svg-dim" font-size="9">12</text>
+                  <rect x="66" y="168" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.07" stroke="#313c4c"/><circle cx="96" cy="193" r="17" fill="#717c8c" fill-opacity="0.14"/><text x="72" y="182" class="svg-dim" font-size="9">13</text>
+                  <rect x="132" y="168" width="60" height="50" rx="4" fill="#717c8c" fill-opacity="0.05" stroke="#313c4c"/><circle cx="162" cy="193" r="14" fill="#717c8c" fill-opacity="0.1"/><text x="138" y="182" class="svg-dim" font-size="9">14</text>
+                  <rect x="198" y="168" width="60" height="50" rx="4" class="svg-surface" stroke="#313c4c"/><circle cx="228" cy="193" r="9" fill="#717c8c" fill-opacity="0.06"/><text x="204" y="182" class="svg-dim" font-size="9">15</text>
+                </g>
+                <!-- fleche lu dans le temps -->
+                <path d="M312 256 L590 256" fill="none" stroke="#59b0ff" stroke-width="2.5" marker-end="url(#fb)"/>
+                <text x="430" y="248" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">lu dans le temps&nbsp;: frame 0 → 15 sur la durée de vie</text>
+                <text x="430" y="278" text-anchor="middle" class="svg-dim" font-size="10">le shader passe d'une case à la suivante (avec interpolation pour lisser)</text>
+              </svg>
+              <figcaption>Un <b>flipbook</b> 4×4&nbsp;: seize <b>frames</b> d'une explosion rangées dans <b>une seule texture</b> (l'atlas). Le shader les défile de la case 0 à la case 15 le long de la durée de vie. Un seul atlas = un minimum de <b>draw calls</b>.</figcaption>
+            </figure>
+
+            <h3>5. Performance&nbsp;: l'overdraw, le tueur silencieux des VFX</h3>
+            <p>Voici la notion qu'aucun artiste VFX ne peut ignorer. L'<span class="term">overdraw</span> (surdessin) survient quand le GPU colorie <b>plusieurs fois le même pixel</b> de l'écran à cause de surfaces transparentes empilées les unes derrière les autres. Chaque quad transparent traversé par le regard force le GPU à exécuter son fragment shader (voir <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>) pour ce pixel — et il ne peut pas «&nbsp;sauter&nbsp;» les couches du dessous, car la transparence les laisse voir.</p>
+            <p>Le calcul fait peur&nbsp;: si dix particules de fumée semi-transparentes se chevauchent sur une zone qui remplit la moitié de l'écran, chaque pixel de cette zone est recolorié dix fois. Sur un écran 1080p, ça représente des dizaines de millions d'exécutions de shader <b>en plus</b>, par image — alors que le compteur de polygones ne bouge presque pas. C'est pour ça que l'overdraw est «&nbsp;silencieux&nbsp;»&nbsp;: il n'apparaît pas là où on a l'habitude de chercher.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Schéma d'overdraw : à gauche un seul quad transparent coûte une couche ; à droite cinq quads empilés se chevauchent et la zone de chevauchement vire au rouge pour signaler que le GPU recolorie le même pixel cinq fois">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Overdraw&nbsp;: couches transparentes empilées = pixels recoloriés N fois</text>
+                <!-- cas 1 : une couche -->
+                <g transform="translate(40,46)">
+                  <rect x="0" y="0" width="120" height="120" rx="8" fill="#5ad19a" fill-opacity="0.3" stroke="#5ad19a" stroke-width="2"/>
+                  <text x="60" y="64" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">×1</text>
+                  <text x="60" y="146" text-anchor="middle" class="svg-dim" font-size="10.5">1 quad = 1 passe</text>
+                  <text x="60" y="162" text-anchor="middle" class="svg-dim" font-size="10.5">coût raisonnable</text>
+                </g>
+                <!-- fleche -->
+                <text x="225" y="112" text-anchor="middle" class="svg-text" font-size="22">→</text>
+                <!-- cas 2 : empilement -->
+                <g transform="translate(290,40)">
+                  <rect x="0" y="0" width="120" height="120" rx="8" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441"/>
+                  <rect x="22" y="16" width="120" height="120" rx="8" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441"/>
+                  <rect x="44" y="32" width="120" height="120" rx="8" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441"/>
+                  <rect x="66" y="48" width="120" height="120" rx="8" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441"/>
+                  <rect x="88" y="64" width="120" height="120" rx="8" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441"/>
+                  <!-- zone de fort chevauchement en rouge -->
+                  <rect x="88" y="64" width="76" height="72" rx="6" fill="#ff6b6b" fill-opacity="0.55" stroke="#ff6b6b" stroke-width="2"/>
+                  <text x="126" y="104" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">×5</text>
+                </g>
+                <text x="395" y="232" text-anchor="middle" class="svg-dim" font-size="10.5">5 quads superposés&nbsp;: la zone rouge est recoloriée 5 fois → coût ×5 SUR CES PIXELS</text>
+              </svg>
+              <figcaption>L'<b>overdraw</b> visualisé&nbsp;: à gauche, une seule couche transparente (vert) est peu coûteuse. À droite, cinq quads se chevauchent&nbsp;; la zone rouge est repeinte cinq fois. Le coût d'un VFX se joue ici, pas dans le nombre de triangles.</figcaption>
+            </figure>
+
+            <h4>Comment contenir l'overdraw</h4>
+            <ul>
+              <li><b>Limiter la densité et la taille.</b> Moins de particules, plus petites, qui se chevauchent moins. Souvent, 30 particules bien réglées valent mieux que 300.</li>
+              <li><b>Éviter les particules géantes plein écran.</b> Un seul quad qui couvre tout l'écran, c'est de l'overdraw maximal sur chaque pixel. Les nuages de premier plan et les transitions sont les pires coupables.</li>
+              <li><b>Texture serrée.</b> Une texture dont les bords transparents sont rognés (un quad ajusté au contenu visible) évite de payer du shader sur des pixels vides.</li>
+              <li><b>LOD particules.</b> Tout comme un mesh a des niveaux de détail (voir <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>), un système de particules peut <b>réduire son nombre de particules avec la distance</b>&nbsp;: de loin, l'effet est petit à l'écran, personne ne compte les particules. Le <span class="gloss">LOD</span> particules abaisse le compte (ou désactive le système) au-delà d'un seuil.</li>
+            </ul>
+
+            <h3>6. CPU ou GPU&nbsp;: deux familles de systèmes</h3>
+            <p>Enfin, où la simulation est-elle calculée&nbsp;? Deux familles, avec des plafonds très différents.</p>
+            <ul>
+              <li><b>Particules CPU</b>&nbsp;: le processeur calcule la position de chaque particule, image par image. Simple, flexible, parfait pour interagir avec la logique du jeu (collisions précises, déclenchements). Mais le CPU plafonne vite&nbsp;: quelques milliers de particules, pas plus. C'est le domaine du <em>Particle System</em> historique d'Unity et de l'ancien <em>Cascade</em> d'Unreal.</li>
+              <li><b>Particules GPU</b>&nbsp;: la simulation est déportée sur la carte graphique, massivement parallèle. On peut alors gérer des <b>centaines de milliers, voire des millions</b> de particules&nbsp;: tempêtes de neige, nuées, sable, fluides denses. C'est le terrain du <a href="../../cours/unity/u09-vfx.html">VFX Graph d'Unity (U9)</a> et de <a href="../../cours/unreal/e08-niagara.html">Niagara dans Unreal (E8)</a>. Le revers&nbsp;: l'interaction avec la logique CPU du jeu est plus indirecte.</li>
+            </ul>
+
+            <h3>7. Recette commentée d'une étincelle</h3>
+            <p>Mettons tout bout à bout sur un cas concret&nbsp;: une étincelle d'impact (une balle qui ricoche sur du métal). Voici la <b>recette mentale</b>, brique par brique, en réutilisant chaque concept de la leçon.</p>
+            <ol>
+              <li><b>Émission en burst</b>&nbsp;: à l'instant de l'impact, on crache d'un coup 20 à 40 particules. Pas d'émission continue&nbsp;: c'est un évènement bref.</li>
+              <li><b>Forme et vélocité initiale</b>&nbsp;: émetteur en cône orienté loin de la surface, avec une vitesse de départ <b>aléatoire</b> (variation min/max) pour que les étincelles partent en éventail désordonné, pas en bloc.</li>
+              <li><b>Gravité</b>&nbsp;: on applique une force vers le bas (un <em>multiplicateur de gravité</em> &gt; 0). Les étincelles montent un peu, ralentissent, puis retombent en arc&nbsp;: la signature visuelle de l'étincelle.</li>
+              <li><b>Durée de vie courte</b>&nbsp;: 0,3 à 0,8 seconde, avec une légère variation par particule pour qu'elles ne meurent pas toutes en même temps.</li>
+              <li><b>Couleur over lifetime</b>&nbsp;: blanc-jaune brûlant à la naissance, qui vire à l'orange puis au rouge sombre — la signature du métal qui refroidit.</li>
+              <li><b>Alpha over lifetime</b>&nbsp;: l'alpha descend vers 0 en fin de vie, pour un <b>fondu</b> propre sans «&nbsp;pop&nbsp;».</li>
+              <li><b>Rendu</b>&nbsp;: sprites billboard (un petit point lumineux étiré), shader en <b>additif</b> (ça brille&nbsp;!), ce qui supprime tout souci de tri. Éventuellement un <b>trail</b> court pour la traînée filante.</li>
+            </ol>
+            <p>Sept briques, et l'effet est crédible. Remarque qu'on n'a parlé d'aucun bouton précis&nbsp;: ce sont des <b>concepts</b> que tu retrouveras à l'identique dans U9 comme dans E8.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Construisons cette étincelle dans le <b>Particle System (CPU)</b> d'Unity. La logique est strictement la même dans <a href="../../cours/unreal/e08-niagara.html">Niagara (Unreal)</a>&nbsp;; seuls les noms de modules changent. À chaque étape, on dit <em>ce qui se passe</em>, pas seulement où cliquer.</p>
+            <ol>
+              <li>Crée le système&nbsp;: <span class="menu-path">GameObject<span class="arrow">▸</span>Effects<span class="arrow">▸</span>Particle System</span>. Unity pose un émetteur par défaut qui crache déjà des particules&nbsp;: tu vois la simulation tourner en direct dans la scène. Tout ce qui suit consiste à <b>sculpter</b> ce flux par défaut.</li>
+              <li>Passe en mode rafale&nbsp;: dans le module <span class="menu-path">Emission</span>, mets <em>Rate over Time</em> à 0 (plus d'émission continue), puis ajoute une ligne dans <em>Bursts</em> avec un <em>Count</em> de 30. <b>Effet</b>&nbsp;: au lieu d'un jet permanent, le système crache 30 particules d'un coup — le comportement d'un impact.</li>
+              <li>Oriente le jet&nbsp;: dans le module <span class="menu-path">Shape</span>, choisis <em>Cone</em> et règle son angle. <b>Effet</b>&nbsp;: tu décides la direction et la dispersion du départ. Un angle large étale les étincelles, un angle serré les concentre.</li>
+              <li>Donne de la vitesse variable&nbsp;: dans le module principal, règle <span class="menu-path">Start Speed</span> en mode <em>Random Between Two Constants</em> (par exemple 3 à 7). <b>Effet</b>&nbsp;: chaque particule part à une vitesse différente, ce qui casse l'aspect «&nbsp;bloc&nbsp;» et donne le désordre naturel d'une gerbe d'étincelles.</li>
+              <li>Ajoute la chute&nbsp;: monte <span class="menu-path">Gravity Modifier</span> à une valeur positive (0,5 à 1). <b>Effet</b>&nbsp;: les particules décrivent un arc — elles montent, ralentissent, retombent. C'est ce qui rend l'étincelle lisible comme une étincelle.</li>
+              <li>Anime la couleur&nbsp;: active <span class="menu-path">Color over Lifetime</span> et dessine un dégradé blanc-jaune → orange → rouge, avec l'<b>alpha qui chute à 0</b> à la fin. <b>Effet</b>&nbsp;: la particule «&nbsp;refroidit&nbsp;» et s'éteint en fondu — l'alpha sur la durée de vie supprime le «&nbsp;pop&nbsp;» de disparition.</li>
+              <li>Anime la taille&nbsp;: active <span class="menu-path">Size over Lifetime</span> et trace une courbe qui décroît légèrement. <b>Effet</b>&nbsp;: les étincelles s'amenuisent en s'éteignant.</li>
+              <li>Règle le rendu&nbsp;: dans <span class="menu-path">Renderer<span class="arrow">▸</span>Material</span>, assigne un matériau de particule en mode <b>additif</b>. <b>Effet</b>&nbsp;: les étincelles brillent et s'éclaircissent en se superposant, et — bonus — elles <b>ignorent le tri de transparence</b>, donc aucun clignotement de profondeur.</li>
+              <li>(Option) Ajoute une traînée&nbsp;: active le module <span class="menu-path">Trails</span> et branche son matériau dans le Renderer. <b>Effet</b>&nbsp;: chaque étincelle laisse un sillage filant — le ribbon dont on a parlé.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma scène tourne à 60 ips, puis chute brutalement quand l'effet de fumée se déclenche, alors que rien n'a changé côté géométrie.</div>
+                <div class="pi-cause"><b>Cause</b><b>Overdraw</b>&nbsp;: beaucoup de quads transparents larges se chevauchent et remplissent l'écran&nbsp;; le GPU recolorie chaque pixel concerné des dizaines de fois.</div>
+                <div class="pi-fix"><b>Correction</b>Réduis la densité et la taille des particules, évite les quads géants plein écran, rogne les bords transparents de la texture, et active un LOD particules qui baisse le compte avec la distance. Active la vue «&nbsp;Overdraw&nbsp;» de l'éditeur pour repérer les zones rouges.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes particules de fumée clignotent, passent les unes devant les autres de façon incohérente, ou s'inversent quand je tourne la caméra.</div>
+                <div class="pi-cause"><b>Cause</b>Problème de <b>tri de transparence</b>. L'alpha blend exige un dessin de l'arrière vers l'avant&nbsp;; le tri par système est imparfait pour des particules qui s'interpénètrent.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie le mode de tri (sorting) du Renderer, regroupe les particules dans un seul système quand c'est possible, et — si l'effet le permet — passe en <b>additif</b> (qui ignore l'ordre) ou en <em>alpha clip</em> opaque.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon flipbook d'explosion montre des morceaux de la frame voisine, ou saute/saccade au lieu de s'écouler.</div>
+                <div class="pi-cause"><b>Cause</b><b>Flipbook mal aligné</b>&nbsp;: le nombre de lignes/colonnes déclaré ne correspond pas à la grille réelle de l'atlas, ou la cadence ne couvre pas la durée de vie. Sans interpolation, peu de frames = saccade.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie que les dimensions de grille (ex. 8×8) correspondent EXACTEMENT à l'atlas, cale la durée de l'animation sur la durée de vie, et active l'<b>interpolation entre frames</b> pour lisser.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon effet est magnifique de près, mais une seule particule plein cadre fait s'effondrer le framerate.</div>
+                <div class="pi-cause"><b>Cause</b><b>Particule trop grande plein écran</b>&nbsp;: un quad qui couvre tout l'écran applique le fragment shader à chaque pixel de l'écran, à chaque image — overdraw maximal.</div>
+                <div class="pi-fix"><b>Correction</b>Évite les particules de premier plan couvrant l'écran. Si l'effet l'exige (transition, brouillard), utilise un shader le plus léger possible et limite la durée d'apparition. Préfère plusieurs particules moyennes bien réparties à une seule géante.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma fumée traverse le sol avec une ligne de coupure nette et plate, qui trahit que c'est un panneau 2D.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de <b>soft particles</b>&nbsp;: le quad billboard intersecte la géométrie opaque, créant une arête dure visible.</div>
+                <div class="pi-fix"><b>Correction</b>Active les <b>soft particles</b> dans le shader/Renderer&nbsp;: le shader lit le depth buffer et fond l'alpha à l'approche des surfaces, faisant disparaître la coupure.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'utilise des centaines de milliers de particules en CPU et le jeu rame, alors qu'une démo Niagara en affiche des millions sans broncher.</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais choix de famille&nbsp;: un système <b>CPU</b> plafonne à quelques milliers de particules&nbsp;; les très grands comptes exigent une simulation <b>GPU</b>.</div>
+                <div class="pi-fix"><b>Correction</b>Pour les masses (neige, sable, nuées), bascule vers <a href="../../cours/unity/u09-vfx.html">VFX Graph (U9)</a> ou <a href="../../cours/unreal/e08-niagara.html">Niagara (E8)</a>. Garde le CPU pour les effets modestes qui doivent interagir finement avec la logique du jeu.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Sans forcément ouvrir un moteur, l'objectif est de <b>concevoir sur papier</b> un effet de VFX complet en mobilisant chaque concept de la leçon. Choisis un effet&nbsp;: une <b>torche</b> (feu + fumée + lueur) ou un <b>nuage de poussière</b> de pas.</p>
+              <ol>
+                <li>Décris l'<b>émetteur</b>&nbsp;: continu ou burst&nbsp;? Quelle forme (point, cône, sphère)&nbsp;? Justifie en une phrase.</li>
+                <li>Donne une <b>durée de vie</b> plausible (en secondes) et dis si tu y mets de la variation aléatoire — et pourquoi.</li>
+                <li>Dessine, comme dans le premier schéma, deux <b>courbes over lifetime</b>&nbsp;: taille et alpha. Annote la naissance (0) et la mort (1).</li>
+                <li>Décide ce qui est <b>émis</b> (sprite, mesh, ribbon) et le <b>mode de fusion</b> (additif ou alpha blend) pour chaque couche. Une torche en a au moins deux&nbsp;: applique la règle «&nbsp;ça brille/ça cache&nbsp;».</li>
+                <li>Si tu animes la flamme, prévois un <b>flipbook</b>&nbsp;: indique la grille (ex. 8×8) et explique en une phrase l'économie de draw calls.</li>
+                <li>Évalue le <b>risque d'overdraw</b>&nbsp;: où des quads vont-ils se chevaucher&nbsp;? Propose une mesure concrète pour le limiter.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu as choisi <b>burst vs continu</b> de façon cohérente avec la nature de l'effet (un pas = burst, une torche = continu).</li>
+                  <li>Tes deux courbes over lifetime montrent au minimum un <b>fondu de l'alpha</b> vers 0 en fin de vie (pas de «&nbsp;pop&nbsp;»).</li>
+                  <li>Tu justifies chaque mode de fusion par «&nbsp;ça brille → additif&nbsp;» ou «&nbsp;ça cache → alpha blend&nbsp;», sans te tromper de sens.</li>
+                  <li>Tu identifies au moins une source d'<b>overdraw</b> et proposes une mesure concrète (taille, densité, LOD, texture rognée).</li>
+                  <li>Si flipbook&nbsp;: la grille est précisée et tu expliques le gain en draw calls.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un <b>système de particules</b> = un <b>émetteur</b> (continu ou burst) qui fait naître des particules ayant une <b>durée de vie</b>, dont les propriétés (taille, couleur, alpha, vélocité, rotation) évoluent via des <b>courbes over lifetime</b>.</li>
+                <li>On émet des <b>sprites/billboards</b> (le cas dominant&nbsp;: fumée, étincelles, feu), des <b>meshes</b> (débris, projectiles) ou des <b>ribbons/trails</b> (traînées, sillages).</li>
+                <li><b>Additif</b> = ça s'éclaircit, parfait pour le lumineux (feu, magie), et <b>ignore le tri</b>. <b>Alpha blend</b> = ça peut occulter (fumée), mais exige un tri arrière→avant.</li>
+                <li><b>Soft particles</b>, <b>distortion/heat haze</b> et <b>dissolve</b> sont les raffinements qui crédibilisent les particules.</li>
+                <li>Un <b>flipbook</b> range une animation en grille (8×8…) dans un seul <b>atlas</b>&nbsp;: le shader défile les frames et l'on économise des <b>draw calls</b>.</li>
+                <li>L'<b>overdraw</b> (pixels recoloriés N fois par des couches transparentes) est le tueur de performance n°1 des VFX&nbsp;: limite densité, taille, particules plein écran, et utilise un LOD.</li>
+                <li><b>CPU</b> = simple, quelques milliers de particules&nbsp;; <b>GPU</b> (VFX Graph U9, Niagara E8) = jusqu'à des millions.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Système de particules</b> — moteur qui simule et dessine une multitude de petits éléments (particules) selon des règles, pour produire un effet visuel.</p>
+              <p><b>Émetteur</b> — source qui fait naître les particules, à un certain rythme (continu) ou d'un coup (burst), selon une forme donnée.</p>
+              <p><b>Burst</b> — émission instantanée d'un paquet de particules, utilisée pour les évènements ponctuels (impact, explosion).</p>
+              <p><b>Durée de vie (lifetime)</b> — temps que vit une particule, de sa naissance à sa mort&nbsp;; sert d'axe pour les courbes «&nbsp;over lifetime&nbsp;».</p>
+              <p><b>Over lifetime</b> — qualifie une propriété (taille, couleur, alpha…) lue le long d'une courbe selon l'âge normalisé (0→1) de la particule.</p>
+              <p><b>Sprite / billboard</b> — quad plat texturé forcé à faire face à la caméra&nbsp;; le rendu le plus courant pour fumée, feu, étincelles.</p>
+              <p><b>Ribbon / trail</b> — bande continue construite en reliant les positions successives d'une particule&nbsp;; sert aux traînées et sillages.</p>
+              <p><b>Additif</b> — mode de fusion qui ajoute la couleur au fond&nbsp;: ne fait qu'éclaircir, idéal pour le lumineux, et ignore le tri de transparence.</p>
+              <p><b>Alpha blend</b> — mode de fusion qui interpole entre fond et particule selon l'alpha&nbsp;: peut occulter (fumée), mais exige un tri arrière→avant.</p>
+              <p><b>Flipbook / atlas</b> — grille d'images (frames) rangées dans une seule texture, défilées dans le temps pour animer une particule en économisant des draw calls.</p>
+              <p><b>Overdraw</b> — surcoût dû à des pixels recoloriés plusieurs fois par des surfaces transparentes empilées&nbsp;; principal tueur de performance des VFX.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a>&nbsp;: ce que fait réellement le fragment shader payé par l'overdraw.</li>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a>&nbsp;: l'alpha, le canal d'opacité au cœur des particules transparentes.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: draw calls, batching, LOD et budget de performance.</li>
+              <li><a href="../../cours/unity/u09-vfx.html">U9 — VFX dans Unity</a>&nbsp;: du Particle System CPU au VFX Graph GPU, en pratique.</li>
+              <li><a href="../../cours/unreal/e08-niagara.html">E8 — Niagara (Unreal)</a>&nbsp;: le système de particules moderne d'Unreal, capable de millions de particules.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

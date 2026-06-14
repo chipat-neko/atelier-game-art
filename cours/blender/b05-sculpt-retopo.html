@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B5 — Sculpt & retopologie · Atelier Game Art</title>
+  <meta name="description" content="Le mode Sculpt de Blender (Dyntopo, Multiresolution, remesh, brosses) et la retopologie propre par-dessus un high-poly.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Sculpt &amp; retopologie</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B5 — Sculpt &amp; retopologie</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b03-modelisation.html">B3 — Modélisation</a>, <a href="../../cours/blender/b04-modifiers.html">B4 — Modifiers</a> (Shrinkwrap) et <a href="../../cours/logiciels/l04-sculpt-zbrush.html">L4 — Sculpt (panorama)</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser le <b>mode Sculpt</b> de Blender et ses brosses principales.</li>
+                <li>Choisir entre <b>Dyntopo</b>, <b>Multiresolution</b> et <b>Remesh</b> selon le besoin.</li>
+                <li>Comprendre <em>pourquoi</em> un sculpt doit être <b>retopologisé</b> avant le jeu.</li>
+                <li>Faire une retopologie propre dans Blender (Shrinkwrap, Poly Build).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le sculpt permet de créer du détail organique — visages, créatures, plis de tissu, roche — «&nbsp;comme de l'argile&nbsp;», impossible à obtenir efficacement en modélisation classique. Mais un sculpt fait des millions de triangles désordonnés&nbsp;: <b>inutilisable tel quel en jeu</b>. Il faut une <b>retopologie</b> (renvoi <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>) pour produire un low-poly propre, puis baker le détail (renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>). Blender fait tout ça gratuitement (renvoi <a href="../../cours/logiciels/l04-sculpt-zbrush.html">L4</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le mode Sculpt et les brosses</h3>
+            <p>On passe par le Workspace <em>Sculpting</em> (ou le menu de mode ▸ Sculpt Mode). Les brosses fondamentales&nbsp;:</p>
+            <ul>
+              <li><b>Draw</b> : ajoute/retire de la matière (la brosse de base).</li>
+              <li><b>Clay Strips</b> : pose la matière par «&nbsp;coups de truelle&nbsp;», idéale pour bâtir des volumes.</li>
+              <li><b>Grab</b> : tire de gros volumes (déformer la forme générale).</li>
+              <li><b>Smooth</b> (<span class="kbd">Maj</span> enfoncé) : lisse — l'outil qu'on utilise le plus.</li>
+              <li><b>Crease</b> / <b>Pinch</b> : creuse des plis nets, resserre la matière (rides, coutures).</li>
+            </ul>
+            <p>On règle la <b>taille</b> (<span class="kbd">F</span>) et la <b>force</b> (<span class="kbd">Maj</span>+<span class="kbd">F</span>) de la brosse&nbsp;; une tablette graphique avec pression rend le sculpt bien plus naturel.</p>
+
+            <h3>2. Dyntopo, Multiresolution, Remesh&nbsp;: trois façons d'avoir de la densité</h3>
+            <p>Pour sculpter du détail fin, il faut beaucoup de polygones. Trois approches&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Technique</th><th>Principe</th><th>Quand</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Dyntopo</b></td><td>Ajoute de la géométrie <em>dynamiquement</em> là où la brosse passe (densité locale variable).</td><td>Exploration de formes, détail localisé. Peut alourdir vite.</td></tr>
+                  <tr><td><b>Multiresolution</b></td><td>Modifier qui empile des niveaux de subdivision&nbsp;: on sculpte au niveau fin, on peut revenir au niveau grossier. Conserve une base propre.</td><td>Workflow propre, compatible bake de displacement. Recommandé pour un asset structuré.</td></tr>
+                  <tr><td><b>Remesh / Voxel Remesh</b></td><td>Recalcule un maillage uniforme et dense (voxels). Repart d'une topologie homogène.</td><td>Quand le maillage est devenu trop étiré/désordonné&nbsp;: on «&nbsp;remet à plat&nbsp;» (<span class="kbd">Ctrl</span>+<span class="kbd">R</span> en Sculpt, ou panneau Remesh).</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3. Pourquoi retopologiser</h3>
+            <p>Un sculpt a une topologie <b>impropre à l'animation, aux UV et au temps réel</b> : densité énorme, pas de boucles d'arêtes utiles. La <span class="gloss">retopologie</span> consiste à reconstruire <b>par-dessus</b> le high-poly un maillage léger en quads, avec un bon edge flow (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>). Ce low-poly servira au jeu&nbsp;; le détail du sculpt sera transféré dessus par <b>baking</b> (normal map, renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Pipeline sculpt vers low-poly via retopologie et bake">
+                <defs><marker id="b5ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+                <g class="svg-text" font-size="11.5">
+                  <rect x="20" y="70" width="130" height="56" rx="8" class="svg-surface" stroke="#313c4c"/><text x="85" y="93" text-anchor="middle" font-weight="700">Sculpt</text><text x="85" y="111" text-anchor="middle" class="svg-dim">high-poly, millions de tris</text>
+                  <rect x="190" y="70" width="130" height="56" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="255" y="93" text-anchor="middle" font-weight="700">Retopologie</text><text x="255" y="111" text-anchor="middle" class="svg-dim">low-poly en quads</text>
+                  <rect x="360" y="70" width="130" height="56" rx="8" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8"/><text x="425" y="93" text-anchor="middle" font-weight="700">UV + Bake</text><text x="425" y="111" text-anchor="middle" class="svg-dim">détail → normal map</text>
+                  <rect x="530" y="70" width="96" height="56" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="578" y="93" text-anchor="middle" font-weight="700">Jeu</text><text x="578" y="111" text-anchor="middle" class="svg-dim">léger + détaillé</text>
+                </g>
+                <g stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b5ar)">
+                  <line x1="150" y1="98" x2="188" y2="98"/><line x1="320" y1="98" x2="358" y2="98"/><line x1="490" y1="98" x2="528" y2="98"/>
+                </g>
+              </svg>
+              <figcaption>Le sculpt n'est qu'une étape&nbsp;: il faut retopologiser puis baker pour obtenir un asset jouable détaillé.</figcaption>
+            </figure>
+
+            <h3>4. Retopologier dans Blender</h3>
+            <p>Deux approches gratuites&nbsp;:</p>
+            <ul>
+              <li><b>Manuelle</b> (la plus contrôlée)&nbsp;: nouvel objet, modifier <b>Shrinkwrap</b> ciblant le sculpt (le nouveau maillage colle à sa surface), + l'outil <b>Poly Build</b> ou des extrusions sur la surface. Active <em>Snap to Face</em>. On «&nbsp;dessine&nbsp;» le low-poly par-dessus.</li>
+              <li><b>Semi-automatique</b>&nbsp;: <em>Quad Remesher</em> (add-on payant) ou le <em>Remesh</em> + nettoyage pour des props où la topologie n'est pas critique.</li>
+            </ul>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: un rocher</h2>
+            <ol>
+              <li>Ajoute une sphère, passe en <em>Sculpt Mode</em>. Active <em>Dyntopo</em> (ou un Remesh à densité moyenne).</li>
+              <li>Avec <b>Clay Strips</b> et <b>Draw</b>, bloque la silhouette générale du rocher (gros volumes d'abord, jamais les détails en premier — renvoi <a href="../../cours/logiciels/l04-sculpt-zbrush.html">L4</a>).</li>
+              <li>Augmente la densité, ajoute des cassures avec <b>Crease</b> et des aspérités&nbsp;; lisse les zones avec <span class="kbd">Maj</span> (Smooth).</li>
+              <li>Crée un objet de retopologie&nbsp;: un cube simple, modifier <b>Shrinkwrap</b> sur le rocher, active le snap <em>Face</em>, puis ajuste/extrude pour épouser la forme avec peu de quads.</li>
+              <li>Déplie l'UV du low-poly (renvoi <a href="../../cours/blender/b06-uv.html">B6</a>), puis bake la normal map depuis le high-poly (renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Blender rame dès que je sculpte un peu.</div>
+                <div class="pi-cause"><b>Cause</b>Dyntopo augmente la densité sans limite&nbsp;; trop de polygones.</div>
+                <div class="pi-fix"><b>Correction</b>Réduis le <em>Detail Size</em>, travaille par passes, ou bascule en Multiresolution pour maîtriser les niveaux.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je détaille mais la forme générale est ratée.</div>
+                <div class="pi-cause"><b>Cause</b>Détails ajoutés trop tôt, avant de bloquer les grands volumes.</div>
+                <div class="pi-fix"><b>Correction</b>Procède du général au particulier&nbsp;: silhouette → volumes secondaires → détails fins.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon sculpt est superbe mais inutilisable en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>On oublie qu'un sculpt doit être retopologisé et baké.</div>
+                <div class="pi-fix"><b>Correction</b>Planifie la retopo + bake dès le départ (renvoi <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma retopo « flotte » au-dessus ou traverse le high-poly.</div>
+                <div class="pi-cause"><b>Cause</b>Shrinkwrap mal réglé (offset), snap inactif.</div>
+                <div class="pi-fix"><b>Correction</b>Active le snap <em>Face</em>, règle un léger offset positif sur le Shrinkwrap.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Sculpte un rocher ou un buste simple en respectant l'ordre général → détails.</li>
+                <li>Retopologise-le en un low-poly raisonnable (quelques centaines de quads) avec Shrinkwrap + Poly Build.</li>
+                <li>Vérifie que le low-poly épouse bien la silhouette du sculpt (de profil et de face).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le sculpt a une bonne silhouette et des détails cohérents.</li>
+                  <li>Le low-poly est propre (quads), léger, et colle au high-poly.</li>
+                  <li>Tu sais expliquer la suite (UV → bake) et pourquoi elle est nécessaire.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>mode Sculpt</b> de Blender (gratuit) suffit pour énormément d'assets&nbsp;: brosses Draw/Clay/Grab/Smooth/Crease.</li>
+                <li><b>Dyntopo</b> (densité dynamique), <b>Multiresolution</b> (niveaux propres), <b>Remesh</b> (remise à plat) : trois façons d'avoir de la densité.</li>
+                <li>Un sculpt n'est <b>pas</b> un asset de jeu&nbsp;: il faut <b>retopologiser</b> (Shrinkwrap/Poly Build) puis <b>baker</b>.</li>
+                <li>Toujours du général au particulier.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Dyntopo</b> — tessellation dynamique ajoutant des polygones sous la brosse.</p>
+              <p><b>Multiresolution</b> — modifier empilant des niveaux de subdivision pour sculpter du grossier au fin.</p>
+              <p><b>Voxel Remesh</b> — recalcul d'un maillage uniforme et dense à partir de voxels.</p>
+              <p><b>Retopologie</b> — reconstruction d'un low-poly propre par-dessus un sculpt high-poly.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b08-texture-paint-bake.html">B8 — Texture Paint &amp; Baking</a>&nbsp;: transférer le détail du sculpt sur le low-poly.</li>
+              <li><a href="../../cours/logiciels/l04-sculpt-zbrush.html">L4 — Sculpt / ZBrush (panorama)</a>&nbsp;: principes et alternatives.</li>
+              <li><a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5 — Le pipeline d'asset</a>&nbsp;: où s'insère le sculpt.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

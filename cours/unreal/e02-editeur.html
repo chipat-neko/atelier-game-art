@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E2 — Anatomie de l'éditeur Unreal · Atelier Game Art</title>
+  <meta name="description" content="L'éditeur Unreal Engine : Viewport, Outliner, Details, Content Browser, les modes et la navigation.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Anatomie de l'éditeur Unreal</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E2 — Anatomie de l'éditeur Unreal</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unreal/e01-installation.html">E1 — Installation</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Nommer et situer les <b>panneaux principaux</b> de l'éditeur Unreal&nbsp;: <b>Viewport</b>, <b>Outliner</b>, <b>Details</b> et <b>Content Browser</b>, et dire à quoi sert chacun.</li>
+                <li>Distinguer fermement le <b>Content Browser</b> (la bibliothèque d'<span class="gloss">assets</span> du projet) de l'<b>Outliner</b> (la liste des objets présents dans la scène) — la confusion n°1 des débutants.</li>
+                <li>Expliquer le couple <b>Actor / Component</b> qui structure toute scène Unreal, et faire le pont avec le <span class="term">GameObject</span>/Component d'Unity.</li>
+                <li><b>Naviguer</b> dans le Viewport avec aisance&nbsp;: vol (clic droit + WASD), orbite, zoom, focus (F), changer de <b>mode de vue</b> (Lit, Unlit, Wireframe).</li>
+                <li>Utiliser les <b>gizmos de transformation</b> (W déplacer, E pivoter, R redimensionner) et comprendre les <b>unités</b> d'Unreal (1&nbsp;uu = 1&nbsp;cm).</li>
+                <li>Placer un <b>Static Mesh</b> depuis le Content Browser, inspecter ses <b>Details</b> et le <b>parenter</b> à un autre Actor.</li>
+                <li>Éviter les pièges classiques&nbsp;: perdre un objet de vue, paniquer en mode Unlit, ou modifier l'<b>asset source</b> au lieu de l'<b>instance</b> de la scène.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'éditeur d'<span class="term">Unreal Engine</span> est ton <b>poste de travail</b> pour tout ce qui touche au moteur&nbsp;: c'est là que tu assembles un niveau, que tu places des objets, que tu règles la lumière, que tu testes ton jeu. Comme tout poste de travail professionnel, il est <b>dense</b>&nbsp;: la première ouverture peut intimider tant il y a de panneaux, de boutons et de menus. Mais cette densité n'est pas du désordre&nbsp;: chaque zone a un rôle précis, et une fois que tu as compris la <b>logique</b> qui les relie, l'interface devient un outil fluide plutôt qu'un labyrinthe.</p>
+            <p>En production réelle, un <span class="gloss">technical artist</span> ou un level designer passe l'essentiel de sa journée dans cet éditeur. Savoir où ranger un asset, comment retrouver un objet perdu, où lire et modifier les propriétés d'un élément&nbsp;: ce sont les gestes du quotidien, ceux qui font la différence entre quelqu'un qui «&nbsp;galère&nbsp;» et quelqu'un qui produit. Et parce qu'Unreal et Unity partagent les mêmes <b>concepts de fond</b> tout en utilisant un <b>vocabulaire différent</b>, comprendre la grammaire d'Unreal te permettra aussi de naviguer entre les deux mondes — une compétence très recherchée.</p>
+            <p>Cette leçon ne te demande pas encore de créer quoi que ce soit de complexe. Elle te donne la <b>carte mentale</b> de l'éditeur&nbsp;: les noms exacts, les raccourcis, et surtout les <b>distinctions conceptuelles</b> (bibliothèque vs scène, asset vs instance, Actor vs Component) sans lesquelles tout le reste reste flou. C'est l'investissement de base qui rentabilise toutes les leçons suivantes de la piste Unreal.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>La logique d'ensemble&nbsp;: une scène, des panneaux qui la regardent</h3>
+            <p>Avant de détailler chaque panneau, fixons la grande image. Au centre de tout, il y a le <span class="term">Level</span> — c'est le mot d'Unreal pour désigner une <b>scène</b>, c'est-à-dire l'espace 3D dans lequel tu poses tes objets. Tous les panneaux de l'éditeur tournent autour de ce Level&nbsp;: certains te le <b>montrent</b> (le Viewport), d'autres en <b>listent le contenu</b> (l'Outliner), d'autres encore te laissent <b>modifier un élément précis</b> (le Details), et un dernier — capital — te donne accès à la <b>réserve d'ingrédients</b> dans laquelle tu puises (le Content Browser).</p>
+            <p>La métaphore qui fait tout comprendre&nbsp;: imagine une <b>cuisine de restaurant</b>. Le <b>garde-manger</b>, c'est le Content Browser&nbsp;: il contient tes ingrédients bruts (modèles 3D, textures, matériaux, sons), rangés sur des étagères (les dossiers). Le <b>plan de travail</b>, c'est le Level visible dans le Viewport&nbsp;: c'est là que tu dresses ton assiette. Quand tu prends un ingrédient du garde-manger et que tu le poses sur le plan de travail, tu en crées une <b>portion</b> sur l'assiette — l'ingrédient d'origine reste intact dans le garde-manger. Cette distinction entre l'ingrédient (l'asset) et la portion servie (l'instance) est, on le verra, l'idée la plus importante de toute la leçon.</p>
+
+            <h3>Le Viewport&nbsp;: ta fenêtre sur le Level</h3>
+            <p>Le <span class="term">Viewport</span> est la grande vue 3D qui occupe le centre de l'écran. C'est ta caméra d'éditeur&nbsp;: ce que tu y vois est ce que contient le Level, vu depuis un point de vue que tu déplaces librement. Attention&nbsp;: cette caméra d'édition n'est <b>pas</b> la caméra du jeu&nbsp;; c'est un point de vue de travail.</p>
+            <h4>Perspective et vues orthographiques</h4>
+            <p>Par défaut, le Viewport est en <b>perspective</b>&nbsp;: les objets lointains paraissent plus petits, exactement comme à l'œil humain. C'est la vue naturelle pour composer une scène. Mais on peut basculer en vue <b>orthographique</b> (Top, Front, Side&nbsp;: dessus, face, côté). En vue ortho, la perspective est supprimée&nbsp;: deux objets de même taille apparaissent identiques quelle que soit leur distance. C'est indispensable pour <b>aligner précisément</b> des éléments — poser un mur bien droit, mesurer un écart — car aucune déformation de perspective ne vient fausser ton jugement.</p>
+            <h4>Modes de vue (View Modes)</h4>
+            <p>Un <span class="term">mode de vue</span> détermine <b>comment</b> le Viewport calcule l'image, c'est-à-dire ce qu'il choisit d'afficher ou d'ignorer. C'est un réglage d'affichage uniquement&nbsp;: il ne change <b>rien</b> dans ta scène, seulement la manière dont tu la regardes. Les principaux&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Mode</th><th>Ce qu'il affiche</th><th>Quand l'utiliser</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Lit</b> (éclairé)</td><td>Le rendu complet&nbsp;: lumières, ombres, matériaux. C'est le mode par défaut.</td><td>Travail normal, composition, jugement esthétique.</td></tr>
+                  <tr><td><b>Unlit</b> (non éclairé)</td><td>Les couleurs de base des matériaux, <b>sans aucune lumière</b>. La scène paraît «&nbsp;plate&nbsp;».</td><td>Vérifier les textures/couleurs pures, déboguer un problème d'éclairage.</td></tr>
+                  <tr><td><b>Wireframe</b> (fil de fer)</td><td>Seules les arêtes des <span class="gloss">mesh</span>, sans surfaces.</td><td>Inspecter la densité de maillage, repérer des objets cachés, juger l'optimisation.</td></tr>
+                  <tr><td><b>Buffer Visualization</b></td><td>Une couche technique isolée du rendu (Base Color, Roughness, Normales, profondeur…).</td><td>Débogage avancé des matériaux <span class="gloss">PBR</span> et de l'éclairage.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le mode Unlit n'a rien cassé</div>
+              <p>Beaucoup de débutants passent en <b>Unlit</b> par accident (souvent via un raccourci) et paniquent&nbsp;: «&nbsp;ma scène est devenue toute plate et terne, j'ai tout cassé&nbsp;!&nbsp;». Rien n'est cassé&nbsp;: tu regardes simplement ta scène <b>sans la lumière</b>. Le rendu de tes matériaux est intact&nbsp;; il te manque juste l'éclairage à l'affichage. Reviens en <b>Lit</b> et tout «&nbsp;revient&nbsp;». C'est un réglage d'œilleton, pas une modification de la scène.</p>
+            </div>
+
+            <h3>L'Outliner&nbsp;: l'arbre des Actors de la scène</h3>
+            <p>Le panneau <span class="term">Outliner</span> (parfois appelé <em>World Outliner</em> dans des versions plus anciennes) est, en général à droite de l'écran, une <b>liste hiérarchique</b> de tout ce qui se trouve <b>actuellement dans le Level</b>. Chaque ligne est un <span class="term">Actor</span> — on définit ce mot juste après. C'est ton index de scène&nbsp;: là où le Viewport te montre les objets <em>visuellement</em>, l'Outliner te les liste <em>par leur nom</em>, ce qui est bien plus pratique pour sélectionner un objet précis, le renommer, le ranger dans un dossier de scène, ou voir d'un coup d'œil tout ce que contient ton niveau.</p>
+            <p>Point essentiel à graver dès maintenant&nbsp;: <b>l'Outliner ne liste que les objets de la scène en cours</b>. Il ne contient <b>pas</b> tes assets bruts. Si tu importes un modèle 3D dans ton projet mais ne le poses pas dans le Level, il <b>n'apparaîtra jamais</b> dans l'Outliner — il restera dans le Content Browser, en attente. Retiens&nbsp;: Outliner = ce qui est <b>posé</b> dans le monde.</p>
+
+            <h3>Le panneau Details&nbsp;: les propriétés de la sélection</h3>
+            <p>Le panneau <span class="term">Details</span> affiche les <b>propriétés modifiables</b> de l'élément actuellement sélectionné — généralement situé sous l'Outliner, à droite. Sélectionne un Actor (en cliquant dessus dans le Viewport ou dans l'Outliner) et le panneau Details se remplit&nbsp;: sa position (<em>Location</em>), sa rotation, son échelle (<em>Scale</em>), le matériau utilisé, l'intensité d'une lumière, l'activation d'une collision… Tout ce qui peut être réglé sur cet objet se trouve là.</p>
+            <p>C'est le panneau où tu passes énormément de temps&nbsp;: déplacer un objet au pixel près en tapant une valeur de position, changer la couleur d'une lumière, activer une option. Si rien n'est sélectionné, le Details est vide — c'est normal, il n'a rien à afficher. Le réflexe «&nbsp;je veux modifier cet objet&nbsp;» se traduit toujours par&nbsp;: <b>je le sélectionne, puis je lis/édite ses Details</b>.</p>
+
+            <h3>Le Content Browser&nbsp;: le cœur du projet</h3>
+            <p>Le <span class="term">Content Browser</span> (en bas de l'écran par défaut, ouvrable par <kbd>Ctrl</kbd>+<kbd>Espace</kbd>) est sans doute le panneau le plus important d'Unreal. C'est la <b>bibliothèque de tous les assets de ton projet</b>&nbsp;: chaque modèle 3D (<span class="gloss">Static Mesh</span>), chaque texture, chaque matériau, chaque son, chaque <span class="gloss">Blueprint</span>, chaque niveau y est rangé dans une arborescence de dossiers. C'est l'<b>équivalent du panneau Project d'Unity</b>&nbsp;: la réserve d'ingrédients dont on parlait plus haut.</p>
+            <p>Concrètement, le Content Browser reflète le contenu du dossier <code>Content/</code> de ton projet sur le disque. Il propose&nbsp;:</p>
+            <ul>
+              <li>une <b>arborescence de dossiers</b> à gauche (tu organises tes assets par catégorie&nbsp;: <code>Meshes</code>, <code>Materials</code>, <code>Textures</code>…)&nbsp;;</li>
+              <li>une <b>grille de vignettes</b> au centre, chaque vignette représentant un asset&nbsp;;</li>
+              <li>une <b>barre de recherche</b> pour retrouver un asset par son nom — vital quand le projet grossit&nbsp;;</li>
+              <li>des <b>filtres</b> (par type&nbsp;: n'afficher que les Static Meshes, que les Materials…) pour ne pas se noyer.</li>
+            </ul>
+            <p>La règle d'or&nbsp;: <b>le Content Browser contient les assets ; il ne contient pas la scène</b>. Quand tu glisses un asset depuis le Content Browser vers le Viewport, tu n'as pas «&nbsp;déplacé&nbsp;» l'asset&nbsp;: tu en as créé une <b>instance</b> dans le Level. L'asset original reste sagement dans son dossier, prêt à être réutilisé autant de fois que tu veux.</p>
+
+            <h3>La Toolbar et les Modes&nbsp;: changer la nature de l'outil</h3>
+            <p>En haut du Viewport, une barre d'outils (<span class="term">Toolbar</span>) regroupe les commandes globales&nbsp;: lancer le jeu (<b>Play</b>), sauvegarder, ainsi qu'un sélecteur de <span class="term">Modes</span>. Un mode change <b>ce que font tes clics dans le Viewport</b>&nbsp;: tu passes d'un outil de sélection à un outil de sculpture de terrain, par exemple. Les principaux&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Mode</th><th>À quoi il sert</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Select</b> (sélection)</td><td>Le mode par défaut&nbsp;: sélectionner, déplacer, pivoter, redimensionner les Actors. 99&nbsp;% du temps.</td></tr>
+                  <tr><td><b>Landscape</b></td><td>Sculpter et peindre un terrain (relief, montagnes, vallées).</td></tr>
+                  <tr><td><b>Foliage</b> (végétation)</td><td>Peindre en masse des instances (herbe, arbres, cailloux) sur le décor.</td></tr>
+                  <tr><td><b>Modeling</b></td><td>Modéliser/éditer des mesh directement dans Unreal (outils de modélisation intégrés).</td></tr>
+                  <tr><td><b>Mesh Paint</b></td><td>Peindre des couleurs ou des textures à la main sur la surface d'un mesh.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Le piège classique&nbsp;: rester par mégarde dans un mode (Landscape, Foliage…) et s'étonner que «&nbsp;les clics ne sélectionnent plus rien&nbsp;». Réflexe&nbsp;: si le Viewport se comporte bizarrement, vérifie que tu es bien en mode <b>Select</b>.</p>
+
+            <h3>Le concept central&nbsp;: Actor et Component</h3>
+            <p>Voici la grammaire de fond d'Unreal. Un <span class="term">Actor</span> est <b>tout objet que l'on peut placer dans un Level</b>&nbsp;: un mur, une lampe, une caméra, un personnage, un point de départ du joueur. Si ça apparaît dans l'Outliner, c'est un Actor. Mais un Actor, en soi, est presque vide&nbsp;: c'est un <b>conteneur</b>, un point dans l'espace. Ce qui lui donne ses capacités, ce sont ses <span class="term">Components</span> (composants).</p>
+            <p>Un <span class="term">Component</span> est une <b>brique fonctionnelle</b> attachée à un Actor qui lui confère un comportement ou une apparence. Quelques exemples&nbsp;:</p>
+            <ul>
+              <li><b>Static Mesh Component</b>&nbsp;: donne à l'Actor une forme 3D visible (le modèle d'une caisse, d'un rocher).</li>
+              <li><b>Light Component</b>&nbsp;: fait de l'Actor une source de lumière.</li>
+              <li><b>Collision Component</b>&nbsp;: donne à l'Actor un volume physique (pour que le joueur ne le traverse pas).</li>
+              <li><b>Audio Component</b>&nbsp;: lui fait émettre un son.</li>
+            </ul>
+            <p>Un même Actor peut combiner plusieurs Components&nbsp;: un lampadaire, par exemple, peut contenir un Static Mesh Component (le poteau visible), un Light Component (la lumière émise) et un Collision Component (pour qu'on s'y cogne). L'Actor est le <b>tout</b>&nbsp;; les Components sont ses <b>organes</b>.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le pont avec Unity</div>
+              <p>Si tu viens d'Unity, c'est exactement le modèle que tu connais sous d'autres noms&nbsp;: l'<b>Actor</b> d'Unreal correspond au <span class="term">GameObject</span> d'Unity, et le <b>Component</b> garde le même nom dans les deux moteurs. Un GameObject vide auquel on ajoute un Mesh Renderer + une Light, c'est l'équivalent d'un Actor avec un Static Mesh Component + un Light Component. Le concept est identique&nbsp;; seul le vocabulaire change. On compare les deux écosystèmes en détail dans <a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>.</p>
+            </div>
+
+            <h3>Outliner contre Content Browser&nbsp;: scène vs bibliothèque</h3>
+            <p>C'est la distinction que tu dois maîtriser avant tout le reste, car elle conditionne ta compréhension de l'éditeur entier. Mettons-les face à face&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th></th><th>Content Browser</th><th>Outliner</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Contient</b></td><td>Les <b>assets</b> du projet (ingrédients)</td><td>Les <b>Actors</b> de la scène en cours (instances posées)</td></tr>
+                  <tr><td><b>Métaphore</b></td><td>Le garde-manger / la bibliothèque</td><td>L'assiette / la liste des objets sur le plan de travail</td></tr>
+                  <tr><td><b>Existe sur disque comme</b></td><td>Des fichiers dans le dossier <code>Content/</code></td><td>Des entrées à l'intérieur du fichier du Level</td></tr>
+                  <tr><td><b>Réutilisable&nbsp;?</b></td><td>Oui&nbsp;: un asset sert dans plusieurs niveaux et plusieurs fois</td><td>Chaque ligne est une instance unique d'un niveau précis</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>En une phrase&nbsp;: <b>le Content Browser, c'est ce que tu possèdes&nbsp;; l'Outliner, c'est ce que tu as posé</b>. Un même asset (par exemple <code>SM_Chaise</code>) vit une seule fois dans le Content Browser, mais peut apparaître dix fois dans l'Outliner si tu as placé dix chaises dans la pièce — dix instances, un seul asset source.</p>
+
+            <h3>Les unités d'Unreal&nbsp;: 1 uu = 1 cm</h3>
+            <p>Unreal mesure les distances en <span class="term">Unreal Units</span> (uu), et la convention est sans ambiguïté&nbsp;: <b>1&nbsp;uu = 1&nbsp;centimètre</b>. Un personnage humain standard mesure donc environ 180&nbsp;uu (1,80&nbsp;m), et un cube par défaut fait 100&nbsp;uu de côté, soit 1&nbsp;mètre. Garder cette échelle en tête évite des objets ridiculement petits ou gigantesques.</p>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Attention&nbsp;: Unreal n'est pas en mètres comme Unity</div>
+              <p>Unity utilise par défaut <b>1 unité = 1 mètre</b>, alors qu'Unreal utilise <b>1 unité = 1 centimètre</b>. Le rapport est donc de <b>100</b>. Si tu transfères un asset d'Unity vers Unreal (ou l'inverse) sans corriger l'échelle, il arrivera 100 fois trop grand ou 100 fois trop petit&nbsp;! C'est l'une des causes les plus fréquentes d'objets «&nbsp;à la mauvaise taille&nbsp;» au moment d'un import. On détaille la marche à suivre dans <a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>.</p>
+            </div>
+
+            <h3>La navigation dans le Viewport&nbsp;: les gestes à automatiser</h3>
+            <p>Se déplacer dans la scène doit devenir un réflexe. Voici les commandes qu'un professionnel exécute sans même y penser&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Commande</th><th>Action</th><th>Ce qui se passe</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Clic droit maintenu + WASD</b></td><td>Vol libre (<em>fly</em>)</td><td>Tu voles dans la scène comme en jeu&nbsp;: W avance, S recule, A/D latéral, la souris oriente le regard. La molette ajuste la vitesse de vol.</td></tr>
+                  <tr><td><b>Molette</b></td><td>Zoom</td><td>Avance/recule la caméra le long de son axe.</td></tr>
+                  <tr><td><b>Alt + clic gauche</b></td><td>Orbite (<em>tumble</em>)</td><td>Tourne autour du point de pivot sélectionné&nbsp;: idéal pour inspecter un objet sous tous les angles.</td></tr>
+                  <tr><td><b>F</b></td><td>Focus (cadrer)</td><td>Recentre instantanément la caméra sur l'objet sélectionné&nbsp;: <b>le sauveteur</b> quand tu as perdu un objet de vue.</td></tr>
+                  <tr><td><b>G</b></td><td>Game View</td><td>Masque les éléments d'aide (icônes, grille, gizmos) pour voir la scène «&nbsp;comme en jeu&nbsp;», sans le bazar d'édition.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>La touche <b>F</b> est ta meilleure amie. Tu sélectionnes un objet dans l'Outliner (par son nom) mais tu ne le vois nulle part dans le Viewport&nbsp;? Appuie sur <b>F</b>&nbsp;: la caméra fonce dessus et le cadre. Plus besoin de chercher à l'aveugle un objet minuscule ou très lointain — on y revient dans les pièges.</p>
+            </div>
+            <h4>Les gizmos de transformation&nbsp;: W, E, R</h4>
+            <p>Un <span class="term">gizmo</span> est la poignée colorée (rouge&nbsp;= axe X, vert&nbsp;= Y, bleu&nbsp;= Z) qui apparaît sur un objet sélectionné et permet de le manipuler à la souris. Trois raccourcis basculent entre les trois gizmos&nbsp;:</p>
+            <ul>
+              <li><b>W</b> — gizmo de <b>déplacement</b> (<em>Move</em>)&nbsp;: trois flèches pour translater l'objet selon X, Y ou Z.</li>
+              <li><b>E</b> — gizmo de <b>rotation</b> (<em>Rotate</em>)&nbsp;: trois arcs pour faire pivoter l'objet autour de chaque axe.</li>
+              <li><b>R</b> — gizmo de <b>mise à l'échelle</b> (<em>Scale</em>)&nbsp;: trois poignées pour agrandir/rétrécir l'objet.</li>
+            </ul>
+            <p>Ces trois lettres (W/E/R) sont parmi les raccourcis les plus utilisés d'Unreal&nbsp;: déplacer, tourner, redimensionner constituent l'essentiel du travail de mise en scène.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 380" role="img" aria-label="Carte de l'éditeur Unreal : la Toolbar et les Modes en haut, le Viewport au centre, l'Outliner et le panneau Details à droite, le Content Browser en bas">
+                <!-- cadre global -->
+                <rect x="12" y="40" width="616" height="326" rx="10" class="svg-surface svg-stroke"/>
+
+                <!-- Toolbar (haut) -->
+                <rect x="22" y="50" width="596" height="34" rx="6" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                <text x="34" y="71" class="svg-text" font-size="11" font-weight="700">Toolbar</text>
+                <text x="120" y="71" class="svg-dim" font-size="9.5">Play ▸ · Save · Modes (Select / Landscape / Foliage / Modeling…)</text>
+
+                <!-- Viewport (centre) -->
+                <rect x="22" y="92" width="380" height="180" rx="7" fill="#59b0ff" fill-opacity="0.10" stroke="#59b0ff"/>
+                <text x="34" y="112" class="svg-text" font-size="12" font-weight="700">Viewport</text>
+                <text x="34" y="128" class="svg-dim" font-size="9.5">vue 3D du Level · perspective / ortho</text>
+                <text x="34" y="141" class="svg-dim" font-size="9.5">View Mode : Lit / Unlit / Wireframe</text>
+                <!-- petit cube + gizmo -->
+                <rect x="150" y="160" width="58" height="58" rx="3" fill="#59b0ff" fill-opacity="0.22" stroke="#59b0ff"/>
+                <line x1="179" y1="189" x2="179" y2="150" stroke="#5ad19a" stroke-width="2"/><text x="184" y="152" fill="#5ad19a" font-size="9">Z</text>
+                <line x1="179" y1="189" x2="222" y2="189" stroke="#ff6b6b" stroke-width="2"/><text x="226" y="192" fill="#ff6b6b" font-size="9">X</text>
+                <line x1="179" y1="189" x2="150" y2="210" stroke="#5ad19a" stroke-width="2" opacity="0.7"/>
+                <text x="120" y="240" class="svg-dim" font-size="9">navigation : clic droit + WASD · Alt+clic = orbite · F = focus</text>
+                <text x="120" y="253" class="svg-dim" font-size="9">gizmos : W déplacer · E pivoter · R échelle</text>
+
+                <!-- Outliner (droite haut) -->
+                <rect x="412" y="92" width="206" height="92" rx="7" fill="#c89bff" fill-opacity="0.12" stroke="#c89bff"/>
+                <text x="424" y="111" class="svg-text" font-size="11" font-weight="700">Outliner</text>
+                <text x="424" y="125" class="svg-dim" font-size="9">les Actors de la scène</text>
+                <line x1="424" y1="135" x2="606" y2="135" stroke="#c89bff" stroke-opacity="0.4"/>
+                <text x="430" y="150" class="svg-dim" font-size="9">▸ Floor</text>
+                <text x="430" y="163" class="svg-dim" font-size="9">▸ DirectionalLight</text>
+                <text x="430" y="176" class="svg-dim" font-size="9">▸ SM_Chaise (sélectionné)</text>
+
+                <!-- Details (droite bas) -->
+                <rect x="412" y="192" width="206" height="80" rx="7" fill="#5ad19a" fill-opacity="0.11" stroke="#5ad19a"/>
+                <text x="424" y="211" class="svg-text" font-size="11" font-weight="700">Details</text>
+                <text x="424" y="225" class="svg-dim" font-size="9">propriétés de la sélection</text>
+                <text x="430" y="242" class="svg-dim" font-size="9">Location  X 200 · Y 0 · Z 0</text>
+                <text x="430" y="255" class="svg-dim" font-size="9">Scale  1 · 1 · 1</text>
+                <text x="430" y="268" class="svg-dim" font-size="9">Material  M_Bois</text>
+
+                <!-- Content Browser (bas) -->
+                <rect x="22" y="282" width="596" height="74" rx="7" fill="#f2b441" fill-opacity="0.11" stroke="#f2b441"/>
+                <text x="34" y="301" class="svg-text" font-size="12" font-weight="700">Content Browser</text>
+                <text x="190" y="301" class="svg-dim" font-size="9.5">la bibliothèque de TOUS les assets du projet (≈ Project d'Unity)</text>
+                <!-- vignettes -->
+                <rect x="34" y="312" width="34" height="34" rx="4" fill="#f2b441" fill-opacity="0.25" stroke="#f2b441"/>
+                <rect x="76" y="312" width="34" height="34" rx="4" fill="#f2b441" fill-opacity="0.25" stroke="#f2b441"/>
+                <rect x="118" y="312" width="34" height="34" rx="4" fill="#f2b441" fill-opacity="0.25" stroke="#f2b441"/>
+                <rect x="160" y="312" width="34" height="34" rx="4" fill="#f2b441" fill-opacity="0.25" stroke="#f2b441"/>
+                <text x="430" y="332" class="svg-dim" font-size="9">dossiers · recherche · filtres (Static Mesh, Material…)</text>
+
+                <!-- titre -->
+                <text x="320" y="28" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Carte de l'éditeur Unreal Engine</text>
+              </svg>
+              <figcaption>La disposition par défaut&nbsp;: <b>Toolbar/Modes</b> en haut, <b>Viewport</b> au centre (avec ses gizmos et sa navigation), <b>Outliner</b> puis <b>Details</b> à droite, et le <b>Content Browser</b> en bas. Le Viewport montre la scène&nbsp;; l'Outliner la liste&nbsp;; le Details règle la sélection&nbsp;; le Content Browser stocke les assets.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif concret&nbsp;: <b>naviguer dans la scène, placer un Static Mesh depuis le Content Browser, inspecter ses Details, puis le parenter à un autre Actor</b>. On part d'un Level de base déjà ouvert (template par défaut ou niveau vide).</p>
+            <ol>
+              <li><b>Prendre ses repères.</b> Repère les quatre zones&nbsp;: le <b>Viewport</b> au centre, l'<b>Outliner</b> et le <b>Details</b> à droite, le <b>Content Browser</b> en bas. S'il est masqué, ouvre le Content Browser via <span class="menu-path">Window<span class="arrow">▸</span>Content Browser</span> ou avec <kbd>Ctrl</kbd>+<kbd>Espace</kbd>. <em>Ce qui se passe&nbsp;:</em> tu valides que tu sais nommer chaque panneau avant d'agir.</li>
+              <li><b>Voler dans la scène.</b> Maintiens le <b>clic droit</b> dans le Viewport et utilise <b>W/A/S/D</b> pour te déplacer, la souris pour orienter le regard. <em>Ce qui se passe&nbsp;:</em> tu pilotes la caméra d'édition&nbsp;; relâche le clic droit pour t'arrêter. La molette pendant le vol ajuste ta vitesse.</li>
+              <li><b>Tester l'orbite et le focus.</b> Clique sur un objet existant (le sol par exemple), maintiens <b>Alt + clic gauche</b> et bouge la souris pour <b>orbiter</b> autour. Appuie sur <b>F</b> pour le <b>cadrer</b>. <em>Ce qui se passe&nbsp;:</em> la caméra tourne autour de l'objet puis le recentre&nbsp;; tu mémorises ces deux gestes cruciaux.</li>
+              <li><b>Changer de mode de vue.</b> En haut à gauche du Viewport, ouvre le menu <span class="menu-path">View Mode</span> (libellé «&nbsp;Lit&nbsp;» par défaut) et choisis <b>Unlit</b>, puis <b>Wireframe</b>, puis reviens à <b>Lit</b>. <em>Ce qui se passe&nbsp;:</em> l'affichage change (plat, fil de fer, complet) mais <b>la scène elle-même ne bouge pas</b>&nbsp;: tu confirmes que c'est un réglage d'œilleton.</li>
+              <li><b>Trouver un Static Mesh dans le Content Browser.</b> Dans le Content Browser, navigue vers un dossier de meshes (par ex. le contenu de démarrage <code>StarterContent/Props</code>) ou tape dans la <b>recherche</b>. Active au besoin le <b>filtre</b> <span class="menu-path">Filters<span class="arrow">▸</span>Static Mesh</span> pour n'afficher que les modèles 3D. <em>Ce qui se passe&nbsp;:</em> tu isoles un asset précis dans la bibliothèque.</li>
+              <li><b>Placer l'asset dans le Level.</b> <b>Glisse-dépose</b> la vignette du Static Mesh depuis le Content Browser vers le Viewport, à l'endroit voulu. <em>Ce qui se passe&nbsp;:</em> Unreal crée une <b>instance</b> de cet asset dans le Level. Une nouvelle ligne (un nouvel <b>Actor</b>) apparaît aussitôt dans l'<b>Outliner</b>. L'asset source, lui, reste intact dans le Content Browser.</li>
+              <li><b>Inspecter les Details.</b> L'objet venant d'être placé est sélectionné&nbsp;: regarde le panneau <b>Details</b>. Modifie sa <em>Location</em> (tape par exemple X&nbsp;=&nbsp;200&nbsp;: l'objet se déplace de 2&nbsp;mètres, car 200&nbsp;uu = 200&nbsp;cm). Essaie le gizmo <b>W</b> pour le déplacer à la souris, <b>E</b> pour le tourner, <b>R</b> pour le redimensionner. <em>Ce qui se passe&nbsp;:</em> tu vois le lien direct entre les valeurs des Details et la position dans le Viewport.</li>
+              <li><b>Placer un deuxième Actor.</b> Glisse un second mesh dans la scène (ou duplique le premier avec <kbd>Ctrl</kbd>+<kbd>D</kbd>). <em>Ce qui se passe&nbsp;:</em> tu as maintenant deux Actors dans l'Outliner — de quoi pratiquer le parentage.</li>
+              <li><b>Parenter un Actor à un autre.</b> Dans l'<b>Outliner</b>, glisse l'un des Actors <b>sur</b> l'autre. <em>Ce qui se passe&nbsp;:</em> le premier devient <b>enfant</b> du second&nbsp;; il est désormais indenté sous lui. Déplace le parent&nbsp;: l'enfant suit. C'est la base de l'organisation hiérarchique d'une scène (un groupe «&nbsp;table + objets dessus&nbsp;» qu'on déplace d'un bloc).</li>
+              <li><b>Sauvegarder.</b> Fais <span class="menu-path">File<span class="arrow">▸</span>Save Current Level</span> (ou <kbd>Ctrl</kbd>+<kbd>S</kbd>). <em>Ce qui se passe&nbsp;:</em> les instances que tu as posées sont enregistrées dans le fichier du Level&nbsp;; à la prochaine ouverture, tu les retrouveras.</li>
+            </ol>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Schéma montrant qu'un asset du Content Browser, glissé dans le Level, crée un Actor dans l'Outliner ; cet Actor contient des Components (Static Mesh, Collision, Light)">
+                <defs>
+                  <marker id="ar2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#8a93a3"/></marker>
+                </defs>
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">De l'asset à l'Actor, et de l'Actor à ses Components</text>
+
+                <!-- Content Browser (gauche) -->
+                <rect x="20" y="50" width="180" height="120" rx="9" fill="#f2b441" fill-opacity="0.11" stroke="#f2b441"/>
+                <text x="110" y="70" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Content Browser</text>
+                <text x="110" y="84" text-anchor="middle" class="svg-dim" font-size="9">bibliothèque (assets)</text>
+                <rect x="70" y="98" width="80" height="46" rx="5" fill="#f2b441" fill-opacity="0.25" stroke="#f2b441"/>
+                <text x="110" y="119" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">SM_Chaise</text>
+                <text x="110" y="133" text-anchor="middle" class="svg-dim" font-size="8.5">asset source · 1 fois</text>
+                <text x="110" y="160" text-anchor="middle" class="svg-dim" font-size="8.5">existe sur disque : Content/</text>
+
+                <!-- flèche glisser -->
+                <line x1="204" y1="112" x2="252" y2="112" stroke="#8a93a3" stroke-width="1.8" marker-end="url(#ar2)"/>
+                <text x="228" y="104" text-anchor="middle" class="svg-dim" font-size="8.5">glisser-</text>
+                <text x="228" y="125" text-anchor="middle" class="svg-dim" font-size="8.5">déposer</text>
+
+                <!-- Outliner (centre) -->
+                <rect x="256" y="50" width="180" height="120" rx="9" fill="#c89bff" fill-opacity="0.12" stroke="#c89bff"/>
+                <text x="346" y="70" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Outliner</text>
+                <text x="346" y="84" text-anchor="middle" class="svg-dim" font-size="9">la scène (Level)</text>
+                <rect x="278" y="98" width="136" height="20" rx="4" fill="#c89bff" fill-opacity="0.20" stroke="#c89bff"/>
+                <text x="346" y="112" text-anchor="middle" class="svg-text" font-size="9">Chaise (instance 1)</text>
+                <rect x="278" y="122" width="136" height="20" rx="4" fill="#c89bff" fill-opacity="0.20" stroke="#c89bff"/>
+                <text x="346" y="136" text-anchor="middle" class="svg-text" font-size="9">Chaise (instance 2)</text>
+                <text x="346" y="160" text-anchor="middle" class="svg-dim" font-size="8.5">N Actors ← 1 asset</text>
+
+                <!-- flèche : un actor contient des components -->
+                <line x1="346" y1="172" x2="346" y2="206" stroke="#8a93a3" stroke-width="1.8" marker-end="url(#ar2)"/>
+                <text x="412" y="192" text-anchor="middle" class="svg-dim" font-size="8.5">un Actor =</text>
+
+                <!-- Actor + Components (bas centre) -->
+                <rect x="206" y="212" width="280" height="92" rx="9" fill="#59b0ff" fill-opacity="0.10" stroke="#59b0ff"/>
+                <text x="346" y="230" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Actor « Chaise »</text>
+                <rect x="218" y="240" width="80" height="40" rx="5" fill="#5ad19a" fill-opacity="0.18" stroke="#5ad19a"/>
+                <text x="258" y="256" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700">Static Mesh</text>
+                <text x="258" y="269" text-anchor="middle" class="svg-dim" font-size="8">la forme 3D</text>
+                <rect x="306" y="240" width="80" height="40" rx="5" fill="#f2b441" fill-opacity="0.18" stroke="#f2b441"/>
+                <text x="346" y="256" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700">Collision</text>
+                <text x="346" y="269" text-anchor="middle" class="svg-dim" font-size="8">le volume</text>
+                <rect x="394" y="240" width="80" height="40" rx="5" fill="#ff6b6b" fill-opacity="0.18" stroke="#ff6b6b"/>
+                <text x="434" y="256" text-anchor="middle" class="svg-text" font-size="8.5" font-weight="700">Light</text>
+                <text x="434" y="269" text-anchor="middle" class="svg-dim" font-size="8">(optionnel)</text>
+                <text x="346" y="298" text-anchor="middle" class="svg-dim" font-size="8.5">Actor = conteneur · Components = ses organes</text>
+
+                <!-- encadré distinction (droite) -->
+                <rect x="492" y="50" width="128" height="120" rx="9" fill="#5ad19a" fill-opacity="0.10" stroke="#5ad19a"/>
+                <text x="556" y="70" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">À retenir</text>
+                <text x="556" y="90" text-anchor="middle" class="svg-dim" font-size="8.5">Content Browser</text>
+                <text x="556" y="102" text-anchor="middle" class="svg-text" font-size="8.5">= ce que tu possèdes</text>
+                <text x="556" y="124" text-anchor="middle" class="svg-dim" font-size="8.5">Outliner</text>
+                <text x="556" y="136" text-anchor="middle" class="svg-text" font-size="8.5">= ce que tu as posé</text>
+                <text x="556" y="158" text-anchor="middle" class="svg-dim" font-size="8">1 asset → N instances</text>
+              </svg>
+              <figcaption>L'asset <code>SM_Chaise</code> vit <b>une seule fois</b> dans le Content Browser. Glissé dans le Level, il crée des <b>instances</b> (des Actors) listées dans l'Outliner — autant qu'on veut. Chaque Actor est un conteneur qui regroupe des <b>Components</b> (Static Mesh, Collision, Light…). Modifier l'asset source touche <b>toutes</b> les instances&nbsp;; modifier une instance ne touche qu'elle.</figcaption>
+            </figure>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je cherche un objet «&nbsp;dans la scène&nbsp;» mais je le vois dans la liste du bas et pas dans celle de droite (ou l'inverse).</div>
+                <div class="pi-cause"><b>Cause</b>Confusion entre le <b>Content Browser</b> (assets du projet) et l'<b>Outliner</b> (objets posés dans la scène).</div>
+                <div class="pi-fix"><b>Correction</b>Mémorise&nbsp;: Content Browser = bibliothèque (ce que tu possèdes)&nbsp;; Outliner = scène (ce que tu as posé). Un asset n'est dans l'Outliner que si tu l'as glissé dans le Level.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet importé arrive <b>100 fois trop grand</b> (ou minuscule) par rapport au reste.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion d'<b>unités</b>&nbsp;: Unreal est en centimètres (1&nbsp;uu = 1&nbsp;cm), beaucoup d'autres outils (dont Unity) sont en mètres.</div>
+                <div class="pi-fix"><b>Correction</b>Règle l'échelle à l'export depuis ton logiciel 3D, ou corrige le <em>Scale</em> à l'import. Vérifie qu'un cube de 1&nbsp;m fait bien 100&nbsp;uu. Voir <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai sélectionné un objet dans l'Outliner mais je ne le vois nulle part&nbsp;: il a «&nbsp;disparu&nbsp;».</div>
+                <div class="pi-cause"><b>Cause</b>L'objet est hors champ de la caméra (trop loin, trop petit, ou caché derrière un autre).</div>
+                <div class="pi-fix"><b>Correction</b>Avec l'objet sélectionné, appuie sur <b>F</b>&nbsp;: la caméra le cadre instantanément. Le focus est l'antidote universel à «&nbsp;j'ai perdu mon objet&nbsp;».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma scène est soudain toute plate, terne, sans ombres&nbsp;: «&nbsp;j'ai cassé l'éclairage&nbsp;!&nbsp;»</div>
+                <div class="pi-cause"><b>Cause</b>Le Viewport est passé en mode de vue <b>Unlit</b> (souvent par un raccourci involontaire)&nbsp;: il affiche sans la lumière.</div>
+                <div class="pi-fix"><b>Correction</b>Rien n'est cassé. Ouvre le menu <span class="menu-path">View Mode</span> et reviens à <b>Lit</b>. C'est un réglage d'affichage, pas une modification de la scène.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai modifié une chaise, et <b>toutes</b> les autres chaises de la scène ont changé en même temps.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as édité l'<b>asset source</b> (dans le Content Browser) au lieu de l'<b>instance</b> (dans le Level). Toutes les instances partagent la source.</div>
+                <div class="pi-fix"><b>Correction</b>Pour ne changer qu'un objet, sélectionne-le <b>dans la scène</b> et édite son panneau <b>Details</b>. Réserve l'édition de l'asset (double-clic dans le Content Browser) aux changements qui doivent s'appliquer partout.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes clics dans le Viewport ne sélectionnent plus rien&nbsp;: ils «&nbsp;peignent&nbsp;» ou sculptent à la place.</div>
+                <div class="pi-cause"><b>Cause</b>Tu es resté dans un <b>mode</b> autre que Select (Landscape, Foliage, Mesh Paint…).</div>
+                <div class="pi-fix"><b>Correction</b>Dans la barre des Modes, reviens en <b>Select</b>. C'est le mode normal de manipulation des Actors.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Prends en main l'éditeur en réalisant un petit assemblage et en prouvant que tu maîtrises les distinctions clés&nbsp;:</p>
+              <ol>
+                <li>Ouvre un Level. Identifie à voix haute (ou par écrit) les quatre panneaux&nbsp;: <b>Viewport</b>, <b>Outliner</b>, <b>Details</b>, <b>Content Browser</b>.</li>
+                <li>Navigue&nbsp;: vole (clic droit + WASD), orbite (Alt + clic gauche), cadre un objet existant avec <b>F</b>.</li>
+                <li>Depuis le <b>Content Browser</b>, glisse <b>deux</b> Static Meshes dans le Level. Vérifie qu'ils apparaissent bien dans l'<b>Outliner</b>.</li>
+                <li>Sélectionne le premier, et dans le panneau <b>Details</b>, donne-lui la position <em>Location</em> X&nbsp;=&nbsp;300 (soit 3&nbsp;m). Utilise ensuite les gizmos <b>W</b>, <b>E</b>, <b>R</b> sur le second.</li>
+                <li><b>Parente</b> le second Actor au premier dans l'Outliner, puis déplace le parent&nbsp;: vérifie que l'enfant suit.</li>
+                <li>Passe en mode de vue <b>Wireframe</b> puis <b>Unlit</b>, et reviens en <b>Lit</b>. Sauvegarde le Level (<kbd>Ctrl</kbd>+<kbd>S</kbd>).</li>
+                <li>Écris deux phrases&nbsp;: la différence entre le Content Browser et l'Outliner, et pourquoi un cube par défaut mesure 100&nbsp;uu.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais <b>nommer chaque panneau</b> et dire ce qu'il contient sans hésiter.</li>
+                  <li>Les deux Static Meshes sont posés dans le Level et <b>visibles dans l'Outliner</b> (et non seulement dans le Content Browser).</li>
+                  <li>La position X&nbsp;=&nbsp;300 saisie dans les <b>Details</b> déplace bien l'objet dans le Viewport, et tu as utilisé les trois gizmos <b>W/E/R</b>.</li>
+                  <li>Le <b>parentage</b> fonctionne&nbsp;: déplacer le parent entraîne l'enfant.</li>
+                  <li>Tu expliques correctement que le Content Browser = <b>assets/bibliothèque</b> et l'Outliner = <b>instances/scène</b>, et que 1&nbsp;uu = 1&nbsp;cm (donc 100&nbsp;uu = 1&nbsp;m).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Quatre panneaux structurent l'éditeur&nbsp;: <b>Viewport</b> (vue 3D), <b>Outliner</b> (liste des Actors de la scène), <b>Details</b> (propriétés de la sélection), <b>Content Browser</b> (bibliothèque des assets).</li>
+                <li><b>Content Browser = ce que tu possèdes</b> (les assets)&nbsp;; <b>Outliner = ce que tu as posé</b> (les instances dans le Level). Un asset peut donner N instances.</li>
+                <li>Un <b>Actor</b> est tout objet placé dans le Level&nbsp;; ses <b>Components</b> (Static Mesh, Light, Collision…) lui donnent forme et comportement. C'est l'équivalent du <b>GameObject</b>/Component d'Unity.</li>
+                <li>Navigation&nbsp;: <b>clic droit + WASD</b> (vol), <b>Alt + clic gauche</b> (orbite), molette (zoom), <b>F</b> (focus, retrouver un objet), gizmos <b>W/E/R</b> (déplacer/pivoter/redimensionner).</li>
+                <li>Les <b>modes de vue</b> (Lit, Unlit, Wireframe) ne changent que l'<b>affichage</b>, jamais la scène. Unreal mesure en <b>centimètres</b>&nbsp;: 1&nbsp;uu = 1&nbsp;cm (≠ Unity, en mètres).</li>
+                <li>Modifier l'<b>asset source</b> touche toutes les instances&nbsp;; modifier une <b>instance</b> via ses Details ne touche qu'elle.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Viewport</b> — la vue 3D centrale de l'éditeur&nbsp;; la caméra de travail qui montre le contenu du Level (perspective ou orthographique).</p>
+              <p><b>Outliner (World Outliner)</b> — panneau listant hiérarchiquement tous les Actors présents dans la scène en cours.</p>
+              <p><b>Details</b> — panneau affichant et permettant d'éditer les propriétés (position, matériau, options…) de l'élément sélectionné.</p>
+              <p><b>Content Browser</b> — bibliothèque de tous les assets du projet (modèles, textures, matériaux, sons)&nbsp;; équivalent du panneau Project d'Unity.</p>
+              <p><b>Level</b> — le mot d'Unreal pour une scène&nbsp;: l'espace 3D dans lequel on place les Actors.</p>
+              <p><b>Actor</b> — tout objet plaçable dans un Level (mur, lumière, caméra, personnage)&nbsp;; un conteneur qui apparaît dans l'Outliner.</p>
+              <p><b>Component</b> — brique fonctionnelle attachée à un Actor (Static Mesh, Light, Collision, Audio…) qui lui confère apparence ou comportement.</p>
+              <p><b>Mode de vue (View Mode)</b> — réglage d'affichage du Viewport (Lit, Unlit, Wireframe, Buffer Visualization) qui change l'image, jamais la scène.</p>
+              <p><b>Gizmo</b> — poignée colorée (X rouge, Y vert, Z bleu) servant à déplacer (W), pivoter (E) ou redimensionner (R) un objet à la souris.</p>
+              <p><b>Unreal Unit (uu)</b> — unité de distance d'Unreal&nbsp;; 1&nbsp;uu = 1&nbsp;cm (un cube par défaut = 100&nbsp;uu = 1&nbsp;m).</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unreal/e03-projet.html">E3 — Créer un projet Unreal</a>&nbsp;: mettre en place un projet propre après avoir compris l'interface.</li>
+              <li><a href="../../cours/unreal/e04-import-assets.html">E4 — Import d'assets</a>&nbsp;: faire entrer tes modèles dans le Content Browser au bon format et à la bonne échelle.</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage</a>&nbsp;: aller au-delà du mode Lit et maîtriser les sources de lumière.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: relier le vocabulaire Actor/Component à celui de GameObject/Component.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>&nbsp;: gérer l'écart d'unités (cm vs m) entre les moteurs.</li>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>&nbsp;: comprendre ce qu'est un Static Mesh avant de le placer.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C3 — Choisir son moteur · Atelier Game Art</title>
+  <meta name="description" content="Choisir entre Unity et Unreal selon le type de projet et son profil : un arbre de décision concret et les vrais critères.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="c03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/comparaison/c01-unity-vs-unreal.html">Comparaison</a><span class="sep">/</span>
+            <span>Choisir son moteur</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>C3 — Choisir son moteur</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>25 min</span>
+              <span class="badge">Piste 6 · Comparaison</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal pour le graphisme</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Lister les <b>vrais critères</b> de choix d'un moteur (et écarter les faux).</li>
+                <li>Suivre un <b>arbre de décision</b> pour trancher selon ton projet et ton profil.</li>
+                <li>Décider sereinement, en sachant que le choix <b>n'est pas définitif</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Après le comparatif de <a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1</a>, il faut <b>décider</b> — et beaucoup de débutants bloquent des semaines sur ce choix, ou le font pour de mauvaises raisons (la hype, «&nbsp;ce que font les pros&nbsp;»). Cette leçon te donne une méthode concrète pour choisir vite et bien, sans paralysie, et te rappelle que ce que tu apprends de game art te suivra quoi qu'il arrive.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Trois moteurs sur la table</div>
+              <p>Le choix ne se limite pas à Unity vs Unreal&nbsp;: <a href="../../cours/godot/g01-installation.html">Godot</a> (Piste&nbsp;5) est une <b>troisième option sérieuse</b>, surtout pour un débutant ou un indé&nbsp;: <b>libre et 100&nbsp;% gratuit</b> (MIT, sans royalties), léger, excellent en 2D/web et de plus en plus solide en 3D. Garde-le dans l'équation tout au long de cette leçon.</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les vrais critères de décision</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Critère</th><th>Penche Unity si…</th><th>Penche Unreal si…</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Type de projet</b></td><td>2D, mobile, XR, petit jeu stylisé.</td><td>3D photoréaliste, AAA, archviz, cinéma/virtual production.</td></tr>
+                  <tr><td><b>Plateforme cible</b></td><td>Mobile, web (WebGL), machines modestes.</td><td>PC/console puissants (Lumen/Nanite).</td></tr>
+                  <tr><td><b>Ton profil code</b></td><td>Tu es à l'aise (ou veux l'être) en C#.</td><td>Tu préfères le visuel (Blueprints) ou veux du C++.</td></tr>
+                  <tr><td><b>Équipe / écosystème</b></td><td>Communauté Unity, Asset Store, tutoriels indie abondants.</td><td>Pipelines AAA, Fab/MetaHuman, virtual production.</td></tr>
+                  <tr><td><b>Budget / délai</b></td><td>Itération rapide, machine légère, prototypage.</td><td>Photoréalisme «&nbsp;clé en main&nbsp;» accepté contre un coût matériel.</td></tr>
+                  <tr><td><b>Besoin de photoréalisme</b></td><td>Style assumé / non photoréaliste.</td><td>Réalisme attendu dès le départ.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>2. Les faux critères à ignorer</h3>
+            <ul>
+              <li><b>La hype</b>&nbsp;: «&nbsp;tout le monde parle d'UE5&nbsp;» n'est pas un besoin de ton projet.</li>
+              <li><b>«&nbsp;Les vrais pros utilisent X&nbsp;»</b>&nbsp;: les deux sont utilisés par des studios pro&nbsp;; cela ne dit rien de <em>ton</em> cas.</li>
+              <li><b>«&nbsp;Le plus beau&nbsp;»</b> dans l'absolu&nbsp;: la beauté vient de l'art et de l'éclairage (renvoi <a href="../../cours/fondamentaux/f02-theorie-artistique.html">F2</a>), pas du nom du moteur.</li>
+              <li><b>«&nbsp;Le choix est irréversible&nbsp;»</b>&nbsp;: faux, et c'est le point suivant.</li>
+            </ul>
+
+            <h3>3. Le critère qui dédramatise tout&nbsp;: la transférabilité</h3>
+            <p>Toute la <b>Piste&nbsp;0</b> — image numérique, théorie artistique, topologie, UV, PBR, baking, shaders, animation, VFX, optimisation — est <b>indépendante du moteur</b>. Une fois ces fondations acquises, passer d'Unity à Unreal (ou l'inverse) revient surtout à réapprendre une <em>interface</em> et une boucle de production, pas le métier. Le premier moteur prend des mois&nbsp;; le second, des semaines. Donc&nbsp;: choisis-en un, lance-toi, et ne crains pas l'engagement.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 290" role="img" aria-label="Arbre de décision pour choisir entre Unity et Unreal">
+                <g class="svg-text" font-size="11.5">
+                  <rect x="220" y="14" width="200" height="38" rx="9" class="svg-surface" stroke="#313c4c"/><text x="320" y="38" text-anchor="middle" font-weight="700">Cible mobile / 2D / XR&nbsp;?</text>
+                  <rect x="30" y="86" width="170" height="36" rx="9" fill="#7aa2f7" fill-opacity="0.16" stroke="#7aa2f7"/><text x="115" y="109" text-anchor="middle" font-weight="700">Oui → Unity</text>
+
+                  <rect x="240" y="86" width="280" height="38" rx="9" class="svg-surface" stroke="#313c4c"/><text x="380" y="110" text-anchor="middle" font-weight="700">Non → Photoréalisme PC/console attendu&nbsp;?</text>
+
+                  <rect x="430" y="156" width="180" height="36" rx="9" fill="#b48cff" fill-opacity="0.16" stroke="#b48cff"/><text x="520" y="179" text-anchor="middle" font-weight="700">Oui → Unreal</text>
+
+                  <rect x="200" y="156" width="200" height="38" rx="9" class="svg-surface" stroke="#313c4c"/><text x="300" y="180" text-anchor="middle" font-weight="700">Non → ton profil code&nbsp;?</text>
+
+                  <rect x="120" y="226" width="160" height="44" rx="9" fill="#7aa2f7" fill-opacity="0.16" stroke="#7aa2f7"/><text x="200" y="246" text-anchor="middle" font-weight="700">C# / léger</text><text x="200" y="263" text-anchor="middle" class="svg-dim">→ Unity</text>
+                  <rect x="330" y="226" width="170" height="44" rx="9" fill="#b48cff" fill-opacity="0.16" stroke="#b48cff"/><text x="415" y="246" text-anchor="middle" font-weight="700">Visuel / C++</text><text x="415" y="263" text-anchor="middle" class="svg-dim">→ Unreal</text>
+                </g>
+                <g stroke="#717c8c" stroke-width="1.6" fill="none">
+                  <path d="M250 52 L115 84"/><path d="M390 52 L380 84"/>
+                  <path d="M450 124 L520 154"/><path d="M340 124 L300 154"/>
+                  <path d="M270 194 L200 224"/><path d="M340 194 L415 224"/>
+                </g>
+              </svg>
+              <figcaption>Un arbre simple&nbsp;: la cible et le besoin de photoréalisme tranchent souvent&nbsp;; sinon ton rapport au code départage. Et rien n'est gravé dans le marbre.</figcaption>
+            </figure>
+
+            <h3>4. Conseil pour un débutant autodidacte</h3>
+            <p>Si tu hésites encore après l'arbre&nbsp;: prends celui qui correspond à ton <b>premier projet réaliste</b> (pas ton jeu de rêve à 5&nbsp;ans). Pour beaucoup de débutants solo visant le 2D/mobile/itération rapide, Unity est un point d'entrée doux&nbsp;; pour qui vise le décor 3D photoréaliste, Unreal donne des résultats gratifiants vite. Dans les deux cas, le plus important est de <b>commencer</b> et de finir de petits projets — pas de trouver le moteur «&nbsp;parfait&nbsp;».</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: ta décision en 5 questions</h2>
+            <ol>
+              <li>Quelle est ta <b>plateforme</b> cible principale&nbsp;? (mobile/web → Unity&nbsp;; PC/console haut de gamme → Unreal possible)</li>
+              <li>As-tu besoin de <b>photoréalisme</b> immédiat&nbsp;? (oui → Unreal&nbsp;; non/stylisé → indifférent)</li>
+              <li>Quel est ton <b>rapport au code</b>&nbsp;? (C# → Unity&nbsp;; visuel/C++ → Unreal)</li>
+              <li>Quelle <b>machine</b> as-tu&nbsp;? (modeste → Unity plus confortable)</li>
+              <li>Qu'est-ce qui t'<b>excite</b> le plus à ouvrir le soir&nbsp;? (la motivation compte&nbsp;: c'est elle qui te fera finir.)</li>
+            </ol>
+            <p>Additionne les tendances&nbsp;: une réponse claire émerge presque toujours. Si c'est 50/50, choisis celui qui te motive le plus et lance-toi — tu pourras explorer l'autre plus tard grâce à tes acquis de la Piste&nbsp;0.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je repousse mon projet depuis des semaines, indécis sur le moteur.</div>
+                <div class="pi-cause"><b>Cause</b>Paralysie du choix&nbsp;; peur de «&nbsp;se tromper&nbsp;».</div>
+                <div class="pi-fix"><b>Correction</b>Décide avec l'arbre, lance un petit projet. L'expérience vaut mieux que l'hésitation&nbsp;; le choix est réversible.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai pris Unreal pour un jeu mobile 2D et je rame.</div>
+                <div class="pi-cause"><b>Cause</b>Choix par hype/photoréalisme au lieu de la cible.</div>
+                <div class="pi-fix"><b>Correction</b>Reviens à la plateforme&nbsp;: mobile/2D penche fortement vers Unity.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je pense avoir «&nbsp;perdu&nbsp;» mon temps si je change de moteur.</div>
+                <div class="pi-cause"><b>Cause</b>Méconnaissance de la transférabilité des compétences.</div>
+                <div class="pi-fix"><b>Correction</b>Tes acquis Piste&nbsp;0 restent valables&nbsp;; seul l'éditeur change. Apprendre le second moteur est rapide.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Réponds par écrit aux 5 questions de la démo pour <em>ton</em> projet réel.</li>
+                <li>Suis l'arbre de décision et formule une phrase&nbsp;: «&nbsp;Pour CE projet, je choisis ___ parce que ___.&nbsp;»</li>
+                <li>Liste trois compétences déjà acquises (Piste&nbsp;0) qui te serviront quel que soit le moteur.</li>
+                <li>Engage-toi&nbsp;: installe le moteur choisi (renvoi <a href="../../cours/unity/u01-installation.html">U1</a> / <a href="../../cours/unreal/e01-installation.html">E1</a>) et ouvre un projet vide aujourd'hui.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Ta décision tient en une phrase argumentée, fondée sur la cible/le profil et non la hype.</li>
+                  <li>Tu sais nommer ce qui serait transférable si tu changeais plus tard.</li>
+                  <li>Tu as réellement installé un moteur et créé un projet.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Décide selon la <b>plateforme</b>, le besoin de <b>photoréalisme</b> et ton <b>profil code</b> — pas selon la hype.</li>
+                <li>Mobile/2D/XR/léger → Unity penche&nbsp;; photoréalisme PC/console/AAA → Unreal penche.</li>
+                <li>Le choix <b>n'est pas définitif</b>&nbsp;: la Piste&nbsp;0 est transférable, le second moteur s'apprend vite.</li>
+                <li>Le plus important&nbsp;: <b>commencer</b> et finir de petits projets, peu importe le moteur «&nbsp;parfait&nbsp;».</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Critère de décision</b> — facteur objectif (cible, profil, budget) guidant le choix d'un moteur.</p>
+              <p><b>Transférabilité</b> — capacité des compétences de game art à valoir d'un moteur à l'autre.</p>
+              <p><b>Plateforme cible</b> — support visé (mobile, web, PC, console) qui contraint fortement le choix.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: le comparatif détaillé qui nourrit ta décision.</li>
+              <li><a href="../../cours/unity/u01-installation.html">U1 — Installer Unity</a> ou <a href="../../cours/unreal/e01-installation.html">E1 — Installer Unreal</a>&nbsp;: passe à l'action.</li>
+              <li><a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5 — Le pipeline d'asset</a>&nbsp;: ce qui reste vrai quel que soit ton moteur.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

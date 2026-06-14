@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F9 — Matériaux & shaders · Atelier Game Art</title>
+  <meta name="description" content="Différence matériau/shader/texture, comment un shader calcule la couleur d'un pixel, et procédural vs texture-based.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Matériaux & shaders</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F9 — Matériaux & shaders</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a> et <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Distinguer sans hésiter <b>texture</b>, <b>matériau</b> et <b>shader</b>, et expliquer comment ils s'emboîtent.</li>
+                <li>Décrire le <b>pipeline de rendu GPU simplifié</b>&nbsp;: vertex shader → rasterisation → fragment shader, et dire ce que calcule chaque étape.</li>
+                <li>Expliquer ce qu'est un <b>uniforme</b>, une <b>donnée interpolée</b> entre sommets, et un <b>échantillonnage</b> de texture.</li>
+                <li>Choisir en connaissance de cause entre une approche <b>procédurale</b> et une approche <b>texture-based</b>, selon le coût VRAM, le coût GPU et l'<em>art-direction</em>.</li>
+                <li>Lire un petit <b>fragment shader</b> commenté et reconnaître ce qui le rend coûteux ou bon marché.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Sur un projet réel, le mot «&nbsp;matériau&nbsp;» est jeté à toutes les sauces, et c'est une source de bugs et de quiproquos constants. Un artiste dit «&nbsp;passe-moi le matériau du sol&nbsp;» en pensant à un fichier&nbsp;; un programmeur entend «&nbsp;le shader&nbsp;»&nbsp;; un lead technique surveille la <span class="term">VRAM</span> (la mémoire vidéo de la carte graphique) et pense aux <b>textures</b>. Ce sont <b>trois choses différentes</b>, et confondre les trois conduit à des décisions absurdes&nbsp;: dupliquer cinquante shaders là où il fallait cinquante <em>variantes</em> d'un seul, ou faire exploser la mémoire en croyant alléger la scène.</p>
+            <p>Comprendre cette hiérarchie, c'est aussi comprendre <b>où dépenser</b>. Le rendu temps réel est une chasse au budget&nbsp;: chaque image doit sortir en moins de 16&nbsp;millisecondes pour tenir 60&nbsp;images par seconde. Or le coût d'un visuel ne se situe pas «&nbsp;dans le matériau&nbsp;» de façon vague&nbsp;: il se loge soit dans la <b>VRAM</b> (les textures), soit dans le <b>nombre d'instructions exécutées par le GPU</b> (le shader), soit dans le <b>nombre d'objets à dessiner</b>. Savoir lequel des trois te coûte cher détermine entièrement ta stratégie d'<a href="../../cours/fondamentaux/f12-optimisation.html">optimisation</a>.</p>
+            <p>Enfin, c'est le socle conceptuel des éditeurs visuels que tu utiliseras juste après&nbsp;: le <a href="../../cours/unity/u06-materiaux.html">Shader Graph d'Unity</a> et le <a href="../../cours/unreal/e05-material-editor.html">Material Editor d'Unreal</a> ne sont rien d'autre que des façons de <b>construire un shader</b> et d'en <b>régler un matériau</b> sans écrire de code. Sans la carte mentale de cette leçon, ces éditeurs ressemblent à une soupe de nœuds&nbsp;; avec elle, ils deviennent évidents.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La hiérarchie qu'on confond toujours&nbsp;: texture ⊂ matériau, basé sur un shader</h3>
+            <p>Posons les trois définitions, dans l'ordre du plus abstrait au plus concret.</p>
+            <ul>
+              <li>Le <span class="term">shader</span> est un <b>petit programme exécuté par le GPU</b>. Il décrit la <em>logique</em> de calcul de l'apparence&nbsp;: «&nbsp;prends une couleur de base, mélange-la avec l'éclairage, applique la rugosité, etc.&nbsp;». Un shader expose des <b>entrées</b> (des cases à remplir)&nbsp;: une couleur, un nombre, une texture à brancher. En lui-même, il ne représente <b>aucune</b> matière précise&nbsp;: c'est un moule vide.</li>
+              <li>Le <span class="term">matériau</span> (ou <em>material</em>) est <b>un shader dont on a rempli toutes les entrées avec des valeurs précises</b>. «&nbsp;Le shader PBR standard, avec couleur de base = cette image de bois, rugosité = 0,7, métallique = 0&nbsp;»&nbsp;: voilà un matériau. C'est un <b>fichier d'asset</b> que l'artiste manipule et range dans le projet.</li>
+              <li>La <span class="term">texture</span> est <b>une image</b> — une grille de pixels — utilisée comme <b>donnée d'entrée</b> par le matériau. Une texture n'a aucune intelligence&nbsp;: c'est juste un tableau de nombres (couleurs, rugosités, directions de normales…). Voir <a href="../../cours/fondamentaux/f07-pbr.html">F7</a> pour le détail des maps PBR.</li>
+            </ul>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>L'analogie de la recette</div>
+              <p>Le <b>shader est une recette de cuisine</b>&nbsp;: la liste des étapes («&nbsp;mélanger, cuire, napper&nbsp;»), valable pour une infinité de plats. Le <b>matériau est cette recette avec ses quantités et ses ingrédients précis</b>&nbsp;: «&nbsp;la recette de tarte, avec ces pommes-ci, 80&nbsp;g de sucre&nbsp;». La <b>texture est un ingrédient</b>&nbsp;: les pommes elles-mêmes, brutes. Une même recette (shader) donne mille tartes différentes (matériaux) selon les ingrédients (textures) et les quantités (paramètres). C'est exactement pour ça qu'un projet contient <b>peu de shaders</b>, <b>beaucoup de matériaux</b>, et <b>énormément de textures</b>.</p>
+            </div>
+            <p>La relation d'inclusion est donc&nbsp;: une <b>texture appartient</b> à un matériau (elle est l'un de ses ingrédients), et un <b>matériau est basé sur</b> un shader (il en est une instanciation). Le piège classique — «&nbsp;un matériau, c'est une texture&nbsp;» — vient de ce qu'un matériau <em>minimal</em> peut n'avoir qu'une seule texture en couleur de base. Mais un vrai matériau PBR en combine sept ou huit (couleur, métallique, rugosité, normale, occlusion…), et certains matériaux n'utilisent <b>aucune</b> texture (tout est calculé&nbsp;: voir le procédural plus loin).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 330" role="img" aria-label="Arbre de hiérarchie : un shader en haut, plusieurs matériaux qui en dérivent au milieu, et les textures et paramètres branchés sur chaque matériau">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Un shader → plusieurs matériaux → leurs textures &amp; paramètres</text>
+                <rect x="230" y="42" width="180" height="50" rx="10" class="svg-surface" stroke="#c89bff" stroke-width="2.5"/>
+                <text x="320" y="66" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">SHADER « PBR Lit »</text>
+                <text x="320" y="83" text-anchor="middle" class="svg-dim" font-size="10">programme GPU — le moule, des entrées vides</text>
+                <line x1="320" y1="92" x2="130" y2="138" stroke="#313c4c" stroke-width="1.5"/>
+                <line x1="320" y1="92" x2="320" y2="138" stroke="#313c4c" stroke-width="1.5"/>
+                <line x1="320" y1="92" x2="510" y2="138" stroke="#313c4c" stroke-width="1.5"/>
+                <rect x="40" y="138" width="180" height="46" rx="9" class="svg-surface" stroke="#59b0ff" stroke-width="2"/>
+                <text x="130" y="160" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Matériau « Bois »</text>
+                <text x="130" y="176" text-anchor="middle" class="svg-dim" font-size="9">rough 0,7 · metal 0</text>
+                <rect x="230" y="138" width="180" height="46" rx="9" class="svg-surface" stroke="#59b0ff" stroke-width="2"/>
+                <text x="320" y="160" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Matériau « Or »</text>
+                <text x="320" y="176" text-anchor="middle" class="svg-dim" font-size="9">rough 0,1 · metal 1</text>
+                <rect x="420" y="138" width="180" height="46" rx="9" class="svg-surface" stroke="#59b0ff" stroke-width="2"/>
+                <text x="510" y="160" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Matériau « Brique »</text>
+                <text x="510" y="176" text-anchor="middle" class="svg-dim" font-size="9">rough 0,9 · metal 0</text>
+                <line x1="130" y1="184" x2="80" y2="226" stroke="#313c4c" stroke-width="1.2"/>
+                <line x1="130" y1="184" x2="170" y2="226" stroke="#313c4c" stroke-width="1.2"/>
+                <rect x="28" y="226" width="104" height="40" rx="6" class="svg-surface" stroke="#5ad19a" stroke-width="1.5"/>
+                <text x="80" y="244" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">texture couleur</text>
+                <text x="80" y="258" text-anchor="middle" class="svg-dim" font-size="9">bois_albedo.png</text>
+                <rect x="142" y="226" width="104" height="40" rx="6" class="svg-surface" stroke="#5ad19a" stroke-width="1.5"/>
+                <text x="194" y="244" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">texture normale</text>
+                <text x="194" y="258" text-anchor="middle" class="svg-dim" font-size="9">bois_normal.png</text>
+                <line x1="320" y1="184" x2="320" y2="226" stroke="#313c4c" stroke-width="1.2"/>
+                <rect x="262" y="226" width="116" height="40" rx="6" class="svg-surface" stroke="#f2b441" stroke-width="1.5"/>
+                <text x="320" y="244" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">paramètre couleur</text>
+                <text x="320" y="258" text-anchor="middle" class="svg-dim" font-size="9">(aucune texture)</text>
+                <line x1="510" y1="184" x2="510" y2="226" stroke="#313c4c" stroke-width="1.2"/>
+                <rect x="452" y="226" width="116" height="40" rx="6" class="svg-surface" stroke="#5ad19a" stroke-width="1.5"/>
+                <text x="510" y="244" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">texture couleur</text>
+                <text x="510" y="258" text-anchor="middle" class="svg-dim" font-size="9">brique_albedo.png</text>
+                <text x="320" y="300" text-anchor="middle" class="svg-dim" font-size="11">Peu de shaders (violet) · beaucoup de matériaux (bleu) · énormément de textures &amp; paramètres (vert/or)</text>
+              </svg>
+              <figcaption>Le même shader (violet) sert de base à plusieurs matériaux (bleu), qui se distinguent par leurs paramètres et leurs textures (vert/or). Un matériau peut très bien n'avoir aucune texture, comme l'or ici.</figcaption>
+            </figure>
+
+            <h3>2. Comment le GPU fabrique une image&nbsp;: le pipeline en trois temps</h3>
+            <p>Pour comprendre <em>où</em> un shader intervient, il faut une image mentale du chemin parcouru entre «&nbsp;un objet 3D existe&nbsp;» et «&nbsp;des pixels colorés s'affichent à l'écran&nbsp;». Ce chemin s'appelle le <span class="term">pipeline de rendu</span>. On le simplifie ici en trois étapes essentielles&nbsp;; le GPU les répète des millions de fois par image, en parallèle massif.</p>
+
+            <h4>Étape 1 — Le vertex shader&nbsp;: placer les sommets à l'écran</h4>
+            <p>Tout commence par les <span class="gloss">sommets</span> (<em>vertices</em>) de ton <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">mesh</a>&nbsp;: les points qui définissent sa géométrie. Le <span class="term">vertex shader</span> est un petit programme exécuté <b>une fois par sommet</b>. Sa mission principale&nbsp;: transformer la position de chaque sommet depuis l'espace de l'objet jusqu'à l'<b>espace écran</b> (en 2D, avec une profondeur). Concrètement, il applique les matrices de transformation (position/rotation/échelle de l'objet, point de vue de la caméra, projection en perspective) pour répondre à la question&nbsp;: «&nbsp;ce point de la 3D, il tombe <em>où</em> sur l'écran&nbsp;?&nbsp;».</p>
+            <p>Le vertex shader peut aussi <b>déplacer</b> les sommets pour animer un drapeau, faire onduler de l'herbe ou gonfler un personnage&nbsp;; et il prépare des données qui voyageront vers l'étape suivante (coordonnées <span class="gloss">UV</span>, normale, couleur de sommet).</p>
+
+            <h4>Étape 2 — La rasterisation&nbsp;: quels pixels sont couverts&nbsp;?</h4>
+            <p>Une fois les sommets placés, ils forment des <b>triangles</b> à l'écran. La <span class="term">rasterisation</span> est l'étape — câblée dans le matériel, tu ne l'écris pas — qui détermine, pour chaque triangle, <b>quels pixels de l'écran il recouvre</b>. Pour chaque pixel couvert, elle produit un <span class="term">fragment</span>&nbsp;: un «&nbsp;candidat pixel&nbsp;» qui porte toutes les données du triangle, mais <b>interpolées</b> jusqu'à sa position exacte.</p>
+            <p>Cette interpolation est cruciale. Un triangle n'a que trois sommets, chacun avec sa propre normale, ses UV, sa couleur. Mais il couvre peut-être 5&nbsp;000 pixels. Le rasterizer calcule, pour chaque pixel intérieur, une <b>moyenne pondérée</b> des valeurs des trois coins selon la distance&nbsp;: c'est l'<span class="term">interpolation</span>. C'est elle qui fait qu'un dégradé peint sur les sommets devient un dégradé lisse sur toute la surface, et que les coordonnées UV «&nbsp;coulent&nbsp;» continûment d'un sommet à l'autre pour permettre l'échantillonnage de texture.</p>
+
+            <h4>Étape 3 — Le fragment shader&nbsp;: calculer la couleur de CHAQUE pixel</h4>
+            <p>C'est ici que vit l'essentiel de ton travail d'artiste. Le <span class="term">fragment shader</span> (aussi appelé <span class="term">pixel shader</span>) est exécuté <b>une fois par fragment</b>, c'est-à-dire potentiellement des millions de fois par image. Sa mission&nbsp;: <b>produire la couleur finale</b> de ce pixel. Pour cela il&nbsp;:</p>
+            <ul>
+              <li><b>échantillonne</b> les textures du matériau aux coordonnées UV interpolées (il «&nbsp;va lire&nbsp;» la couleur du bois à l'endroit pile où se trouve ce pixel)&nbsp;;</li>
+              <li>applique le modèle d'<b>éclairage PBR</b> (voir <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>)&nbsp;: il combine la couleur de base, la rugosité, le métallique, la normale et les lumières de la scène pour calculer reflets et ombrage&nbsp;;</li>
+              <li>renvoie une couleur RVBA.</li>
+            </ul>
+            <p>Le point décisif pour ton budget&nbsp;: comme ce code tourne <b>par pixel</b>, chaque instruction supplémentaire y est multipliée par des millions. Une formule lourde dans le fragment shader coûte donc <b>bien plus cher</b> que la même formule dans le vertex shader (où elle ne tourne que par sommet). C'est la première règle d'or de l'optimisation de shaders&nbsp;: <em>déplace vers le vertex shader tout ce qui peut l'être</em>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 260" role="img" aria-label="Chaîne du pipeline GPU : sommets, puis vertex shader, puis rasterizer, puis fragment shader, puis pixel à l'écran, avec annotations">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">La chaîne GPU : du sommet au pixel</text>
+                <rect x="14" y="64" width="96" height="62" rx="9" class="svg-surface" stroke="#313c4c" stroke-width="2"/>
+                <text x="62" y="92" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Sommets</text>
+                <text x="62" y="108" text-anchor="middle" class="svg-dim" font-size="9">positions 3D, UV</text>
+                <rect x="138" y="64" width="108" height="62" rx="9" class="svg-surface" stroke="#59b0ff" stroke-width="2.5"/>
+                <text x="192" y="86" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#59b0ff">Vertex</text>
+                <text x="192" y="100" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#59b0ff">Shader</text>
+                <text x="192" y="116" text-anchor="middle" class="svg-dim" font-size="9">1× par sommet</text>
+                <rect x="274" y="64" width="108" height="62" rx="9" class="svg-surface" stroke="#f2b441" stroke-width="2.5"/>
+                <text x="328" y="90" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#f2b441">Rasterizer</text>
+                <text x="328" y="106" text-anchor="middle" class="svg-dim" font-size="9">pixels couverts</text>
+                <text x="328" y="118" text-anchor="middle" class="svg-dim" font-size="9">+ interpolation</text>
+                <rect x="410" y="64" width="116" height="62" rx="9" class="svg-surface" stroke="#f2b441" stroke-width="2.5"/>
+                <text x="468" y="86" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#f2b441">Fragment</text>
+                <text x="468" y="100" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#f2b441">Shader</text>
+                <text x="468" y="116" text-anchor="middle" class="svg-dim" font-size="9">1× par pixel</text>
+                <rect x="554" y="64" width="76" height="62" rx="9" class="svg-surface" stroke="#5ad19a" stroke-width="2.5"/>
+                <text x="592" y="92" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#5ad19a">Pixel</text>
+                <text x="592" y="108" text-anchor="middle" class="svg-dim" font-size="9">à l'écran</text>
+                <g stroke="#313c4c" stroke-width="2.5" fill="#313c4c">
+                  <line x1="110" y1="95" x2="134" y2="95"/><polygon points="138,95 128,90 128,100"/>
+                  <line x1="246" y1="95" x2="270" y2="95"/><polygon points="274,95 264,90 264,100"/>
+                  <line x1="382" y1="95" x2="406" y2="95"/><polygon points="410,95 400,90 400,100"/>
+                  <line x1="526" y1="95" x2="550" y2="95"/><polygon points="554,95 544,90 544,100"/>
+                </g>
+                <text x="192" y="158" text-anchor="middle" class="svg-dim" font-size="10">transforme en espace écran</text>
+                <text x="328" y="158" text-anchor="middle" class="svg-dim" font-size="10">découpe en fragments</text>
+                <text x="468" y="158" text-anchor="middle" class="svg-dim" font-size="10">échantillonne textures + PBR</text>
+                <rect x="138" y="190" width="388" height="46" rx="9" class="svg-surface" stroke="#c89bff" stroke-width="2" stroke-dasharray="5 4"/>
+                <text x="332" y="210" text-anchor="middle" class="svg-text" font-size="11" font-weight="700" fill="#c89bff">Uniformes (mêmes pour tous) : matrices caméra, paramètres, lumières…</text>
+                <text x="332" y="227" text-anchor="middle" class="svg-dim" font-size="10">injectés dans le vertex ET le fragment shader avant le dessin</text>
+                <line x1="192" y1="190" x2="192" y2="128" stroke="#c89bff" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <line x1="468" y1="190" x2="468" y2="128" stroke="#c89bff" stroke-width="1.5" stroke-dasharray="4 3"/>
+              </svg>
+              <figcaption>Le vertex shader tourne une fois par sommet, le fragment shader une fois par pixel (donc beaucoup plus souvent). Les uniformes (violet) sont les données constantes injectées pour tout l'objet&nbsp;: matrices, paramètres du matériau, lumières.</figcaption>
+            </figure>
+
+            <h3>3. Uniformes, attributs, varyings&nbsp;: d'où viennent les données</h3>
+            <p>Un shader ne calcule rien à partir de rien&nbsp;; il reçoit trois sortes d'entrées qu'il faut distinguer.</p>
+            <ul>
+              <li>Les <span class="term">uniformes</span> sont des valeurs <b>identiques pour tout l'objet pendant un dessin</b>&nbsp;: la matrice de la caméra, l'heure, la couleur réglée dans le matériau, la position des lumières. «&nbsp;Uniforme&nbsp;» veut dire «&nbsp;constant sur toute la surface&nbsp;». <b>C'est par ces uniformes que tes paramètres de matériau arrivent dans le shader.</b> Quand tu glisses un curseur de rugosité dans Unity, tu modifies un uniforme.</li>
+              <li>Les <b>attributs de sommet</b> sont des données <b>propres à chaque sommet</b>, lues depuis le mesh&nbsp;: sa position, sa normale, ses UV, sa couleur de sommet. Ils entrent dans le vertex shader.</li>
+              <li>Les <span class="term">varyings</span> (ou <em>données interpolées</em>) sont les valeurs que le vertex shader <b>transmet</b> au fragment shader <b>en passant par l'interpolation</b> du rasterizer. Les UV en sont l'exemple-roi&nbsp;: définies par sommet, elles arrivent au fragment shader interpolées pixel par pixel, ce qui permet d'échantillonner la texture au bon endroit.</li>
+            </ul>
+            <p>Comprendre ce trio explique une énigme fréquente du débutant&nbsp;: «&nbsp;pourquoi ma couleur de sommet fait-elle un dégradé alors que je n'ai mis que trois couleurs&nbsp;?&nbsp;». Réponse&nbsp;: parce qu'elle voyage comme un <em>varying</em>, donc interpolée.</p>
+
+            <h3>4. Échantillonner une texture&nbsp;: lire une image avec des coordonnées UV</h3>
+            <p><span class="term">Échantillonner</span> (<em>to sample</em>) une texture, c'est demander&nbsp;: «&nbsp;quelle est la couleur de cette image à la coordonnée (u,&nbsp;v)&nbsp;?&nbsp;». Les coordonnées <span class="gloss">UV</span> (voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) vont de 0 à 1 et disent «&nbsp;à quel endroit de l'image plaquer ce point de la surface&nbsp;». Le fragment shader, qui connaît l'UV interpolé de son pixel, lance un <em>sample</em> et récupère la couleur correspondante.</p>
+            <p>Ce n'est pas gratuit. Chaque échantillonnage est un <b>accès mémoire</b> à la VRAM, plus lent qu'un calcul arithmétique. C'est pourquoi le nombre de textures échantillonnées par un shader (le nombre de <em>texture samples</em>) est une métrique de performance surveillée de près&nbsp;: huit lectures de texture par pixel coûtent réellement, surtout sur mobile. Le matériel atténue le coût avec un <b>cache de texture</b> et le <span class="gloss">mip-mapping</span> (versions réduites de l'image pour les surfaces lointaines), mais l'ordre de grandeur reste&nbsp;: une texture lue = de la VRAM occupée + un accès mémoire par pixel.</p>
+
+            <h3>5. Procédural vs texture-based&nbsp;: calculer ou stocker&nbsp;?</h3>
+            <p>Il existe deux grandes façons de fournir un motif à un matériau, et l'arbitrage entre les deux est l'une des décisions les plus structurantes du métier.</p>
+
+            <h4>L'approche texture-based (à base d'images)</h4>
+            <p>On <em>bake</em> (on «&nbsp;cuit&nbsp;», on fige) le motif dans une image, peinte dans <a href="../../cours/logiciels/l02-substance.html">Substance</a> ou <a href="../../cours/logiciels/l03-logiciels-2d.html">Photoshop</a>, et le shader se contente de la lire. Avantages&nbsp;: c'est totalement <b>art-directable</b> (l'artiste contrôle chaque pixel, place une éraflure exactement où il veut), <b>prévisible</b> (ce que tu vois est ce que tu auras) et <b>bon marché en GPU</b> (lire une image est rapide). Inconvénient majeur&nbsp;: cela <b>coûte de la VRAM</b>, et la résolution est <b>finie</b> — le nez collé dessus, on voit les pixels (la texture «&nbsp;pixelise&nbsp;»).</p>
+
+            <h4>L'approche procédurale (calculée)</h4>
+            <p>Le motif est <b>calculé par une formule</b> dans le shader&nbsp;: du <span class="term">bruit</span> (<em>noise</em>, des taches pseudo-aléatoires servant à simuler le grain, les nuages, la rouille), des <b>gradients</b> (dégradés mathématiques), des motifs géométriques (damier, briques). Avantages&nbsp;: <b>résolution infinie</b> (une formule n'a pas de pixels&nbsp;; on peut zoomer sans fin sans jamais «&nbsp;pixeliser&nbsp;»), un poids disque/VRAM <b>quasi nul</b> (on stocke quelques lignes de code, pas des mégaoctets d'image), et une variation facile en changeant un paramètre. Inconvénients&nbsp;: c'est <b>coûteux en GPU</b> (les formules de bruit sont gourmandes en instructions, et ça tourne par pixel), et c'est <b>moins art-directable</b>&nbsp;: obtenir une éraflure précise à un endroit précis avec une formule relève du casse-tête, là où un coup de pinceau suffirait sur une texture.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Critère</th><th>Texture-based (image)</th><th>Procédural (calculé)</th></tr></thead>
+                <tbody>
+                  <tr><td>Coût VRAM / disque</td><td><b>Élevé</b> (l'image occupe la mémoire)</td><td><b>Quasi nul</b> (juste du code)</td></tr>
+                  <tr><td>Coût GPU (par pixel)</td><td><b>Faible</b> (simple lecture)</td><td><b>Élevé</b> (formules lourdes)</td></tr>
+                  <tr><td>Résolution</td><td>Finie — pixelise de près</td><td><b>Infinie</b> — jamais de pixels</td></tr>
+                  <tr><td>Art-direction</td><td><b>Totale</b> (chaque pixel contrôlé)</td><td>Difficile (motifs «&nbsp;mathématiques&nbsp;»)</td></tr>
+                  <tr><td>Idéal pour</td><td>Détails uniques, logos, usure placée</td><td>Surfaces vastes, bruit, variation, tuilage</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>En vrai, on mélange les deux</div>
+              <p>La production réelle est rarement 100&nbsp;% de l'un ou de l'autre. <a href="../../cours/logiciels/l02-substance.html">Substance Designer</a> construit ses textures de façon <b>procédurale</b>, puis les <b>exporte en images</b>&nbsp;: on profite de la flexibilité du procédural à l'<em>authoring</em> et de la rapidité de la texture au <em>runtime</em>. Et un shader de terrain peut lire des textures détaillées <b>tout en</b> ajoutant un bruit procédural pour casser la répétition (le tuilage visible). Le procédural pur dans le shader final est surtout réservé aux effets, à l'animation (eau, énergie) et aux surfaces immenses où la VRAM serait prohibitive.</p>
+            </div>
+
+            <h3>6. Construire un shader&nbsp;: nœuds visuels ou code&nbsp;?</h3>
+            <p>On écrit un shader de deux manières, qui produisent le même résultat GPU.</p>
+            <ul>
+              <li>En <b>code</b>, dans un langage de shading&nbsp;: <span class="term">HLSL</span> (utilisé par DirectX, Unity et Unreal côté code) ou <span class="term">GLSL</span> (utilisé par OpenGL/WebGL). C'est puissant et précis, mais exigeant.</li>
+              <li>En <b>graphe de nœuds</b> (<em>shader graph</em>)&nbsp;: on relie visuellement des boîtes (texture, multiplication, bruit…) au lieu d'écrire des lignes. Le moteur compile ensuite ce graphe en code HLSL/GLSL. C'est l'approche dominante en game art aujourd'hui, car elle reste lisible et donne un retour visuel immédiat. Tu la verras en détail dans <a href="../../cours/unity/u06-materiaux.html">U6 — Shader Graph (Unity)</a> et <a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor (Unreal)</a>.</li>
+            </ul>
+            <p>Que tu branches des nœuds ou que tu tapes du code, tu écris <b>la même chose</b>&nbsp;: un vertex shader et un fragment shader. Voici un fragment shader minimal, commenté, qui ne fait que sortir une couleur orange — la «&nbsp;Hello World&nbsp;» du shading. Lis-le comme une recette&nbsp;: il reçoit des entrées, il renvoie une couleur.</p>
+            <div class="codeblock" data-lang="GLSL">
+<pre><code>// ---- Fragment shader minimal (style GLSL) ----
+// Il s'exécute UNE FOIS POUR CHAQUE PIXEL couvert par l'objet.
+
+precision mediump float;          // précision des nombres à virgule
+
+// UNIFORME : valeur identique pour tout l'objet,
+// fournie par le matériau (ici, une couleur réglable).
+uniform vec3 u_baseColor;         // ex. (1.0, 0.48, 0.27) = orange
+
+// VARYING : donnée interpolée venue du vertex shader,
+// différente pour chaque pixel (ici la coordonnée UV).
+varying vec2 v_uv;
+
+void main() {
+    // Petit dégradé vertical CALCULÉ (procédural) à partir de l'UV :
+    // en bas (v = 0) plus sombre, en haut (v = 1) plus clair.
+    float ombrage = mix(0.6, 1.0, v_uv.y);
+
+    vec3 couleur = u_baseColor * ombrage;
+
+    // Sortie : la couleur finale du pixel, en RVBA (A = opacité).
+    gl_FragColor = vec4(couleur, 1.0);
+}</code></pre>
+            </div>
+            <p>Remarque trois choses. (1)&nbsp;<code>u_baseColor</code> est un <b>uniforme</b>&nbsp;: c'est le paramètre que l'artiste règle dans le matériau. (2)&nbsp;<code>v_uv</code> est un <b>varying</b> interpolé&nbsp;: il diffère à chaque pixel, ce qui permet le dégradé. (3)&nbsp;Le calcul est <b>procédural</b> (aucune texture lue ici)&nbsp;: pour passer en texture-based, on remplacerait <code>u_baseColor * ombrage</code> par un échantillonnage de texture aux coordonnées <code>v_uv</code>. Chaque instruction ajoutée dans <code>main()</code> est payée <b>par pixel</b>.</p>
+
+            <h3>7. Le coût d'un shader et l'ordre de rendu</h3>
+            <p>Deux notions de production à intégrer dès maintenant.</p>
+            <p>D'abord, la <b>complexité d'un shader</b> se mesure (entre autres) en <span class="term">nombre d'instructions</span> exécutées par pixel et en nombre de <em>texture samples</em>. Un shader truffé de branches conditionnelles, de boucles et de calculs de bruit peut être plusieurs dizaines de fois plus cher qu'un shader simple — et comme cela tourne par pixel, le coût explose en plein écran. Unreal propose une vue «&nbsp;Shader Complexity&nbsp;» (du vert au rouge) précisément pour repérer les matériaux trop lourds.</p>
+            <p>Ensuite, l'<span class="term">ordre de rendu</span> et la <b>transparence</b>. Les objets opaques sont dessinés en premier et trient leur profondeur tout seuls grâce au <span class="gloss">Z-buffer</span> (un tampon qui retient «&nbsp;quel pixel est le plus proche&nbsp;»). Mais les objets <b>transparents</b> doivent se mélanger avec ce qui est <em>derrière</em> eux&nbsp;: il faut donc les dessiner <b>après</b> les opaques, et <b>du plus lointain au plus proche</b>. Si l'ordre est faux, une vitre proche peut «&nbsp;effacer&nbsp;» une vitre lointaine, ou un effet de fumée disparaître devant un objet qu'il devrait recouvrir. C'est l'origine du fameux bug «&nbsp;ma transparence clignote / le tri se trompe&nbsp;», traité en profondeur en <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a> et <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Construisons un matériau dans le <b>Shader Editor de Blender</b> pour <em>voir</em> la hiérarchie shader → matériau → texture, et le rôle des entrées. La logique est strictement la même dans le <a href="../../cours/unity/u06-materiaux.html">Shader Graph d'Unity</a> et le <a href="../../cours/unreal/e05-material-editor.html">Material Editor d'Unreal</a>&nbsp;; seuls les noms changent.</p>
+            <ol>
+              <li>Sélectionne un objet, puis ouvre l'éditeur de nœuds&nbsp;: <span class="menu-path">Shading<span class="arrow">▸</span>Shader Editor</span>. Le nœud <b>Principled BSDF</b> qui apparaît <em>est</em> le shader&nbsp;; ses cases d'entrée (Base Color, Roughness…) sont les ingrédients à remplir. Tant qu'elles ne sont pas remplies, tu n'as qu'un moule.</li>
+              <li>Crée le matériau&nbsp;: <span class="menu-path">Material Properties<span class="arrow">▸</span>New</span>. <b>Ce qui se passe</b>&nbsp;: tu viens d'instancier le shader en un <b>matériau</b> nommé, un asset que tu peux réutiliser sur d'autres objets. Renomme-le «&nbsp;M_Bois&nbsp;» pour la clarté.</li>
+              <li>Branche une <b>texture</b> (un ingrédient)&nbsp;: <span class="menu-path">Add<span class="arrow">▸</span>Texture<span class="arrow">▸</span>Image Texture</span>, charge une image de bois, et relie sa sortie <b>Color</b> à l'entrée <b>Base Color</b> du BSDF. Vérifie son <em>Color Space</em> sur <b>sRGB</b> (c'est une couleur, cf.&nbsp;<a href="../../cours/fondamentaux/f07-pbr.html">F7</a>). Tu vois&nbsp;: la texture <b>nourrit</b> le matériau, elle n'<b>est</b> pas le matériau.</li>
+              <li>Compare procédural et texture-based&nbsp;: ajoute un <span class="menu-path">Add<span class="arrow">▸</span>Texture<span class="arrow">▸</span>Noise Texture</span>. Ce nœud ne lit <b>aucune image</b>&nbsp;: il <b>calcule</b> un bruit. Branche-le temporairement dans <b>Base Color</b>. <b>Effet</b>&nbsp;: un motif net à n'importe quel zoom (résolution infinie), mais «&nbsp;mathématique&nbsp;» et difficile à diriger. Tu sens là, en direct, l'arbitrage de la section&nbsp;5.</li>
+              <li>Mélange les deux comme en production&nbsp;: insère un nœud <span class="menu-path">Add<span class="arrow">▸</span>Color<span class="arrow">▸</span>Mix Color</span> pour <b>combiner</b> ta texture de bois et le bruit (le bruit cassant la répétition). C'est le pattern «&nbsp;texture + procédural&nbsp;» qui évite le tuilage visible.</li>
+              <li>Crée une <b>variante</b> sans toucher au shader&nbsp;: duplique le matériau (bouton du <em>nombre d'utilisateurs</em> à côté du nom, ou <span class="menu-path">Material Properties<span class="arrow">▸</span>Browse Material</span>), renomme-le «&nbsp;M_Or&nbsp;», passe <b>Metallic</b> à 1, <b>Roughness</b> à 0,1 et mets une couleur jaune. <b>Démonstration de la leçon</b>&nbsp;: deux matériaux radicalement différents, <b>un seul</b> shader.</li>
+              <li>Observe le coût&nbsp;: en mode <em>Material Preview</em>, ajoute des nœuds de bruit en série et regarde le viewport ralentir. Chaque opération s'exécute <b>par pixel</b>&nbsp;: c'est la complexité de shader rendue tangible.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Le projet contient 200 «&nbsp;shaders&nbsp;» quasi identiques, les temps de compilation explosent et la moindre retouche se répète partout.</div>
+                <div class="pi-cause"><b>Cause</b> — Confusion shader/matériau&nbsp;: on a écrit un nouveau shader pour chaque variation alors qu'il fallait <b>un shader et 200 matériaux</b> (ou instances de matériau).</div>
+                <div class="pi-fix"><b>Correction</b> — Garde quelques shaders génériques exposant des paramètres, et décline-les en matériaux. Sous Unreal, utilise des <b>Material Instances</b> pour ne pas recompiler.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — «&nbsp;Le matériau du sol&nbsp;» désigne pour l'un une image, pour l'autre un fichier, pour un troisième un programme&nbsp;: l'équipe se parle à côté.</div>
+                <div class="pi-cause"><b>Cause</b> — On croit qu'<b>un matériau = une texture</b>. En réalité un matériau combine plusieurs textures + des paramètres + un shader.</div>
+                <div class="pi-fix"><b>Correction</b> — Verbalise la hiérarchie&nbsp;: «&nbsp;texture (ingrédient) ⊂ matériau (recette remplie) basé sur un shader (la recette)&nbsp;». Nomme tes assets avec un préfixe (T_ texture, M_ matériau).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Le framerate s'effondre dès que l'objet occupe tout l'écran, alors qu'il est minuscule en VRAM.</div>
+                <div class="pi-cause"><b>Cause</b> — <b>Trop d'instructions dans le fragment shader</b> (bruits, boucles, samples multiples)&nbsp;: le coût étant par pixel, il explose en plein écran.</div>
+                <div class="pi-fix"><b>Correction</b> — Simplifie la formule, déplace les calculs constants vers le vertex shader ou des uniformes, réduis les <em>texture samples</em>. Surveille la vue Shader Complexity.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Une vitre proche «&nbsp;efface&nbsp;» une vitre lointaine&nbsp;; la fumée disparaît derrière un objet qu'elle devrait masquer.</div>
+                <div class="pi-cause"><b>Cause</b> — Mauvais <b>ordre de rendu des transparents</b>&nbsp;: ils ne sont pas triés du plus loin au plus proche, ou n'écrivent pas correctement dans le Z-buffer.</div>
+                <div class="pi-fix"><b>Correction</b> — Marque le matériau comme <em>Transparent</em>, vérifie la file de rendu (render queue) et le tri. Limite les couches de transparence superposées.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Une surface immense (terrain, mer) pixelise de près, ou au contraire mange toute la VRAM en très haute résolution.</div>
+                <div class="pi-cause"><b>Cause</b> — Mauvais choix procédural/texture&nbsp;: une grande surface uniforme stockée en image géante, ou un détail unique tenté en procédural.</div>
+                <div class="pi-fix"><b>Correction</b> — Procédural ou tuilage + bruit pour les vastes surfaces&nbsp;; texture dédiée pour les détails uniques et art-dirigés. Mélange les deux.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Une couleur de sommet «&nbsp;bave&nbsp;» ou un dégradé apparaît là où tu n'as posé que quelques valeurs.</div>
+                <div class="pi-cause"><b>Cause</b> — Méconnaissance de l'<b>interpolation</b>&nbsp;: les données par sommet (varyings) sont lissées par le rasterizer entre les sommets.</div>
+                <div class="pi-fix"><b>Correction</b> — C'est attendu&nbsp;: si tu veux des bords nets, sépare les sommets (split) ou passe par une texture/un masque, pas par la couleur de sommet.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans Blender (ou le Shader Graph / Material Editor de ton moteur), démontre la hiérarchie et l'arbitrage de cette leçon&nbsp;:</p>
+              <ol>
+                <li>Crée <b>un seul shader / matériau</b> «&nbsp;M_Base&nbsp;» avec une texture en Base Color (espace sRGB correct).</li>
+                <li>Crée <b>deux variantes</b> à partir de lui, <b>sans créer de nouveau shader</b>&nbsp;: «&nbsp;M_Mat&nbsp;» (Roughness 0,8, Metallic 0) et «&nbsp;M_Poli&nbsp;» (Roughness 0,1, Metallic 1, couleur teintée).</li>
+                <li>Ajoute, sur «&nbsp;M_Base&nbsp;», un nœud de <b>bruit procédural</b> mélangé à la texture pour casser la répétition.</li>
+                <li>Note dans un commentaire quelle partie est <b>texture-based</b> (coûte de la VRAM) et quelle partie est <b>procédurale</b> (coûte du GPU par pixel).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les <b>trois matériaux</b> partagent visiblement <b>un seul shader</b> (tu sais l'expliquer à l'oral).</li>
+                  <li>La texture est branchée en Base Color avec le <b>bon espace colorimétrique</b> (sRGB).</li>
+                  <li>Le mélange texture + bruit procédural <b>réduit visiblement le tuilage</b>.</li>
+                  <li>Tu peux désigner, sur ton graphe, où se trouve un <b>uniforme</b>, un <b>échantillonnage de texture</b> et un calcul <b>procédural</b>.</li>
+                  <li>Tu sais dire laquelle des deux variantes deviendrait la plus chère si on empilait dix bruits, et pourquoi (coût par pixel).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Shader = recette</b> (programme GPU, entrées vides) · <b>Matériau = recette remplie</b> (shader + paramètres + textures) · <b>Texture = ingrédient</b> (une image-donnée).</li>
+                <li>Pipeline GPU&nbsp;: <b>vertex shader</b> (place les sommets en espace écran, 1×/sommet) → <b>rasterizer</b> (quels pixels, + interpolation) → <b>fragment shader</b> (couleur de chaque pixel, 1×/pixel).</li>
+                <li>Tout coût dans le <b>fragment shader</b> est payé <b>par pixel</b>&nbsp;: déplace vers le vertex shader/uniformes ce qui peut l'être.</li>
+                <li><b>Procédural</b> = résolution infinie, léger en VRAM, mais coûteux GPU et peu art-directable. <b>Texture</b> = art-directable et bon marché GPU, mais coûte de la VRAM et a une résolution finie. En vrai, on mélange.</li>
+                <li>Surveille le <b>nombre d'instructions</b> et de <b>texture samples</b>, et l'<b>ordre de rendu des transparents</b> (du plus loin au plus proche).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Shader</b> — Programme exécuté par le GPU qui décrit la logique de calcul de l'apparence d'une surface&nbsp;; expose des entrées à remplir. C'est la «&nbsp;recette&nbsp;».</p>
+              <p><b>Matériau (material)</b> — Instance d'un shader dont toutes les entrées sont remplies par des paramètres et des textures précis&nbsp;; l'asset que manipule l'artiste.</p>
+              <p><b>Texture</b> — Image (grille de pixels) utilisée comme donnée d'entrée d'un matériau&nbsp;: couleur, rugosité, normale… L'«&nbsp;ingrédient&nbsp;».</p>
+              <p><b>Vertex shader</b> — Programme exécuté une fois par sommet, qui transforme sa position vers l'espace écran et prépare les données pour la suite.</p>
+              <p><b>Rasterisation</b> — Étape matérielle qui détermine les pixels couverts par chaque triangle et produit un fragment par pixel, en interpolant les données des sommets.</p>
+              <p><b>Fragment shader (pixel shader)</b> — Programme exécuté une fois par pixel, qui échantillonne les textures et applique l'éclairage PBR pour produire la couleur finale.</p>
+              <p><b>Uniforme</b> — Valeur constante sur tout l'objet pendant un dessin (matrice caméra, paramètre de matériau, lumière)&nbsp;; canal par lequel arrivent les réglages du matériau.</p>
+              <p><b>Varying / donnée interpolée</b> — Donnée transmise du vertex shader au fragment shader en passant par l'interpolation du rasterizer (les UV en sont l'exemple type).</p>
+              <p><b>Échantillonnage (sampling)</b> — Action de lire la couleur d'une texture à une coordonnée UV donnée&nbsp;; un accès mémoire surveillé pour la performance.</p>
+              <p><b>Procédural</b> — Motif calculé par une formule (bruit, gradient, damier) plutôt que stocké en image&nbsp;: résolution infinie, léger en VRAM, mais coûteux GPU.</p>
+              <p><b>HLSL / GLSL</b> — Langages de programmation des shaders (HLSL côté DirectX/Unity/Unreal, GLSL côté OpenGL/WebGL).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a> pour les termes transverses (UV, mip-mapping, Z-buffer, VRAM…).</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: les maps que le fragment shader échantillonne et combine.</li>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: d'où viennent les coordonnées qui servent à échantillonner.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: budget VRAM, complexité de shader, ordre de rendu, transparence.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux &amp; Shader Graph (Unity)</a>&nbsp;: construire un shader en nœuds.</li>
+              <li><a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor (Unreal)</a>&nbsp;: nœuds, instances de matériau et Shader Complexity.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance 3D</a>&nbsp;: le procédural à l'authoring, exporté en textures.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

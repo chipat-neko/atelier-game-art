@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F7 — Le workflow PBR · Atelier Game Art</title>
+  <meta name="description" content="Physically Based Rendering : metallic/roughness vs specular/glossiness, toutes les maps (albedo, metallic, roughness, normal, height, AO, emissive) et la conservation de l'énergie.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Le workflow PBR</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F7 — Le workflow PBR</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>55 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> (sRGB/linéaire — VITAL ici) et <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a> (normales).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est le <b>PBR</b> et pourquoi il garantit une matière <b>cohérente sous n'importe quel éclairage</b>.</li>
+                <li>Énoncer le principe de <b>conservation de l'énergie</b> et le partage entre lumière <b>diffuse</b> et <b>spéculaire</b>.</li>
+                <li>Distinguer un <b>diélectrique</b> d'un <b>métal</b>, comprendre le rôle du <b>F0</b> (~4&nbsp;%) et l'effet <b>Fresnel</b>.</li>
+                <li>Comparer les workflows <b>Metallic/Roughness</b> et <b>Specular/Glossiness</b> et savoir lequel choisir.</li>
+                <li>Identifier chaque <b>map</b> (Base Color, Metallic, Roughness, Normal, Height, AO, Emissive), son rôle <b>et son espace colorimétrique</b> (sRGB ou linéaire).</li>
+                <li>Brancher correctement ces maps pour assembler un matériau PBR, et reconnaître les valeurs <b>hors plage</b> qui cassent le réalisme.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Avant le PBR, texturer un modèle relevait de la <b>magie noire</b>&nbsp;: l'artiste peignait à la main les reflets, les ombres et les hautes lumières «&nbsp;à l'œil&nbsp;» pour un éclairage donné. Le résultat était souvent magnifique… dans <em>une seule</em> scène. Sortez l'objet de son studio, posez-le au coucher du soleil ou dans une grotte, et l'illusion s'effondre&nbsp;: les reflets peints ne correspondent plus à la lumière réelle, le métal a l'air en plastique, le marbre en carton.</p>
+            <p>Le <span class="term">PBR</span> (<b>Physically Based Rendering</b>, rendu basé sur la physique) renverse la logique. Au lieu de peindre l'<em>apparence finale</em>, l'artiste décrit les <b>propriétés physiques de la matière</b> — sa couleur de base, sa rugosité, son caractère métallique — et laisse le moteur calculer comment cette matière réagit à la lumière de la scène. Conséquence directe&nbsp;: le <b>même asset</b> reste crédible sous tous les éclairages, ce qui est indispensable dans un jeu où le joueur déplace librement la caméra et où l'heure change.</p>
+            <p>Dans un pipeline de production (<a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>), le PBR est le <b>langage commun</b> entre les outils&nbsp;: tu peintures dans Substance 3D Painter (<a href="../../cours/logiciels/l02-substance.html">L2</a>), tu exportes un jeu de maps standardisé, et tu l'importes dans Unity (<a href="../../cours/unity/u06-materiaux.html">U6</a>) <em>ou</em> Unreal (<a href="../../cours/unreal/e05-material-editor.html">E5</a>) sans tout refaire. Cette interopérabilité n'existe que parce que tout le monde s'accorde sur la <b>même définition physique</b> des maps. Comprendre le PBR, c'est donc comprendre le contrat qui relie modélisation, texturisation et moteur.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'idée de fond&nbsp;: décrire la matière, pas l'image</h3>
+            <p>Une surface réelle interagit avec la lumière selon des lois physiques mesurables&nbsp;: une part de la lumière est <b>absorbée</b>, une part <b>renvoyée dans toutes les directions</b> (c'est ce qui donne la couleur diffuse), une part <b>réfléchie comme un miroir</b> (le reflet spéculaire). Le PBR consiste à fournir au moteur des <b>cartes</b> (textures) qui décrivent <em>quantitativement</em> ces propriétés, puis à laisser un modèle d'éclairage — souvent une approximation appelée <span class="term">BRDF</span> (<em>Bidirectional Reflectance Distribution Function</em>, la fonction qui décrit comment la lumière rebondit selon les angles) — produire le pixel final.</p>
+            <p>La grande discipline du PBR, c'est de fournir des valeurs <b>physiquement plausibles</b>. Si tu mets des valeurs aberrantes (un albédo plus sombre que du charbon réel, un métal à demi-métallique), le moteur calculera quand même quelque chose, mais ça aura l'air <b>faux</b> parce que ça viole la physique que l'œil connaît intuitivement.</p>
+
+            <h3>2. La conservation de l'énergie&nbsp;: le budget lumière</h3>
+            <p>Premier pilier&nbsp;: <span class="term">conservation de l'énergie</span>. Une surface <b>ne peut pas renvoyer plus de lumière qu'elle n'en reçoit</b>. C'est une évidence physique (sinon la surface serait elle-même une source d'énergie), mais c'est une contrainte qu'un peintre «&nbsp;à l'ancienne&nbsp;» pouvait allègrement violer. En PBR, le moteur la respecte automatiquement&nbsp;: la lumière reçue est un <b>budget</b> qui se répartit, sans jamais le dépasser, entre&nbsp;:</p>
+            <ul>
+              <li>la composante <b>diffuse</b> (la lumière qui pénètre légèrement la matière, rebondit et ressort dans toutes les directions — ce qui donne sa couleur «&nbsp;mate&nbsp;»)&nbsp;;</li>
+              <li>la composante <b>spéculaire</b> (la lumière réfléchie en surface comme par un miroir — les reflets et hautes lumières)&nbsp;;</li>
+              <li>la part <b>absorbée</b> (transformée en chaleur, perdue pour le rendu).</li>
+            </ul>
+            <p>La conséquence pratique est <b>contre-intuitive mais fondamentale</b>&nbsp;: plus une surface est réfléchissante (spéculaire), <b>moins</b> elle peut être diffuse, et inversement. Un objet ne peut pas être à la fois éclatant comme un miroir <em>et</em> d'une couleur mate intense&nbsp;: le budget est partagé. C'est exactement pour ça que les métaux purs, qui réfléchissent énormément, n'ont presque <b>pas</b> de couleur diffuse (voir section suivante).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Schéma du budget lumière : un rayon incident se partage en part diffuse, part spéculaire et part absorbée sans jamais dépasser le total reçu">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Conservation de l'énergie&nbsp;: le budget lumière</text>
+
+                <!-- Surface -->
+                <line x1="60" y1="220" x2="580" y2="220" stroke="#313c4c" stroke-width="2"/>
+                <rect x="60" y="220" width="520" height="40" class="svg-surface" stroke="#313c4c"/>
+                <text x="320" y="246" text-anchor="middle" class="svg-dim" font-size="11">surface</text>
+                <!-- normale -->
+                <line x1="300" y1="220" x2="300" y2="110" stroke="#313c4c" stroke-width="1" stroke-dasharray="4 4"/>
+                <text x="312" y="120" class="svg-dim" font-size="10">normale</text>
+
+                <!-- Rayon incident -->
+                <line x1="120" y1="70" x2="300" y2="220" stroke="#f2b441" stroke-width="3"/>
+                <polygon points="300,220 286,206 296,200" fill="#f2b441"/>
+                <text x="150" y="70" class="svg-text" font-size="12" font-weight="700">lumière reçue = 100&nbsp;%</text>
+
+                <!-- Spéculaire (réflexion miroir) -->
+                <line x1="300" y1="220" x2="470" y2="80" stroke="#59b0ff" stroke-width="3"/>
+                <polygon points="470,80 456,90 466,98" fill="#59b0ff"/>
+                <text x="476" y="78" class="svg-text" font-size="12" fill="#59b0ff" font-weight="700">spéculaire</text>
+                <text x="476" y="94" class="svg-dim" font-size="10">reflet net</text>
+
+                <!-- Diffus (éventail) -->
+                <g stroke="#5ad19a" stroke-width="2">
+                  <line x1="300" y1="220" x2="200" y2="120"/>
+                  <line x1="300" y1="220" x2="245" y2="105"/>
+                  <line x1="300" y1="220" x2="300" y2="100"/>
+                  <line x1="300" y1="220" x2="355" y2="105"/>
+                </g>
+                <text x="200" y="150" class="svg-text" font-size="12" fill="#5ad19a" font-weight="700">diffus</text>
+                <text x="190" y="166" class="svg-dim" font-size="10">renvoyé partout</text>
+
+                <!-- Absorbé -->
+                <line x1="300" y1="220" x2="340" y2="270" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="3 3"/>
+                <text x="346" y="278" class="svg-dim" font-size="10" fill="#ff6b6b">absorbé (chaleur)</text>
+
+                <!-- Barre budget -->
+                <text x="320" y="294" text-anchor="middle" class="svg-dim" font-size="11">diffus + spéculaire + absorbé = 100&nbsp;% &nbsp;·&nbsp; jamais plus</text>
+              </svg>
+              <figcaption>La lumière reçue est un budget fermé. Augmenter le spéculaire (bleu) réduit forcément le diffus (vert) disponible&nbsp;: c'est pourquoi on ne peut pas être miroir <em>et</em> couleur mate intense en même temps.</figcaption>
+            </figure>
+
+            <h3>3. Diélectriques vs métaux&nbsp;: deux familles, deux comportements</h3>
+            <p>La physique des matériaux range les surfaces opaques en deux grandes catégories, et le PBR s'appuie directement dessus.</p>
+
+            <h4>Les diélectriques (non-métaux)</h4>
+            <p>Un <span class="term">diélectrique</span> est un matériau <b>non conducteur</b>&nbsp;: bois, plastique, pierre, peau, tissu, brique, céramique… Leur lumière <b>diffuse</b> porte leur couleur (un plastique rouge renvoie du rouge dans toutes les directions). Leur réflexion spéculaire, elle, est <b>faible et incolore</b>&nbsp;: quelle que soit la matière, un diélectrique réfléchit en incidence frontale environ <b>4&nbsp;%</b> de la lumière, d'une teinte neutre (blanche). Cette valeur de réflectance de base porte un nom&nbsp;: le <span class="term">F0</span> (réflectance à incidence nulle, c'est-à-dire quand on regarde la surface bien en face).</p>
+            <p>Retiens le chiffre&nbsp;: <b>F0 ≈ 4&nbsp;%</b> pour la quasi-totalité des diélectriques courants (légèrement plus pour le diamant, l'eau est à ~2&nbsp;%). C'est pour ça qu'en workflow Metallic/Roughness, tu n'as <em>pas</em> à régler le spéculaire des non-métaux&nbsp;: le moteur applique automatiquement ce 4&nbsp;%.</p>
+
+            <h4>Les métaux (conducteurs)</h4>
+            <p>Un <b>métal</b> (or, fer, cuivre, aluminium, chrome…) se comporte à l'opposé. Il n'a <b>presque aucune lumière diffuse</b>&nbsp;: les électrons libres du conducteur réabsorbent quasi instantanément la lumière qui pénètre. Toute son apparence est dans la <b>réflexion spéculaire</b>, et c'est <em>cette réflexion qui est colorée</em>&nbsp;: l'or réfléchit en jaune-orangé, le cuivre en rose-orangé, l'aluminium en gris très clair. Le F0 d'un métal est élevé (typiquement <b>70 à 95&nbsp;%</b>) et <b>teinté</b>.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>La règle qui change tout</div>
+              <p>Pour un <b>diélectrique</b>, la couleur vit dans la map <b>diffuse/albédo</b> et le spéculaire est fixe (4&nbsp;%, blanc). Pour un <b>métal</b>, l'albédo diffus est quasi noir et la <b>couleur passe dans la réflexion spéculaire</b>. Le workflow Metallic/Roughness encode justement cette bascule&nbsp;: le canal <span class="term">Metallic</span> dit au moteur «&nbsp;interprète la Base Color comme une couleur diffuse (0) ou comme une couleur de réflexion métallique (1)&nbsp;».</p>
+            </div>
+
+            <h4>L'effet Fresnel&nbsp;: tout devient miroir au bord</h4>
+            <p>Dernier mécanisme physique majeur&nbsp;: l'<span class="term">effet Fresnel</span>. Quelle que soit la matière, sa réflectance <b>augmente fortement quand on regarde la surface en incidence rasante</b> (presque parallèle à la surface, sur les bords d'un objet). Regarde un lac&nbsp;: à tes pieds, tu vois le fond&nbsp;; vers l'horizon, l'eau devient un miroir parfait du ciel. C'est le Fresnel.</p>
+            <p>Concrètement, le F0 (~4&nbsp;% pour un diélectrique) est la réflectance <em>de face</em>&nbsp;; sur le contour d'une sphère, elle grimpe vers 100&nbsp;%. Le moteur PBR calcule ce gradient automatiquement&nbsp;; tu n'as rien à peindre. Mais le connaître t'évite l'erreur classique de vouloir «&nbsp;ajouter du reflet sur les bords&nbsp;» à la main&nbsp;: c'est déjà géré, et le faire en double donne un halo irréaliste.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Deux sphères : à gauche l'effet Fresnel avec un bord plus réfléchissant, à droite la roughness de faible (reflet net) à élevée (reflet diffus)">
+                <text x="160" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Fresnel&nbsp;: bord plus réfléchissant</text>
+                <text x="470" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Roughness&nbsp;: net → diffus</text>
+
+                <!-- Sphère Fresnel -->
+                <defs>
+                  <radialGradient id="fres" cx="45%" cy="40%" r="60%">
+                    <stop offset="55%" stop-color="#2a2f38"/>
+                    <stop offset="88%" stop-color="#7fb6ff"/>
+                    <stop offset="100%" stop-color="#cfe6ff"/>
+                  </radialGradient>
+                </defs>
+                <circle cx="160" cy="150" r="85" fill="url(#fres)" stroke="#313c4c"/>
+                <text x="160" y="155" text-anchor="middle" class="svg-dim" font-size="11">centre&nbsp;: ~4&nbsp;%</text>
+                <text x="160" y="252" text-anchor="middle" class="svg-dim" font-size="11">contour&nbsp;: ~100&nbsp;% (rasant)</text>
+                <line x1="232" y1="100" x2="265" y2="80" stroke="#59b0ff" stroke-width="2"/>
+                <text x="270" y="78" class="svg-dim" font-size="10" fill="#59b0ff">reflet du ciel</text>
+
+                <!-- Trois sphères roughness -->
+                <defs>
+                  <radialGradient id="r1" cx="38%" cy="34%" r="22%">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="40%" stop-color="#ffffff"/>
+                    <stop offset="55%" stop-color="#3a4250"/>
+                    <stop offset="100%" stop-color="#222831"/>
+                  </radialGradient>
+                  <radialGradient id="r2" cx="38%" cy="34%" r="40%">
+                    <stop offset="0%" stop-color="#e8eef5"/>
+                    <stop offset="70%" stop-color="#3a4250"/>
+                    <stop offset="100%" stop-color="#222831"/>
+                  </radialGradient>
+                  <radialGradient id="r3" cx="40%" cy="36%" r="70%">
+                    <stop offset="0%" stop-color="#9aa6b3"/>
+                    <stop offset="100%" stop-color="#2a3038"/>
+                  </radialGradient>
+                </defs>
+                <circle cx="400" cy="120" r="40" fill="url(#r1)" stroke="#313c4c"/>
+                <text x="400" y="178" text-anchor="middle" class="svg-dim" font-size="10">rough 0.1</text>
+                <circle cx="475" cy="120" r="40" fill="url(#r2)" stroke="#313c4c"/>
+                <text x="475" y="178" text-anchor="middle" class="svg-dim" font-size="10">rough 0.5</text>
+                <circle cx="550" cy="120" r="40" fill="url(#r3)" stroke="#313c4c"/>
+                <text x="550" y="178" text-anchor="middle" class="svg-dim" font-size="10">rough 0.9</text>
+                <text x="475" y="210" text-anchor="middle" class="svg-dim" font-size="11">la highlight s'étale et s'éteint</text>
+                <text x="475" y="226" text-anchor="middle" class="svg-dim" font-size="11">quand la rugosité monte</text>
+              </svg>
+              <figcaption>À gauche&nbsp;: le Fresnel rend le contour d'une surface plus réfléchissant que son centre, même pour un diélectrique. À droite&nbsp;: la roughness contrôle la <b>taille et la netteté</b> de la tache de réflexion — basse = reflet concentré et net, haute = reflet large et flou.</figcaption>
+            </figure>
+
+            <h3>4. Les deux workflows&nbsp;: Metallic/Roughness vs Specular/Glossiness</h3>
+            <p>Il existe deux façons standardisées d'encoder un matériau PBR. Elles produisent le même rendu physique&nbsp;; elles diffèrent par la façon dont l'artiste <b>range l'information</b>.</p>
+
+            <h4>Metallic/Roughness (le standard)</h4>
+            <p>C'est le workflow par défaut de <b>Unity 6.3 LTS</b> et d'<b>Unreal Engine 5.7</b>, et le mode le plus enseigné. Il utilise&nbsp;:</p>
+            <ul>
+              <li><b>Base Color</b> (couleur de base) — sert d'albédo diffus pour les diélectriques <em>ou</em> de couleur de réflexion pour les métaux, selon le canal Metallic&nbsp;;</li>
+              <li><b>Metallic</b> — masque 0/1 disant «&nbsp;métal ou non&nbsp;»&nbsp;;</li>
+              <li><b>Roughness</b> — rugosité de la surface.</li>
+            </ul>
+            <p><b>Avantages</b>&nbsp;: moins de cartes (le spéculaire des diélectriques est déduit automatiquement à 4&nbsp;%), donc moins de mémoire et moins d'erreurs&nbsp;; impossible de donner par accident une réflectance irréaliste à un non-métal. <b>Inconvénient</b>&nbsp;: aux frontières métal/non-métal, le masque binaire peut produire un fin liseré blanc (<em>edge artifact</em>) sur les bords si la résolution est faible.</p>
+
+            <h4>Specular/Glossiness</h4>
+            <p>L'autre approche sépare&nbsp;:</p>
+            <ul>
+              <li><b>Diffuse</b> (couleur diffuse pure)&nbsp;;</li>
+              <li><b>Specular</b> — une carte <b>colorée</b> qui fixe directement le F0 (donc le spéculaire des métaux ET des diélectriques)&nbsp;;</li>
+              <li><b>Glossiness</b> — l'inverse de la roughness (1 = lisse, 0 = rugueux).</li>
+            </ul>
+            <p><b>Avantage</b>&nbsp;: contrôle total et explicite du spéculaire, pratique pour des cas exotiques. <b>Inconvénients</b>&nbsp;: une carte de plus (la Specular est en couleur, plus lourde)&nbsp;; surtout, rien n'empêche l'artiste de fixer un F0 de diélectrique aberrant (trop sombre ou trop clair) et de casser la conservation d'énergie. C'est plus puissant mais moins «&nbsp;à l'épreuve des erreurs&nbsp;».</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce — conversion et choix</div>
+              <p>Les deux workflows sont <b>convertibles</b> l'un dans l'autre (Substance et la plupart des moteurs proposent des nœuds de conversion). En pratique&nbsp;: utilise <b>Metallic/Roughness</b> par défaut, c'est ce qu'attendent Unity et Unreal et c'est plus robuste. Réserve Specular/Glossiness aux pipelines hérités ou aux matériaux très particuliers (certains tissus, velours). Souviens-toi simplement&nbsp;: <b>Glossiness = 1 − Roughness</b>.</p>
+            </div>
+
+            <h3>5. Chaque map et son espace colorimétrique</h3>
+            <p>Le point qui fait trébucher 90&nbsp;% des débutants&nbsp;: <b>l'espace colorimétrique</b> de chaque carte. Rappel de <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>&nbsp;: une image stockée en <span class="gloss">sRGB</span> applique une courbe gamma pour mieux répartir les valeurs perçues par l'œil&nbsp;; une image <b>linéaire</b> (ou «&nbsp;Raw / Non-Color&nbsp;») stocke des nombres bruts sans courbe. La règle d'or&nbsp;:</p>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>La règle de l'espace colorimétrique</div>
+              <p>Une carte qui représente une <b>couleur perçue par l'œil</b> (Base Color, Emissive) est en <b>sRGB</b>. Une carte qui représente des <b>données techniques</b> (Metallic, Roughness, Normal, Height, AO) est en <b>linéaire / Non-Color</b>. Se tromper = valeurs faussées par la courbe gamma, donc rendu cassé. C'est la première chose à vérifier à l'import.</p>
+            </div>
+            <p>Détaillons chaque carte, ce qu'elle encode et pourquoi.</p>
+
+            <h4>Base Color / Albédo — sRGB</h4>
+            <p>La <span class="term">Base Color</span> (ou albédo) est la couleur «&nbsp;pure&nbsp;» de la matière, <b>sans aucune information d'éclairage</b>. C'est la règle la plus violée par les débutants&nbsp;: il ne doit y avoir ni ombre portée, ni reflet, ni highlight, ni AO <em>incrusté</em> dans cette carte. Pourquoi&nbsp;? Parce que le moteur va <b>ajouter</b> les ombres et reflets selon la scène&nbsp;; si tu en as déjà peint, ils s'additionnent et le rendu devient sale, doublement ombré, incohérent quand la lumière bouge. Espace&nbsp;: <b>sRGB</b>, car c'est une couleur destinée à l'œil.</p>
+
+            <h4>Metallic — linéaire, idéalement 0 ou 1</h4>
+            <p>Le canal <span class="term">Metallic</span> est un masque&nbsp;: <b>noir (0) = diélectrique</b>, <b>blanc (1) = métal</b>. Il dit au moteur comment interpréter la Base Color (couleur diffuse ou couleur de réflexion, voir §3). Une seule valeur (niveau de gris) suffit, donc on l'encode souvent dans un seul canal. Espace&nbsp;: <b>linéaire</b>. Les valeurs intermédiaires (gris) sont à <b>éviter</b> sauf cas physiquement réel&nbsp;: une transition (bord poussiéreux d'un métal, couche de rouille) où la surface est partiellement recouverte. Un «&nbsp;demi-métal&nbsp;» uniforme n'existe pas dans la nature.</p>
+
+            <h4>Roughness — linéaire, la map qui «&nbsp;raconte&nbsp;» la matière</h4>
+            <p>La <span class="term">Roughness</span> (rugosité) décrit l'état microscopique de la surface&nbsp;: <b>noir (0) = parfaitement lisse</b> (reflet net, type miroir), <b>blanc (1) = très rugueux</b> (reflet large, diffus, mat). C'est physiquement la dispersion des micro-facettes&nbsp;: plus c'est rugueux, plus les micro-reflets partent dans tous les sens et plus la highlight s'étale et s'estompe. C'est la carte la plus <b>narrative</b> du PBR&nbsp;: les traces de doigts, les rayures usées brillantes, les zones essuyées, la poussière mate — tout le vécu d'un objet se lit dans la roughness bien avant la couleur. Espace&nbsp;: <b>linéaire</b>.</p>
+
+            <h4>Normal — linéaire (Non-Color), tangent space</h4>
+            <p>La <span class="gloss">normal map</span> encode un <b>relief de surface</b> sans ajouter de géométrie (revoir <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a> sur les normales). Chaque pixel stocke, dans ses canaux R/G/B, la <b>direction</b> (X, Y, Z) de la normale perturbée. C'est de la <b>donnée vectorielle</b>, pas une couleur&nbsp;: elle DOIT être en <b>linéaire / Non-Color</b>, sinon la courbe gamma déforme les directions et l'éclairage part en vrille. Sa teinte bleu-violet caractéristique vient de là&nbsp;: une normale «&nbsp;qui pointe vers le haut&nbsp;» correspond à (128, 128, 255), d'où le bleu dominant. Le mode <b>tangent space</b> signifie que ces directions sont relatives à la surface, ce qui permet de déformer/animer le mesh sans casser le relief.</p>
+
+            <h4>Height / Displacement — linéaire</h4>
+            <p>La carte de <span class="term">Height</span> (hauteur) est un niveau de gris&nbsp;: clair = relief haut, sombre = creux. Deux usages&nbsp;: le <b>parallax</b> (un décalage de texture qui simule la profondeur sans toucher la géométrie, peu coûteux) et le <b>displacement / tessellation</b> (qui déplace réellement des sommets ajoutés à la volée pour un vrai relief, plus coûteux — voir Nanite en <a href="../../cours/unreal/e07-nanite.html">E7</a>). Espace&nbsp;: <b>linéaire</b>, c'est une donnée de distance.</p>
+
+            <h4>Ambient Occlusion (AO) — linéaire</h4>
+            <p>L'<span class="gloss">ambient occlusion</span> est un niveau de gris qui assombrit les <b>recoins</b> où la lumière ambiante peine à entrer (entre deux briques, au fond d'une rainure). Elle simule l'ombrage de contact à petite échelle. Espace&nbsp;: <b>linéaire</b>. Piège majeur traité plus bas&nbsp;: l'AO ne doit être multipliée qu'<b>une seule fois</b> à l'éclairage ambiant, jamais cuite aussi dans la Base Color.</p>
+
+            <h4>Emissive — sRGB</h4>
+            <p>La carte <span class="term">Emissive</span> (émissive) définit les zones qui <b>émettent</b> de la lumière par elles-mêmes&nbsp;: néons, écrans, lave, LED. Elle est colorée et destinée à l'œil, donc <b>sRGB</b>. Couplée à un multiplicateur d'intensité, elle peut faire «&nbsp;baver&nbsp;» la lumière via le bloom du post-processing (<a href="../../cours/unity/u08-post-processing.html">U8</a>) et, dans les moteurs récents, contribuer réellement à l'illumination de la scène.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 270" role="img" aria-label="Tableau visuel des sept maps PBR avec leur espace colorimétrique sRGB ou linéaire">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Les 7 maps d'un matériau PBR &amp; leur espace</text>
+                <!-- ligne 1 -->
+                <g>
+                  <rect x="20" y="44" width="84" height="70" rx="6" fill="#f2b441" fill-opacity="0.55" stroke="#313c4c"/>
+                  <text x="62" y="130" text-anchor="middle" class="svg-text" font-size="11">Base Color</text>
+                  <text x="62" y="145" text-anchor="middle" class="svg-dim" font-size="10" fill="#f2b441">sRGB</text>
+                </g>
+                <g>
+                  <rect x="116" y="44" width="84" height="70" rx="6" fill="#111418" stroke="#313c4c"/>
+                  <text x="158" y="83" text-anchor="middle" class="svg-dim" font-size="10">0 / 1</text>
+                  <text x="158" y="130" text-anchor="middle" class="svg-text" font-size="11">Metallic</text>
+                  <text x="158" y="145" text-anchor="middle" class="svg-dim" font-size="10" fill="#59b0ff">linéaire</text>
+                </g>
+                <g>
+                  <rect x="212" y="44" width="84" height="70" rx="6" fill="#6b7280" stroke="#313c4c"/>
+                  <text x="254" y="130" text-anchor="middle" class="svg-text" font-size="11">Roughness</text>
+                  <text x="254" y="145" text-anchor="middle" class="svg-dim" font-size="10" fill="#59b0ff">linéaire</text>
+                </g>
+                <g>
+                  <rect x="308" y="44" width="84" height="70" rx="6" fill="#8a8aff" stroke="#313c4c"/>
+                  <text x="350" y="130" text-anchor="middle" class="svg-text" font-size="11">Normal</text>
+                  <text x="350" y="145" text-anchor="middle" class="svg-dim" font-size="10" fill="#59b0ff">linéaire</text>
+                </g>
+                <g>
+                  <rect x="404" y="44" width="84" height="70" rx="6" fill="#9aa6b3" stroke="#313c4c"/>
+                  <text x="446" y="130" text-anchor="middle" class="svg-text" font-size="11">Height</text>
+                  <text x="446" y="145" text-anchor="middle" class="svg-dim" font-size="10" fill="#59b0ff">linéaire</text>
+                </g>
+                <g>
+                  <rect x="500" y="44" width="84" height="70" rx="6" fill="#cfd5dc" stroke="#313c4c"/>
+                  <text x="542" y="130" text-anchor="middle" class="svg-text" font-size="11">AO</text>
+                  <text x="542" y="145" text-anchor="middle" class="svg-dim" font-size="10" fill="#59b0ff">linéaire</text>
+                </g>
+                <!-- ligne 2 -->
+                <g>
+                  <rect x="20" y="172" width="84" height="60" rx="6" fill="#f2b441" fill-opacity="0.85" stroke="#313c4c"/>
+                  <text x="62" y="206" text-anchor="middle" class="svg-dim" font-size="10">néon</text>
+                  <text x="62" y="248" text-anchor="middle" class="svg-text" font-size="11">Emissive</text>
+                  <text x="62" y="263" text-anchor="middle" class="svg-dim" font-size="10" fill="#f2b441">sRGB</text>
+                </g>
+                <text x="360" y="200" text-anchor="middle" class="svg-text" font-size="12">Règle&nbsp;: couleur pour l'œil → <tspan fill="#f2b441">sRGB</tspan></text>
+                <text x="360" y="222" text-anchor="middle" class="svg-text" font-size="12">donnée technique → <tspan fill="#59b0ff">linéaire</tspan></text>
+              </svg>
+              <figcaption>Seules la Base Color et l'Emissive (des couleurs vues par l'œil) sont en sRGB. Toutes les autres encodent des <b>données</b> et doivent rester en linéaire / Non-Color, sinon la courbe gamma corrompt les valeurs.</figcaption>
+            </figure>
+
+            <h3>6. Valeurs de référence à connaître</h3>
+            <p>Le PBR n'est crédible que si tes valeurs restent dans les plages observées dans la réalité. Quelques repères de production à garder en tête.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Paramètre</th><th>Plage / valeur de référence</th><th>Pourquoi</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Albédo diélectrique</b></td><td>≈ <b>30 à 240</b> en valeur sRGB (sur 255)</td><td>Aucune matière naturelle n'est plus sombre que ~30 (charbon frais) ni plus claire que ~240 (neige, plâtre). Sortir de là casse l'éclairage.</td></tr>
+                  <tr><td><b>F0 diélectrique</b></td><td>≈ <b>4&nbsp;%</b> (0,02–0,05)</td><td>Réflectance frontale incolore de presque tous les non-métaux. Géré automatiquement en Metallic/Roughness.</td></tr>
+                  <tr><td><b>F0 métaux</b></td><td>≈ <b>70–95&nbsp;%</b>, <b>teinté</b></td><td>Or ~(1.00, 0.86, 0.57), cuivre ~(0.95, 0.64, 0.54), aluminium ~(0.91, 0.92, 0.92). C'est la Base Color quand Metallic = 1.</td></tr>
+                  <tr><td><b>Metallic</b></td><td><b>0</b> ou <b>1</b></td><td>Binaire dans la nature&nbsp;; le gris est réservé aux transitions (rouille, poussière).</td></tr>
+                  <tr><td><b>Roughness</b></td><td>Tout l'intervalle 0–1</td><td>Selon la finition&nbsp;: vernis poli ~0.1, plastique mat ~0.5, béton brut ~0.9.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif&nbsp;: assembler à la main un matériau PBR Metallic/Roughness dans Blender 4.x avec le shader <b>Principled BSDF</b> (le shader PBR universel), pour bien voir <em>où</em> se branche chaque map. La logique est identique dans Unity et Unreal&nbsp;; seuls les noms changent.</p>
+            <ol>
+              <li>Sélectionne ton objet, ouvre l'éditeur de nœuds via <span class="menu-path">Shading<span class="arrow">▸</span>Shader Editor</span>. Tu y vois déjà un nœud <b>Principled BSDF</b> relié au nœud <b>Material Output</b>&nbsp;: c'est le shader qui implémente le BRDF PBR. <em>Ce qui se passe&nbsp;:</em> chaque entrée de ce nœud correspond à une propriété physique (Base Color, Metallic, Roughness, Normal…).</li>
+              <li>Ajoute une texture avec <span class="menu-path">Add<span class="arrow">▸</span>Texture<span class="arrow">▸</span>Image Texture</span>, charge ta carte <b>Base Color</b>, et relie sa sortie <code>Color</code> à l'entrée <b>Base Color</b> du Principled. Dans le nœud image, laisse <b>Color Space = sRGB</b>. <em>Pourquoi&nbsp;:</em> c'est une couleur perçue.</li>
+              <li>Ajoute une deuxième Image Texture pour le <b>Metallic</b>, relie sa sortie <code>Color</code> à l'entrée <b>Metallic</b>, et passe son <b>Color Space</b> sur <span class="menu-path">Non-Color</span>. <em>Pourquoi&nbsp;:</em> c'est un masque de donnée, pas une couleur — la courbe sRGB fausserait le seuil 0/1.</li>
+              <li>Idem pour la <b>Roughness</b>&nbsp;: Image Texture → sortie <code>Color</code> → entrée <b>Roughness</b>, Color Space sur <b>Non-Color</b>. <em>Ce qui se passe&nbsp;:</em> le moteur lit directement la valeur linéaire comme rugosité de micro-facettes.</li>
+              <li>Pour la <b>Normal</b>, intercale un nœud <span class="menu-path">Add<span class="arrow">▸</span>Vector<span class="arrow">▸</span>Normal Map</span> entre l'Image Texture et l'entrée <b>Normal</b>. Mets l'Image Texture en <b>Non-Color</b> et relie&nbsp;: image <code>Color</code> → Normal Map <code>Color</code>, puis Normal Map <code>Normal</code> → Principled <b>Normal</b>. <em>Pourquoi le nœud intermédiaire&nbsp;:</em> il décode les directions encodées en RGB vers de vraies normales en tangent space.</li>
+              <li>(Optionnel) Pour l'<b>Height</b>, ajoute un nœud <span class="menu-path">Add<span class="arrow">▸</span>Vector<span class="arrow">▸</span>Displacement</span> et relie-le à l'entrée <b>Displacement</b> du <b>Material Output</b> (Color Space de l'image&nbsp;: Non-Color). <em>Effet&nbsp;:</em> relief réel si la tessellation/le micro-displacement est activé.</li>
+              <li>Pour l'<b>AO</b>, la bonne pratique est de la <b>multiplier</b> à la Base Color via un nœud <span class="menu-path">Add<span class="arrow">▸</span>Color<span class="arrow">▸</span>Mix Color</span> en mode <b>Multiply</b> — <em>uniquement</em> si elle n'est pas déjà gérée par le moteur. <em>Attention&nbsp;:</em> ne l'applique qu'une fois (voir pièges).</li>
+              <li>Pour l'<b>Emissive</b>&nbsp;: Image Texture (Color Space <b>sRGB</b>) → entrée <b>Emission Color</b>, et monte <b>Emission Strength</b> au-dessus de 0. <em>Effet&nbsp;:</em> les zones définies se mettent à rayonner indépendamment de l'éclairage.</li>
+              <li>Bascule la vue en rendu via <span class="menu-path">Viewport Shading<span class="arrow">▸</span>Rendered</span> et fais tourner un éclairage HDRI. <em>Vérification&nbsp;:</em> les métaux doivent prendre la couleur de l'environnement, les diélectriques garder leur teinte, et la roughness moduler la netteté des reflets. Si un métal a l'air en plastique, vérifie d'abord le canal Metallic et l'espace colorimétrique.</li>
+            </ol>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Et dans les moteurs&nbsp;?</div>
+              <p>Unity (URP/HDRP, <a href="../../cours/unity/u06-materiaux.html">U6</a>) et Unreal (<a href="../../cours/unreal/e05-material-editor.html">E5</a>) reprennent exactement ces entrées sous d'autres noms (Albedo/Base Color, Metallic, Smoothness — attention, Unity utilise <b>Smoothness</b> = l'inverse de la roughness&nbsp;!). À l'import, le moteur tente de deviner l'espace colorimétrique d'après le suffixe du fichier (<code>_BaseColor</code>, <code>_Normal</code>…)&nbsp;: vérifie toujours qu'il ne s'est pas trompé.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym">Symptôme — La matière a l'air «&nbsp;sale&nbsp;» ou plate sous toute lumière, surtout en plein éclairage.</div>
+                <div class="pi-cause">Cause — Albédo <b>hors plage</b>&nbsp;: zones plus sombres que ~30 sRGB ou plus claires que ~240. Souvent des noirs purs ou des blancs purs peints à la main.</div>
+                <div class="pi-fix">Correction — Ramène la Base Color dans 30–240. Vérifie avec une pipette&nbsp;: rien ne doit toucher le 0 ni le 255.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym">Symptôme — Les recoins sont anormalement <b>noirs</b>, l'objet semble crasseux même en pleine lumière.</div>
+                <div class="pi-cause">Cause — <b>AO multipliée deux fois</b>&nbsp;: une fois cuite dans la Base Color, et une seconde fois par le slot AO du moteur.</div>
+                <div class="pi-fix">Correction — Choisis un seul endroit. Garde la Base Color propre (sans AO) et laisse le moteur appliquer l'AO via son slot dédié, ou inversement — jamais les deux.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym">Symptôme — Le relief de la normal map est <b>délavé</b>, l'éclairage des bosses est faux, teinte bizarre.</div>
+                <div class="pi-cause">Cause — Normal map importée en <b>sRGB</b> au lieu de linéaire&nbsp;: la courbe gamma déforme les directions encodées.</div>
+                <div class="pi-fix">Correction — Passe le Color Space de la normale (et de toutes les maps techniques) sur <b>Non-Color / Linear / Raw</b>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym">Symptôme — Un métal a l'air en <b>plastique gris</b>, ou un plastique brille comme du chrome.</div>
+                <div class="pi-cause">Cause — Canal <b>Metallic en gris</b> au lieu de 0/1 net, créant un faux «&nbsp;demi-métal&nbsp;» qui n'existe pas physiquement.</div>
+                <div class="pi-fix">Correction — Mets le Metallic à 0 (diélectrique) ou 1 (métal). Ne garde du gris que sur les vraies transitions&nbsp;: rouille, poussière, bord usé.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym">Symptôme — Ce qui devrait briller est mat, et inversement (le poli a l'air rugueux).</div>
+                <div class="pi-cause">Cause — <b>Roughness inversée</b>, souvent parce qu'on a branché une carte <b>Glossiness</b> (Unity&nbsp;: Smoothness) dans un slot Roughness sans inverser.</div>
+                <div class="pi-fix">Correction — Inverse la carte (1 − valeur) ou utilise la bonne entrée. Rappelle-toi&nbsp;: Roughness 0 = lisse, Glossiness 0 = rugueux.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym">Symptôme — Un liseré blanc fin apparaît aux bords entre métal et non-métal.</div>
+                <div class="pi-cause">Cause — <b>Edge artifact</b> du masque Metallic binaire à faible résolution, ou compression agressive de la texture.</div>
+                <div class="pi-fix">Correction — Augmente la résolution de la zone, soigne le tracé du masque, ou évite la compression sur cette carte critique.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Crée <b>deux matériaux PBR</b> sur deux sphères côte à côte dans Blender (ou Unity/Unreal), en partant d'une couleur unie sans textures&nbsp;:</p>
+              <ol>
+                <li>Sphère A — un <b>or poli</b>&nbsp;: Base Color jaune-orangé (~RGB 255, 215, 145), Metallic = 1, Roughness ≈ 0.15.</li>
+                <li>Sphère B — un <b>plastique rouge mat</b>&nbsp;: Base Color rouge (dans la plage 30–240), Metallic = 0, Roughness ≈ 0.6.</li>
+                <li>Éclaire la scène avec un <b>HDRI</b> et fais tourner la lumière (ou la caméra) pour observer le comportement sous plusieurs angles.</li>
+                <li>Vérifie l'<b>effet Fresnel</b>&nbsp;: regarde si le contour des sphères devient plus réfléchissant que le centre.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'or <b>prend la couleur de l'environnement</b> dans ses reflets et n'a pas de couleur diffuse mate&nbsp;; il reste crédible quand la lumière tourne.</li>
+                  <li>Le plastique garde sa <b>teinte rouge constante</b> quelle que soit la lumière, avec une highlight douce et étalée (roughness élevée).</li>
+                  <li>Le <b>contour</b> des deux sphères est visiblement plus réfléchissant que le centre (Fresnel).</li>
+                  <li>Aucune valeur n'est hors plage&nbsp;: la pipette sur le plastique ne lit ni 0 ni 255 dans la Base Color&nbsp;; le Metallic est strictement 0 ou 1.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>PBR</b> décrit la <b>matière</b> (propriétés physiques), pas l'image finale&nbsp;: d'où sa cohérence sous tout éclairage.</li>
+                <li><b>Conservation de l'énergie</b>&nbsp;: diffus + spéculaire + absorbé ne dépassent jamais la lumière reçue. Plus de reflet = moins de diffus.</li>
+                <li><b>Diélectriques</b>&nbsp;: couleur dans le diffus, F0 ≈ 4&nbsp;% incolore. <b>Métaux</b>&nbsp;: pas de diffus, couleur dans la réflexion spéculaire, F0 70–95&nbsp;% teinté.</li>
+                <li><b>Fresnel</b>&nbsp;: la réflectance grimpe sur les bords (incidence rasante)&nbsp;; c'est automatique, ne le peins pas.</li>
+                <li>Workflow par défaut&nbsp;: <b>Metallic/Roughness</b> (Unity, Unreal). Glossiness = 1 − Roughness.</li>
+                <li>Espaces colorimétriques&nbsp;: <b>sRGB</b> pour Base Color et Emissive&nbsp;; <b>linéaire / Non-Color</b> pour Metallic, Roughness, Normal, Height, AO.</li>
+                <li>Garde la Base Color <b>propre</b> (ni ombre, ni reflet, ni AO incrustés) et dans la plage 30–240.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>PBR (Physically Based Rendering)</b> — méthode de rendu où l'on décrit les propriétés physiques de la matière, pour un résultat cohérent sous tout éclairage. Voir le <a href="../../glossaire.html">glossaire global</a>.</p>
+              <p><b>Conservation de l'énergie</b> — principe selon lequel une surface ne renvoie jamais plus de lumière qu'elle n'en reçoit&nbsp;; le total se partage entre diffus, spéculaire et absorption.</p>
+              <p><b>Diélectrique</b> — matériau non conducteur (bois, plastique, pierre)&nbsp;: sa couleur est dans le diffus et son spéculaire vaut ~4&nbsp;%, incolore.</p>
+              <p><b>F0</b> — réflectance spéculaire à incidence frontale (face à la surface)&nbsp;: ~4&nbsp;% pour les diélectriques, 70–95&nbsp;% et teintée pour les métaux.</p>
+              <p><b>Effet Fresnel</b> — augmentation de la réflectance quand on regarde la surface en incidence rasante (sur les bords d'un objet).</p>
+              <p><b>Metallic/Roughness</b> — workflow PBR standard (Unity, Unreal) utilisant les cartes Base Color, Metallic et Roughness.</p>
+              <p><b>Specular/Glossiness</b> — workflow alternatif séparant Diffuse, Specular (coloré) et Glossiness (inverse de la roughness).</p>
+              <p><b>Base Color / Albédo</b> — couleur pure de la matière, sans ombre ni reflet, encodée en sRGB.</p>
+              <p><b>Roughness</b> — rugosité micro de la surface (0 lisse, 1 rugueux)&nbsp;; carte linéaire qui «&nbsp;raconte&nbsp;» le vécu de l'objet.</p>
+              <p><b>Emissive</b> — carte (sRGB) définissant les zones qui émettent leur propre lumière (néons, écrans, lave).</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a> &nbsp;: sRGB vs linéaire et gamma, la base indispensable pour les espaces colorimétriques.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a> &nbsp;: comment fabriquer concrètement normal map, AO et height à partir d'un high-poly.</li>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a> &nbsp;: où va le PBR une fois branché dans un shader.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance 3D Painter</a> &nbsp;: peindre des maps PBR avec des smart materials.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux Unity</a> et <a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor Unreal</a> &nbsp;: brancher le PBR dans chaque moteur.</li>
+              <li><a href="../../glossaire.html">Glossaire global</a> &nbsp;: tous les termes du cours.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G5 — Import d'assets dans Godot · Atelier Game Art</title>
+  <meta name="description" content="Importer dans Godot : glTF recommandé, le dock Import, scènes importées et réimport, réglages de textures et compression VRAM.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Import d'assets</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G5 — Import d'assets</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g04-projet.html">G4</a>, <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3 — Formats</a> et <a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Importer des modèles 3D — et pourquoi <b>glTF</b> est le format de prédilection de Godot.</li>
+                <li>Utiliser le <b>dock Import</b> pour régler comment un fichier est interprété.</li>
+                <li>Comprendre la <b>scène importée</b> et le mécanisme de <b>réimport</b> automatique.</li>
+                <li>Régler l'import des <b>textures</b> (compression VRAM, mipmaps, sRGB vs données).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Godot importe automatiquement tout fichier déposé sous <code>res://</code> et le convertit en ressource interne optimisée. Bien régler cet import — surtout le <b>format des modèles</b> et les <b>réglages de textures</b> — évite des assets trop lourds, des normal maps cassées ou des échelles fausses (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>). Bonne nouvelle&nbsp;: Godot est particulièrement à l'aise avec le <b>glTF</b>, le format ouvert recommandé.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. glTF, le format de prédilection</h3>
+            <p>Godot supporte le FBX, l'OBJ, mais privilégie le <span class="gloss">glTF</span> 2.0 (renvoi <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>)&nbsp;: ouvert, moderne, PBR natif, bonne gestion des unités et des axes. Depuis Blender, exporte en <b>glTF</b> (renvoi <a href="../../cours/blender/b11-rendu-export.html">B11</a>) pour le moins de surprises. Le <code>.glb</code> (binaire) embarque mesh + matériaux + textures dans un fichier&nbsp;; le <code>.gltf</code> + dossier sépare les ressources. Le FBX fonctionne aussi (Godot le convertit), mais glTF reste le chemin le plus fiable.</p>
+
+            <h3>2. Import automatique et dossier .godot</h3>
+            <p>Dès qu'un fichier arrive sous <code>res://</code>, Godot l'<b>importe</b>&nbsp;: il génère un fichier <code>.import</code> compagnon (qui stocke les réglages) et une version optimisée dans le cache <code>.godot/</code> (renvoi <a href="../../cours/godot/g04-projet.html">G4</a>). Tu travailles toujours avec la ressource <b>importée</b>, pas le fichier source directement. Modifier le source (réexporter depuis Blender) déclenche un <b>réimport</b> automatique.</p>
+
+            <h3>3. Le dock Import</h3>
+            <p>Quand tu sélectionnes un fichier dans le FileSystem, le dock <span class="term">Import</span> (souvent à côté de Scene) affiche ses réglages d'import. Selon le type&nbsp;:</p>
+            <ul>
+              <li><b>Modèle (glTF/FBX)</b>&nbsp;: options d'<em>Import As</em> (scène), génération de collisions/LOD, root type, échelle. Après réglage, clique <span class="menu-path">Reimport</span>.</li>
+              <li><b>Image (texture)</b>&nbsp;: mode de compression, mipmaps, repeat/filter, et surtout l'usage <b>sRGB vs données</b> (voir plus bas).</li>
+            </ul>
+
+            <h3>4. Scène importée vs scène héritée</h3>
+            <p>Un modèle importé devient une <b>scène</b> (un arbre de nodes&nbsp;: MeshInstance3D, etc.). Tu ne dois pas l'éditer directement (un réimport l'écraserait). Pour l'adapter (ajouter collision, script, matériau override), tu crées une <b>scène héritée</b> (clic droit ▸ <span class="menu-path">New Inherited Scene</span>) ou tu l'instancies dans une autre scène. Ainsi tes ajouts survivent aux réimports.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 190" role="img" aria-label="Flux d'import Godot : source glTF vers ressource importée vers scène héritée">
+                <defs><marker id="g5ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
+                <g class="svg-text" font-size="11.5">
+                  <rect x="20" y="66" width="150" height="58" rx="8" class="svg-surface" stroke="#313c4c"/><text x="95" y="90" text-anchor="middle" font-weight="700">model.glb</text><text x="95" y="108" text-anchor="middle" class="svg-dim">source (Blender)</text>
+                  <rect x="210" y="66" width="170" height="58" rx="8" fill="#4f9bd9" fill-opacity="0.14" stroke="#4f9bd9"/><text x="295" y="86" text-anchor="middle" font-weight="700">Import (dock)</text><text x="295" y="104" text-anchor="middle" class="svg-dim">.import + cache .godot/</text><text x="295" y="119" text-anchor="middle" class="svg-dim" font-size="10">réimport auto si source change</text>
+                  <rect x="420" y="66" width="200" height="58" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="520" y="86" text-anchor="middle" font-weight="700">Scène héritée</text><text x="520" y="104" text-anchor="middle" class="svg-dim">tes ajouts : collision,</text><text x="520" y="119" text-anchor="middle" class="svg-dim" font-size="10">script, matériau override</text>
+                </g>
+                <g stroke="#4f9bd9" stroke-width="1.8" marker-end="url(#g5ar)">
+                  <line x1="170" y1="95" x2="208" y2="95"/><line x1="380" y1="95" x2="418" y2="95"/>
+                </g>
+              </svg>
+              <figcaption>On n'édite pas la ressource importée directement&nbsp;: on travaille dans une <b>scène héritée</b> pour que les ajouts survivent aux réimports.</figcaption>
+            </figure>
+
+            <h3>5. Réglages de textures</h3>
+            <p>Comme dans les autres moteurs (renvoi <a href="../../cours/unity/u05-import-assets.html">U5</a>, <a href="../../cours/unreal/e04-import-assets.html">E4</a>), l'import d'image expose&nbsp;:</p>
+            <ul>
+              <li><b>Compression</b>&nbsp;: <em>VRAM Compressed</em> (formats GPU type BCn/ASTC, renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>) pour les textures de jeu&nbsp;; <em>Lossless</em> pour l'UI/pixel art.</li>
+              <li><b>Mipmaps</b>&nbsp;: activées pour la 3D (anti-aliasing au loin, renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</li>
+              <li><b>sRGB vs données</b>&nbsp;: les textures de couleur (albedo) sont traitées en sRGB&nbsp;; les maps de données (normal, roughness…) en linéaire. En pratique, quand tu utilises un <code>StandardMaterial3D</code> (renvoi <a href="../../cours/godot/g06-materiaux.html">G6</a>), Godot gère l'espace selon le slot où tu branches la texture — mais reste vigilant (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</li>
+              <li><b>Filter / Repeat</b>&nbsp;: linéaire vs nearest (pixel art = nearest), répétition pour les textures tileable.</li>
+            </ul>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Exporte un asset en <code>.glb</code> depuis Blender (renvoi <a href="../../cours/blender/b11-rendu-export.html">B11</a>), glisse-le dans <code>res://assets/models/</code> via le FileSystem.</li>
+              <li>Sélectionne-le&nbsp;: le dock <span class="menu-path">Import</span> s'affiche. Active la génération de collision si besoin, vérifie l'échelle, clique <span class="menu-path">Reimport</span>.</li>
+              <li>Crée une <span class="menu-path">New Inherited Scene</span> à partir de ce modèle pour pouvoir l'éditer (collision, script) sans risquer un écrasement.</li>
+              <li>Importe une texture&nbsp;: sélectionne-la, règle <em>Compression = VRAM Compressed</em>, <em>Mipmaps</em> activées, puis Reimport.</li>
+              <li>Instancie ta scène héritée dans une scène de niveau et vérifie le rendu (matériau, échelle, orientation).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes modifications sur un modèle importé disparaissent après réexport.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as édité la ressource importée directement&nbsp;; le réimport l'a écrasée.</div>
+                <div class="pi-fix"><b>Correction</b>Travaille dans une <em>scène héritée</em> ou une instance&nbsp;; tes ajouts y survivent.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon import FBX se comporte mal (échelle, matériaux).</div>
+                <div class="pi-cause"><b>Cause</b>FBX moins fiable que glTF dans Godot&nbsp;; échelle/axes non gérés.</div>
+                <div class="pi-fix"><b>Correction</b>Privilégie le glTF&nbsp;; applique les transforms côté Blender (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes textures saturent la mémoire vidéo.</div>
+                <div class="pi-cause"><b>Cause</b>Textures non compressées (Lossless) et/ou trop grandes.</div>
+                <div class="pi-fix"><b>Correction</b>Passe en <em>VRAM Compressed</em>, active les mipmaps, réduis la taille (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon pixel art est flou en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Filtre linéaire appliqué à une texture pixel art.</div>
+                <div class="pi-fix"><b>Correction</b>Règle le <em>Filter</em> sur <em>Nearest</em> et désactive les mipmaps pour ces textures.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Importe un asset glTF complet (mesh + textures) dans un projet Godot.</li>
+                <li>Crée une scène héritée et ajoute-lui une collision&nbsp;; vérifie qu'un réimport ne casse pas tes ajouts.</li>
+                <li>Règle l'import des textures (VRAM Compressed + mipmaps) et observe l'impact mémoire.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'asset arrive à la bonne échelle/orientation et s'affiche correctement.</li>
+                  <li>Tes ajouts (collision/script) survivent à un réimport (scène héritée).</li>
+                  <li>Les textures sont compressées en VRAM avec mipmaps.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>glTF</b> est le format de prédilection de Godot (FBX/OBJ aussi, mais glTF d'abord).</li>
+                <li>Tout fichier sous <code>res://</code> est <b>importé automatiquement</b> (fichier <code>.import</code> + cache).</li>
+                <li>Édite via une <b>scène héritée</b>/instance, pas la ressource importée (sinon écrasée au réimport).</li>
+                <li>Textures&nbsp;: <b>VRAM Compressed</b> + mipmaps pour la 3D&nbsp;; attention sRGB vs données (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Dock Import</b> — panneau de réglages d'import du fichier sélectionné dans Godot.</p>
+              <p><b>Scène importée</b> — ressource générée à partir d'un modèle&nbsp;; non éditable directement.</p>
+              <p><b>Scène héritée</b> — scène dérivée d'un import, où l'on ajoute ses propres nodes sans risque d'écrasement.</p>
+              <p><b>Réimport</b> — regénération automatique de la ressource quand le fichier source change.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b11-rendu-export.html">B11 — Export depuis Blender</a>&nbsp;: produire un glTF propre.</li>
+              <li><a href="../../cours/godot/g06-materiaux.html">G6 — Matériaux &amp; shaders</a>&nbsp;: brancher les textures importées.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transférer des assets</a>&nbsp;: échelle/axes inter-logiciels.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

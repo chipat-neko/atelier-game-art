@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B6 — UV unwrap dans Blender · Atelier Game Art</title>
+  <meta name="description" content="Déplier ses UV dans Blender : Mark Seam, Unwrap, Smart UV Project, UV Editor, packing, vérification au damier et texel density.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>UV unwrap</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B6 — UV unwrap dans Blender</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping (théorie)</a> et <a href="../../cours/blender/b03-modelisation.html">B3 — Modélisation</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Placer des <b>seams</b> (Mark Seam) et déplier avec <b>Unwrap</b> et <b>Smart UV Project</b>.</li>
+                <li>Travailler dans l'<b>UV Editor</b> et vérifier la distorsion avec un <b>damier</b>.</li>
+                <li><b>Packer</b> les îlots proprement avec de la marge.</li>
+                <li>Homogénéiser la <b>texel density</b> entre objets.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La théorie des UV est vue en <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a> : ici, on l'applique concrètement dans Blender. Un dépliage propre conditionne tout le texturing et le baking (renvoi <a href="../../cours/blender/b07-shading.html">B7</a>, <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>). Mal fait, il produit des textures étirées, des coutures visibles et une netteté incohérente. Blender offre tout le nécessaire gratuitement.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Marquer les seams</h3>
+            <p>On entre en Edit Mode, mode arêtes (<span class="kbd">2</span>), on sélectionne les arêtes le long desquelles «&nbsp;découper&nbsp;» (les <span class="gloss">seam</span>), puis <span class="menu-path">Edge<span class="arrow">▸</span>Mark Seam</span> (les arêtes deviennent rouges). Bonne stratégie&nbsp;: cacher les coutures dans des zones peu vues (sous un objet, dans un creux), couper là où la surface change de direction, et limiter le nombre de seams sans pour autant créer d'étirement (renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>).</p>
+
+            <h3>2. Déplier&nbsp;: Unwrap vs Smart UV Project</h3>
+            <ul>
+              <li><b>Unwrap</b> (<span class="kbd">U</span> ▸ Unwrap)&nbsp;: déplie selon <em>tes</em> seams. C'est la méthode contrôlée, à privilégier pour les assets importants.</li>
+              <li><b>Smart UV Project</b>&nbsp;: découpe automatiquement selon un angle. Rapide pour des props secondaires ou un point de départ, mais crée beaucoup d'îlots et moins de contrôle.</li>
+              <li><b>Cube/Cylinder/Sphere Projection</b>&nbsp;: projections primitives, utiles pour des formes correspondantes.</li>
+            </ul>
+
+            <h3>3. L'UV Editor, le damier et le packing</h3>
+            <p>Dans le Workspace <em>UV Editing</em>, l'écran se divise&nbsp;: l'UV Editor à gauche, le mesh à droite. Pour <b>vérifier la distorsion</b>, on applique un matériau avec une <span class="gloss">checker map</span> (texture damier)&nbsp;: des carreaux carrés = UV correct, rectangulaires = étirement, tailles différentes = densité incohérente. On range les îlots dans le carré <b>0–1</b> avec <span class="kbd">U</span>... non&nbsp;: dans l'UV Editor, <span class="menu-path">UV<span class="arrow">▸</span>Pack Islands</span> (avec une <em>marge</em> pour le <span class="gloss">padding</span> — évite le bleeding entre mipmaps, renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 210" role="img" aria-label="Cube déplié en UV avec damier, îlot correct vs étiré">
+                <g class="svg-text" font-size="11">
+                  <text x="120" y="26" text-anchor="middle" font-weight="700">Cube + seams</text>
+                  <path d="M70 50 h100 v80 h-100 z" fill="#0c1320" stroke="#2e425f"/>
+                  <path d="M70 50 l24 -16 h100 l-24 16" fill="#0c1320" stroke="#2e425f"/>
+                  <path d="M170 50 l24 -16 v80 l-24 16" fill="#0c1320" stroke="#2e425f"/>
+                  <path d="M70 50 h100" stroke="#e0a14b" stroke-width="2"/>
+                  <text x="120" y="150" text-anchor="middle" class="svg-dim" font-size="9">arêtes rouges = seams</text>
+
+                  <text x="340" y="26" text-anchor="middle" font-weight="700">Dépliage 0–1 (damier OK)</text>
+                  <rect x="280" y="40" width="120" height="120" fill="none" stroke="#38bdf8"/>
+                  <g fill="#38bdf8" fill-opacity="0.18">
+                    <rect x="290" y="50" width="48" height="48"/><rect x="342" y="102" width="48" height="48"/>
+                  </g>
+                  <path d="M290 50 h48 v48 h-48 z" fill="none" stroke="#4ade80"/>
+                  <text x="340" y="178" text-anchor="middle" class="svg-dim" font-size="9">carreaux carrés = pas d'étirement</text>
+
+                  <text x="540" y="26" text-anchor="middle" font-weight="700">Étirement (à éviter)</text>
+                  <rect x="480" y="40" width="120" height="120" fill="none" stroke="#f87171"/>
+                  <rect x="490" y="60" width="100" height="30" fill="#f87171" fill-opacity="0.18" stroke="#f87171"/>
+                  <text x="540" y="178" text-anchor="middle" class="svg-dim" font-size="9">carreaux rectangulaires = distorsion</text>
+                </g>
+              </svg>
+              <figcaption>Le damier révèle instantanément l'étirement&nbsp;: on vise des carreaux carrés et de taille homogène sur tout l'objet.</figcaption>
+            </figure>
+
+            <h3>4. Texel density</h3>
+            <p>La <span class="gloss">texel density</span> (densité de texels, renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) doit être <b>cohérente</b> entre objets d'une même scène, sinon certains paraissent flous à côté d'autres nets. L'add-on gratuit <em>Texel Density Checker</em> (ou un damier de référence à l'échelle) aide à l'uniformiser. On donne un peu plus de densité aux zones vues de près (visage d'un perso, façade d'un bâtiment).</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sur ta caisse de <a href="../../cours/blender/b03-modelisation.html">B3</a>, entre en Edit Mode, mode arêtes. Sélectionne les arêtes des coins et fais <span class="menu-path">Edge<span class="arrow">▸</span>Mark Seam</span> pour pouvoir déplier les faces.</li>
+              <li>Sélectionne tout (<span class="kbd">A</span>), <span class="kbd">U</span> ▸ <span class="menu-path">Unwrap</span>. Passe au Workspace <em>UV Editing</em>.</li>
+              <li>Crée un matériau temporaire avec une texture <em>Checker</em> (renvoi <a href="../../cours/blender/b07-shading.html">B7</a>) et observe le damier sur le mesh&nbsp;: traque les zones étirées.</li>
+              <li>Réajuste les seams si nécessaire, redéplie. Dans l'UV Editor&nbsp;: <span class="menu-path">UV<span class="arrow">▸</span>Pack Islands</span> avec une marge de ~0,02.</li>
+              <li>Vérifie la texel density&nbsp;: tous les carreaux du damier doivent avoir une taille comparable sur tout l'objet.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma texture est étirée sur certaines faces.</div>
+                <div class="pi-cause"><b>Cause</b>Pas assez de seams, ou seams mal placés → distorsion.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute des coutures, redéplie&nbsp;; vérifie au damier (carreaux carrés).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des coutures sombres apparaissent au bord des îlots après bake/mipmaps.</div>
+                <div class="pi-cause"><b>Cause</b>Padding insuffisant entre les îlots.</div>
+                <div class="pi-fix"><b>Correction</b>Augmente la marge au Pack Islands&nbsp;; baker avec du <em>margin</em> (renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un objet est net, l'autre flou côte à côte.</div>
+                <div class="pi-cause"><b>Cause</b>Texel density incohérente entre les deux.</div>
+                <div class="pi-fix"><b>Correction</b>Uniformise la densité (add-on Texel Density Checker ou damier de référence).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes îlots se chevauchent sans le vouloir.</div>
+                <div class="pi-cause"><b>Cause</b>Chevauchement après dépliage/packing automatique.</div>
+                <div class="pi-fix"><b>Correction</b>Active l'overlay <em>Display Stretching</em> / <em>Overlap</em>, sépare les îlots, repack.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Déplie la caisse de B3 avec des seams bien placés, vérifie au damier.</li>
+                <li>Déplie un objet plus complexe (tonneau, lanterne) et compare Unwrap vs Smart UV Project.</li>
+                <li>Pack les îlots avec marge et uniformise la texel density entre les deux objets.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le damier montre des carreaux carrés et homogènes (pas d'étirement).</li>
+                  <li>Les îlots ne se chevauchent pas et ont une marge suffisante.</li>
+                  <li>Les seams sont cachés au mieux dans des zones peu visibles.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Mark Seam</b> (arêtes rouges) → <b>Unwrap</b> (<span class="kbd">U</span>) pour un dépliage contrôlé&nbsp;; Smart UV pour aller vite.</li>
+                <li>Vérifie toujours au <b>damier</b>&nbsp;: carreaux carrés = pas de distorsion.</li>
+                <li><b>Pack Islands</b> avec marge (padding) pour éviter les coutures sombres.</li>
+                <li>Homogénéise la <b>texel density</b> entre objets.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Mark Seam</b> — marquage des arêtes de découpe pour le dépliage UV (apparaissent en rouge).</p>
+              <p><b>Smart UV Project</b> — dépliage automatique par angle, rapide mais moins contrôlé.</p>
+              <p><b>Pack Islands</b> — rangement des îlots UV dans le carré 0–1 avec marge.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping en profondeur</a>&nbsp;: toute la théorie (seams, texel density, UDIM).</li>
+              <li><a href="../../cours/blender/b07-shading.html">B7 — Shading &amp; matériaux</a>&nbsp;: appliquer une texture sur ces UV.</li>
+              <li><a href="../../cours/blender/b08-texture-paint-bake.html">B8 — Texture Paint &amp; Baking</a>&nbsp;: les UV servent de support au bake.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

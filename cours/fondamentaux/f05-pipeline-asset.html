@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F5 — Le pipeline de création d'asset · Atelier Game Art</title>
+  <meta name="description" content="Vue d'ensemble du pipeline : concept, blockout, high-poly, low-poly, retopologie, UV, baking, texturing, LOD, export, intégration moteur.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Le pipeline de création d'asset</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F5 — Le pipeline de création d'asset</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Nommer les <b>dix étapes</b> du pipeline standard de création d'un asset 3D et dire, pour chacune, <em>ce qu'elle produit</em> et <em>pourquoi</em> elle existe.</li>
+                <li>Expliquer le rôle clé du <b>blockout</b> et pourquoi on valide les proportions et l'échelle <em>très tôt</em>, avant de modéliser le détail.</li>
+                <li>Distinguer le modèle <b>high-poly</b> du modèle <b>low-poly</b>, et comprendre le transfert de détail par le <span class="gloss">baking</span>.</li>
+                <li>Justifier l'<b>ordre</b> des étapes&nbsp;: pourquoi la retopologie précède l'UV, pourquoi l'UV précède le bake, pourquoi le bake précède le texturing.</li>
+                <li>Comprendre que le pipeline est <b>itératif</b> et que chaque étape impose des contraintes à la suivante (et parfois à la précédente).</li>
+                <li>Décrire ce que sont les <b>LOD</b>, à quoi sert l'<b>export</b> (FBX/glTF) et ce qui se passe à l'<b>intégration moteur</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un asset 3D fini — une caisse, une épée, un personnage — n'apparaît jamais d'un seul coup. Il est le résultat d'une <b>chaîne de production</b> (un <span class="term">pipeline</span>) où chaque étape transforme le travail de la précédente. Comprendre ce pipeline, c'est posséder la <b>carte</b> de tout le cours&nbsp;: les leçons F6 (UV), F7 (PBR), F8 (baking), F12 (optimisation) sont chacune le zoom détaillé d'une case de cette carte.</p>
+            <p>Pourquoi un ordre aussi rigide&nbsp;? Parce qu'en production, refaire une étape coûte cher. Si tu peins une magnifique texture avant d'avoir validé l'échelle de l'objet, et que le <span class="term">lead</span> te dit «&nbsp;ta caisse est deux fois trop grosse&nbsp;», tu jettes des heures de travail. Le pipeline est conçu pour <b>valider les décisions risquées en premier</b> (forme, proportions, silhouette) et ne descendre dans le détail coûteux (sculpt, texture) qu'une fois les fondations sûres. C'est exactement la logique d'un chantier&nbsp;: on coule les fondations et on monte les murs avant de poser le papier peint. Personne ne tapisse une pièce dont les murs ne sont pas encore validés.</p>
+            <p>L'autre raison est <b>technique</b>&nbsp;: certaines étapes <em>dépendent</em> mécaniquement du résultat d'une autre. On ne peut pas projeter du détail (le <span class="gloss">baking</span>) sur une surface qui n'a pas encore de coordonnées de texture (les <span class="gloss">UV</span>). On ne peut pas déplier des UV propres sur un maillage chaotique de plusieurs millions de polygones&nbsp;: il faut d'abord le mesh propre et léger (la <b>retopologie</b>). Le pipeline n'est pas une habitude arbitraire&nbsp;: c'est l'ordre imposé par les dépendances entre étapes.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>Vue d'ensemble&nbsp;: trois grandes phases</h3>
+            <p>Avant de détailler les dix étapes, regarde la forêt avant les arbres. Le pipeline se découpe en trois grandes phases&nbsp;:</p>
+            <ul>
+              <li><b>Phase modélisation</b> (orange) — on définit la <b>forme</b> et la <b>géométrie</b>&nbsp;: référence, blockout, high-poly, low-poly/retopo.</li>
+              <li><b>Phase texturing</b> (bleu) — on définit l'<b>apparence de surface</b>&nbsp;: UV, baking, texturing PBR.</li>
+              <li><b>Phase intégration</b> (vert) — on rend l'asset <b>utilisable dans le moteur</b>&nbsp;: LOD, export, import et test en jeu.</li>
+            </ul>
+            <p>Garde cette tripartition en tête&nbsp;: «&nbsp;quelle forme&nbsp;?&nbsp;», puis «&nbsp;à quoi ressemble la surface&nbsp;?&nbsp;», puis «&nbsp;comment ça tourne dans le jeu&nbsp;?&nbsp;».</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 380" role="img" aria-label="Pipeline horizontal de création d'asset en dix étapes, colorées par phase modélisation, texturing et intégration, reliées par des flèches avec une boucle d'itération en retour">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Le pipeline d'un asset, de l'idée au jeu</text>
+
+                <!-- bandeaux de phase -->
+                <rect x="20" y="38" width="245" height="20" rx="4" fill="#f2b441" fill-opacity="0.16"/>
+                <text x="142" y="52" text-anchor="middle" font-size="11" font-weight="700" fill="#f2b441">PHASE MODÉLISATION (forme)</text>
+                <rect x="273" y="38" width="185" height="20" rx="4" fill="#59b0ff" fill-opacity="0.16"/>
+                <text x="365" y="52" text-anchor="middle" font-size="11" font-weight="700" fill="#59b0ff">TEXTURING (surface)</text>
+                <rect x="466" y="38" width="154" height="20" rx="4" fill="#5ad19a" fill-opacity="0.16"/>
+                <text x="543" y="52" text-anchor="middle" font-size="11" font-weight="700" fill="#5ad19a">INTÉGRATION</text>
+
+                <!-- rangée 1 : étapes 1-5 -->
+                <g font-size="10.5">
+                  <rect x="22" y="72" width="108" height="58" rx="7" class="svg-surface" stroke="#f2b441" stroke-width="1.8"/>
+                  <text x="76" y="90" text-anchor="middle" class="svg-text" font-weight="700">1 · Concept</text>
+                  <text x="76" y="105" text-anchor="middle" class="svg-dim">références,</text>
+                  <text x="76" y="118" text-anchor="middle" class="svg-dim">planches</text>
+
+                  <rect x="150" y="72" width="108" height="58" rx="7" class="svg-surface" stroke="#f2b441" stroke-width="1.8"/>
+                  <text x="204" y="90" text-anchor="middle" class="svg-text" font-weight="700">2 · Blockout</text>
+                  <text x="204" y="105" text-anchor="middle" class="svg-dim">proportions,</text>
+                  <text x="204" y="118" text-anchor="middle" class="svg-dim">échelle</text>
+
+                  <rect x="278" y="72" width="108" height="58" rx="7" class="svg-surface" stroke="#f2b441" stroke-width="1.8"/>
+                  <text x="332" y="90" text-anchor="middle" class="svg-text" font-weight="700">3 · High-poly</text>
+                  <text x="332" y="105" text-anchor="middle" class="svg-dim">sculpt,</text>
+                  <text x="332" y="118" text-anchor="middle" class="svg-dim">tout le détail</text>
+
+                  <rect x="406" y="72" width="108" height="58" rx="7" class="svg-surface" stroke="#f2b441" stroke-width="1.8"/>
+                  <text x="460" y="90" text-anchor="middle" class="svg-text" font-weight="700">4 · Low-poly</text>
+                  <text x="460" y="105" text-anchor="middle" class="svg-dim">retopologie,</text>
+                  <text x="460" y="118" text-anchor="middle" class="svg-dim">mesh léger</text>
+
+                  <rect x="534" y="72" width="86" height="58" rx="7" class="svg-surface" stroke="#59b0ff" stroke-width="1.8"/>
+                  <text x="577" y="90" text-anchor="middle" class="svg-text" font-weight="700">5 · UV</text>
+                  <text x="577" y="105" text-anchor="middle" class="svg-dim">dépliage</text>
+                  <text x="577" y="118" text-anchor="middle" class="svg-dim">2D</text>
+                </g>
+                <g stroke="#717c8c" stroke-width="2" fill="none">
+                  <line x1="130" y1="101" x2="148" y2="101" marker-end="url(#ar)"/>
+                  <line x1="258" y1="101" x2="276" y2="101" marker-end="url(#ar)"/>
+                  <line x1="386" y1="101" x2="404" y2="101" marker-end="url(#ar)"/>
+                  <line x1="514" y1="101" x2="532" y2="101" marker-end="url(#ar)"/>
+                </g>
+                <path d="M577 130 L577 152 L76 152 L76 174" stroke="#717c8c" stroke-width="2" fill="none" marker-end="url(#ar)"/>
+
+                <!-- rangée 2 : étapes 6-10 -->
+                <g font-size="10.5">
+                  <rect x="22" y="176" width="108" height="58" rx="7" class="svg-surface" stroke="#59b0ff" stroke-width="1.8"/>
+                  <text x="76" y="194" text-anchor="middle" class="svg-text" font-weight="700">6 · Baking</text>
+                  <text x="76" y="209" text-anchor="middle" class="svg-dim">high → low</text>
+                  <text x="76" y="222" text-anchor="middle" class="svg-dim">normal, AO…</text>
+
+                  <rect x="150" y="176" width="108" height="58" rx="7" class="svg-surface" stroke="#59b0ff" stroke-width="1.8"/>
+                  <text x="204" y="194" text-anchor="middle" class="svg-text" font-weight="700">7 · Texturing</text>
+                  <text x="204" y="209" text-anchor="middle" class="svg-dim">PBR,</text>
+                  <text x="204" y="222" text-anchor="middle" class="svg-dim">Substance</text>
+
+                  <rect x="278" y="176" width="108" height="58" rx="7" class="svg-surface" stroke="#5ad19a" stroke-width="1.8"/>
+                  <text x="332" y="194" text-anchor="middle" class="svg-text" font-weight="700">8 · LOD</text>
+                  <text x="332" y="209" text-anchor="middle" class="svg-dim">versions</text>
+                  <text x="332" y="222" text-anchor="middle" class="svg-dim">allégées</text>
+
+                  <rect x="406" y="176" width="108" height="58" rx="7" class="svg-surface" stroke="#5ad19a" stroke-width="1.8"/>
+                  <text x="460" y="194" text-anchor="middle" class="svg-text" font-weight="700">9 · Export</text>
+                  <text x="460" y="209" text-anchor="middle" class="svg-dim">FBX / glTF</text>
+                  <text x="460" y="222" text-anchor="middle" class="svg-dim">échelle, axes</text>
+
+                  <rect x="534" y="176" width="86" height="58" rx="7" class="svg-surface" stroke="#5ad19a" stroke-width="1.8"/>
+                  <text x="577" y="194" text-anchor="middle" class="svg-text" font-weight="700">10 · Moteur</text>
+                  <text x="577" y="209" text-anchor="middle" class="svg-dim">import,</text>
+                  <text x="577" y="222" text-anchor="middle" class="svg-dim">test en jeu</text>
+                </g>
+                <g stroke="#717c8c" stroke-width="2" fill="none">
+                  <line x1="130" y1="205" x2="148" y2="205" marker-end="url(#ar)"/>
+                  <line x1="258" y1="205" x2="276" y2="205" marker-end="url(#ar)"/>
+                  <line x1="386" y1="205" x2="404" y2="205" marker-end="url(#ar)"/>
+                  <line x1="514" y1="205" x2="532" y2="205" marker-end="url(#ar)"/>
+                </g>
+
+                <!-- boucle d'itération -->
+                <path d="M577 234 L577 300 L204 300 L204 262 Q204 256 198 256 L132 256" stroke="#f2b441" stroke-width="2.2" fill="none" stroke-dasharray="6 4" marker-end="url(#arY)"/>
+                <text x="392" y="294" text-anchor="middle" font-size="11" font-weight="700" fill="#f2b441">Boucle d'itération&nbsp;: le test renvoie corriger texture, UV ou mesh</text>
+
+                <text x="320" y="338" text-anchor="middle" class="svg-dim" font-size="11">Chaque étape s'appuie sur la précédente. Une erreur en amont se propage&nbsp;: mieux vaut valider tôt.</text>
+                <text x="320" y="358" text-anchor="middle" class="svg-dim" font-size="11">Le baking (6) ne peut exister sans UV (5)&nbsp;; les UV sans low-poly (4)&nbsp;; le low-poly sans une forme validée (2).</text>
+
+                <defs>
+                  <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#717c8c"/></marker>
+                  <marker id="arY" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#f2b441"/></marker>
+                </defs>
+              </svg>
+              <figcaption>Le pipeline complet en dix étapes, lu de gauche à droite et de haut en bas. Les couleurs marquent les trois phases. La flèche dorée en pointillés est la <b>boucle d'itération</b>&nbsp;: le test en jeu révèle souvent qu'il faut remonter corriger une étape antérieure.</figcaption>
+            </figure>
+
+            <h3>1 · Concept &amp; référence — décider quoi faire avant de le faire</h3>
+            <p>Avant la moindre manipulation 3D, on rassemble des <b>références</b>&nbsp;: photos, dessins de production, croquis. On les organise sur une <b>planche de références</b> (<span class="term">reference board</span> ou <span class="term">moodboard</span>), souvent dans un outil comme <b>PureRef</b> — une fenêtre flottante qui garde toutes tes images visibles par-dessus ton logiciel 3D.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> une cible visuelle claire. <b>Pourquoi&nbsp;:</b> modéliser sans référence, c'est inventer au fur et à mesure&nbsp;; les proportions dérivent, les détails sont incohérents, et le résultat «&nbsp;sonne faux&nbsp;» sans qu'on sache pourquoi. Une bonne planche fixe aussi l'<b>échelle relative</b> (cette poignée fait quelle taille par rapport à la porte&nbsp;?) et le <b>langage de formes</b> de l'objet. Voir aussi <a href="../../cours/fondamentaux/f02-theorie-artistique.html">F2 — Théorie artistique</a>.</p>
+
+            <h3>2 · Blockout / greybox — la forme avant le détail</h3>
+            <p>Le <span class="term">blockout</span> (aussi appelé <span class="term">greybox</span>, «&nbsp;boîte grise&nbsp;») est une maquette grossière en formes primitives (cubes, cylindres) qui capte les <b>proportions</b>, la <b>silhouette</b> et l'<b>échelle</b> de l'objet — sans aucun détail ni texture.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> un volume juste, à la bonne taille. <b>Pourquoi c'est l'étape la plus sous-estimée&nbsp;:</b> c'est ici qu'on prend les décisions <em>les moins chères à changer</em> et <em>les plus coûteuses à rater</em>. Déplacer un cube prend une seconde&nbsp;; refaire un sculpt parce que la proportion était fausse prend une journée. On valide donc l'échelle <b>tôt</b>, idéalement en plaçant un repère humain (un mannequin à la bonne taille) à côté.</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce&nbsp;: teste le blockout dans le moteur</div>
+              <p>Beaucoup de studios importent le blockout directement dans le moteur de jeu pour le «&nbsp;jouer&nbsp;» (le parcourir, le tenir en main). Une caisse peut paraître parfaite dans Blender et se révéler ridiculement petite une fois posée à côté du personnage. Valider l'échelle dans le contexte réel évite des semaines de refonte.</p>
+            </div>
+
+            <h3>3 · High-poly — sculpter tout le détail</h3>
+            <p>Le modèle <span class="term">high-poly</span> (haute densité) contient <b>tout le détail fin</b>&nbsp;: rivets, coutures, pores de peau, éclats, rouille. Il peut peser plusieurs <b>millions</b> de polygones. On le crée par <b>sculpting</b> (modelage organique, type ZBrush — voir <a href="../../cours/logiciels/l04-sculpt-zbrush.html">L4</a>) ou par <b>hard-surface</b> (objets manufacturés, à arêtes nettes, souvent via subdivision dans Blender — <a href="../../cours/logiciels/l01-blender.html">L1</a>).</p>
+            <p><b>Ce que ça produit&nbsp;:</b> la «&nbsp;source de vérité&nbsp;» du détail. <b>Pourquoi&nbsp;:</b> aucun moteur de jeu ne peut afficher des millions de polygones par objet en temps réel. Mais ce détail n'est pas perdu&nbsp;: il sera <b>projeté</b> sur le modèle léger à l'étape 6 (baking). Le high-poly est donc un <b>moule</b> dont on prendra l'empreinte.</p>
+
+            <h3>4 · Low-poly &amp; retopologie — le mesh «&nbsp;jouable&nbsp;»</h3>
+            <p>Le modèle <span class="term">low-poly</span> est la version <b>allégée et optimisée</b> qui ira réellement dans le jeu. On l'obtient par <span class="term">retopologie</span> (ou <span class="term">retopo</span>)&nbsp;: redessiner par-dessus le high-poly une <b>nouvelle topologie</b> propre, à faible densité, avec des <span class="gloss">quads</span> bien organisés (voir <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>).</p>
+            <p><b>Ce que ça produit&nbsp;:</b> le mesh final, léger, qui se déforme et s'anime bien. <b>Pourquoi c'est une étape à part entière&nbsp;:</b> on ne peut pas «&nbsp;décimer&nbsp;» bêtement le high-poly (réduire le nombre de polys automatiquement) car on obtiendrait un maillage de triangles chaotique, impossible à animer, impossible à déplier en UV. La retopo construit une topologie <b>intentionnelle</b>&nbsp;: des boucles d'arêtes là où l'objet doit plier. C'est cette étape qui rend possibles toutes les suivantes.</p>
+
+            <h3>5 · UV unwrap — préparer la surface 2D</h3>
+            <p>Le <span class="gloss">UV mapping</span> consiste à «&nbsp;déplier&nbsp;» la surface 3D du low-poly à plat, comme on déplierait un patron de couture, pour obtenir une carte 2D où chaque point de la surface a une coordonnée (U, V). Détail complet en <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> un système de coordonnées qui dit «&nbsp;tel pixel de l'image va sur tel endroit du mesh&nbsp;». <b>Pourquoi maintenant&nbsp;:</b> sans UV, impossible de poser une texture <em>ni</em> de cuire (baking) quoi que ce soit, car le bake écrit dans une image 2D positionnée par les UV. C'est pour cela que <b>l'UV vient après la retopo (il faut le mesh final) mais avant le bake (le bake en a besoin)</b>.</p>
+
+            <h3>6 · Baking — projeter le high-poly sur le low-poly</h3>
+            <p>Le <span class="gloss">baking</span> («&nbsp;cuisson&nbsp;») projette le détail du high-poly sur le low-poly et l'enregistre dans des <b>textures</b>. La plus importante est la <span class="gloss">normal map</span> (carte de normales)&nbsp;: une image qui encode, pixel par pixel, l'orientation de la micro-surface du high-poly, donnant au low-poly l'<b>illusion</b> du détail sous l'éclairage. On cuit aussi l'<span class="gloss">AO</span> (occlusion ambiante&nbsp;: les creux assombris), la <span class="term">curvature</span> (arêtes/creux, utile au texturing), etc. Détail en <a href="../../cours/fondamentaux/f08-baking.html">F8</a>.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> des cartes qui transfèrent le réalisme du high-poly vers le mesh léger. <b>Pourquoi c'est le cœur du gain de performance&nbsp;:</b> on obtient l'apparence de millions de polys pour le coût de quelques milliers. C'est l'astuce fondamentale du jeu temps réel.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Transfert de détail du modèle high-poly vers le modèle low-poly par baking, qui produit une normal map appliquée au low-poly pour recréer l'illusion du détail">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Le transfert de détail&nbsp;: high-poly → bake → low-poly</text>
+
+                <!-- high-poly -->
+                <g transform="translate(20,46)">
+                  <rect x="0" y="0" width="150" height="150" rx="8" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+                  <g stroke="#f2b441" stroke-width="1.1" fill="none" opacity="0.85">
+                    <path d="M14 30 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 50 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 70 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 90 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 110 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 130 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                  </g>
+                  <text x="75" y="172" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">High-poly</text>
+                  <text x="75" y="188" text-anchor="middle" class="svg-dim" font-size="10.5">millions de polys</text>
+                </g>
+
+                <!-- flèche bake -->
+                <g transform="translate(180,110)">
+                  <line x1="0" y1="0" x2="56" y2="0" stroke="#59b0ff" stroke-width="2.5" marker-end="url(#arB)"/>
+                  <text x="28" y="-10" text-anchor="middle" font-size="11" font-weight="700" fill="#59b0ff">BAKE</text>
+                </g>
+
+                <!-- normal map -->
+                <g transform="translate(245,46)">
+                  <rect x="0" y="0" width="150" height="150" rx="8" fill="#8aa0ff" fill-opacity="0.30" stroke="#59b0ff" stroke-width="2"/>
+                  <g stroke="#59b0ff" stroke-width="1.1" fill="none" opacity="0.7">
+                    <path d="M14 30 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 60 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 90 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 120 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                  </g>
+                  <text x="75" y="172" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Normal map</text>
+                  <text x="75" y="188" text-anchor="middle" class="svg-dim" font-size="10.5">image 2D (UV)</text>
+                </g>
+
+                <!-- flèche applique -->
+                <g transform="translate(405,110)">
+                  <line x1="0" y1="0" x2="56" y2="0" stroke="#5ad19a" stroke-width="2.5" marker-end="url(#arG)"/>
+                  <text x="28" y="-10" text-anchor="middle" font-size="11" font-weight="700" fill="#5ad19a">applique</text>
+                </g>
+
+                <!-- low-poly result -->
+                <g transform="translate(470,46)">
+                  <rect x="0" y="0" width="150" height="150" rx="8" class="svg-surface" stroke="#5ad19a" stroke-width="2"/>
+                  <line x1="0" y1="50" x2="150" y2="50" class="svg-stroke" stroke-width="1.2"/>
+                  <line x1="0" y1="100" x2="150" y2="100" class="svg-stroke" stroke-width="1.2"/>
+                  <line x1="50" y1="0" x2="50" y2="150" class="svg-stroke" stroke-width="1.2"/>
+                  <line x1="100" y1="0" x2="100" y2="150" class="svg-stroke" stroke-width="1.2"/>
+                  <g stroke="#5ad19a" stroke-width="1.1" fill="none" opacity="0.75">
+                    <path d="M14 35 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 75 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                    <path d="M14 115 q9 -8 18 0 t18 0 t18 0 t18 0 t18 0 t18 0 t18 0"/>
+                  </g>
+                  <text x="75" y="172" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Low-poly + normal</text>
+                  <text x="75" y="188" text-anchor="middle" class="svg-dim" font-size="10.5">peu de polys, détail simulé</text>
+                </g>
+
+                <text x="320" y="228" text-anchor="middle" class="svg-dim" font-size="11">Le détail réel du high-poly est encodé dans une image, qui «&nbsp;ment&nbsp;» à la lumière sur le mesh léger.</text>
+
+                <defs>
+                  <marker id="arB" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#59b0ff"/></marker>
+                  <marker id="arG" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#5ad19a"/></marker>
+                </defs>
+              </svg>
+              <figcaption>Le baking capture le détail géométrique du high-poly dans une <span class="gloss">normal map</span> (positionnée par les UV), qui est ensuite appliquée au low-poly. Le mesh reste léger mais réagit à la lumière comme s'il était sculpté.</figcaption>
+            </figure>
+
+            <h3>7 · Texturing PBR — peindre la matière</h3>
+            <p>Le <span class="gloss">texturing PBR</span> (<em>Physically Based Rendering</em>, rendu physiquement réaliste — voir <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>) consiste à peindre les propriétés de matière de la surface&nbsp;: la couleur de base (<span class="gloss">albedo</span>), le métal/non-métal (<span class="gloss">metallic</span>), la rugosité (<span class="gloss">roughness</span>), etc. On le fait dans un outil comme <b>Substance 3D Painter</b> (<a href="../../cours/logiciels/l02-substance.html">L2</a>), en s'appuyant sur les cartes cuites à l'étape 6 (l'AO assombrit les creux, la curvature place l'usure sur les arêtes automatiquement).</p>
+            <p><b>Ce que ça produit&nbsp;:</b> le jeu de textures final (un <span class="term">texture set</span>). <b>Pourquoi après le bake&nbsp;:</b> le texturing exploite directement les cartes du bake comme guides. Peindre l'usure des arêtes à la main sans curvature map serait long et imprécis&nbsp;; avec, c'est quasi automatique.</p>
+
+            <h3>8 · LOD — des versions allégées pour la distance</h3>
+            <p>Un <span class="gloss">LOD</span> (<em>Level Of Detail</em>, niveau de détail) est une version <b>simplifiée</b> du mesh, utilisée quand l'objet est loin de la caméra. On génère typiquement LOD0 (l'original), LOD1 (~50&nbsp;% des polys), LOD2 (~25&nbsp;%), etc. Le moteur bascule de l'un à l'autre selon la distance. Détail en <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> un escalier de meshes de plus en plus légers. <b>Pourquoi&nbsp;:</b> afficher un objet détaillé qui ne couvre que 10 pixels à l'écran gaspille la puissance du GPU. Les LOD garantissent qu'on ne paie le coût géométrique que lorsque le détail est réellement visible.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Et Nanite dans Unreal&nbsp;?</div>
+              <p>Le système <a href="../../cours/unreal/e07-nanite.html">Nanite</a> d'Unreal Engine 5 gère le niveau de détail automatiquement et rend les LOD manuels souvent inutiles pour la géométrie statique. Mais le principe reste&nbsp;: il faut adapter la densité à la distance. Le pipeline classique avec LOD demeure la norme dans la majorité des projets, notamment sur mobile.</p>
+            </div>
+
+            <h3>9 · Export — sortir l'asset vers le moteur</h3>
+            <p>L'<b>export</b> emballe le mesh, ses UV, son squelette éventuel et parfois ses LOD dans un fichier d'échange&nbsp;: le plus souvent <span class="term">FBX</span> ou <span class="term">glTF</span> (voir <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>). Trois réglages sont critiques&nbsp;: l'<b>échelle</b> (1 unité = 1 mètre&nbsp;?), l'<b>orientation des axes</b> (quel axe pointe vers le haut&nbsp;?) et l'<b>application des transformations</b>.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> un fichier que le moteur sait lire. <b>Pourquoi c'est piégeux&nbsp;:</b> Blender travaille en Z-up, Unity en Y-up&nbsp;; un mauvais réglage et ton objet arrive couché ou 100 fois trop grand. C'est l'une des erreurs les plus fréquentes du débutant.</p>
+
+            <h3>10 · Intégration moteur — le test en jeu</h3>
+            <p>Dernière étape&nbsp;: importer l'asset dans le moteur (<a href="../../cours/unity/u05-import-assets.html">Unity U5</a> / <a href="../../cours/unreal/e04-import-assets.html">Unreal E4</a>), créer un <b>matériau</b> qui branche les textures sur le shader (<a href="../../cours/unity/u06-materiaux.html">U6</a> / <a href="../../cours/unreal/e05-material-editor.html">E5</a>), puis <b>le tester en conditions réelles</b>&nbsp;: dans l'éclairage du niveau, à la bonne distance, en mouvement.</p>
+            <p><b>Ce que ça produit&nbsp;:</b> l'asset enfin <em>vivant</em> dans le jeu. <b>Pourquoi c'est une étape, pas une formalité&nbsp;:</b> beaucoup de défauts n'apparaissent qu'ici — une normal map inversée, une texture trop sombre sous l'éclairage du niveau, une silhouette qui se lit mal de loin. C'est là que démarre la <b>boucle d'itération</b>.</p>
+
+            <h3>L'itération&nbsp;: le pipeline n'est pas une ligne droite</h3>
+            <p>Le schéma se lit de gauche à droite, mais en pratique on <b>remonte</b> sans cesse. Le test en jeu (10) renvoie corriger la texture (7)&nbsp;; un défaut de bake (6) renvoie ajuster les UV (5) ou même la retopo (4). C'est normal et sain&nbsp;: on appelle ça <b>itérer</b>. La règle d'or&nbsp;: <em>valider tôt pour itérer peu sur les étapes coûteuses</em>. Plus une erreur est détectée tard, plus elle coûte cher à corriger car elle a contaminé tout l'aval.</p>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>La règle de dépendance, à graver</div>
+              <p>Chaque étape <b>impose des contraintes à la suivante</b>. Retopo <b>avant</b> UV (il faut le mesh final pour le déplier). UV <b>avant</b> bake (le bake écrit dans l'espace UV). Bake <b>avant</b> texturing (le texturing exploite les cartes cuites). Inverser cet ordre, c'est se condamner à tout refaire.</p>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Faisons le pipeline complet, à blanc, sur un asset simple&nbsp;: une <b>caisse en bois cerclée de métal</b>. L'objectif n'est pas de tout réaliser ici (chaque étape a sa leçon dédiée), mais de <b>vivre l'enchaînement</b> et les passages de relais.</p>
+            <ol>
+              <li><b>Référence.</b> Ouvre PureRef, glisse 5 à 8 photos de caisses (bois, ferrures, usure). Note l'échelle&nbsp;: une caisse de transport fait ~80&nbsp;cm de côté. <em>Ce qui se passe&nbsp;:</em> tu fixes la cible avant de toucher la 3D.</li>
+              <li><b>Blockout.</b> Dans Blender, <span class="menu-path">Add<span class="arrow">▸</span>Mesh<span class="arrow">▸</span>Cube</span>, puis dans le panneau <span class="menu-path">Item<span class="arrow">▸</span>Dimensions</span> saisis 0,8&nbsp;m sur chaque axe. Ajoute un mannequin de référence à 1,8&nbsp;m. <em>Ce qui se passe&nbsp;:</em> tu valides que la caisse a la bonne taille dans le contexte humain. Décision peu coûteuse, prise tôt.</li>
+              <li><b>High-poly.</b> Duplique la caisse, ajoute des <b>bevels</b> (chanfreins) sur les arêtes, sculpte des éclats de bois et des bosses sur les ferrures. <em>Ce qui se passe&nbsp;:</em> tu crées la source de détail&nbsp;; le compte de polys explose, c'est normal, ce mesh n'ira pas en jeu.</li>
+              <li><b>Low-poly (retopo).</b> Modélise une caisse propre en quelques centaines de quads&nbsp;: 6 faces principales + les ferrures simplifiées. <em>Ce qui se passe&nbsp;:</em> tu obtiens le mesh qui ira <em>réellement</em> dans le jeu.</li>
+              <li><b>UV.</b> Marque des coutures (<span class="term">seams</span>) sur les arêtes cachées, puis <span class="menu-path">UV<span class="arrow">▸</span>Unwrap</span>. <em>Ce qui se passe&nbsp;:</em> la surface est dépliée à plat&nbsp;; sans ça, l'étape suivante est impossible.</li>
+              <li><b>Baking.</b> Exporte high-poly et low-poly, charge-les dans Substance 3D Painter via <span class="menu-path">File<span class="arrow">▸</span>New</span> en assignant le high-poly comme <em>High Definition Mesh</em>, puis lance <span class="menu-path">Texture Set Settings<span class="arrow">▸</span>Bake Mesh Maps</span>. <em>Ce qui se passe&nbsp;:</em> Painter projette le détail dans une normal map, une AO et une curvature, alignées sur tes UV.</li>
+              <li><b>Texturing.</b> Applique un <em>smart material</em> «&nbsp;bois&nbsp;» et un «&nbsp;métal&nbsp;», ajoute des générateurs d'usure qui lisent la curvature. <em>Ce qui se passe&nbsp;:</em> l'usure se place toute seule sur les arêtes saillantes grâce aux cartes cuites.</li>
+              <li><b>LOD.</b> Crée LOD1 et LOD2 par décimation contrôlée (<em>Decimate</em> ou outil dédié). <em>Ce qui se passe&nbsp;:</em> tu prépares des versions légères pour la distance.</li>
+              <li><b>Export.</b> <span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>FBX</span>. Règle <em>Scale</em> sur 1.0, <em>Apply Transform</em> coché, et l'orientation (Up&nbsp;: Y pour Unity). <em>Ce qui se passe&nbsp;:</em> le mesh + UV partent dans un fichier propre, à la bonne échelle.</li>
+              <li><b>Intégration.</b> Glisse le FBX dans Unity, crée un matériau, branche les textures (Albedo, Normal, Metallic/Smoothness), pose la caisse dans la scène et appuie sur <b>Play</b>. <em>Ce qui se passe&nbsp;:</em> tu vois enfin l'asset sous l'éclairage du jeu — et tu notes ce qu'il faut corriger en remontant la boucle.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Tu as passé des heures à texturer, et le lead dit que la proportion est fausse.</p>
+                <p class="pi-cause"><b>Cause</b> — Tu as sauté ou bâclé le blockout&nbsp;: les proportions n'ont jamais été validées avant le détail.</p>
+                <p class="pi-fix"><b>Correction</b> — Toujours faire valider la silhouette et l'échelle au stade blockout, dans le moteur si possible, avant de sculpter ou de texturer.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Le baking produit une normal map sale, pleine d'artefacts et de zones noires.</p>
+                <p class="pi-cause"><b>Cause</b> — Les UV ont des chevauchements, ou le low-poly enveloppe mal le high-poly (cage trop serrée).</p>
+                <p class="pi-fix"><b>Correction</b> — Remonter à l'étape UV&nbsp;: pas de chevauchement non voulu, marges suffisantes&nbsp;; vérifier l'enveloppe au bake. Voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Dans le moteur, l'objet arrive couché sur le côté ou 100 fois trop grand.</p>
+                <p class="pi-cause"><b>Cause</b> — Réglages d'export erronés&nbsp;: axe «&nbsp;up&nbsp;» ou échelle non adaptés au moteur cible.</p>
+                <p class="pi-fix"><b>Correction</b> — Fixer l'échelle (1 unité = 1&nbsp;m) et l'orientation à l'export, appliquer les transformations. Voir <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Tu veux déplier les UV mais le mesh fait 3 millions de polys et l'outil rame.</p>
+                <p class="pi-cause"><b>Cause</b> — Tu essaies de déplier le high-poly. L'UV se fait sur le <em>low-poly</em>, après retopologie.</p>
+                <p class="pi-fix"><b>Correction</b> — Respecter l'ordre&nbsp;: retopo → UV → bake. On ne déplie jamais le high-poly.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Le détail sculpté disparaît sur le modèle de jeu, qui paraît tout lisse.</p>
+                <p class="pi-cause"><b>Cause</b> — La normal map n'a pas été cuite, ou n'est pas branchée dans le slot Normal du matériau.</p>
+                <p class="pi-fix"><b>Correction</b> — Vérifier que le bake a bien produit la normal map et qu'elle est connectée (en mode <em>Normal map</em>, pas <em>Color</em>) dans le moteur.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Le jeu rame avec des objets lointains pourtant minuscules à l'écran.</p>
+                <p class="pi-cause"><b>Cause</b> — Pas de LOD&nbsp;: chaque objet est rendu en pleine densité quelle que soit la distance.</p>
+                <p class="pi-fix"><b>Correction</b> — Générer des LOD (ou activer Nanite sous Unreal). Voir <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>.</p>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Sans ouvrir aucun logiciel, rédige le <b>plan de production</b> d'un asset de ton choix (par ex. un tonneau, une borne d'arcade, un casque). Pour <b>chacune des dix étapes</b>, écris en une ou deux phrases&nbsp;:</p>
+              <ul>
+                <li>Ce que <b>produit</b> l'étape (un mesh&nbsp;? une image&nbsp;? un fichier&nbsp;?).</li>
+                <li><b>Pourquoi</b> elle existe et de quoi elle <b>dépend</b> (quelle étape doit être finie avant).</li>
+                <li>Un <b>risque</b> typique si on la rate, et comment on le détecterait plus tard.</li>
+              </ul>
+              <p>Termine par un <b>schéma</b> dessiné à la main reliant les dix étapes, avec une flèche d'itération en retour.</p>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les dix étapes sont présentes, dans le <b>bon ordre</b>.</li>
+                  <li>Chaque étape précise un <b>livrable</b> concret (pas juste un verbe d'action).</li>
+                  <li>Au moins <b>trois dépendances</b> sont explicitées (ex. «&nbsp;UV avant bake car…&nbsp;»).</li>
+                  <li>Le schéma montre clairement la <b>boucle d'itération</b> de retour.</li>
+                  <li>Tu sais dire à quelle phase (modélisation / texturing / intégration) appartient chaque étape.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le pipeline a <b>dix étapes</b>&nbsp;: concept → blockout → high-poly → low-poly/retopo → UV → baking → texturing → LOD → export → moteur.</li>
+                <li>Trois phases&nbsp;: la <b>forme</b> (modélisation), la <b>surface</b> (texturing), l'<b>intégration</b> (moteur).</li>
+                <li>On <b>valide tôt</b> (blockout, échelle) car les erreurs en amont coûtent de plus en plus cher en aval.</li>
+                <li>L'ordre est imposé par les <b>dépendances</b>&nbsp;: retopo avant UV, UV avant bake, bake avant texturing.</li>
+                <li>Le <b>baking</b> transfère le détail du high-poly vers le low-poly&nbsp;: l'apparence de millions de polys pour le coût de quelques milliers.</li>
+                <li>Le pipeline est <b>itératif</b>&nbsp;: le test en jeu renvoie souvent corriger une étape antérieure.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Pipeline</b> — la chaîne ordonnée d'étapes qui transforme une idée en asset utilisable dans un moteur de jeu.</p>
+              <p><b>Référence (moodboard)</b> — collection d'images organisées (souvent dans PureRef) servant de cible visuelle et d'échelle avant la modélisation.</p>
+              <p><b>Blockout (greybox)</b> — maquette grossière en formes primitives qui fixe proportions, silhouette et échelle, sans détail ni texture.</p>
+              <p><b>High-poly</b> — modèle très dense (millions de polygones) contenant tout le détail fin&nbsp;; sert de source au baking, jamais affiché tel quel en jeu.</p>
+              <p><b>Low-poly</b> — version allégée et optimisée du mesh, destinée au moteur, obtenue par retopologie.</p>
+              <p><b>Retopologie (retopo)</b> — fait de redessiner une topologie propre et légère par-dessus le high-poly pour produire le low-poly.</p>
+              <p><b>Baking (cuisson)</b> — projection du détail du high-poly sur le low-poly, enregistrée dans des textures (normal map, AO, curvature).</p>
+              <p><b>LOD (Level Of Detail)</b> — versions de plus en plus simplifiées d'un mesh, utilisées par le moteur selon la distance à la caméra.</p>
+              <p><b>Texture set</b> — l'ensemble des cartes PBR d'un même matériau (albedo, normal, metallic, roughness…) produit au texturing.</p>
+              <p><b>Itération</b> — le fait de remonter dans le pipeline pour corriger une étape antérieure à la lumière des résultats d'une étape ultérieure.</p>
+              <p>Tous ces termes et bien d'autres sont définis dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a> &middot; le détail de l'étape 5 (dépliage de la surface).</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le PBR</a> &middot; les principes derrière l'étape 7 (texturing).</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a> &middot; le cœur technique de l'étape 6 (high → low).</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a> &middot; LOD, budgets de polys et performance (étape 8).</li>
+              <li><a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a> et <a href="../../cours/logiciels/l02-substance.html">L2 — Substance</a> &middot; les outils de modélisation et de texturing.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a> &middot; bien gérer l'export et l'import (étapes 9-10).</li>
+              <li>Pistes moteurs&nbsp;: <a href="../../cours/unity/u05-import-assets.html">Unity U5</a> et <a href="../../cours/unreal/e04-import-assets.html">Unreal E4</a> pour l'intégration.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

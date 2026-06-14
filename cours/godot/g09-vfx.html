@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G9 — Particules & VFX dans Godot · Atelier Game Art</title>
+  <meta name="description" content="Les particules de Godot : GPUParticles3D vs CPUParticles3D, le ProcessMaterial, les draw passes et les sous-émetteurs ; construire un effet simple.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Particules &amp; VFX</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G9 — Particules &amp; VFX</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f11-vfx-particules.html">F11 — VFX (concepts)</a> et <a href="../../cours/godot/g06-materiaux.html">G6</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Choisir entre <b>GPUParticles3D</b> et <b>CPUParticles3D</b>.</li>
+                <li>Régler un effet via le <b>ProcessMaterial</b> (émission, forces, courbes sur la durée de vie).</li>
+                <li>Comprendre les <b>draw passes</b> (sprite vs mesh émis) et les <b>sous-émetteurs</b>.</li>
+                <li>Construire un effet simple (étincelles / feu) et surveiller l'overdraw.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les VFX donnent vie et lisibilité au jeu (renvoi <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>). Godot propose un système de particules clair, piloté par un <b>ProcessMaterial</b> qui décrit la vie des particules. Comme partout, le piège est l'<span class="gloss">overdraw</span>&nbsp;: savoir construire un effet propre <em>et</em> léger est l'objectif.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. GPU vs CPU</h3>
+            <ul>
+              <li><b>GPUParticles3D</b>&nbsp;: simulé sur le GPU, gère un très grand nombre de particules&nbsp;; le standard pour les effets riches. Nécessite un GPU compatible (Forward+/Mobile).</li>
+              <li><b>CPUParticles3D</b>&nbsp;: simulé sur le CPU, plus limité en nombre mais plus compatible (utile en renderer Compatibility / matériel faible). On peut convertir l'un en l'autre.</li>
+            </ul>
+            <p>Pour la plupart des effets sur PC, <b>GPUParticles3D</b> est le choix par défaut&nbsp;; bascule en CPU si ta cible l'exige (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</p>
+
+            <h3>2. Le ProcessMaterial</h3>
+            <p>Un GPUParticles3D se règle via un <span class="term">ProcessMaterial</span> (un <em>ParticleProcessMaterial</em>, ou un shader de particules sur mesure). Il décrit&nbsp;:</p>
+            <ul>
+              <li><b>Émission</b>&nbsp;: forme d'émission (point, sphère, box, surface d'un mesh), direction, vitesse initiale.</li>
+              <li><b>Forces</b>&nbsp;: gravité, accélération, turbulence, amortissement (drag).</li>
+              <li><b>Sur la durée de vie</b>&nbsp;: courbes et gradients de <em>scale</em>, <em>color</em>, <em>velocity</em>, rotation — comme les «&nbsp;over lifetime&nbsp;» vus en <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a> (par ex. faire décroître l'alpha vers la fin).</li>
+            </ul>
+            <p>Le node lui-même porte&nbsp;: <em>Amount</em> (nombre de particules), <em>Lifetime</em>, <em>Explosiveness</em> (rafale vs flux continu), <em>One Shot</em>, <em>Preprocess</em>.</p>
+
+            <h3>3. Draw passes&nbsp;: ce qui est rendu</h3>
+            <p>Le <b>Draw Pass</b> définit la géométrie émise&nbsp;: le plus souvent un <b>QuadMesh</b> texturé (sprite/billboard face caméra, pour fumée/étincelles) avec un matériau adapté&nbsp;; ou un <b>mesh</b> (débris, projectiles). On peut avoir plusieurs draw passes. Le <b>matériau</b> du draw pass (renvoi <a href="../../cours/godot/g06-materiaux.html">G6</a>) décide de l'apparence&nbsp;: souvent <em>billboard</em> activé, transparence additive (feu, étincelles) ou alpha (fumée), <em>Unshaded</em> pour les effets lumineux.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 190" role="img" aria-label="Structure d'un GPUParticles3D : node, ProcessMaterial, Draw Pass">
+                <defs><marker id="g9ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
+                <g class="svg-text" font-size="11.5">
+                  <rect x="30" y="60" width="170" height="70" rx="8" fill="#4f9bd9" fill-opacity="0.12" stroke="#4f9bd9" stroke-width="1.6"/>
+                  <text x="115" y="84" text-anchor="middle" font-weight="800">GPUParticles3D</text>
+                  <text x="115" y="104" text-anchor="middle" class="svg-dim">Amount · Lifetime</text>
+                  <text x="115" y="120" text-anchor="middle" class="svg-dim">Explosiveness · One Shot</text>
+                  <rect x="250" y="30" width="180" height="60" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/>
+                  <text x="340" y="52" text-anchor="middle" font-weight="700">ProcessMaterial</text>
+                  <text x="340" y="70" text-anchor="middle" class="svg-dim" font-size="10">émission · forces</text>
+                  <text x="340" y="84" text-anchor="middle" class="svg-dim" font-size="10">scale/color over life</text>
+                  <rect x="250" y="104" width="180" height="60" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/>
+                  <text x="340" y="126" text-anchor="middle" font-weight="700">Draw Pass</text>
+                  <text x="340" y="144" text-anchor="middle" class="svg-dim" font-size="10">QuadMesh + matériau</text>
+                  <text x="340" y="158" text-anchor="middle" class="svg-dim" font-size="10">(billboard, additif)</text>
+                </g>
+                <g stroke="#4f9bd9" stroke-width="1.7" marker-end="url(#g9ar)">
+                  <path d="M200 85 C 220 70, 230 62, 248 60"/>
+                  <path d="M200 105 C 220 120, 230 128, 248 132"/>
+                </g>
+              </svg>
+              <figcaption>Un GPUParticles3D&nbsp;: le node (nombre, durée), le <b>ProcessMaterial</b> (comportement) et le <b>Draw Pass</b> (apparence).</figcaption>
+            </figure>
+
+            <h3>4. Sous-émetteurs</h3>
+            <p>Un <b>sous-émetteur</b> permet qu'une particule en déclenche d'autres à un événement (à sa naissance, à sa mort, ou en collision)&nbsp;: par ex. une fusée (particule) qui émet une <b>explosion</b> (sous-émetteur) à sa mort. C'est l'équivalent fonctionnel des sub-emitters d'autres moteurs et permet des effets composés.</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: des étincelles</h2>
+            <ol>
+              <li>Ajoute un <code>GPUParticles3D</code> à ta scène. Assigne-lui un <em>ProcessMaterial ▸ New ParticleProcessMaterial</em>.</li>
+              <li>Node&nbsp;: règle <em>Amount</em> (ex. 50), <em>Lifetime</em> court (0,5 s), <em>Explosiveness</em> à 1 pour une rafale (One Shot si ponctuel).</li>
+              <li>ProcessMaterial&nbsp;: forme d'émission <em>Sphere</em> petite, <em>Initial Velocity</em> vers le haut avec dispersion, <em>Gravity</em> activée pour qu'elles retombent.</li>
+              <li><em>Scale</em>/<em>Color over lifetime</em>&nbsp;: fais décroître l'alpha vers la fin (extinction douce), couleur orange chaude.</li>
+              <li>Draw Pass&nbsp;: un <em>QuadMesh</em> avec un matériau d'étincelle <em>billboard</em>, transparence additive, <em>Unshaded</em>.</li>
+              <li>Joue l'effet (icône de prévisualisation)&nbsp;; ajuste le nombre/la taille pour rester léger (renvoi <a href="../../cours/godot/g11-optimisation.html">G11</a>).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Chute de framerate quand l'effet remplit l'écran.</div>
+                <div class="pi-cause"><b>Cause</b>Overdraw&nbsp;: trop de grands quads transparents superposés (renvoi <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>).</div>
+                <div class="pi-fix"><b>Correction</b>Réduis Amount/taille, limite la zone, privilégie l'additif.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes particules s'affichent en carrés opaques/noirs.</div>
+                <div class="pi-cause"><b>Cause</b>Matériau du draw pass mal réglé (pas de transparence/billboard).</div>
+                <div class="pi-fix"><b>Correction</b>Active la transparence (additif/alpha), le billboard et <em>Unshaded</em> sur le matériau.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Rien ne s'affiche.</div>
+                <div class="pi-cause"><b>Cause</b>Amount à 0, Lifetime nul, émission non démarrée (Emitting off), ou taille trop petite.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie Amount &gt; 0, Lifetime &gt; 0, <em>Emitting</em> activé et la taille.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'effet ne tourne pas sur ma cible (web/mobile faible).</div>
+                <div class="pi-cause"><b>Cause</b>GPUParticles non supporté/lourd sur cette cible.</div>
+                <div class="pi-fix"><b>Correction</b>Convertis en <em>CPUParticles3D</em> pour la compatibilité.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un effet d'étincelles GPUParticles3D comme dans la démo.</li>
+                <li>Ajoute un second effet (fumée en alpha, montée lente, fade).</li>
+                <li>Bonus&nbsp;: utilise un sous-émetteur pour qu'une particule déclenche un petit éclat à sa mort.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les particules naissent, évoluent (forces + courbes) et s'éteignent proprement.</li>
+                  <li>Le matériau du draw pass est correct (billboard, transparence).</li>
+                  <li>L'effet ne fait pas chuter le framerate de façon déraisonnable.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>GPUParticles3D</b> par défaut (riche)&nbsp;; <b>CPUParticles3D</b> pour la compatibilité.</li>
+                <li>Le <b>ProcessMaterial</b> décrit l'émission, les forces et les courbes sur la durée de vie.</li>
+                <li>Le <b>Draw Pass</b> (QuadMesh + matériau billboard/additif) décide de l'apparence.</li>
+                <li>Surveille l'<b>overdraw</b>&nbsp;; les sous-émetteurs créent des effets composés.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>GPUParticles3D / CPUParticles3D</b> — systèmes de particules de Godot, simulés sur GPU (riche) ou CPU (compatible).</p>
+              <p><b>ProcessMaterial</b> — ressource décrivant le comportement des particules (émission, forces, courbes).</p>
+              <p><b>Draw Pass</b> — géométrie émise par les particules (QuadMesh sprite, ou mesh) et son matériau.</p>
+              <p><b>Sous-émetteur</b> — émetteur déclenché par une particule (à la naissance, mort ou collision).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f11-vfx-particules.html">F11 — VFX &amp; particules (concepts)</a>&nbsp;: les fondamentaux transférables.</li>
+              <li><a href="../../cours/unity/u09-vfx.html">U9</a> / <a href="../../cours/unreal/e08-niagara.html">E8</a>&nbsp;: les systèmes VFX des autres moteurs.</li>
+              <li><a href="../../cours/godot/g06-materiaux.html">G6 — Matériaux &amp; shaders</a>&nbsp;: créer les matériaux de tes particules.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

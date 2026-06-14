@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F12 — Optimisation graphique · Atelier Game Art</title>
+  <meta name="description" content="Budget de polygones, draw calls, LOD, atlasing, compression (BCn/DXT, ASTC), mipmaps, overdraw et instancing : pourquoi 'beau' ne suffit pas.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f12";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Optimisation graphique</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F12 — Optimisation graphique</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>Idéalement après <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>, <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a> et <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Diagnostiquer <em>où</em> est le goulot d'étranglement d'une scène&nbsp;: es-tu <b>CPU-bound</b> ou <b>GPU-bound</b>, et pourquoi ça change toute la stratégie.</li>
+                <li>Expliquer ce qu'est un <b>draw call</b>, <em>pourquoi</em> chaque appel coûte côté processeur, et comment les réduire (batching, atlas, moins de matériaux, instancing).</li>
+                <li>Raisonner en <b>budget de tris</b> (triangles visibles), distinguer le coût <b>vertex</b> du coût <b>fragment</b>, et citer des ordres de grandeur réalistes mobile contre PC.</li>
+                <li>Décider quand poser des <b>LOD</b>, comment gérer leurs transitions, et comprendre le lien avec <b>Nanite</b>.</li>
+                <li>Choisir une <b>compression GPU</b> (BC1/3/5/7, ASTC) sans détruire tes normal maps, et activer correctement les <b>mipmaps</b> pour tuer le scintillement.</li>
+                <li>Repérer un problème d'<b>overdraw</b> (transparence, feuillage) et comprendre l'<b>early-Z</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>On peut faire l'asset le plus magnifique du monde&nbsp;: s'il fait tomber le jeu à 18&nbsp;images par seconde, il sera coupé, simplifié ou refusé. Dans un studio, «&nbsp;beau&nbsp;» n'est jamais une fin en soi — le livrable est «&nbsp;<b>beau ET dans le budget</b>&nbsp;». L'optimisation n'est donc pas une corvée qu'on fait à la fin&nbsp;: c'est une <b>contrainte de design</b> qui guide chaque décision artistique, du nombre de boucles d'arêtes à la résolution des textures.</p>
+            <p>Cette leçon est <b>transversale</b>&nbsp;: elle relie presque tout ce qu'on a vu. Le <span class="gloss">budget de polygones</span> dépend de l'anatomie du mesh (<a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>)&nbsp;; l'atlasing dépend des <span class="gloss">UV</span> (<a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>)&nbsp;; la compression et les mipmaps prolongent l'image numérique (<a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>)&nbsp;; le nombre de matériaux découle du PBR (<a href="../../cours/fondamentaux/f07-pbr.html">F7</a>). Comprendre ces mécanismes, c'est arrêter de «&nbsp;baisser les réglages au hasard&nbsp;» et commencer à attaquer le <em>vrai</em> goulot.</p>
+            <p>La règle d'or à graver&nbsp;: <b>on n'optimise pas ce qu'on n'a pas mesuré</b>. Avant de toucher quoi que ce soit, on ouvre un profiler (côté Unity en <a href="../../cours/unity/u11-optimisation.html">U11</a>, côté Unreal en <a href="../../cours/unreal/e10-optimisation.html">E10</a>) et on regarde où part le temps. Le reste de la leçon te donne le vocabulaire pour <em>lire</em> ce profiler.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La frame est une course&nbsp;: CPU contre GPU</h3>
+            <p>Une image (<span class="term">frame</span>) est calculée par deux processeurs qui travaillent en parallèle. Le <span class="term">CPU</span> (processeur central) prépare le travail&nbsp;: il décide ce qui est visible, trie les objets, met à jour la physique et l'animation, puis envoie au GPU une <b>liste d'ordres de dessin</b>. Le <span class="term">GPU</span> (processeur graphique) exécute ces ordres&nbsp;: il transforme les sommets et colorie les pixels.</p>
+            <p>À 60&nbsp;images par seconde, chaque frame doit tenir dans <b>16,6&nbsp;millisecondes</b> (1000&nbsp;ms ÷ 60). À 30&nbsp;fps, dans 33&nbsp;ms. Le temps d'une frame est dicté par le <b>plus lent</b> des deux processeurs&nbsp;: si le CPU met 20&nbsp;ms à préparer la liste, le GPU a beau finir en 8&nbsp;ms, on est bloqué à 50&nbsp;fps. On dit alors que la scène est <span class="term">CPU-bound</span> (limitée par le CPU). Si c'est l'inverse — le GPU peine à colorier des millions de pixels alors que le CPU attend — on est <span class="term">GPU-bound</span>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Pourquoi le diagnostic change tout</div>
+              <p>Optimiser le mauvais côté ne sert à rien. Si tu es <b>CPU-bound</b> à cause de trop de draw calls, réduire la résolution des textures n'y changera rien (c'est du travail GPU). Inversement, si tu es <b>GPU-bound</b> à cause de transparences plein écran, fusionner des matériaux ne te rendra pas une seule milliseconde. Le profiler te dit quel côté est saturé&nbsp;; tu attaques <em>celui-là</em>.</p>
+            </div>
+
+            <h3>2. Les draw calls&nbsp;: la grande cause de la saturation CPU</h3>
+            <p>Un <span class="term">draw call</span> (appel de dessin) est une commande que le CPU envoie au GPU&nbsp;: «&nbsp;dessine ce paquet de géométrie, avec ce matériau, ces textures, ces réglages&nbsp;». Le problème n'est pas le dessin lui-même (rapide), c'est la <b>préparation et l'émission de la commande</b>&nbsp;: le pilote graphique doit valider l'état, changer les textures liées, configurer le shader… Chaque appel a un <b>coût fixe côté CPU</b>, indépendamment de la quantité de géométrie dessinée.</p>
+            <p>Conséquence contre-intuitive&nbsp;: <b>dessiner 1&nbsp;000 cubes séparés coûte beaucoup plus cher que dessiner un seul gros mesh de 1&nbsp;000 cubes fusionnés</b>, alors que le nombre de triangles est identique. Ce ne sont pas les triangles qui font mal ici, c'est le <b>nombre d'appels</b>. Un changement de matériau force presque toujours un nouvel appel&nbsp;: c'est pourquoi «&nbsp;trop de matériaux uniques&nbsp;» est l'un des pires ennemis des performances CPU.</p>
+
+            <h4>Comment réduire le nombre d'appels</h4>
+            <ul>
+              <li><span class="term">Batching</span> (regroupement)&nbsp;: le moteur fusionne des objets qui partagent le <b>même matériau</b> en un seul appel. Le <b>static batching</b> fusionne des objets immobiles à l'avance&nbsp;; le <b>dynamic batching</b> regroupe à la volée de petits objets mobiles.</li>
+              <li><span class="term">Atlasing</span>&nbsp;: regrouper plusieurs textures dans une seule grande image, pour que plusieurs objets partagent <b>un seul matériau</b> et deviennent batchables (détaillé plus bas).</li>
+              <li><b>Moins de matériaux</b>&nbsp;: chaque matériau distinct sur un mesh = au moins un appel. Un personnage avec 8&nbsp;matériaux génère au moins 8&nbsp;appels par LOD&nbsp;; en réduire à 2-3 est souvent le gain le plus rentable.</li>
+              <li><span class="term">Instancing</span> (instanciation)&nbsp;: dessiner des milliers de copies du <b>même mesh</b> en un seul appel (détaillé plus bas).</li>
+            </ul>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Ordre de grandeur</div>
+              <p>Sur un PC de jeu, on tolère plusieurs milliers de draw calls par frame&nbsp;; sur mobile, on vise souvent <b>moins de 100 à 200</b> appels pour tenir le budget. Si ton profiler affiche 3&nbsp;000 appels sur un téléphone, tu as trouvé ton problème avant même de regarder les pixels.</p>
+            </div>
+
+            <h3>3. Le budget de polygones&nbsp;: raisonner en tris visibles</h3>
+            <p>Le <span class="term">budget de tris</span> est le nombre de triangles (<span class="term">tris</span>) que tu t'autorises à afficher. Point capital&nbsp;: ce qui compte, ce sont les <b>tris visibles à l'écran en même temps</b>, pas le compte d'un asset isolé. Un rocher de 5&nbsp;000&nbsp;tris est négligeable&nbsp;; le même rocher dupliqué 3&nbsp;000&nbsp;fois dans un champ devient 15&nbsp;millions de tris — un désastre.</p>
+            <p>Le GPU paie ce travail à deux endroits distincts&nbsp;:</p>
+            <ul>
+              <li>Le <span class="term">coût vertex</span> (par sommet)&nbsp;: transformer la position de chaque sommet, appliquer le squelette pour l'animation, etc. Il dépend du <b>nombre de sommets</b>. Un mesh très dense mais minuscule à l'écran reste cher en vertex.</li>
+              <li>Le <span class="term">coût fragment</span> (par pixel)&nbsp;: colorier chaque pixel couvert, lire les textures, calculer l'éclairage PBR. Il dépend du <b>nombre de pixels couverts</b> et de la complexité du shader. Un mur plein écran avec un shader lourd est cher en fragment, même s'il n'a que 2&nbsp;triangles.</li>
+            </ul>
+            <p>Cette distinction explique pourquoi un objet minuscule au loin doit quand même être allégé&nbsp;: il coûte presque rien en fragment (peu de pixels), mais s'il garde 200&nbsp;000&nbsp;sommets, il coûte toujours cher en vertex. C'est exactement le problème que résolvent les LOD.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Quelques budgets réalistes (à titre indicatif)</div>
+              <p>Un personnage principal&nbsp;: ~5&nbsp;000–15&nbsp;000&nbsp;tris sur mobile, 30&nbsp;000–100&nbsp;000 sur PC/console récente. Un prop secondaire&nbsp;: quelques centaines à quelques milliers. Ce sont des fourchettes&nbsp;: chaque studio fixe ses chiffres selon la cible matérielle et le nombre d'objets simultanés. Le bon réflexe n'est pas «&nbsp;quel est le max pour cet objet&nbsp;?&nbsp;» mais «&nbsp;combien de ces objets seront à l'écran ensemble&nbsp;?&nbsp;».</p>
+            </div>
+
+            <h3>4. Les LOD&nbsp;: moins de détail quand on s'éloigne</h3>
+            <p>Un <span class="term">LOD</span> (Level Of Detail, niveau de détail) est une version <b>simplifiée</b> du même objet, affichée quand il s'éloigne de la caméra. Le raisonnement est purement perceptif&nbsp;: à 50&nbsp;mètres, un arbre n'occupe que quelques dizaines de pixels — inutile de payer ses 80&nbsp;000&nbsp;tris alors que 2&nbsp;000 donneraient une silhouette identique à l'écran.</p>
+            <p>On crée donc une chaîne de niveaux&nbsp;: <b>LOD0</b> (pleine résolution, de près), <b>LOD1</b> (~50&nbsp;%), <b>LOD2</b> (~25&nbsp;%), parfois un <b>LOD3</b> ou un <b>billboard</b> (une simple image plate). Le moteur choisit le niveau selon la <b>taille apparente à l'écran</b> (le ratio que l'objet occupe), pas la distance brute&nbsp;: ainsi un gros bâtiment garde son LOD0 plus longtemps qu'un caillou.</p>
+
+            <h4>Le piège des transitions</h4>
+            <p>Basculer brutalement de LOD0 à LOD1 produit un <span class="term">popping</span>&nbsp;: l'objet «&nbsp;saute&nbsp;» visiblement quand sa géométrie change d'un coup. Deux techniques l'atténuent&nbsp;:</p>
+            <ul>
+              <li>Le <span class="term">dithering</span> (tramage)&nbsp;: pendant un court instant, les deux niveaux coexistent en pixels entrelacés (un motif de points), ce qui masque le changement. Peu coûteux, très utilisé.</li>
+              <li>Le <span class="term">cross-fade</span> (fondu enchaîné)&nbsp;: les deux niveaux sont rendus en transparence l'un sur l'autre le temps de la bascule. Plus doux, mais plus cher (on dessine deux fois pendant la transition).</li>
+            </ul>
+            <p>Pour situer&nbsp;: <b>Nanite</b> (Unreal) est en quelque sorte une généralisation automatique de cette idée — au lieu de quelques niveaux fabriqués à la main, il streame et adapte la densité de triangles en continu, par cluster, sans popping perceptible. On le détaille en <a href="../../cours/unreal/e07-nanite.html">E7</a>. Mais même avec Nanite, comprendre <em>pourquoi</em> on réduit le détail au loin reste indispensable.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Trois versions d'un même objet selon la distance à la caméra : dense de près, intermédiaire à moyenne distance, grossier au loin">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">LOD&nbsp;: le détail diminue avec la distance</text>
+
+                <g>
+                  <path d="M28 150 l34 -22 v44 z" class="svg-surface" fill="#59b0ff" stroke="#313c4c"/>
+                  <rect x="20" y="138" width="14" height="24" rx="2" class="svg-surface" fill="#59b0ff" stroke="#313c4c"/>
+                  <text x="40" y="200" text-anchor="middle" class="svg-dim" font-size="11">caméra</text>
+                </g>
+
+                <path d="M62 150 L600 70 L600 230 Z" fill="#59b0ff" opacity="0.07" stroke="#313c4c" stroke-dasharray="4 4"/>
+
+                <g transform="translate(150,118)">
+                  <circle cx="32" cy="32" r="34" class="svg-surface" fill="#5ad19a" opacity="0.18" stroke="#5ad19a" stroke-width="2"/>
+                  <path d="M14 18 L50 18 M14 32 L50 32 M14 46 L50 46 M22 8 L22 56 M32 6 L32 58 M42 8 L42 56" stroke="#5ad19a" stroke-width="1"/>
+                  <text x="32" y="86" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">LOD0</text>
+                  <text x="32" y="100" text-anchor="middle" class="svg-dim" font-size="10">~80k tris</text>
+                </g>
+
+                <g transform="translate(330,128)">
+                  <circle cx="26" cy="26" r="27" class="svg-surface" fill="#f2b441" opacity="0.18" stroke="#f2b441" stroke-width="2"/>
+                  <path d="M10 26 L42 26 M26 6 L26 46 M14 12 L38 40 M38 12 L14 40" stroke="#f2b441" stroke-width="1"/>
+                  <text x="26" y="72" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">LOD1</text>
+                  <text x="26" y="86" text-anchor="middle" class="svg-dim" font-size="10">~20k tris</text>
+                </g>
+
+                <g transform="translate(500,138)">
+                  <circle cx="18" cy="18" r="19" class="svg-surface" fill="#f2b441" opacity="0.18" stroke="#f2b441" stroke-width="2"/>
+                  <path d="M18 0 L0 18 L18 36 L36 18 Z" fill="none" stroke="#f2b441" stroke-width="1"/>
+                  <text x="18" y="56" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">LOD2</text>
+                  <text x="18" y="70" text-anchor="middle" class="svg-dim" font-size="10">~3k tris</text>
+                </g>
+
+                <line x1="90" y1="252" x2="600" y2="252" stroke="#313c4c" stroke-width="1.5"/>
+                <polygon points="600,252 592,248 592,256" fill="#313c4c"/>
+                <text x="345" y="270" text-anchor="middle" class="svg-dim" font-size="11">distance croissante →</text>
+              </svg>
+              <figcaption>Même objet, trois budgets&nbsp;: le moteur affiche le niveau dont la densité de triangles correspond à la taille à l'écran.</figcaption>
+            </figure>
+
+            <h3>5. L'atlasing&nbsp;: regrouper les textures pour fusionner les matériaux</h3>
+            <p>Un <span class="term">atlas de textures</span> est une grande image qui regroupe plusieurs petites textures (plusieurs objets, ou plusieurs parties d'un même objet) dans un même fichier. Les <span class="gloss">UV</span> de chaque pièce sont repositionnés pour pointer vers leur sous-zone de l'atlas.</p>
+            <p>L'intérêt n'est pas (seulement) de gagner de la mémoire&nbsp;: c'est que plusieurs objets qui utilisaient des matériaux distincts peuvent désormais partager <b>un seul matériau</b>. Or, on l'a vu, qui dit matériau partagé dit objets <b>batchables</b> — donc moins de draw calls. L'atlasing est ainsi un levier direct sur la saturation CPU. C'est la technique reine pour les décors modulaires (un seul matériau «&nbsp;kit de murs&nbsp;» au lieu de douze) et pour les éléments d'interface.</p>
+
+            <h3>6. La compression GPU&nbsp;: tenir dans la VRAM</h3>
+            <p>Une texture non compressée de 2048×2048 en RGBA 8&nbsp;bits pèse ~16&nbsp;Mo. Multiplie par les dizaines de textures d'une scène, et la <span class="term">VRAM</span> (mémoire vidéo de la carte) explose. La <span class="term">compression GPU</span> résout deux problèmes&nbsp;: elle réduit l'occupation mémoire <b>et</b> la <span class="term">bande passante</span> (la quantité de données que le GPU lit à chaque accès texture). Moins de données à transférer = lectures plus rapides = moins de coût fragment.</p>
+            <p>La différence cruciale avec un JPG ou un PNG&nbsp;: ces formats se <b>décompressent entièrement en mémoire</b> avant usage. La compression GPU, elle, reste compressée <em>dans</em> la VRAM&nbsp;; le GPU sait lire directement les blocs compressés. C'est de la <span class="term">block compression</span>&nbsp;: l'image est découpée en blocs de 4×4&nbsp;pixels, chacun stocké de façon condensée.</p>
+
+            <h4>Les familles de formats</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Format</th><th>Pour quoi</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr><td><b>BC1</b> (DXT1)</td><td>Couleur sans alpha (albédo simple)</td><td>Le plus compact, 1&nbsp;bit d'alpha max. Évite-le sur les normales.</td></tr>
+                  <tr><td><b>BC3</b> (DXT5)</td><td>Couleur + alpha continu</td><td>Albédo avec transparence, masques.</td></tr>
+                  <tr><td><b>BC5</b></td><td><b>Normal maps</b></td><td>Deux canaux haute qualité (X, Y)&nbsp;; le Z est reconstruit. Le standard pour les normales.</td></tr>
+                  <tr><td><b>BC7</b></td><td>Couleur haute qualité</td><td>Meilleure qualité couleur+alpha, plus lourd que BC1/3. Idéal albédo détaillé sur PC.</td></tr>
+                  <tr><td><b>ASTC</b></td><td>Mobile (iOS/Android)</td><td>Taille de bloc variable, très flexible&nbsp;; format de référence sur mobile moderne.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>La block compression est <b>avec perte</b>&nbsp;: chaque bloc 4×4 est approximé, ce qui produit des <b>artefacts de bloc</b> visibles sur les dégradés fins et surtout sur les normales (d'où BC5, conçu exprès pour elles). C'est pour ça qu'on ne met <b>jamais</b> une normal map en BC1&nbsp;: les artefacts de bloc déforment les vecteurs et l'éclairage devient sale.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Ne recompresse jamais un JPG en texture GPU</div>
+              <p>Un JPG est <b>déjà</b> compressé avec perte (artefacts en damier autour des contrastes). Le passer ensuite en block compression = perte sur perte&nbsp;: les artefacts JPG se figent dans les blocs et deviennent indélogeables. Travaille toujours à partir de sources <b>non destructives</b> (PNG, TGA, EXR — voir <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>)&nbsp;; laisse le moteur appliquer la compression GPU à l'import.</p>
+            </div>
+
+            <h3>7. Les mipmaps&nbsp;: contre le scintillement et pour la vitesse</h3>
+            <p>Une <span class="term">mipmap</span> est une <b>chaîne de versions réduites</b> d'une texture, précalculées&nbsp;: la pleine résolution, puis 1/2, 1/4, 1/8… jusqu'à 1×1&nbsp;pixel. Quand une surface est loin (donc petite à l'écran), le GPU choisit automatiquement le niveau de mip dont la résolution correspond à la taille affichée.</p>
+            <p>Deux bénéfices majeurs&nbsp;:</p>
+            <ul>
+              <li><b>Anti-aliasing&nbsp;:</b> sans mipmaps, une texture détaillée vue au loin scintille horriblement (<span class="term">aliasing</span>)&nbsp;: l'écran tente d'afficher plus de détails de texture qu'il n'a de pixels, et le résultat papillote dès que la caméra bouge. Le bon niveau de mip est déjà «&nbsp;moyenné&nbsp;», donc stable.</li>
+              <li><b>Vitesse&nbsp;:</b> lire un petit mip plutôt que la pleine texture améliore énormément l'usage du <b>cache de texture</b> du GPU (les pixels voisins sont déjà en cache). Moins de bande passante, donc des accès plus rapides.</li>
+            </ul>
+            <p>Le coût&nbsp;? Toute la chaîne occupe environ <b>+33&nbsp;% de mémoire</b> par rapport à la texture seule (1/4 + 1/16 + … ≈ 1/3 en plus). C'est un échange presque toujours gagnant&nbsp;: on accepte un tiers de mémoire en plus pour gagner stabilité visuelle <em>et</em> vitesse.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 240" role="img" aria-label="Pyramide de mipmaps : la texture pleine résolution puis des versions réduites de moitié successives, chacune labellisée">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">La chaîne de mipmaps</text>
+
+                <rect x="40" y="50" width="128" height="128" rx="4" class="svg-surface" fill="#59b0ff" opacity="0.2" stroke="#59b0ff" stroke-width="2"/>
+                <path d="M40 82 H168 M40 114 H168 M40 146 H168 M72 50 V178 M104 50 V178 M136 50 V178" stroke="#59b0ff" stroke-width="0.7" opacity="0.6"/>
+                <text x="104" y="200" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">niveau 0</text>
+                <text x="104" y="214" text-anchor="middle" class="svg-dim" font-size="10">1024×1024</text>
+
+                <rect x="220" y="82" width="64" height="64" rx="3" class="svg-surface" fill="#5ad19a" opacity="0.2" stroke="#5ad19a" stroke-width="2"/>
+                <path d="M220 114 H284 M252 82 V146" stroke="#5ad19a" stroke-width="0.7" opacity="0.6"/>
+                <text x="252" y="168" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">niveau 1</text>
+                <text x="252" y="182" text-anchor="middle" class="svg-dim" font-size="10">512²</text>
+
+                <rect x="328" y="98" width="32" height="32" rx="3" class="svg-surface" fill="#f2b441" opacity="0.25" stroke="#f2b441" stroke-width="2"/>
+                <text x="344" y="152" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">niv. 2</text>
+                <text x="344" y="166" text-anchor="middle" class="svg-dim" font-size="10">256²</text>
+
+                <rect x="400" y="106" width="16" height="16" rx="2" class="svg-surface" fill="#f2b441" opacity="0.3" stroke="#f2b441" stroke-width="2"/>
+                <text x="408" y="148" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">niv. 3</text>
+
+                <rect x="448" y="110" width="8" height="8" rx="1" class="svg-surface" fill="#c89bff" opacity="0.4" stroke="#c89bff" stroke-width="1.5"/>
+                <text x="486" y="118" class="svg-dim" font-size="11">… → 1×1</text>
+
+                <path d="M176 114 H214" stroke="#313c4c" stroke-width="1.5"/><polygon points="214,114 207,110 207,118" fill="#313c4c"/>
+                <path d="M292 114 H322" stroke="#313c4c" stroke-width="1.5"/><polygon points="322,114 315,110 315,118" fill="#313c4c"/>
+                <path d="M368 114 H394" stroke="#313c4c" stroke-width="1.5"/><polygon points="394,114 387,110 387,118" fill="#313c4c"/>
+
+                <text x="320" y="232" text-anchor="middle" class="svg-dim" font-size="11">+33&nbsp;% de mémoire pour toute la chaîne — anti-aliasing au loin + lectures plus rapides</text>
+              </svg>
+              <figcaption>Chaque niveau fait la moitié du précédent. Le GPU pioche le niveau adapté à la taille affichée&nbsp;: pas de scintillement, meilleur cache.</figcaption>
+            </figure>
+
+            <h3>8. L'overdraw&nbsp;: les pixels redessinés pour rien</h3>
+            <p>L'<span class="term">overdraw</span> (sur-dessin) se produit quand un même pixel de l'écran est colorié <b>plusieurs fois</b> dans la même frame, parce que plusieurs surfaces se superposent à cet endroit. Le GPU calcule l'éclairage d'une surface… qui sera ensuite recouverte par une autre. Tout ce travail caché est gaspillé.</p>
+            <p>Pour la géométrie <b>opaque</b>, le GPU se défend avec l'<span class="term">early-Z</span> (test de profondeur anticipé)&nbsp;: avant de colorier un pixel, il vérifie via le <span class="term">z-buffer</span> (tampon de profondeur) si quelque chose de plus proche l'occupe déjà&nbsp;; si oui, il <b>jette</b> le pixel sans calculer son shader. Trier les objets <b>du plus proche au plus loin</b> maximise cette économie.</p>
+            <p>Le drame, c'est la <b>transparence</b>&nbsp;: les surfaces transparentes (verre, fumée, et surtout le <b>feuillage</b> en alpha) doivent être mélangées dans l'ordre, donc l'early-Z ne peut pas les jeter. Un buisson dense, c'est des dizaines de quads de feuilles empilés&nbsp;: chaque pixel du buisson peut être dessiné 10&nbsp;ou 20&nbsp;fois. Une <b>transparence plein écran</b> (un brouillard, un voile) repeint <em>tout</em> l'écran une seconde fois — souvent le pire cas d'overdraw d'un jeu.</p>
+
+            <h3>9. L'instancing&nbsp;: mille copies, un seul appel</h3>
+            <p>L'<span class="term">instancing</span> (instanciation GPU) répond à un cas précis&nbsp;: dessiner <b>un même mesh</b> répété un grand nombre de fois (herbe, arbres, foule, rochers d'un éboulis). Au lieu d'envoyer un draw call par copie, le CPU envoie <b>un seul appel</b> accompagné d'une liste de transformations (position, rotation, échelle, et parfois variation de couleur) par instance. Le GPU se charge de dessiner toutes les copies.</p>
+            <p>C'est ce qui permet d'afficher un champ de 50&nbsp;000&nbsp;touffes d'herbe sans saturer le CPU&nbsp;: le coût d'appel reste celui d'un seul objet. La contrepartie&nbsp;: toutes les instances partagent le <b>même mesh et le même matériau</b> (seules les transformations et quelques paramètres varient). C'est le compagnon naturel du LOD et de l'atlasing pour peupler des décors massifs.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Comparaison : à gauche de nombreux objets et matériaux saturent le CPU avec un appel chacun, à droite le batching ou l'instancing les regroupe en un seul appel">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Draw calls&nbsp;: dispersés (CPU saturé) contre regroupés</text>
+
+                <line x1="320" y1="44" x2="320" y2="288" stroke="#313c4c" stroke-width="1" stroke-dasharray="4 4"/>
+
+                <text x="160" y="62" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">6 objets · 6 matériaux</text>
+                <g>
+                  <rect x="44" y="80" width="36" height="36" rx="4" class="svg-surface" fill="#ff6b6b" opacity="0.25" stroke="#ff6b6b" stroke-width="2"/>
+                  <rect x="104" y="80" width="36" height="36" rx="4" class="svg-surface" fill="#f2b441" opacity="0.25" stroke="#f2b441" stroke-width="2"/>
+                  <rect x="164" y="80" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                  <rect x="44" y="140" width="36" height="36" rx="4" class="svg-surface" fill="#59b0ff" opacity="0.25" stroke="#59b0ff" stroke-width="2"/>
+                  <rect x="104" y="140" width="36" height="36" rx="4" class="svg-surface" fill="#c89bff" opacity="0.25" stroke="#c89bff" stroke-width="2"/>
+                  <rect x="164" y="140" width="36" height="36" rx="4" class="svg-surface" fill="#f2b441" opacity="0.25" stroke="#f2b441" stroke-width="2"/>
+                </g>
+                <g stroke="#ff6b6b" stroke-width="1.4">
+                  <path d="M62 116 L150 212"/><path d="M122 116 L156 212"/><path d="M182 116 L162 212"/>
+                  <path d="M62 176 L150 212"/><path d="M122 176 L156 212"/><path d="M182 176 L168 212"/>
+                </g>
+                <rect x="96" y="214" width="128" height="44" rx="6" class="svg-surface" fill="#ff6b6b" opacity="0.2" stroke="#ff6b6b" stroke-width="2"/>
+                <text x="160" y="234" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">CPU</text>
+                <text x="160" y="250" text-anchor="middle" class="svg-dim" font-size="11" fill="#ff6b6b">6 appels</text>
+                <text x="160" y="282" text-anchor="middle" class="svg-dim" font-size="11">→ goulot CPU</text>
+
+                <text x="480" y="62" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">1 matériau (atlas) ou instancing</text>
+                <g>
+                  <rect x="364" y="80" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                  <rect x="424" y="80" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                  <rect x="484" y="80" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                  <rect x="364" y="140" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                  <rect x="424" y="140" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                  <rect x="484" y="140" width="36" height="36" rx="4" class="svg-surface" fill="#5ad19a" opacity="0.25" stroke="#5ad19a" stroke-width="2"/>
+                </g>
+                <g stroke="#5ad19a" stroke-width="1.6">
+                  <path d="M382 116 L470 212"/><path d="M442 116 L478 212"/><path d="M502 116 L486 212"/>
+                  <path d="M382 176 L470 212"/><path d="M442 176 L478 212"/><path d="M502 176 L490 212"/>
+                </g>
+                <rect x="416" y="214" width="128" height="44" rx="6" class="svg-surface" fill="#5ad19a" opacity="0.2" stroke="#5ad19a" stroke-width="2"/>
+                <text x="480" y="234" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">CPU</text>
+                <text x="480" y="250" text-anchor="middle" class="svg-dim" font-size="11" fill="#5ad19a">1 appel</text>
+                <text x="480" y="282" text-anchor="middle" class="svg-dim" font-size="11">→ CPU soulagé</text>
+              </svg>
+              <figcaption>À matière géométrique égale, c'est le <b>nombre d'appels</b> qui sature le CPU. Partager un matériau (atlas) ou un mesh (instancing) effondre ce nombre.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif&nbsp;: activer correctement mipmaps et compression sur une texture importée, puis poser conceptuellement un <b>LOD group</b>. Les noms ci-dessous sont ceux d'Unity (les principes sont identiques ailleurs).</p>
+            <ol>
+              <li>Importe une texture d'albédo (PNG ou TGA) en la glissant dans la fenêtre <span class="menu-path">Project</span>. Sélectionne-la pour ouvrir l'<span class="term">Import Settings</span> dans l'<span class="menu-path">Inspector</span>. <b>Ce qui se passe&nbsp;:</b> Unity garde ta source intacte mais prépare une version <em>compressée</em> destinée au GPU.</li>
+              <li>Vérifie que <span class="menu-path">Inspector<span class="arrow">▸</span>Generate Mip Maps</span> est <b>coché</b>. <b>Ce qui se passe&nbsp;:</b> Unity calcule toute la pyramide (1/2, 1/4…) et la stocke avec la texture. Sans ça, ta surface scintillera au loin.</li>
+              <li>Dans <span class="menu-path">Inspector<span class="arrow">▸</span>sRGB (Color Texture)</span>, laisse <b>coché</b> pour un albédo (c'est une couleur). <b>Important&nbsp;:</b> pour une <b>normal map</b>, on règle plutôt le champ <span class="menu-path">Texture Type<span class="arrow">▸</span>Normal map</span>, ce qui décoche le sRGB et bascule la compression en <b>BC5</b> automatiquement.</li>
+              <li>Déroule <span class="menu-path">Inspector<span class="arrow">▸</span>Compression</span> et choisis la qualité&nbsp;: <b>High Quality</b> pousse vers <b>BC7</b> (albédo détaillé sur PC), <b>Normal Quality</b> reste sur des formats plus compacts. <b>Ce qui se passe&nbsp;:</b> Unity affiche en bas de l'Inspector le <b>format final</b> et la <b>taille en VRAM</b> — compare avant/après, c'est ton retour mémoire immédiat.</li>
+              <li>Clique <span class="menu-path">Apply</span>. <b>Ce qui se passe&nbsp;:</b> la version GPU est régénérée. Surveille la ligne du format&nbsp;: si tu vois une normale finir en BC1/DXT1, corrige le Texture Type.</li>
+              <li>Pour le LOD&nbsp;: sélectionne ton objet, puis <span class="menu-path">Inspector<span class="arrow">▸</span>Add Component<span class="arrow">▸</span>LOD Group</span>. <b>Ce qui se passe&nbsp;:</b> une barre de pourcentages apparaît (LOD0, LOD1, Culled). Assigne à chaque niveau le mesh adapté (du plus dense au plus grossier) et règle les seuils de <b>taille à l'écran</b> auxquels le moteur bascule.</li>
+              <li>Déplace la caméra de la <span class="menu-path">Scene</span> en avant/arrière&nbsp;: observe le LOD Group surligner le niveau actif. <b>Ce qui se passe&nbsp;:</b> tu vérifies visuellement que la transition arrive à une distance où l'œil ne la remarque pas (sinon, ajuste les seuils ou active le cross-fade).</li>
+            </ol>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Mesure d'abord, optimise ensuite</div>
+              <p>Avant et après chaque changement, ouvre le profiler (<a href="../../cours/unity/u11-optimisation.html">U11</a> côté Unity, <a href="../../cours/unreal/e10-optimisation.html">E10</a> côté Unreal) et note les draw calls, le temps CPU et le temps GPU. Une «&nbsp;optimisation&nbsp;» qui ne déplace aucun chiffre n'en est pas une.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme&nbsp;:</b> textures en 4K partout, VRAM saturée, longs temps de chargement.</p>
+                <p class="pi-cause"><b>Cause&nbsp;:</b> résolution choisie «&nbsp;par confort&nbsp;» sans rapport avec la taille à l'écran. Un petit prop n'occupe jamais 4096&nbsp;pixels.</p>
+                <p class="pi-fix"><b>Correction&nbsp;:</b> dimensionne la texture selon la place réelle à l'écran (texel density). Le 4K se réserve aux héros et aux gros plans.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme&nbsp;:</b> les surfaces lointaines scintillent / papillotent dès que la caméra bouge, et le rendu rame.</p>
+                <p class="pi-cause"><b>Cause&nbsp;:</b> mipmaps désactivées&nbsp;: le GPU lit la pleine texture pour quelques pixels (aliasing + mauvais cache).</p>
+                <p class="pi-fix"><b>Correction&nbsp;:</b> active <b>Generate Mip Maps</b>. Le scintillement disparaît et les lectures s'accélèrent, au prix de ~33&nbsp;% de mémoire.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme&nbsp;:</b> normal map sale, éclairage en blocs / escaliers sur les surfaces lisses.</p>
+                <p class="pi-cause"><b>Cause&nbsp;:</b> normale compressée en <b>BC1/DXT1</b> (3&nbsp;canaux couleur) au lieu de BC5&nbsp;: les artefacts de bloc déforment les vecteurs.</p>
+                <p class="pi-fix"><b>Correction&nbsp;:</b> règle le Texture Type sur <b>Normal map</b> (BC5, deux canaux, Z reconstruit). Ne traite jamais une normale comme une couleur.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme&nbsp;:</b> profiler CPU dans le rouge, des milliers de draw calls pour une scène pourtant simple.</p>
+                <p class="pi-cause"><b>Cause&nbsp;:</b> trop de matériaux uniques&nbsp;; chaque variation casse le batching et ajoute un appel.</p>
+                <p class="pi-fix"><b>Correction&nbsp;:</b> atlase les textures, fusionne les matériaux, et passe la végétation / la foule en <b>instancing</b>.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme&nbsp;:</b> chute de framerate massive en regardant un buisson, du fog ou une vitre plein écran.</p>
+                <p class="pi-cause"><b>Cause&nbsp;:</b> overdraw de transparence&nbsp;: l'early-Z ne peut pas jeter les pixels, ils sont repeints des dizaines de fois.</p>
+                <p class="pi-fix"><b>Correction&nbsp;:</b> limite les couches transparentes, utilise des cartes alpha bien découpées (moins de vide), et restreins les effets plein écran.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme&nbsp;:</b> artefacts en damier figés autour des contrastes, impossibles à nettoyer.</p>
+                <p class="pi-cause"><b>Cause&nbsp;:</b> source en JPG recompressée en block compression&nbsp;: perte sur perte.</p>
+                <p class="pi-fix"><b>Correction&nbsp;:</b> repars d'une source non destructive (PNG/TGA/EXR) et laisse le moteur compresser à l'import.</p>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Reprends une petite scène (un sol, un prop principal, et une quinzaine de copies d'un même objet décoratif — caillou, plante, caisse). Ton objectif&nbsp;: réduire la charge sans dégrader le rendu perçu.</p>
+              <ol>
+                <li>Ouvre le profiler et <b>note l'état initial</b>&nbsp;: draw calls, temps CPU, temps GPU, fps.</li>
+                <li>Active mipmaps + compression appropriée sur toutes les textures (BC5 pour la/les normale(s), BC7 ou équivalent pour l'albédo héros).</li>
+                <li>Passe les 15&nbsp;copies de l'objet décoratif en <b>instancing</b> (ou GPU Instancing sur leur matériau).</li>
+                <li>Crée un <b>LOD Group</b> sur le prop principal avec au moins 2&nbsp;niveaux, et règle les seuils pour que la transition soit invisible à distance de jeu.</li>
+                <li>Re-mesure et compare aux chiffres initiaux.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le nombre de <b>draw calls a baissé</b> de façon mesurable après l'instancing (chiffre avant/après noté).</li>
+                  <li>Aucune normal map ne ressort en BC1/DXT1 dans les formats finaux (vérifié dans l'Inspector).</li>
+                  <li>Les mipmaps sont actives&nbsp;: plus de scintillement visible quand tu éloignes la caméra.</li>
+                  <li>Le LOD Group bascule sans <b>popping</b> perceptible à distance normale de jeu.</li>
+                  <li>Tu sais dire si ta scène était <b>CPU-bound ou GPU-bound</b> au départ, et quel levier a aidé.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>La frame est limitée par le <b>plus lent</b> des deux&nbsp;: identifie si tu es <b>CPU-bound</b> (souvent les draw calls) ou <b>GPU-bound</b> (souvent vertex / fragment / overdraw) avant d'agir.</li>
+                <li>Un <b>draw call</b> coûte côté CPU indépendamment de la géométrie&nbsp;: réduis-les par batching, atlasing, moins de matériaux et instancing.</li>
+                <li>Raisonne en <b>tris visibles ensemble</b>, distingue coût <b>vertex</b> et <b>fragment</b>, et pose des <b>LOD</b> pour ce qui s'éloigne (lien Nanite en <a href="../../cours/unreal/e07-nanite.html">E7</a>).</li>
+                <li>Compresse pour la VRAM et la bande passante&nbsp;: <b>BC5</b> pour les normales, <b>BC7</b> pour l'albédo qualité, <b>ASTC</b> sur mobile&nbsp;; jamais BC1 sur une normale, jamais de JPG recompressé.</li>
+                <li>Active les <b>mipmaps</b> (+33&nbsp;% de mémoire) contre l'aliasing et pour la vitesse&nbsp;; surveille l'<b>overdraw</b> de transparence.</li>
+                <li><b>Mesure avant et après</b>&nbsp;: une optimisation se prouve au profiler, jamais à l'intuition.</li>
+              </ul>
+            </div>
+
+            <div class="miniprojet">
+              <h4><span class="ico">🎓</span>Mini-projet de fin de Piste 0 <span class="mp-tag">capstone</span></h4>
+              <p>Tu as bouclé les fondamentaux&nbsp;: il est temps de les <b>relier</b> sur un seul asset, de bout en bout, sans moteur encore. Objectif&nbsp;: produire un petit prop de jeu (ex. une <b>caisse en bois cerclée de métal</b>, une lanterne, un tonneau) qui respecte toute la chaîne.</p>
+              <ol>
+                <li><b>Blockout &amp; modélisation</b> (<a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>, <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>)&nbsp;: modélise une version low-poly propre (quads, normales correctes, budget de tris raisonnable).</li>
+                <li><b>UV</b> (<a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>)&nbsp;: déplie avec des seams cachés, une densité de texels homogène et un packing soigné.</li>
+                <li><b>Baking</b> (<a href="../../cours/fondamentaux/f08-baking.html">F8</a>)&nbsp;: si tu as un high-poly, cuis au moins une normal map et une AO (sinon, exerce-toi sur les réglages de cage).</li>
+                <li><b>Texturing PBR</b> (<a href="../../cours/fondamentaux/f07-pbr.html">F7</a>)&nbsp;: crée Base Color (sRGB), Roughness, Metallic, Normal en respectant les espaces colorimétriques (<a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</li>
+                <li><b>Optimisation</b> (cette leçon)&nbsp;: vérifie ton budget de tris, prévois un LOD mental, choisis une compression et une taille de texture adaptées, active les mipmaps.</li>
+              </ol>
+              <p>Garde-le sous la main&nbsp;: c'est exactement cet asset que tu importeras ensuite dans <a href="../../cours/unity/u05-import-assets.html">Unity</a> ou <a href="../../cours/unreal/e04-import-assets.html">Unreal</a> (et dont tu géreras l'échelle/les axes en <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</p>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le mesh est en quads propres, sans n-gon sur les zones clés, normales cohérentes.</li>
+                  <li>Les UV n'ont ni chevauchement involontaire ni étirement (vérifié au damier), densité homogène.</li>
+                  <li>Les maps PBR sont dans les bons espaces (albédo sRGB, données linéaires) et l'albédo reste dans une plage réaliste.</li>
+                  <li>Tu peux justifier ton budget de tris, ta taille de texture et ta compression pour une cible donnée.</li>
+                </ul>
+              </div>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>CPU-bound / GPU-bound</b> — état où la durée d'une frame est limitée respectivement par le processeur central (préparation des ordres) ou par la carte graphique (rendu des sommets et pixels).</p>
+              <p><b>Draw call</b> — commande envoyée par le CPU au GPU pour dessiner un paquet de géométrie&nbsp;; son coût fixe côté CPU explique pourquoi trop d'objets ou de matériaux saturent le processeur.</p>
+              <p><b>Batching</b> — fusion par le moteur de plusieurs objets partageant un même matériau en un seul draw call (static pour l'immobile, dynamic à la volée).</p>
+              <p><b>Atlasing</b> — regroupement de plusieurs textures dans une seule image afin de partager un matériau unique et rendre les objets batchables.</p>
+              <p><b>Budget de tris</b> — nombre de triangles autorisés, raisonné sur les tris <em>visibles simultanément</em>, pas par asset isolé.</p>
+              <p><b>LOD</b> — Level Of Detail&nbsp;: versions simplifiées d'un même objet affichées selon sa taille à l'écran, pour économiser le coût vertex au loin.</p>
+              <p><b>Compression GPU (BCn/DXT, ASTC)</b> — formats de block compression lisibles directement par le GPU, qui réduisent VRAM et bande passante&nbsp;; BC5 pour normales, BC7 pour couleur de qualité, ASTC sur mobile.</p>
+              <p><b>Mipmap</b> — chaîne de versions réduites d'une texture, choisie selon la taille affichée&nbsp;; évite l'aliasing au loin et accélère les lectures, pour ~33&nbsp;% de mémoire en plus.</p>
+              <p><b>Overdraw</b> — pixels coloriés plusieurs fois par frame à cause de surfaces superposées&nbsp;; l'early-Z l'évite pour l'opaque mais pas pour la transparence.</p>
+              <p><b>Instancing</b> — dessin d'un même mesh répété de nombreuses fois en un seul draw call, avec une transformation par copie (végétation, foule).</p>
+              <p>Glossaire complet du cours&nbsp;: <a href="../../glossaire.html">consulter le glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u11-optimisation.html">U11 — Optimisation et profiler dans Unity</a> (mesurer draw calls, batching, frame debugger).</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10 — Optimisation et profiler dans Unreal</a> (stat unit, GPU visualizer).</li>
+              <li><a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a> (la géométrie virtualisée, généralisation du LOD).</li>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a> (prérequis de l'atlasing).</li>
+              <li><a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3 — Formats de fichiers</a> (sources non destructives avant compression GPU).</li>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie du mesh</a> (sommets, triangles, base du budget géométrique).</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

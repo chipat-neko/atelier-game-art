@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G6 — Matériaux & shaders dans Godot · Atelier Game Art</title>
+  <meta name="description" content="StandardMaterial3D/ORM dans Godot : brancher ses maps PBR, transparence, émission, et introduction au langage de shader Godot et au VisualShader.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Matériaux &amp; shaders</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G6 — Matériaux &amp; shaders</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>, <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a> et <a href="../../cours/godot/g05-import-assets.html">G5</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Créer un <b>StandardMaterial3D</b> et y brancher tes maps PBR.</li>
+                <li>Gérer la <b>transparence</b> et l'<b>émission</b>.</li>
+                <li>Comprendre l'option <b>ORM</b> (textures packées).</li>
+                <li>Savoir quand passer à un <b>Shader</b> écrit (langage Godot) ou à un <b>VisualShader</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le matériau, c'est ce qui donne sa matière à un mesh (renvoi <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>). Godot offre un matériau PBR clé en main, le <span class="term">StandardMaterial3D</span>, qui correspond aux maps standard (renvoi <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>) — parfait pour 90&nbsp;% des assets. Pour les effets sur mesure, Godot propose un <b>langage de shader</b> simple et un éditeur visuel. Savoir brancher correctement ses maps (et gérer transparence/émission) est la base du look d'un jeu.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. StandardMaterial3D&nbsp;: le matériau PBR clé en main</h3>
+            <p>On crée un matériau dans l'Inspector d'un <code>MeshInstance3D</code> (section <em>Material</em> ▸ New StandardMaterial3D), ou comme ressource <code>.tres</code> réutilisable. Ses sections principales&nbsp;:</p>
+            <ul>
+              <li><b>Albedo</b>&nbsp;: la couleur de base (+ texture). C'est la map sRGB (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</li>
+              <li><b>Metallic</b> et <b>Roughness</b>&nbsp;: valeurs et/ou textures (données, lues en linéaire).</li>
+              <li><b>Normal Map</b>&nbsp;: active <em>Normal Map</em> et branche la texture (Godot attend la convention OpenGL/Y+).</li>
+              <li><b>Ambient Occlusion</b>, <b>Emission</b>, <b>Height (parallax)</b>, <b>Rim</b>, <b>Clearcoat</b>…</li>
+            </ul>
+
+            <h3>2. ORM&nbsp;: textures packées</h3>
+            <p>Pour économiser des textures, Godot gère le packing <span class="gloss">ORM</span> (Occlusion-Roughness-Metallic dans R-G-B, comme Unreal — renvoi <a href="../../cours/logiciels/l02-substance.html">L2</a>). On active <em>AO/Roughness/Metallic</em> en mode «&nbsp;ORM&nbsp;» (le <code>ORMMaterial3D</code> ou les options dédiées) et on assigne la texture packée&nbsp;: une seule lecture pour trois canaux. Substance exporte directement un preset Godot/ORM.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 220" role="img" aria-label="StandardMaterial3D avec ses slots PBR et la texture ORM">
+                <g class="svg-text" font-size="11">
+                  <rect x="20" y="30" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="30" y="48" font-weight="700">Albedo (sRGB)</text><text x="30" y="63" class="svg-dim" font-size="10">couleur de base</text>
+                  <rect x="20" y="80" width="150" height="56" rx="6" class="svg-surface" stroke="#313c4c"/><text x="30" y="98" font-weight="700">ORM (données)</text>
+                  <text x="30" y="114" fill="#f87171" font-size="10">R · AO</text><text x="78" y="114" fill="#4ade80" font-size="10">G · Rough</text><text x="30" y="128" fill="#4f9bd9" font-size="10">B · Metal</text>
+                  <rect x="20" y="146" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="30" y="164" font-weight="700">Normal (Y+)</text><text x="30" y="179" class="svg-dim" font-size="10">relief</text>
+
+                  <rect x="380" y="60" width="220" height="100" rx="9" fill="#4f9bd9" fill-opacity="0.12" stroke="#4f9bd9" stroke-width="1.6"/>
+                  <text x="490" y="86" text-anchor="middle" font-weight="800">StandardMaterial3D</text>
+                  <text x="490" y="110" text-anchor="middle" class="svg-dim">Albedo · Metallic · Roughness</text>
+                  <text x="490" y="128" text-anchor="middle" class="svg-dim">Normal · AO · Emission</text>
+                  <text x="490" y="146" text-anchor="middle" class="svg-dim" font-size="10">→ appliqué au MeshInstance3D</text>
+                </g>
+                <defs><marker id="g6ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
+                <g stroke="#4f9bd9" stroke-width="1.7" fill="none" marker-end="url(#g6ar)">
+                  <path d="M170 50 C 280 60, 320 90, 378 95"/>
+                  <path d="M170 108 L378 110"/>
+                  <path d="M170 166 C 280 150, 320 135, 378 128"/>
+                </g>
+              </svg>
+              <figcaption>Le StandardMaterial3D&nbsp;: chaque map sur son slot, l'ORM packé alimentant AO/Roughness/Metallic en une texture.</figcaption>
+            </figure>
+
+            <h3>3. Transparence et émission</h3>
+            <ul>
+              <li><b>Transparence</b>&nbsp;: section <em>Transparency</em> — <em>Alpha</em> (vraie transparence, triée, coûteuse), <em>Alpha Scissor</em> (découpe binaire&nbsp;: feuillage, grilles — renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>), <em>Alpha Hash</em>. Privilégie le scissor quand une découpe suffit (moins d'overdraw, renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</li>
+              <li><b>Émission</b>&nbsp;: la surface émet de la lumière (néon, écran)&nbsp;; couleur + énergie. Contribue au glow/bloom (renvoi <a href="../../cours/godot/g08-environnement.html">G8</a>).</li>
+            </ul>
+
+            <h3>4. Shaders écrits et VisualShader</h3>
+            <p>Quand le StandardMaterial3D ne suffit plus (effet sur mesure&nbsp;: dissolve, eau, hologramme), on passe à un <b>Shader</b>&nbsp;:</p>
+            <ul>
+              <li><b>Langage de shader Godot</b> (proche du GLSL, renvoi <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>)&nbsp;: on écrit une ressource <em>Shader</em> avec des fonctions <code>vertex()</code> et <code>fragment()</code>, et des <code>uniform</code> exposés dans l'Inspector. Très lisible.</li>
+              <li><b>VisualShader</b>&nbsp;: l'éditeur de shader <b>à nœuds</b> (équivalent du Shader Graph d'Unity, renvoi <a href="../../cours/unity/u06-materiaux.html">U6</a>) pour ceux qui préfèrent le visuel.</li>
+            </ul>
+            <p>Exemple minimal de shader Godot (fragment qui teinte selon une couleur exposée)&nbsp;:</p>
+            <div class="codeblock" data-lang="GLSL">
+<pre><code>shader_type spatial;
+
+uniform vec4 teinte : source_color = vec4(1.0, 0.4, 0.2, 1.0);
+uniform sampler2D albedo_tex : source_color;
+
+void fragment() {
+    vec4 col = texture(albedo_tex, UV);
+    ALBEDO = col.rgb * teinte.rgb;
+    ROUGHNESS = 0.6;
+}</code></pre>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sélectionne un <code>MeshInstance3D</code>. Inspector ▸ section <em>Material</em> ▸ <span class="menu-path">Material<span class="arrow">▸</span>New StandardMaterial3D</span>, puis clique dessus pour l'éditer.</li>
+              <li>Section <em>Albedo</em>&nbsp;: assigne ta texture de base color. Section <em>Metallic</em>/<em>Roughness</em>&nbsp;: branche tes maps (ou utilise l'ORM packé).</li>
+              <li>Active <em>Normal Map</em> et assigne la normal (convention Y+).</li>
+              <li>Pour un néon&nbsp;: active <em>Emission</em>, choisis une couleur et monte l'énergie&nbsp;; le glow l'illuminera (renvoi <a href="../../cours/godot/g08-environnement.html">G8</a>).</li>
+              <li>Enregistre le matériau en ressource <code>.tres</code> dans <code>res://materials/</code> pour le réutiliser sur d'autres meshes.</li>
+              <li>Pour un effet sur mesure&nbsp;: remplace par <em>New ShaderMaterial</em> ▸ New Shader, et colle l'exemple ci-dessus&nbsp;; ajuste la <em>teinte</em> dans l'Inspector.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le relief de ma normal map est inversé.</div>
+                <div class="pi-cause"><b>Cause</b>Normal map en convention DirectX (Y−) alors que Godot attend OpenGL (Y+).</div>
+                <div class="pi-fix"><b>Correction</b>Exporte/bake en Y+ (OpenGL), ou inverse le canal vert (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma surface est trop lisse/rugueuse ou « plastique ».</div>
+                <div class="pi-cause"><b>Cause</b>Roughness/Metallic mal réglés, ou map de données traitée comme couleur.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie les valeurs/maps&nbsp;; les données ne doivent pas être en sRGB (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon feuillage transparent rame / a des artefacts de tri.</div>
+                <div class="pi-cause"><b>Cause</b>Transparence Alpha (triée, overdraw) là où une découpe suffirait.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <em>Alpha Scissor</em> pour les découpes binaires (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon émission n'illumine pas / pas de glow.</div>
+                <div class="pi-cause"><b>Cause</b>Énergie d'émission trop faible, ou glow désactivé dans le WorldEnvironment.</div>
+                <div class="pi-fix"><b>Correction</b>Monte l'énergie d'émission et active le <em>Glow</em> (renvoi <a href="../../cours/godot/g08-environnement.html">G8</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un StandardMaterial3D métal complet (albedo, ORM, normal) et applique-le à un mesh.</li>
+                <li>Crée un matériau émissif (néon) et vérifie qu'il « brille » avec le glow activé.</li>
+                <li>Crée un ShaderMaterial à partir de l'exemple et expose une couleur réglable.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le matériau PBR réagit correctement (normal dans le bon sens, roughness crédible).</li>
+                  <li>Tu sais quand utiliser Alpha vs Alpha Scissor.</li>
+                  <li>Tu as créé un shader simple avec un uniform exposé.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>StandardMaterial3D</b> couvre l'essentiel du PBR&nbsp;: branche albedo (sRGB), metallic/roughness, normal (Y+), AO, émission.</li>
+                <li>L'<b>ORM</b> packe AO/Roughness/Metallic en une texture (RGB).</li>
+                <li>Transparence&nbsp;: <b>Alpha Scissor</b> pour les découpes, <b>Alpha</b> pour la vraie transparence (plus coûteuse).</li>
+                <li>Pour le sur-mesure&nbsp;: <b>Shader</b> écrit (langage proche GLSL) ou <b>VisualShader</b> (nœuds).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>StandardMaterial3D</b> — matériau PBR clé en main de Godot, avec tous les slots standard.</p>
+              <p><b>ORMMaterial3D / ORM</b> — usage d'une texture packée Occlusion-Roughness-Metallic (R-G-B).</p>
+              <p><b>Alpha Scissor</b> — découpe binaire de transparence (feuillage), peu coûteuse.</p>
+              <p><b>ShaderMaterial / VisualShader</b> — shader écrit (langage Godot) ou éditeur de shader à nœuds.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: la théorie des maps.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6</a> / <a href="../../cours/unreal/e05-material-editor.html">E5</a> / <a href="../../cours/blender/b07-shading.html">B7</a>&nbsp;: les éditeurs de matériaux ailleurs.</li>
+              <li><a href="../../cours/godot/g07-eclairage.html">G7 — Éclairage</a>&nbsp;: comment ces matériaux réagissent à la lumière.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

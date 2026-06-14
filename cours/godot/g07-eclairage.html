@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G7 — Éclairage (SDFGI & GI) dans Godot · Atelier Game Art</title>
+  <meta name="description" content="L'éclairage dans Godot : types de lumières, temps réel vs baked, SDFGI (GI dynamique), VoxelGI, LightmapGI, et le WorldEnvironment avec le ciel.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Éclairage (SDFGI)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G7 — Éclairage (SDFGI &amp; GI)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>55 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>, <a href="../../cours/godot/g03-renderers.html">G3 — Renderers</a> et <a href="../../cours/godot/g06-materiaux.html">G6</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser les types de lumières de Godot et leur mode (réel/baked).</li>
+                <li>Comprendre et choisir entre <b>SDFGI</b>, <b>VoxelGI</b> et <b>LightmapGI</b>.</li>
+                <li>Mettre en place un <b>WorldEnvironment</b> avec un ciel pour l'ambiance et les reflets.</li>
+                <li>Éviter les erreurs classiques (ombres anormalement noires, GI mal configurée).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'éclairage fait l'image (renvoi <a href="../../cours/unreal/e06-eclairage.html">E6</a>, <a href="../../cours/unity/u07-eclairage.html">U7</a>). Godot 4 propose trois systèmes d'<span class="gloss">illumination globale</span> couvrant tous les besoins&nbsp;: du <b>tout temps réel</b> (SDFGI) au <b>tout précalculé</b> (LightmapGI). Choisir le bon, et bien poser son ciel, transforme une scène plate en environnement crédible — sans surcoût inutile.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les lumières</h3>
+            <p>Trois types principaux&nbsp;: <code>DirectionalLight3D</code> (le soleil, rayons parallèles), <code>OmniLight3D</code> (ampoule omnidirectionnelle) et <code>SpotLight3D</code> (cône). Réglages clés&nbsp;: énergie, couleur/température, ombres (activées par lumière), portée. Chaque lumière a un mode (équivalent de la <em>Mobility</em>)&nbsp;: temps réel par défaut, ou intégrée à un éclairage précalculé selon le système GI utilisé.</p>
+
+            <h3>2. Les trois systèmes de GI</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Système</th><th>Type</th><th>Quand</th></tr></thead>
+                <tbody>
+                  <tr><td><b>SDFGI</b></td><td>Temps réel, dynamique, sans préparation</td><td>Grands mondes ouverts/dynamiques&nbsp;: la GI se met à jour toute seule. Forward+ requis. Le choix «&nbsp;facile&nbsp;» et impressionnant.</td></tr>
+                  <tr><td><b>VoxelGI</b></td><td>Temps réel, basé sur une grille de voxels à préparer</td><td>Scènes intérieures de taille limitée&nbsp;: GI et reflets de qualité, mais nécessite un node VoxelGI à «&nbsp;baker&nbsp;» et borné en volume.</td></tr>
+                  <tr><td><b>LightmapGI</b></td><td>Précalculé (baked) dans des lightmaps</td><td>Scènes statiques, cibles modestes/mobile&nbsp;: quasi gratuit à l'exécution&nbsp;; nécessite des UV2 (renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) et un objet statique.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>SDFGI (Signed Distance Field GI) est le plus simple à activer&nbsp;: on le coche dans le <b>WorldEnvironment</b> et la lumière indirecte apparaît, dynamique, sans rien préparer (pour peu qu'on soit en Forward+). VoxelGI et LightmapGI sont des nodes qu'on place et qu'on «&nbsp;bake&nbsp;».</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Trois systèmes de GI Godot sur un axe dynamique vs précalculé">
+                <line x1="60" y1="150" x2="600" y2="150" class="svg-stroke" stroke-width="1.5"/>
+                <text x="60" y="174" class="svg-dim" font-size="11">précalculé / léger à l'exécution</text>
+                <text x="600" y="174" text-anchor="end" class="svg-dim" font-size="11">dynamique / coûteux</text>
+                <g class="svg-text" font-size="12">
+                  <circle cx="150" cy="150" r="6" fill="#4ade80"/><text x="150" y="118" text-anchor="middle" font-weight="700">LightmapGI</text><text x="150" y="136" text-anchor="middle" class="svg-dim" font-size="10">baked · statique · UV2</text>
+                  <circle cx="360" cy="150" r="6" fill="#e0a14b"/><text x="360" y="118" text-anchor="middle" font-weight="700">VoxelGI</text><text x="360" y="136" text-anchor="middle" class="svg-dim" font-size="10">voxels · intérieurs</text>
+                  <circle cx="560" cy="150" r="6" fill="#4f9bd9"/><text x="560" y="118" text-anchor="middle" font-weight="700">SDFGI</text><text x="560" y="136" text-anchor="middle" class="svg-dim" font-size="10">temps réel · grands mondes</text>
+                </g>
+                <text x="320" y="44" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Du « tout baked » (perf) au « tout dynamique » (souplesse)</text>
+              </svg>
+              <figcaption>Trois GI pour trois besoins&nbsp;: LightmapGI (statique, mobile), VoxelGI (intérieurs), SDFGI (mondes dynamiques, Forward+).</figcaption>
+            </figure>
+
+            <h3>3. Le WorldEnvironment et le ciel</h3>
+            <p>Le node <span class="term">WorldEnvironment</span> porte une ressource <em>Environment</em> qui définit l'ambiance globale&nbsp;: le <b>ciel</b> (procédural <em>ProceduralSkyMaterial</em>, ou une <span class="gloss">HDRI</span> via <em>PanoramaSkyMaterial</em> — renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>), l'éclairage <b>ambiant</b> et les <b>reflets</b> issus du ciel, et c'est aussi là qu'on active <b>SDFGI</b> et le post-processing (renvoi <a href="../../cours/godot/g08-environnement.html">G8</a>). Sans ciel/ambiant, les zones d'ombre sont anormalement noires (même logique que le SkyLight d'Unreal, renvoi <a href="../../cours/unreal/e06-eclairage.html">E6</a>).</p>
+
+            <h3>4. Reflets&nbsp;: ReflectionProbe</h3>
+            <p>Pour des reflets locaux précis (intérieur, surface lisse), on ajoute un node <code>ReflectionProbe</code> qui capture l'environnement autour d'un point (équivalent des Reflection Probes Unity, renvoi <a href="../../cours/unity/u07-eclairage.html">U7</a>). Le ciel fournit les reflets globaux&nbsp;; les probes affinent localement.</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: une scène éclairée en SDFGI</h2>
+            <ol>
+              <li>Assure-toi d'être en renderer <b>Forward+</b> (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</li>
+              <li>Ajoute un <code>DirectionalLight3D</code> (le soleil), active ses ombres (<em>Shadow ▸ Enabled</em>), oriente-le.</li>
+              <li>Ajoute un <code>WorldEnvironment</code> ▸ New Environment. Dans <em>Sky</em>, crée un <em>ProceduralSkyMaterial</em> (ou charge une HDRI)&nbsp;: la scène reçoit lumière ambiante + reflets.</li>
+              <li>Dans le même Environment, active <em>SDFGI ▸ Enabled</em>&nbsp;: observe la lumière indirecte (un mur coloré teinte le sol) se mettre à jour quand tu bouges le soleil.</li>
+              <li>Compare en désactivant le ciel/ambiant&nbsp;: les ombres deviennent anormalement noires — c'est la preuve qu'il faut un environnement.</li>
+              <li>Ajoute un <code>ReflectionProbe</code> près d'une surface réfléchissante pour des reflets locaux nets.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>SDFGI est sans effet / l'option est absente.</div>
+                <div class="pi-cause"><b>Cause</b>Tu n'es pas en Forward+ (SDFGI exige ce renderer).</div>
+                <div class="pi-fix"><b>Correction</b>Passe en Forward+, ou utilise LightmapGI sur cible Compatibility/Mobile (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes ombres/zones sombres sont d'un noir total.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de lumière ambiante&nbsp;: WorldEnvironment/ciel manquant.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute un WorldEnvironment avec un ciel (ou ambient) pour remplir les ombres.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon LightmapGI ne bake pas / est tout noir.</div>
+                <div class="pi-cause"><b>Cause</b>Objets non statiques, ou pas d'UV2 (lightmap UV) sur les meshes.</div>
+                <div class="pi-fix"><b>Correction</b>Active les UV2 (généré à l'import ou dans Godot), marque les objets statiques, puis Bake.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>VoxelGI fuit / la GI est imprécise.</div>
+                <div class="pi-cause"><b>Cause</b>Le volume du node VoxelGI est mal dimensionné ou non baké.</div>
+                <div class="pi-fix"><b>Correction</b>Ajuste l'étendue du VoxelGI à ta scène et relance le Bake.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Compose une scène extérieure&nbsp;: DirectionalLight3D + WorldEnvironment (ciel) + SDFGI, en Forward+.</li>
+                <li>Pose une ambiance « fin de journée » (soleil rasant, ciel orangé) et observe la GI dynamique.</li>
+                <li>Bonus&nbsp;: refais la même scène en LightmapGI (objets statiques + UV2 + Bake) et compare aspect/perf.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La lumière indirecte est visible (couleurs qui « bavent ») et les ombres ne sont pas noir total.</li>
+                  <li>Tu sais choisir entre SDFGI, VoxelGI et LightmapGI selon le cas.</li>
+                  <li>Tu comprends le rôle du WorldEnvironment/ciel.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Lumières&nbsp;: Directional/Omni/Spot, ombres activables par lumière.</li>
+                <li>Trois GI&nbsp;: <b>SDFGI</b> (temps réel, mondes dynamiques, Forward+), <b>VoxelGI</b> (intérieurs, baké), <b>LightmapGI</b> (statique, mobile, UV2).</li>
+                <li>Le <b>WorldEnvironment</b> porte le ciel, l'ambiant, les reflets et active SDFGI&nbsp;; sans lui, ombres noires.</li>
+                <li>Les <b>ReflectionProbe</b> affinent les reflets locaux.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>SDFGI</b> — illumination globale temps réel de Godot (Signed Distance Field), sans préparation, pour grands mondes (Forward+).</p>
+              <p><b>VoxelGI</b> — GI temps réel basée sur une grille de voxels à baker, pour intérieurs bornés.</p>
+              <p><b>LightmapGI</b> — GI précalculée dans des lightmaps&nbsp;; statique, économe, nécessite des UV2.</p>
+              <p><b>WorldEnvironment</b> — node portant l'Environment (ciel, ambiant, reflets, SDFGI, post-process).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/godot/g08-environnement.html">G8 — Environnement &amp; post-processing</a>&nbsp;: le reste des réglages du WorldEnvironment.</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 (Lumen)</a> / <a href="../../cours/unity/u07-eclairage.html">U7</a>&nbsp;: l'éclairage des autres moteurs, pour comparer.</li>
+              <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>&nbsp;: trouver une HDRI pour ton ciel.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

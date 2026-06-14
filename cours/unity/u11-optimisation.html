@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U11 — Optimisation graphique Unity · Atelier Game Art</title>
+  <meta name="description" content="Optimiser le rendu Unity : static/dynamic batching, GPU instancing, occlusion culling, LOD Group, atlas, et les outils Profiler et Frame Debugger.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Optimisation graphique Unity</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U11 — Optimisation graphique Unity</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a> (les concepts) puis <a href="../../cours/unity/u05-import-assets.html">U5</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras…</p>
+              <ul>
+                <li>Lire un <b>Profiler</b> Unity pour savoir si tu es <b>CPU-bound</b> ou <b>GPU-bound</b>, et repérer les chiffres clés&nbsp;: <b>Batches</b>, <b>SetPass calls</b>, draw calls.</li>
+                <li>Choisir et activer la bonne stratégie de réduction des appels de rendu&nbsp;: <b>Static Batching</b>, <b>Dynamic Batching</b>, <b>SRP Batcher</b> et <b>GPU Instancing</b>, en sachant <em>pourquoi</em> chacune s'applique.</li>
+                <li>Mettre en place l'<b>Occlusion Culling</b> (et comprendre le <b>frustum culling</b> automatique) pour ne pas dessiner ce qui est caché.</li>
+                <li>Construire un composant <b>LOD Group</b> propre, sans <b>popping</b>, et lire son seuil en % de hauteur d'écran.</li>
+                <li>Mutualiser tes textures via un <b>Sprite Atlas</b> (2D) ou un atlas 3D pour rendre le batching possible.</li>
+                <li>Diagnostiquer <em>pourquoi un batch casse</em> grâce au <b>Frame Debugger</b>, au lieu de juger la perf «&nbsp;au pif&nbsp;».</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La leçon <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a> t'a donné la théorie&nbsp;: draw calls, coût vertex/fragment, LOD, overdraw, compression. Ici, on <b>applique</b> tout cela <em>dans Unity</em>, avec les noms exacts des panneaux, des cases à cocher et des compteurs. C'est la différence entre «&nbsp;savoir que les draw calls coûtent&nbsp;» et «&nbsp;savoir cliquer sur <b>Batching Static</b>, relancer le <b>Frame Debugger</b> et constater que le compteur est passé de 900 à 40&nbsp;».</p>
+            <p>Dans un vrai studio, l'optimisation n'est pas une option de fin de projet&nbsp;: c'est un <b>budget</b> qu'on tient image après image. Une scène doit produire une image en <b>16,6&nbsp;ms</b> (60&nbsp;images/seconde) ou <b>33&nbsp;ms</b> (30&nbsp;fps sur mobile). Si ta scène dépasse, le jeu saccade, chauffe le téléphone, vide la batterie. Le <em>technical artist</em> est la personne qui sait <b>mesurer</b> où part le temps (Profiler), <b>comprendre</b> pourquoi (Frame Debugger), puis <b>agir</b> avec le bon outil. Sans mesure, toute «&nbsp;optimisation&nbsp;» est une superstition&nbsp;: on touche des réglages au hasard en espérant que ça aide. Cette leçon t'apprend la boucle complète&nbsp;: <b>mesurer → comprendre → corriger → re-mesurer</b>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Vocabulaire&nbsp;: draw call, batch, SetPass call</div>
+              <p>Trois mots qu'on confond souvent. Un <b>draw call</b> est un ordre de dessin envoyé au GPU. Un <b>batch</b> est un groupe d'objets fusionnés que Unity envoie ensemble (idéalement, beaucoup d'objets pour peu de batches). Un <b>SetPass call</b> est un changement d'<b>état de rendu</b> côté GPU&nbsp;: changer de shader, de matériau, de variante. C'est <b>le SetPass call qui coûte le plus cher</b>, car il force le pilote à reconfigurer le GPU. Réduire les SetPass calls est souvent l'objectif numéro un sur PC et console.</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le rendu Unity dépend de ton pipeline (Built-in, URP, HDRP)</h3>
+            <p>Avant de choisir une technique de batching, il faut savoir <b>quel <span class="gloss">render pipeline</span></b> tu utilises (voir <a href="../../cours/unity/u03-render-pipelines.html">U3</a>), car les outils diffèrent&nbsp;:</p>
+            <ul>
+              <li><b>Built-in Render Pipeline</b> (l'historique)&nbsp;: dispose du <b>Static Batching</b>, du <b>Dynamic Batching</b> et du <b>GPU Instancing</b>, mais <b>pas</b> du SRP Batcher.</li>
+              <li><b>URP</b> (Universal RP) et <b>HDRP</b> (High Definition RP)&nbsp;: disposent du <b>SRP Batcher</b>, un mécanisme bien plus efficace qui rend le Dynamic Batching presque obsolète. Ils gardent aussi Static Batching et GPU Instancing.</li>
+            </ul>
+            <p>Pourquoi cette distinction compte&nbsp;? Parce que le réflexe «&nbsp;active le Dynamic Batching&nbsp;» d'un tutoriel Built-in de 2018 est <b>contre-productif</b> en URP&nbsp;: le SRP Batcher fait mieux le même travail. Connaître ton pipeline évite de combattre le moteur.</p>
+
+            <h3>2. Réduire les appels de rendu&nbsp;: les quatre leviers</h3>
+            <p>Un objet qui possède son propre matériau unique génère son propre SetPass call et son propre draw call. Multiplie par 800 objets et le CPU s'effondre (jeu <b>CPU-bound</b>). Unity offre <b>quatre</b> mécanismes pour regrouper&nbsp;; chacun a un domaine d'application précis.</p>
+
+            <h4>Static Batching&nbsp;: fusionner le décor immobile</h4>
+            <p>Le <span class="term">Static Batching</span> combine, <b>à l'avance</b>, tous les objets <b>immobiles</b> qui partagent le même matériau en un seul gros maillage. On l'active en cochant la case <b>Static</b> (plus précisément <b>Batching Static</b>) en haut de l'<b>Inspector</b> d'un GameObject. Ce qui se passe&nbsp;: Unity pré-construit un maillage combiné&nbsp;; au rendu, il le dessine en très peu de draw calls. Idéal pour les murs, sols, rochers, props de décor qui ne bougent jamais.</p>
+            <p>Le <em>coût</em>&nbsp;: de la <b>mémoire</b>. Le maillage combiné est stocké en plus des maillages d'origine&nbsp;; un décor immense en static batching peut gonfler la RAM et la taille du build. C'est un échange CPU↔mémoire&nbsp;: on paie de la mémoire pour libérer le processeur.</p>
+
+            <h4>Dynamic Batching&nbsp;: petits maillages mobiles (et ses limites)</h4>
+            <p>Le <span class="term">Dynamic Batching</span> fusionne à la volée, chaque image, de <b>petits</b> maillages mobiles partageant un matériau. La limite est dure&nbsp;: il ne s'applique qu'aux maillages de <b>moins de ~300 sommets</b> (et ~900 attributs de vertex). Au-delà, le coût de recombiner les sommets sur le CPU à chaque image dépasse le gain. Autant dire qu'en pratique, en pipeline moderne, on l'utilise rarement&nbsp;: le SRP Batcher le surpasse.</p>
+
+            <h4>SRP Batcher&nbsp;: regrouper par shader (URP/HDRP)</h4>
+            <p>Le <span class="term">SRP Batcher</span> ne fusionne pas les maillages&nbsp;; il optimise <b>la préparation côté CPU</b>. Son principe&nbsp;: si plusieurs objets utilisent le <b>même shader</b> (même si leurs <em>matériaux</em> diffèrent par leurs paramètres&nbsp;: couleur, textures), Unity garde les données de matériau dans des buffers GPU persistants et n'a qu'à <b>basculer un pointeur</b> entre les objets, au lieu de tout reconfigurer. Résultat&nbsp;: les SetPass calls s'effondrent, même avec beaucoup de matériaux différents — à condition qu'ils partagent le shader.</p>
+            <p>On l'active dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Graphics</span> (ou via l'asset URP). La condition de <b>compatibilité SRP Batcher</b>&nbsp;: le shader doit déclarer ses propriétés dans un bloc <code>UnityPerMaterial</code> conforme. Les shaders URP/HDRP standards le sont&nbsp;; un vieux shader Built-in ou un shader perso mal écrit ne l'est pas, et casse le batch.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce — SRP Batcher ≠ moins de draw calls, mais moins de SetPass calls</div>
+              <p>Contre-intuitif&nbsp;: avec le SRP Batcher, le nombre de <b>draw calls</b> peut rester élevé alors que les <b>SetPass calls</b> chutent — et c'est exactement ce qu'on veut, car le SetPass est le coût dominant. Ne panique donc pas si le compteur de batches reste haut&nbsp;: regarde le <b>SetPass</b>.</p>
+            </div>
+
+            <h4>GPU Instancing&nbsp;: mille copies identiques en un appel</h4>
+            <p>Le <span class="term">GPU Instancing</span> dessine <b>le même maillage avec le même matériau</b>, répété des milliers de fois (herbe, arbres, cailloux, foule), en <b>un seul draw call</b>. On l'active en cochant <b>Enable GPU Instancing</b> directement <b>sur le matériau</b> (dans son Inspector). Unity envoie le maillage une fois, plus une liste de transformations, et le GPU le clone en masse. La condition&nbsp;: maillage identique <em>et</em> matériau identique — seules la position, la rotation, l'échelle (et certaines propriétés via <em>MaterialPropertyBlock</em>) peuvent varier. C'est l'outil roi de la <b>végétation</b>.</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Technique</th><th>Pour quoi</th><th>Où l'activer</th><th>Limite clé</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Static Batching</b></td><td>Décor immobile, même matériau</td><td>Case <b>Static</b> (Inspector)</td><td>Coûte de la mémoire&nbsp;; objets non mobiles</td></tr>
+                  <tr><td><b>Dynamic Batching</b></td><td>Petits maillages mobiles</td><td>Player Settings</td><td>&lt; ~300 sommets&nbsp;; souvent obsolète</td></tr>
+                  <tr><td><b>SRP Batcher</b></td><td>Beaucoup d'objets, même <em>shader</em> (URP/HDRP)</td><td>Graphics Settings</td><td>Shader compatible obligatoire</td></tr>
+                  <tr><td><b>GPU Instancing</b></td><td>Copies identiques (herbe, foule)</td><td>Case sur le <b>matériau</b></td><td>Même maillage <em>et</em> matériau</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3. Le culling&nbsp;: ne pas dessiner l'invisible</h3>
+            <p>Le rendu le moins cher est celui qu'on <b>ne fait pas</b>. Le <span class="term">culling</span> consiste à écarter du rendu les objets qui ne contribueront pas à l'image finale. Unity en applique deux formes.</p>
+
+            <h4>Frustum culling (automatique)</h4>
+            <p>Le <span class="term">frustum culling</span> élimine les objets <b>hors du champ de vision</b> de la caméra. Le <em>frustum</em> est la pyramide tronquée que «&nbsp;voit&nbsp;» la caméra (entre les plans <b>near</b> et <b>far</b>). Tout ce qui est en dehors n'est pas envoyé au GPU. C'est <b>automatique</b> et gratuit&nbsp;: tu n'as rien à faire. Mais il a une limite&nbsp;: il ne sait pas qu'un objet <em>dans</em> le frustum est en réalité <b>caché derrière un mur</b>. Il le dessinera quand même.</p>
+
+            <h4>Occlusion Culling (à baker)</h4>
+            <p>L'<span class="term">Occlusion Culling</span> comble ce trou&nbsp;: il évite de dessiner les objets <b>masqués par d'autres objets</b> (occlusion). Exemple typique&nbsp;: dans un couloir, la salle derrière le mur du fond ne doit pas être rendue tant qu'on ne franchit pas la porte. Mais Unity ne peut pas le deviner en temps réel à moindre coût&nbsp;: il faut <b>pré-calculer</b> (un <em>bake</em>) une carte de visibilité. On ouvre <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Occlusion Culling</span>, on marque les gros objets fixes comme <b>Occluder Static</b> (ils cachent) et/ou <b>Occludee Static</b> (ils peuvent être cachés), puis on lance le <b>Bake</b>. Unity découpe la scène en cellules et mémorise, depuis chaque cellule, ce qui est visible.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Pas de bake = pas d'occlusion</div>
+              <p>L'Occlusion Culling ne fonctionne <b>que</b> si tu as cliqué <b>Bake</b> et que les objets bloquants sont marqués <b>Occluder Static</b>. Beaucoup de débutants ouvrent la fenêtre, cochent une case, et croient que c'est actif&nbsp;: sans bake, rien n'est culé. De plus, le résultat est <b>figé</b>&nbsp;: si tu déplaces un mur après le bake, il faut re-baker.</p>
+            </div>
+
+            <h3>4. LOD Group&nbsp;: moins de détails au loin, sans popping</h3>
+            <p>Le composant <span class="term">LOD Group</span> est la mise en œuvre Unity des <span class="gloss">LOD</span> vus en F12. Sur un GameObject, tu ajoutes le composant, puis tu définis une chaîne&nbsp;: <b>LOD0</b> (pleine qualité, vu de près), <b>LOD1</b>, <b>LOD2</b> (versions de plus en plus décimées), et enfin <b>Culled</b> (rien n'est dessiné&nbsp;: l'objet est trop petit pour mériter un pixel). Le moteur choisit le niveau selon la <b>taille apparente</b> de l'objet&nbsp;: le pourcentage de <b>hauteur d'écran</b> qu'il occupe. Quand cette part passe sous un seuil, Unity bascule au LOD suivant.</p>
+            <p>Le <em>pourquoi</em> est celui de F12&nbsp;: on économise le <b>coût vertex</b> (et souvent fragment) sur les objets lointains qui n'occupent que quelques pixels. La nuance Unity&nbsp;: on raisonne en <b>% de hauteur d'écran</b>, pas en mètres&nbsp;; ainsi le LOD s'adapte automatiquement à la résolution et au champ de vision.</p>
+            <p>Pour éviter le <b>LOD popping</b> (l'objet qui «&nbsp;saute&nbsp;» visiblement), Unity propose un <b>Fade Mode</b> de type <b>Cross Fade</b> sur le LOD Group&nbsp;: les deux niveaux se fondent en damier (dithering) sur une courte plage. Des seuils trop rapprochés ou un LOD1 trop grossier rendent le saut visible&nbsp;; des seuils bien placés le rendent imperceptible.</p>
+
+            <h3>5. Atlas&nbsp;: mutualiser les textures pour rendre le batching possible</h3>
+            <p>Comme vu en F12, regrouper plusieurs textures dans une seule image (un <b>atlas</b>) permet de donner un <b>matériau commun</b> à plusieurs objets — donc de les batcher. Unity offre deux voies&nbsp;:</p>
+            <ul>
+              <li><b>Sprite Atlas (2D)</b>&nbsp;: pour l'UI et les jeux 2D, on crée un asset <span class="menu-path">Create<span class="arrow">▸</span>2D<span class="arrow">▸</span>Sprite Atlas</span>, on y glisse les sprites, et Unity les empaquette dans une grande texture. Au rendu, des dizaines de sprites issus du même atlas sont dessinés en un seul batch au lieu d'un par sprite.</li>
+              <li><b>Atlas de textures 3D</b>&nbsp;: pour la 3D, l'atlasing se prépare en amont (dans le DCC, voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) en empaquetant les <span class="gloss">UV</span> de plusieurs objets sur une même texture, pour qu'ils partagent un matériau unique dans Unity.</li>
+            </ul>
+
+            <h3>6. Les outils de mesure&nbsp;: Profiler et Frame Debugger</h3>
+            <p>On arrive au cœur de la leçon&nbsp;: <b>mesurer avant d'agir</b>. Unity fournit deux outils complémentaires.</p>
+
+            <h4>Le Profiler&nbsp;: où part le temps&nbsp;?</h4>
+            <p>Le <span class="term">Profiler</span> (<span class="menu-path">Window<span class="arrow">▸</span>Analysis<span class="arrow">▸</span>Profiler</span>) enregistre, image par image, le temps consommé par chaque grand poste&nbsp;: <b>CPU Usage</b>, <b>GPU Usage</b>, <b>Rendering</b>, <b>Memory</b>, etc. Le module <b>Rendering</b> affiche les chiffres décisifs&nbsp;: <b>Batches</b>, <b>SetPass calls</b>, <b>Triangles</b>, <b>Vertices</b>. La première question qu'il répond&nbsp;: es-tu <b>CPU-bound</b> (la barre CPU est saturée, le GPU attend) ou <b>GPU-bound</b> (l'inverse)&nbsp;? Cette réponse oriente toute ta stratégie&nbsp;: réduire les draw calls (CPU) n'aide en rien un jeu GPU-bound, et inversement.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Profiler dans l'Éditeur vs sur l'appareil</div>
+              <p>Profiler dans l'Éditeur donne une tendance, mais les chiffres sont <b>faussés</b>&nbsp;: l'Éditeur lui-même consomme, et ton PC est bien plus puissant qu'un téléphone. Pour une vérité de production, on profile une <b>build de développement</b> connectée à l'appareil cible (<b>Development Build</b> + <b>Autoconnect Profiler</b>). Un jeu mobile se juge sur le mobile, pas sur la tour du développeur.</p>
+            </div>
+
+            <h4>Le Frame Debugger&nbsp;: pourquoi un batch casse</h4>
+            <p>Le <span class="term">Frame Debugger</span> (<span class="menu-path">Window<span class="arrow">▸</span>Analysis<span class="arrow">▸</span>Frame Debugger</span>) <b>rejoue le rendu d'une image, appel par appel</b>. Tu cliques <b>Enable</b>, et un curseur te laisse avancer d'un draw call à l'autre, en voyant l'image se construire progressivement. Surtout, quand tu sélectionnes un appel, Unity affiche <b>pourquoi il n'a pas été fusionné avec le précédent</b> (mention du type «&nbsp;<em>Objects have different materials</em>&nbsp;», «&nbsp;<em>different shader keywords</em>&nbsp;», «&nbsp;<em>Objects are lightmapped</em>&nbsp;»). C'est l'outil chirurgical&nbsp;: là où le Profiler dit «&nbsp;tu as 900 batches&nbsp;», le Frame Debugger dit «&nbsp;voici <em>pourquoi</em> ce batch-ci s'est cassé&nbsp;». Sans lui, on optimise à l'aveugle.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Vue conceptuelle du Frame Debugger : une liste d'appels de rendu, un appel surligné qui casse le batch avec sa raison expliquée">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Frame Debugger&nbsp;: le rendu rejoué appel par appel</text>
+                <!-- panneau liste -->
+                <rect x="20" y="40" width="300" height="262" rx="8" class="svg-surface" stroke="#313c4c" stroke-width="1.5"/>
+                <text x="36" y="62" class="svg-dim" font-size="11">Liste des appels (ordre de rendu)</text>
+                <!-- appels groupés (batch ok) -->
+                <g font-size="11">
+                  <rect x="34" y="74" width="272" height="22" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a" stroke-width="1"/>
+                  <text x="44" y="89" class="svg-text">1 · Draw Mesh — Sol (atlas) ×120</text>
+                  <rect x="34" y="100" width="272" height="22" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a" stroke-width="1"/>
+                  <text x="44" y="115" class="svg-text">2 · Draw Instanced — Herbe ×4000</text>
+                  <rect x="34" y="126" width="272" height="22" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a" stroke-width="1"/>
+                  <text x="44" y="141" class="svg-text">3 · Draw Mesh — Caisses ×64</text>
+                  <!-- appel qui casse : surligné en rouge -->
+                  <rect x="34" y="152" width="272" height="22" rx="4" fill="#ff6b6b" fill-opacity="0.22" stroke="#ff6b6b" stroke-width="1.6"/>
+                  <text x="44" y="167" class="svg-text" font-weight="700">4 · Draw Mesh — Caisse #65  ⟵ casse</text>
+                  <rect x="34" y="178" width="272" height="22" rx="4" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441" stroke-width="1"/>
+                  <text x="44" y="193" class="svg-text">5 · Draw Mesh — Caisses (reprise) ×30</text>
+                  <rect x="34" y="204" width="272" height="22" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a" stroke-width="1"/>
+                  <text x="44" y="219" class="svg-text">6 · Draw Mesh — Personnage</text>
+                </g>
+                <!-- curseur -->
+                <text x="36" y="252" class="svg-dim" font-size="11">◄ curseur sur l'appel 4 ►</text>
+                <rect x="34" y="262" width="272" height="10" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <rect x="34" y="262" width="150" height="10" rx="5" fill="#59b0ff" fill-opacity="0.5"/>
+                <circle cx="184" cy="267" r="7" fill="#59b0ff"/>
+                <text x="36" y="290" class="svg-dim" font-size="10">6 appels — sans la coupure&nbsp;: 3</text>
+                <!-- panneau explication -->
+                <rect x="340" y="40" width="282" height="262" rx="8" fill="#ff6b6b" fill-opacity="0.06" stroke="#ff6b6b" stroke-width="1.5"/>
+                <text x="356" y="64" class="svg-text" font-size="12" font-weight="700">Pourquoi l'appel 4 ne fusionne pas</text>
+                <text x="356" y="92" class="svg-dim" font-size="11">Raison affichée par Unity&nbsp;:</text>
+                <rect x="356" y="100" width="250" height="40" rx="6" class="svg-surface" stroke="#ff6b6b"/>
+                <text x="368" y="118" class="svg-text" font-size="11">«&nbsp;Objects have different</text>
+                <text x="368" y="133" class="svg-text" font-size="11">materials&nbsp;»</text>
+                <text x="356" y="166" class="svg-dim" font-size="11">La caisse #65 a reçu un matériau</text>
+                <text x="356" y="182" class="svg-dim" font-size="11">distinct (autre instance) → SetPass</text>
+                <text x="356" y="198" class="svg-dim" font-size="11">call supplémentaire, batch rompu.</text>
+                <text x="356" y="226" class="svg-text" font-size="11" font-weight="700">Correction&nbsp;:</text>
+                <text x="356" y="244" class="svg-dim" font-size="11">réassigner le matériau partagé</text>
+                <text x="356" y="260" class="svg-dim" font-size="11">(ou un MaterialPropertyBlock).</text>
+                <text x="356" y="286" class="svg-dim" font-size="11">→ 3 appels au lieu de 6.</text>
+              </svg>
+              <figcaption>Le Frame Debugger liste chaque appel et, pour celui qui casse le regroupement, en donne la <b>raison exacte</b>. Ici, une seule caisse au matériau divergent coupe le batch en deux et ajoute un SetPass call.</figcaption>
+            </figure>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Vue de dessus d'une caméra avec son frustum ; un mur cache une salle dont les objets ne sont pas dessinés par l'occlusion culling">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Frustum culling + Occlusion Culling (vue de dessus)</text>
+                <!-- caméra -->
+                <g transform="translate(60,150)">
+                  <path d="M0 -16 L26 -26 L26 26 L0 16 Z" class="svg-surface" stroke="#313c4c" stroke-width="1.5"/>
+                  <circle cx="11" cy="0" r="7" fill="none" stroke="#59b0ff" stroke-width="2"/>
+                  <text x="10" y="44" text-anchor="middle" class="svg-dim" font-size="11">caméra</text>
+                </g>
+                <!-- frustum -->
+                <path d="M86 150 L600 40 L600 260 Z" fill="#59b0ff" fill-opacity="0.07" stroke="#59b0ff" stroke-width="1.2" stroke-dasharray="5 4"/>
+                <text x="470" y="80" class="svg-dim" font-size="11" transform="rotate(-12 470 80)">frustum (champ de vision)</text>
+                <!-- objet hors frustum -->
+                <rect x="180" y="270" width="26" height="22" rx="3" fill="#ff6b6b" fill-opacity="0.25" stroke="#ff6b6b" stroke-width="1.4"/>
+                <text x="193" y="262" text-anchor="middle" class="svg-dim" font-size="10">hors frustum</text>
+                <text x="193" y="250" text-anchor="middle" class="svg-dim" font-size="10">→ frustum cull</text>
+                <!-- objet visible -->
+                <rect x="250" y="140" width="26" height="22" rx="3" fill="#5ad19a" fill-opacity="0.4" stroke="#5ad19a" stroke-width="1.4"/>
+                <text x="263" y="178" text-anchor="middle" class="svg-dim" font-size="10">visible ✓</text>
+                <!-- mur occluder -->
+                <rect x="380" y="100" width="14" height="120" rx="2" fill="#c89bff" fill-opacity="0.5" stroke="#c89bff" stroke-width="1.6"/>
+                <text x="387" y="92" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">mur</text>
+                <text x="387" y="236" text-anchor="middle" class="svg-dim" font-size="10">Occluder</text>
+                <!-- zone d'ombre derrière le mur -->
+                <path d="M86 150 L394 100 L600 100 L600 200 L394 220 Z" fill="#313c4c" fill-opacity="0.18"/>
+                <!-- objets cachés derrière le mur -->
+                <rect x="470" y="120" width="24" height="20" rx="3" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441" stroke-width="1.4" stroke-dasharray="3 3"/>
+                <rect x="510" y="150" width="24" height="20" rx="3" fill="#f2b441" fill-opacity="0.22" stroke="#f2b441" stroke-width="1.4" stroke-dasharray="3 3"/>
+                <text x="505" y="196" text-anchor="middle" class="svg-dim" font-size="10">dans le frustum MAIS cachés</text>
+                <text x="505" y="210" text-anchor="middle" class="svg-dim" font-size="10">→ occlusion cull (non dessinés)</text>
+              </svg>
+              <figcaption>Le <b>frustum culling</b> jette ce qui est hors du champ. L'<b>Occlusion Culling</b> va plus loin&nbsp;: les objets situés <em>dans</em> le frustum mais cachés par le mur ne sont pas dessinés non plus — à condition d'avoir baké la visibilité.</figcaption>
+            </figure>
+
+            <h3>7. Budgets et cibles&nbsp;: viser des chiffres concrets</h3>
+            <p>Optimiser sans cible, c'est ne jamais savoir quand s'arrêter. On se fixe un <b>budget</b> par image et par plateforme. Ces valeurs sont des <b>ordres de grandeur</b> (ton moteur, ton pipeline et ton style les déplacent), mais elles donnent une boussole.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Cible</th><th>Image (ms)</th><th>SetPass calls (ordre)</th><th>Tris à l'écran</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Mobile milieu de gamme (30 fps)</b></td><td>~33 ms</td><td>&lt; 50 – 100</td><td>~100 k – 300 k</td></tr>
+                  <tr><td><b>Mobile / Switch (60 fps)</b></td><td>~16 ms</td><td>~100 – 200</td><td>~300 k – 700 k</td></tr>
+                  <tr><td><b>PC / console (60 fps)</b></td><td>~16 ms</td><td>plusieurs centaines à 1 000+</td><td>plusieurs millions</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>La discipline&nbsp;: on relève le chiffre <b>avant</b> optimisation (Profiler), on agit, on <b>re-mesure</b>. Un gain qu'on ne mesure pas n'existe pas.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Trois gestes concrets&nbsp;: activer le GPU Instancing sur un matériau d'herbe, créer un LOD Group, puis lire les SetPass calls dans le Profiler pour <b>prouver</b> le gain. Les noms sont ceux d'Unity (URP/Built-in récents).</p>
+            <ol>
+              <li>Sélectionne le <b>matériau de l'herbe</b> dans <span class="menu-path">Project<span class="arrow">▸</span>Assets</span>. Dans son <b>Inspector</b>, coche <span class="menu-path">Enable GPU Instancing</span>. Ce que ça fait&nbsp;: tu autorises Unity à dessiner toutes les touffes d'herbe partageant ce matériau <b>en un seul draw call</b> au lieu d'un par touffe. La case ne change rien visuellement&nbsp;; elle change le <em>comment</em> du rendu.</li>
+              <li>Vérifie que toutes les touffes partagent bien <b>ce même matériau et ce même maillage</b>. Si une touffe a un matériau dérivé (couleur unique via un matériau séparé), elle sort de l'instancing&nbsp;: utilise plutôt un <b>MaterialPropertyBlock</b> pour varier la teinte sans casser le lot.</li>
+              <li>Sur un rocher, clique <span class="menu-path">Add Component<span class="arrow">▸</span>LOD Group</span>. Le composant affiche une barre horizontale&nbsp;: glisse le maillage <b>LOD0</b> (plein) dans le premier palier, une version décimée <b>LOD1</b> dans le second, puis ajuste les poignées des <b>seuils en % de hauteur d'écran</b>. Active <b>Fade Mode = Cross Fade</b> pour fondre la transition et tuer le popping. Ce qui se passe&nbsp;: en t'éloignant, l'objet rétrécit à l'écran, franchit un seuil, et Unity bascule sur le maillage plus léger — moins de sommets envoyés.</li>
+              <li>Ouvre <span class="menu-path">Window<span class="arrow">▸</span>Analysis<span class="arrow">▸</span>Profiler</span>. Lance la scène (Play). Clique sur le module <b>Rendering</b> et lis <b>SetPass calls</b> et <b>Batches</b>. Note le chiffre.</li>
+              <li>Décoche temporairement le GPU Instancing, relance, relis le <b>SetPass calls</b>&nbsp;: il a bondi. Recoche-le&nbsp;: il chute. Tu viens de <b>mesurer</b> ton optimisation, pas de l'imaginer.</li>
+              <li>Si un objet refuse de se grouper, ouvre <span class="menu-path">Window<span class="arrow">▸</span>Analysis<span class="arrow">▸</span>Frame Debugger</span>, clique <b>Enable</b>, avance jusqu'à l'appel fautif et lis la <b>raison de la rupture</b> (matériau différent, lightmap différente, scale négatif…). Corrige la cause exacte indiquée.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le Frame Debugger montre des objets identiques rendus chacun dans leur propre appel&nbsp;; le batch ne se forme jamais.</div>
+                <div class="pi-cause"><b>Cause</b>Matériaux différents (souvent une <em>instance</em> de matériau créée par erreur), variantes de shader, ou <b>scale négatif</b> sur un objet (l'orientation des faces s'inverse et casse le lot).</div>
+                <div class="pi-fix"><b>Correction</b>Réassigne le <b>matériau partagé</b> à tous, évite les scales négatifs (remplace par une vraie rotation/miroir géométrique), et lis la raison exacte donnée par le Frame Debugger.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Deux objets identiques, même matériau, refusent de se batcher dès qu'ils sont marqués statiques.</div>
+                <div class="pi-cause"><b>Cause</b><b>Lightmaps différentes</b>&nbsp;: chaque objet a son atlas de lightmap, donc un état de rendu distinct.</div>
+                <div class="pi-fix"><b>Correction</b>Partage le même lightmap index/atlas quand c'est possible, ou accepte la coupure&nbsp;: l'éclairage baké prime ici sur le batching.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tu vois nettement la salle derrière le mur être rendue alors qu'elle est cachée&nbsp;; le framerate plonge dans les niveaux fermés.</div>
+                <div class="pi-cause"><b>Cause</b><b>Occlusion Culling non baké</b> (ou occluders non marqués <b>Occluder Static</b>).</div>
+                <div class="pi-fix"><b>Correction</b>Marque les murs/sols comme Occluder Static, puis <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Occlusion Culling<span class="arrow">▸</span>Bake</span>. Re-bake après chaque déplacement de gros élément.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Les rochers «&nbsp;sautent&nbsp;» visiblement quand on s'approche ou s'éloigne.</div>
+                <div class="pi-cause"><b>Cause</b>LOD mal réglés&nbsp;: seuils trop espacés, LOD1 trop grossier, ou transition brutale (pas de fondu).</div>
+                <div class="pi-fix"><b>Correction</b>Active <b>Cross Fade</b> sur le LOD Group, rapproche les seuils, et soigne le LOD1 pour que la silhouette reste proche du LOD0.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La VRAM déborde et le build est énorme, alors que la scène paraît modeste.</div>
+                <div class="pi-cause"><b>Cause</b>Textures <b>4K partout</b>, y compris sur des objets minuscules (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</div>
+                <div class="pi-fix"><b>Correction</b>Adapte la résolution à la place réelle à l'écran, baisse <b>Max Size</b>, et compresse (BCn/ASTC). La 4K se réserve aux héros et gros plans.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tu passes des heures à «&nbsp;optimiser&nbsp;» sans que le framerate bouge.</div>
+                <div class="pi-cause"><b>Cause</b>Tu juges la perf <b>au pif</b>, sans Profiler&nbsp;: tu optimises peut-être le côté qui n'est pas le goulot (réduire les tris d'un jeu CPU-bound).</div>
+                <div class="pi-fix"><b>Correction</b>Ouvre le <b>Profiler</b> d'abord. Identifie CPU-bound vs GPU-bound, vise le poste le plus cher, agis, <b>re-mesure</b>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans une scène Unity (URP de préférence), construis un petit terrain avec de la végétation et du décor&nbsp;:</p>
+              <ol>
+                <li>Place ~2000 touffes d'herbe (même maillage, même matériau). Lance le <b>Profiler</b>, module <b>Rendering</b>, et note <b>SetPass calls</b> et <b>Batches</b> de départ.</li>
+                <li>Coche <b>Enable GPU Instancing</b> sur le matériau d'herbe. Re-mesure&nbsp;: les SetPass calls doivent s'effondrer. Consigne les deux chiffres (avant / après).</li>
+                <li>Ajoute un <b>LOD Group</b> à 2 niveaux sur un rocher (plein + décimé ~25&nbsp;%), avec <b>Cross Fade</b>. Recule la caméra et vérifie dans les statistiques que le nombre de <b>tris affichés</b> chute, sans popping visible.</li>
+                <li>Bâtis un mur séparant deux salles, marque-le <b>Occluder Static</b>, baque l'<b>Occlusion Culling</b>. Avec le Frame Debugger, vérifie que les objets de la salle cachée ne sont plus dessinés quand la caméra est de l'autre côté.</li>
+                <li>Introduis volontairement une caisse au matériau dupliqué dans un lot de caisses identiques. Ouvre le <b>Frame Debugger</b>, trouve l'appel qui casse, lis la raison, corrige, et confirme la reformation du batch.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu fournis les SetPass calls <em>avant/après</em> instancing, chiffres à l'appui.</li>
+                  <li>Ton LOD Group réduit réellement les tris affichés au loin, sans saut visible.</li>
+                  <li>Tu démontres, Frame Debugger en main, que la salle cachée n'est plus rendue après le bake d'occlusion.</li>
+                  <li>Tu sais nommer la <b>raison exacte</b> d'un batch cassé (matériau, lightmap, scale négatif, shader keywords) et la corriger.</li>
+                  <li>Tu peux dire, Profiler en main, si la scène est CPU-bound ou GPU-bound.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Mesure d'abord</b>&nbsp;: le Profiler dit <em>où</em> part le temps (CPU-bound vs GPU-bound, SetPass calls, batches), le Frame Debugger dit <em>pourquoi</em> un batch casse.</li>
+                <li>Quatre leviers pour les appels&nbsp;: <b>Static Batching</b> (décor immobile), <b>Dynamic Batching</b> (petits maillages, souvent obsolète), <b>SRP Batcher</b> (URP/HDRP, regroupe par shader), <b>GPU Instancing</b> (copies identiques, herbe).</li>
+                <li>Le <b>SRP Batcher</b> réduit surtout les <b>SetPass calls</b> (le coût dominant), pas forcément les batches&nbsp;: regarde le bon compteur.</li>
+                <li><b>Frustum culling</b> = automatique&nbsp;; <b>Occlusion Culling</b> = à <b>baker</b> avec des occluders marqués, sinon il ne fait rien.</li>
+                <li>Le <b>LOD Group</b> bascule selon le % de hauteur d'écran&nbsp;; active <b>Cross Fade</b> pour éviter le <b>popping</b>.</li>
+                <li>Un <b>atlas</b> (Sprite Atlas 2D, UV packés en 3D) mutualise le matériau et rend le batching possible. Pas de 4K partout (renvoi F12).</li>
+                <li>Casseurs de batch fréquents&nbsp;: matériaux différents, <b>scale négatif</b>, lightmaps différentes, variantes de shader.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>SetPass call</b> — changement d'état de rendu côté GPU (shader, matériau, variante)&nbsp;; c'est le coût dominant à réduire en priorité.</p>
+              <p><b>Static Batching</b> — fusion préalable des objets immobiles partageant un matériau en un maillage combiné (coûte de la mémoire).</p>
+              <p><b>Dynamic Batching</b> — regroupement à la volée de petits maillages mobiles (&lt; ~300 sommets)&nbsp;; souvent obsolète en pipeline moderne.</p>
+              <p><b>SRP Batcher</b> — optimisation URP/HDRP qui regroupe les objets par <em>shader</em> compatible et fait chuter les SetPass calls.</p>
+              <p><b>GPU Instancing</b> — dessin d'un même maillage et matériau en milliers de copies via un seul draw call (végétation, foules).</p>
+              <p><b>Frustum culling</b> — élimination automatique des objets hors du champ de vision (pyramide near/far) de la caméra.</p>
+              <p><b>Occlusion Culling</b> — pré-calcul (bake) qui évite de dessiner les objets cachés derrière d'autres&nbsp;; nécessite des occluders marqués.</p>
+              <p><b>LOD Group</b> — composant Unity qui bascule entre versions simplifiées d'un maillage selon le % de hauteur d'écran occupé.</p>
+              <p><b>Profiler</b> — outil de mesure image par image (CPU/GPU/Rendering/Memory) pour situer le goulot d'étranglement.</p>
+              <p><b>Frame Debugger</b> — outil qui rejoue le rendu appel par appel et explique pourquoi un batch ne se forme pas.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation graphique</a>&nbsp;: la théorie (draw calls, coût vertex/fragment, LOD, overdraw, compression) que cette leçon applique.</li>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>&nbsp;: Built-in vs URP vs HDRP, et donc quels outils de batching sont disponibles.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux Unity</a>&nbsp;: comprendre les matériaux et shaders, clé du SRP Batcher et de l'instancing.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: compression de textures, Max Size et mipmaps à l'import.</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10 — Optimisation Unreal</a> et <a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a>&nbsp;: l'équivalent côté Unreal.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: où se situent ces stratégies d'un moteur à l'autre.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

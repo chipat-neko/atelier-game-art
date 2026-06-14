@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B2 — Interface & navigation de Blender · Atelier Game Art</title>
+  <meta name="description" content="L'interface de Blender 4.x : workspaces, éditeurs (3D Viewport, Outliner, Properties), navigation, curseur 3D, pivots et raccourcis essentiels.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Interface &amp; navigation</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B2 — Interface &amp; navigation</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b01-installation.html">B1 — Installation</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Reconnaître les <b>éditeurs</b> de Blender et basculer entre les <b>Workspaces</b>.</li>
+                <li>Naviguer dans le <b>3D Viewport</b> (orbit, pan, zoom, vues numpad) avec aisance.</li>
+                <li>Comprendre le rôle du <b>curseur 3D</b>, du point de <b>pivot</b> et de l'<b>Outliner</b>.</li>
+                <li>Utiliser les raccourcis de transformation (<span class="kbd">G</span>/<span class="kbd">R</span>/<span class="kbd">S</span>) et les contraintes d'axe.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Blender a la réputation d'être déroutant&nbsp;: il fonctionne énormément au <b>raccourci clavier</b> et son interface se réorganise selon la tâche. Mais une fois la logique comprise — des <b>éditeurs</b> interchangeables, regroupés en <b>Workspaces</b>, pilotés par des raccourcis cohérents — on devient très rapide. Cette leçon t'évite les blocages classiques du débutant (« où est passé mon objet ? », « pourquoi ça tourne autour de ce point ? ») qui découragent tant de gens.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Éditeurs et Workspaces</h3>
+            <p>L'écran de Blender est découpé en zones&nbsp;; chaque zone affiche un <b>éditeur</b> (un type d'outil) qu'on peut changer via le menu en haut à gauche de la zone. Les éditeurs clés&nbsp;:</p>
+            <ul>
+              <li><b>3D Viewport</b> : la vue 3D où l'on modélise.</li>
+              <li><b>Outliner</b> (haut-droit) : l'arbre de tous les objets de la scène, leur hiérarchie et leur visibilité.</li>
+              <li><b>Properties</b> (bas-droit) : les propriétés par onglets (Render, Output, Scene, Object, Modifiers <span class="menu-path">🔧</span>, Material, etc.).</li>
+              <li><b>Timeline</b> (bas) : la lecture et les keyframes (renvoi <a href="../../cours/blender/b10-rigging-animation.html">B10</a>).</li>
+            </ul>
+            <p>Les <span class="gloss">Workspace</span> (onglets en haut&nbsp;: <em>Layout, Modeling, Sculpting, UV Editing, Texture Paint, Shading, Animation…</em>) sont des <b>dispositions pré-réglées</b> d'éditeurs pour une tâche. Changer de Workspace ne modifie pas ton modèle&nbsp;: cela réarrange l'écran. C'est l'équivalent de «&nbsp;changer d'établi&nbsp;» dans l'atelier.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Disposition par défaut de l'interface Blender">
+                <rect x="14" y="40" width="612" height="196" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <rect x="14" y="14" width="612" height="22" rx="6" fill="#e0a14b" fill-opacity="0.16" stroke="#e0a14b"/>
+                <text x="24" y="30" class="svg-text" font-size="11" font-weight="700">Onglets Workspaces : Layout · Modeling · Sculpting · UV Editing · Shading · Animation…</text>
+                <rect x="26" y="52" width="380" height="150" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="216" y="130" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">3D Viewport</text>
+                <text x="216" y="150" text-anchor="middle" class="svg-dim" font-size="10.5">orbit / pan / zoom · édition</text>
+                <rect x="418" y="52" width="196" height="72" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="516" y="84" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Outliner</text>
+                <text x="516" y="102" text-anchor="middle" class="svg-dim" font-size="10">arbre des objets</text>
+                <rect x="418" y="132" width="196" height="70" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="516" y="162" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Properties</text>
+                <text x="516" y="180" text-anchor="middle" class="svg-dim" font-size="10">Render · Object · Modifiers · Material…</text>
+                <rect x="26" y="210" width="588" height="18" rx="4" fill="#0c1320" stroke="#2e425f"/>
+                <text x="32" y="223" class="svg-dim" font-size="10">Timeline (lecture, keyframes)</text>
+              </svg>
+              <figcaption>La disposition <em>Layout</em> par défaut. Chaque zone est un éditeur interchangeable&nbsp;; les Workspaces réarrangent ces zones selon la tâche.</figcaption>
+            </figure>
+
+            <h3>2. Naviguer dans le 3D Viewport</h3>
+            <p>La navigation repose sur la molette de la souris&nbsp;:</p>
+            <ul>
+              <li><b>Orbiter</b> (tourner autour) : <b>molette enfoncée</b> + déplacement (ou <span class="kbd">Alt</span>+clic gauche).</li>
+              <li><b>Panoramique</b> (translation) : <span class="kbd">Maj</span> + molette enfoncée.</li>
+              <li><b>Zoom</b> : rouleau de la molette (ou <span class="kbd">Ctrl</span> + molette enfoncée).</li>
+              <li><b>Vues prédéfinies</b> (pavé numérique) : <span class="kbd">1</span> face, <span class="kbd">3</span> côté, <span class="kbd">7</span> dessus, <span class="kbd">5</span> bascule perspective/orthographique, <span class="kbd">.</span> (point) recentre sur la sélection.</li>
+            </ul>
+            <p>Le widget <b>Gizmo de navigation</b> (les axes en haut à droite) et la molette de zoom font la même chose à la souris si tu n'as pas de pavé numérique (active alors <em>Emulate Numpad</em> dans les Preferences).</p>
+
+            <h3>3. Curseur 3D et point de pivot</h3>
+            <p>Deux notions propres à Blender qui déroutent au début&nbsp;:</p>
+            <ul>
+              <li>Le <span class="term">curseur 3D</span> (le petit réticule rouge-blanc) est un point de référence mobile&nbsp;: les nouveaux objets y apparaissent, et il sert d'origine pour certaines opérations. On le replace à l'origine du monde avec <span class="kbd">Maj</span>+<span class="kbd">C</span>.</li>
+              <li>Le <b>point de pivot</b> (menu en haut du viewport) détermine <em>autour de quoi</em> tournent et se mettent à l'échelle les objets&nbsp;: <em>Median Point</em> (par défaut), <em>3D Cursor</em>, <em>Individual Origins</em>, <em>Active Element</em>. Beaucoup de «&nbsp;ça tourne bizarrement&nbsp;» viennent d'un pivot inattendu.</li>
+            </ul>
+
+            <h3>4. Transformer&nbsp;: G, R, S et les axes</h3>
+            <p>Le cœur de l'efficacité de Blender&nbsp;: on déplace avec <span class="kbd">G</span> (Grab), tourne avec <span class="kbd">R</span> (Rotate), met à l'échelle avec <span class="kbd">S</span> (Scale). On <b>contraint à un axe</b> en tapant ensuite <span class="kbd">X</span>, <span class="kbd">Y</span> ou <span class="kbd">Z</span>, et on peut taper un <b>nombre</b> au clavier pour une valeur exacte (ex. <span class="kbd">G</span> <span class="kbd">Z</span> <span class="kbd">2</span> = déplacer de 2 m vers le haut). <span class="kbd">Tab</span> bascule entre Object Mode et <span class="gloss">Edit Mode</span> (renvoi <a href="../../cours/blender/b03-modelisation.html">B3</a>).</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans la scène de départ, oriente la vue&nbsp;: molette enfoncée pour orbiter autour du cube, rouleau pour zoomer, <span class="kbd">7</span> pour passer en vue de dessus.</li>
+              <li>Sélectionne le cube (clic gauche). Appuie sur <span class="kbd">.</span> du pavé numérique pour le recentrer (<em>Frame Selected</em>).</li>
+              <li>Déplace-le précisément&nbsp;: <span class="kbd">G</span> puis <span class="kbd">Z</span> puis tape <span class="kbd">1</span> et <span class="kbd">Entrée</span> → il monte d'1 m.</li>
+              <li>Change le point de pivot en <em>3D Cursor</em> (menu en haut du viewport), tourne avec <span class="kbd">R</span> <span class="kbd">Z</span> : observe qu'il tourne maintenant autour du curseur, pas de son centre.</li>
+              <li>Remets le curseur à l'origine (<span class="kbd">Maj</span>+<span class="kbd">C</span>), repasse le pivot sur <em>Median Point</em>.</li>
+              <li>Explore les Workspaces&nbsp;: clique l'onglet <em>Shading</em> puis <em>Layout</em> — l'écran se réorganise, ton cube est intact.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet a disparu, je ne le retrouve plus.</div>
+                <div class="pi-cause"><b>Cause</b>Vue trop éloignée/décentrée, ou objet masqué (œil dans l'Outliner).</div>
+                <div class="pi-fix"><b>Correction</b>Sélectionne-le dans l'Outliner puis <span class="kbd">.</span> (Frame Selected)&nbsp;; vérifie l'icône œil/visibilité.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tout tourne ou se met à l'échelle autour d'un point bizarre.</div>
+                <div class="pi-cause"><b>Cause</b>Point de pivot réglé sur <em>3D Cursor</em> ou <em>Individual Origins</em>.</div>
+                <div class="pi-fix"><b>Correction</b>Remets le pivot sur <em>Median Point</em>&nbsp;; recentre le curseur 3D (<span class="kbd">Maj</span>+<span class="kbd">C</span>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un nouvel objet apparaît loin de l'origine.</div>
+                <div class="pi-cause"><b>Cause</b>Les objets naissent à l'emplacement du curseur 3D, qui a été déplacé.</div>
+                <div class="pi-fix"><b>Correction</b>Replace le curseur à l'origine avant d'ajouter (<span class="kbd">Maj</span>+<span class="kbd">C</span>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je n'ai pas de pavé numérique, les vues 1/3/7 ne marchent pas.</div>
+                <div class="pi-cause"><b>Cause</b>Les raccourcis de vue utilisent le numpad.</div>
+                <div class="pi-fix"><b>Correction</b>Active <em>Emulate Numpad</em> (Preferences ▸ Input), ou utilise le gizmo d'axes en haut à droite.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Ajoute trois primitives (<span class="menu-path">Add<span class="arrow">▸</span>Mesh</span>) à des positions précises avec <span class="kbd">G</span>+axe+valeur.</li>
+                <li>Renomme-les dans l'Outliner et range-les dans une <em>Collection</em> (clic droit ▸ New Collection).</li>
+                <li>Configure une disposition à deux Viewports (un de face, un en perspective) en divisant une zone (glisser depuis un coin).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu navigues sans hésiter (orbit/pan/zoom + vues numpad).</li>
+                  <li>Tu places un objet à une coordonnée exacte au clavier.</li>
+                  <li>Tu sais expliquer la différence curseur 3D / point de pivot.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>L'écran = des <b>éditeurs</b> interchangeables&nbsp;; les <b>Workspaces</b> les réarrangent par tâche.</li>
+                <li>Navigation&nbsp;: molette (orbit), Maj+molette (pan), rouleau (zoom), numpad pour les vues.</li>
+                <li><b>Curseur 3D</b> = où naissent les objets&nbsp;; <b>point de pivot</b> = autour de quoi on tourne/scale.</li>
+                <li><span class="kbd">G</span>/<span class="kbd">R</span>/<span class="kbd">S</span> + <span class="kbd">X</span>/<span class="kbd">Y</span>/<span class="kbd">Z</span> + valeur = transformations précises&nbsp;; <span class="kbd">Tab</span> = Edit Mode.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Éditeur</b> — type d'outil affiché dans une zone de l'écran Blender (Viewport, Outliner, Properties…).</p>
+              <p><b>Workspace</b> — disposition pré-réglée d'éditeurs pour une tâche (Modeling, Shading…).</p>
+              <p><b>Curseur 3D</b> — point de référence mobile où apparaissent les nouveaux objets.</p>
+              <p><b>Point de pivot</b> — centre autour duquel s'effectuent rotations et mises à l'échelle.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b03-modelisation.html">B3 — Modélisation (Edit Mode)</a>&nbsp;: où l'on édite réellement la géométrie.</li>
+              <li><a href="../../cours/unity/u02-editeur.html">U2</a> / <a href="../../cours/unreal/e02-editeur.html">E2</a>&nbsp;: les éditeurs des moteurs, pour comparer les logiques.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

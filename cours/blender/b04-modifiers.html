@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B4 — Les modifiers (non destructif) · Atelier Game Art</title>
+  <meta name="description" content="Les modifiers de Blender : Mirror, Subdivision Surface, Solidify, Boolean, Array, Bevel, Shrinkwrap — modéliser sans détruire la géométrie de base.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Les modifiers</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B4 — Les modifiers (non destructif)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b03-modelisation.html">B3 — Modélisation</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre le principe <b>non destructif</b> de la pile de modifiers.</li>
+                <li>Utiliser les modifiers clés&nbsp;: <b>Mirror, Subdivision Surface, Solidify, Boolean, Array, Bevel, Shrinkwrap</b>.</li>
+                <li>Gérer l'<b>ordre</b> de la pile (il change tout) et savoir quand <b>appliquer</b>.</li>
+                <li>Anticiper l'effet d'un modifier sur l'export vers un moteur.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un <span class="gloss">modifier</span> applique une transformation <b>calculée à la volée</b> par-dessus ta géométrie de base, sans la détruire&nbsp;: tu peux le régler, le réordonner ou le supprimer à tout moment. C'est ce qui rend la modélisation dans Blender rapide et flexible — on travaille sur une cage simple pendant que le modifier génère le résultat complexe. Comprendre la pile de modifiers, c'est gagner un temps énorme et garder ses modèles modifiables longtemps.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La pile (stack) et son ordre</h3>
+            <p>Les modifiers se trouvent dans l'onglet <span class="menu-path">Modifier Properties</span> (la clé à molette 🔧). On les <b>empile</b>&nbsp;: ils s'appliquent <b>de haut en bas</b>, chacun prenant en entrée le résultat du précédent. L'ordre est <b>déterminant</b> : un <em>Bevel</em> avant un <em>Mirror</em> ne donne pas le même résultat qu'après. On réordonne par glisser-déposer (ou le menu de la flèche).</p>
+
+            <h3>2. Les modifiers indispensables</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Modifier</th><th>Rôle</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Mirror</b></td><td>Symétrise le maillage par rapport à un axe (et à l'origine de l'objet). On modélise une moitié, l'autre suit en temps réel — idéal pour tout ce qui est symétrique.</td></tr>
+                  <tr><td><b>Subdivision Surface</b></td><td>Lisse le maillage en le subdivisant (façon « Catmull-Clark »). On modélise une cage low-poly, le modifier produit une surface lisse. Le détail dépend du <em>placement des arêtes</em> (et du bevel/crease).</td></tr>
+                  <tr><td><b>Solidify</b></td><td>Donne de l'épaisseur à une surface (un plan devient une paroi). Parfait pour murs, coques, tissus.</td></tr>
+                  <tr><td><b>Boolean</b></td><td>Combine deux objets&nbsp;: union, différence (creuser un trou), intersection. Puissant pour le hard-surface, mais peut salir la topologie.</td></tr>
+                  <tr><td><b>Array</b></td><td>Répète l'objet N fois avec un décalage (barreaux, escaliers, chaîne). Combinable avec une courbe.</td></tr>
+                  <tr><td><b>Bevel</b></td><td>Biseaute les arêtes de façon non destructive (selon l'angle ou des poids d'arêtes).</td></tr>
+                  <tr><td><b>Shrinkwrap</b></td><td>Projette un maillage sur la surface d'un autre — pilier de la <b>retopologie</b> (renvoi <a href="../../cours/blender/b05-sculpt-retopo.html">B5</a>).</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 210" role="img" aria-label="Pile de modifiers appliquée de haut en bas sur une cage de base">
+                <defs><marker id="b4ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+                <rect x="30" y="40" width="150" height="130" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="105" y="34" text-anchor="middle" class="svg-dim" font-size="11">Géométrie de base</text>
+                <rect x="60" y="70" width="40" height="70" fill="none" stroke="#66788f"/>
+                <text x="105" y="160" text-anchor="middle" class="svg-text" font-size="10">demi-cage low-poly</text>
+
+                <g class="svg-text" font-size="11.5">
+                  <rect x="240" y="44" width="160" height="30" rx="6" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="320" y="64" text-anchor="middle">1. Mirror</text>
+                  <rect x="240" y="82" width="160" height="30" rx="6" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8"/><text x="320" y="102" text-anchor="middle">2. Bevel</text>
+                  <rect x="240" y="120" width="160" height="30" rx="6" fill="#c084fc" fill-opacity="0.14" stroke="#c084fc"/><text x="320" y="140" text-anchor="middle">3. Subdivision Surface</text>
+                  <text x="320" y="170" text-anchor="middle" class="svg-dim" font-size="10">pile évaluée de haut en bas</text>
+                </g>
+
+                <rect x="460" y="40" width="150" height="130" rx="8" fill="#4ade80" fill-opacity="0.10" stroke="#4ade80"/>
+                <text x="535" y="34" text-anchor="middle" class="svg-dim" font-size="11">Résultat (non destructif)</text>
+                <path d="M495 75 q40 -10 80 0 v60 q-40 10 -80 0 z" fill="none" stroke="#4ade80" stroke-width="1.6"/>
+                <text x="535" y="160" text-anchor="middle" class="svg-text" font-size="10">objet complet, lisse</text>
+
+                <line x1="180" y1="105" x2="238" y2="95" stroke="#e0a14b" stroke-width="1.6" marker-end="url(#b4ar)"/>
+                <line x1="400" y1="105" x2="458" y2="105" stroke="#e0a14b" stroke-width="1.6" marker-end="url(#b4ar)"/>
+              </svg>
+              <figcaption>On édite une demi-cage simple&nbsp;; la pile (Mirror → Bevel → Subdivision) génère l'objet final, réglable à tout moment.</figcaption>
+            </figure>
+
+            <h3>3. Aperçu, application, et export</h3>
+            <p>Tant qu'un modifier n'est pas <b>appliqué</b>, il reste réglable mais n'existe pas «&nbsp;en dur&nbsp;» dans le maillage. Pour le rendre permanent&nbsp;: menu déroulant du modifier ▸ <span class="menu-path">Apply</span> (ou <span class="kbd">Ctrl</span>+<span class="kbd">A</span> sur le modifier). Points clés&nbsp;:</p>
+            <ul>
+              <li>On peut afficher/masquer un modifier dans le viewport et dans le rendu (icônes œil/écran) pour comparer.</li>
+              <li>À l'<b>export FBX/glTF</b> vers un moteur, les modifiers sont généralement appliqués automatiquement à la copie exportée — mais vérifie (option <em>Apply Modifiers</em>). Le moteur reçoit la géométrie finale, pas la pile.</li>
+              <li>Attention au <b>budget de polygones</b> : un Subdivision Surface peut multiplier les tris par 4 à chaque niveau (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>). Pour le jeu, on contrôle le niveau de subdivision ou on bake le détail (renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>).</li>
+            </ul>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: un objet symétrique lissé</h2>
+            <ol>
+              <li>Supprime la moitié d'un objet (sélectionne les vertices d'un côté, <span class="kbd">X</span> ▸ Vertices). Place l'origine sur le plan de symétrie.</li>
+              <li>Ajoute <span class="menu-path">Modifier Properties<span class="arrow">▸</span>Add Modifier<span class="arrow">▸</span>Generate<span class="arrow">▸</span>Mirror</span>. Active <em>Clipping</em> pour souder les vertices au centre.</li>
+              <li>Ajoute un <span class="menu-path">Bevel</span> (petit montant) pour adoucir les arêtes vives.</li>
+              <li>Ajoute un <span class="menu-path">Subdivision Surface</span> (niveau 2). Observe la cage low-poly à l'écran et la surface lisse générée.</li>
+              <li>Réordonne&nbsp;: place le Bevel <em>avant</em> la Subdivision et compare au cas inverse — le résultat change.</li>
+              <li>Quand tu es satisfait, <span class="menu-path">Apply</span> dans l'ordre (du haut vers le bas) si tu dois exporter du « dur » ; sinon laisse la pile et exporte avec <em>Apply Modifiers</em>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon Mirror est décalé ou ne soude pas au centre.</div>
+                <div class="pi-cause"><b>Cause</b>L'origine de l'objet n'est pas sur le plan de symétrie, ou <em>Clipping</em> est désactivé.</div>
+                <div class="pi-fix"><b>Correction</b>Place l'origine au centre (Set Origin), active <em>Clipping</em> dans le Mirror.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon Boolean crée une topologie sale, des faces tordues.</div>
+                <div class="pi-cause"><b>Cause</b>Les Booleans génèrent des n-gons et triangles aux intersections.</div>
+                <div class="pi-fix"><b>Correction</b>Nettoie après application (Knife/Dissolve), ou prévois une retopo si l'objet sera animé/baké.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le même objet a un rendu différent dans le viewport et au rendu final.</div>
+                <div class="pi-cause"><b>Cause</b>Niveaux de Subdivision différents entre <em>Viewport</em> et <em>Render</em>.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie les deux champs <em>Levels</em> du modifier Subdivision Surface.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon export en jeu est beaucoup trop lourd en polygones.</div>
+                <div class="pi-cause"><b>Cause</b>Subdivision Surface appliqué/exporté à haut niveau.</div>
+                <div class="pi-fix"><b>Correction</b>Baisse le niveau, ou garde le high-poly pour le bake et exporte une version low-poly (renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un objet symétrique (manette, casque stylisé) avec <b>Mirror + Bevel + Subdivision Surface</b>.</li>
+                <li>Utilise un <b>Array</b> pour générer une rangée d'éléments répétés (barreaux d'une grille).</li>
+                <li>Fais un trou propre avec un <b>Boolean</b> (différence) et observe la topologie produite.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu modélises une moitié et le Mirror produit l'ensemble en temps réel.</li>
+                  <li>Tu sais réordonner la pile et expliquer pourquoi l'ordre compte.</li>
+                  <li>Tu identifies l'impact d'un Subdivision sur le budget de polygones.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les modifiers sont <b>non destructifs</b> et s'appliquent de <b>haut en bas</b> — l'ordre compte.</li>
+                <li>Indispensables&nbsp;: <b>Mirror, Subdivision Surface, Solidify, Boolean, Array, Bevel, Shrinkwrap</b>.</li>
+                <li><b>Apply</b> rend permanent&nbsp;; l'export applique généralement la pile à la copie exportée.</li>
+                <li>Surveille le <b>budget de polygones</b> (Subdivision) pour le jeu.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Pile de modifiers (stack)</b> — suite ordonnée de modifiers évaluée de haut en bas.</p>
+              <p><b>Subdivision Surface</b> — modifier qui lisse un maillage en le subdivisant à partir d'une cage low-poly.</p>
+              <p><b>Boolean</b> — combinaison de deux objets (union, différence, intersection).</p>
+              <p><b>Shrinkwrap</b> — projection d'un maillage sur la surface d'un autre (clé de la retopologie).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b05-sculpt-retopo.html">B5 — Sculpt &amp; retopologie</a>&nbsp;: Shrinkwrap en action.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: pourquoi le budget de polygones compte.</li>
+              <li><a href="../../cours/blender/b09-geometry-nodes.html">B9 — Geometry Nodes</a>&nbsp;: le procédural poussé à l'extrême.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

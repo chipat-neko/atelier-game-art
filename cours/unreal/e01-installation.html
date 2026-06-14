@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E1 — Installation & configuration · Atelier Game Art</title>
+  <meta name="description" content="Installer Unreal Engine : Epic Games Launcher, choix de UE 5.7, note sur UE6 (pas encore téléchargeable), et le modèle de royalties d'Epic.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Installation & configuration</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E1 — Installation & configuration</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun. Point de départ de la piste Unreal.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Installer l'<b>Epic Games Launcher</b> depuis le site officiel et créer un <b>compte Epic</b>.</li>
+                <li>Comprendre <b>pourquoi</b> Unreal passe par un launcher plutôt que par un simple installeur, et ce que gère ce launcher.</li>
+                <li>Installer la version <b>UE 5.7</b> (la version stable de nov.&nbsp;2025) depuis l'onglet <span class="term">Bibliothèque</span>, et savoir <b>pourquoi on ne cherche pas à installer UE6</b> (annoncée mais pas encore téléchargeable).</li>
+                <li>Choisir les bonnes <b>options d'installation</b> (cibles, starter content, symboles de débogage) et estimer l'<b>espace disque</b> nécessaire.</li>
+                <li>Expliquer le <b>modèle économique</b> d'Epic&nbsp;: moteur gratuit, <b>5&nbsp;% de royalties</b> au-delà d'un seuil, et le comparer à la licence Unity Personal.</li>
+                <li>Vérifier que tout fonctionne en <b>créant un projet de test</b> et en le lançant.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Une installation propre est rarement spectaculaire, mais c'est la marche sur laquelle on trébuche le plus souvent. Dans la piste Unreal, <b>tout</b> ce que tu feras ensuite — importer des assets (<a href="../../cours/unreal/e04-import-assets.html">E4</a>), bâtir des matériaux (<a href="../../cours/unreal/e05-material-editor.html">E5</a>), éclairer une scène (<a href="../../cours/unreal/e06-eclairage.html">E6</a>) — suppose un moteur correctement installé, à la <b>bonne version</b>, avec les bons composants. Une erreur ici (mauvaise version, disque saturé, GPU non supporté) se traduit plus tard par des bugs incompréhensibles et des heures perdues.</p>
+            <p><span class="term">Unreal Engine</span> (souvent abrégé <b>UE</b>) est un <b>moteur de jeu</b> développé par <b>Epic Games</b>&nbsp;: un logiciel qui assemble tes assets 3D, ta logique de jeu et ton éclairage, puis les transforme en une application interactive jouable en temps réel. C'est l'un des deux grands moteurs du marché avec Unity (voir la comparaison en <a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1</a>). On le retrouve aussi bien dans des jeux AAA que dans le cinéma, l'architecture et la simulation.</p>
+            <p>Particularité d'Unreal&nbsp;: on ne télécharge pas le moteur directement. On installe d'abord l'<span class="term">Epic Games Launcher</span> (le «&nbsp;lanceur Epic&nbsp;»), une application qui sert de <b>guichet unique</b>&nbsp;: elle gère ton compte, installe et met à jour les différentes versions du moteur, donne accès à la marketplace d'assets <span class="term">Fab</span>, et lance tes projets. Comprendre cette architecture dès le départ évite la confusion classique du débutant qui cherche un «&nbsp;Unreal.exe&nbsp;» à télécharger et ne le trouve pas.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>Le launcher&nbsp;: pourquoi un intermédiaire&nbsp;?</h3>
+            <p>On pourrait imaginer télécharger Unreal comme on télécharge un traitement de texte&nbsp;: un fichier, un double-clic, c'est installé. Epic a fait un autre choix, et il est rationnel. Le moteur évolue vite&nbsp;: plusieurs versions <b>coexistent</b> (5.5, 5.6, 5.7…), des correctifs sortent régulièrement, et un studio peut avoir besoin de garder une vieille version pour un projet en cours tout en testant la nouvelle. Le launcher est l'outil qui <b>orchestre cette cohabitation</b>.</p>
+            <p>Concrètement, l'Epic Games Launcher remplit quatre rôles&nbsp;:</p>
+            <ul>
+              <li><b>Authentification</b>&nbsp;: il te connecte avec ton compte Epic (le même que pour Fortnite ou la boutique de jeux Epic).</li>
+              <li><b>Gestion des versions</b>&nbsp;: il télécharge, installe, met à jour et désinstalle chaque version du moteur, côte à côte, sans qu'elles se gênent.</li>
+              <li><b>Accès au contenu</b>&nbsp;: il ouvre la marketplace <span class="term">Fab</span> et la bibliothèque d'assets que tu peux ajouter à tes projets.</li>
+              <li><b>Lancement</b>&nbsp;: il démarre la version du moteur de ton choix et ouvre tes projets récents.</li>
+            </ul>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Launcher ≠ Moteur</div>
+              <p>Bien distinguer deux choses&nbsp;: l'<b>Epic Games Launcher</b> est une petite application (quelques centaines de Mo) qui sert de gestionnaire. Le <b>moteur Unreal Engine</b> lui-même est énorme (plusieurs dizaines de Go) et s'installe <em>via</em> le launcher. Installer le launcher ne suffit pas&nbsp;: il faut ensuite, depuis l'onglet <span class="term">Bibliothèque</span>, ajouter une version du moteur.</p>
+            </div>
+
+            <h3>Quelle version installer&nbsp;: UE 5.7, et surtout pas UE6</h3>
+            <p>C'est le point le plus important de cette leçon, alors prenons le temps. En juin&nbsp;2026, la situation est la suivante&nbsp;:</p>
+            <ul>
+              <li><b>UE&nbsp;5.7</b> (sortie en <b>novembre&nbsp;2025</b>) est la <b>version stable</b> recommandée. C'est sur elle que <b>tout ce cours</b> est construit. C'est celle que tu installes.</li>
+              <li><b>UE6</b> a été <b>annoncée par Epic en mai&nbsp;2026</b>, mais elle n'est <b>pas encore téléchargeable</b>. Il n'existe à ce jour aucune version publique d'UE6 à installer.</li>
+            </ul>
+            <p><b>Pourquoi cette distinction est cruciale.</b> Un débutant impatient, voyant passer l'annonce d'UE6, va naturellement chercher à installer «&nbsp;la dernière version&nbsp;». Il ne la trouvera pas (elle n'existe pas en téléchargement), et il risque de perdre du temps, voire d'installer par erreur une <b>build de pré-version</b> instable récupérée ailleurs. La règle pour ce cours est simple et ferme&nbsp;: <b>on installe UE&nbsp;5.7, on ne cherche pas UE6</b>.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>«&nbsp;Preview&nbsp;» n'est pas «&nbsp;stable&nbsp;»</div>
+              <p>Le launcher propose parfois des versions marquées <span class="term">Preview</span> (aperçu)&nbsp;: ce sont des pré-versions destinées aux tests, <b>non finalisées</b>, qui peuvent corrompre un projet ou planter. Pour apprendre et pour tout vrai projet, on installe une version <b>stable</b> (numéro «&nbsp;propre&nbsp;», ici 5.7), <b>jamais</b> une Preview. Une Preview, c'est un chantier qu'on visite avec un casque, pas une maison où l'on emménage.</p>
+            </div>
+
+            <h4>Pourquoi ne pas «&nbsp;juste prendre la plus récente&nbsp;»&nbsp;?</h4>
+            <p>En production, on choisit une version et on s'y <b>tient</b> pour la durée du projet. Changer de version majeure en cours de route peut casser des plugins, modifier le comportement de fonctionnalités, et exiger une migration coûteuse. La «&nbsp;dernière version&nbsp;» n'est pas toujours la meilleure pour travailler&nbsp;: la meilleure est celle qui est <b>stable, documentée et supportée par tes outils</b>. Aujourd'hui, pour ce cours, c'est UE&nbsp;5.7.</p>
+
+            <h3>L'espace disque&nbsp;: anticiper, ne pas subir</h3>
+            <p>Unreal est gourmand. Une installation du moteur UE&nbsp;5.7 pèse de l'ordre de <b>30&nbsp;Go et plus</b>, et ce n'est qu'un point de départ&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Élément</th><th>Ordre de grandeur</th><th>Indispensable&nbsp;?</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Epic Games Launcher</td><td>~&nbsp;quelques centaines de Mo</td><td>Oui</td></tr>
+                  <tr><td>Moteur UE&nbsp;5.7 (de base)</td><td>~&nbsp;30&nbsp;Go et plus</td><td>Oui</td></tr>
+                  <tr><td>Symboles de débogage (<span class="term">Debug Symbols</span>)</td><td>+&nbsp;plusieurs Go</td><td>Optionnel</td></tr>
+                  <tr><td>Plateformes cibles supplémentaires (Android, Linux…)</td><td>+&nbsp;quelques Go chacune</td><td>Optionnel</td></tr>
+                  <tr><td>Cache, projets, assets téléchargés</td><td>croît avec le temps</td><td>—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Compte donc, sur un <b>SSD</b> de préférence (pour des temps de chargement décents), au moins <b>plusieurs dizaines de Go libres</b> avant de te lancer&nbsp;: en pratique, vise un confort de <b>80–100&nbsp;Go</b> disponibles pour ne pas être à l'étroit dès le premier projet. Les <span class="term">symboles de débogage</span> sont des fichiers qui permettent au moteur de t'indiquer <em>précisément</em> où une erreur s'est produite dans son propre code&nbsp;; ils sont utiles si tu codes en C++ ou que tu plonges dans les plantages du moteur, mais inutiles pour un parcours purement graphique. Un débutant peut sans crainte <b>les décocher</b> au départ et économiser plusieurs Go.</p>
+
+            <h3>Le modèle économique d'Epic&nbsp;: gratuit, puis 5&nbsp;% de royalties</h3>
+            <p>Unreal Engine est <b>gratuit à télécharger et à utiliser</b>. Tu peux apprendre, prototyper, et même développer un jeu complet sans payer un centime au départ. Le modèle d'Epic repose sur les <span class="term">royalties</span> (redevances)&nbsp;: une part des revenus que tu reverses <em>seulement si</em> ton jeu réussit commercialement.</p>
+            <p>Le principe, simplifié&nbsp;: pour un jeu donné, tu ne paies <b>aucune royalty tant que les revenus bruts cumulés de ce jeu n'ont pas dépassé 1&nbsp;million de dollars</b>. Au-delà de ce seuil, Epic prélève <b>5&nbsp;%</b> sur les revenus bruts supplémentaires de ce jeu. Le premier million est donc, en pratique, <b>exonéré</b>&nbsp;: la redevance ne s'applique qu'à la partie au-dessus du seuil.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>«&nbsp;Revenus bruts&nbsp;», «&nbsp;par jeu&nbsp;», «&nbsp;cumulés&nbsp;»</div>
+              <p>Trois mots à décoder. <b>Bruts</b>&nbsp;: avant déduction des frais (la part de la boutique, tes coûts). <b>Par jeu</b>&nbsp;: le seuil se compte produit par produit, pas pour tout ton studio en bloc. <b>Cumulés</b>&nbsp;: on additionne tout ce que le jeu a rapporté depuis sa sortie&nbsp;; ce n'est pas remis à zéro chaque année.</p>
+            </div>
+
+            <p><b>Pourquoi ce modèle est confortable pour apprendre.</b> Tant que tu es en formation ou en prototype, tu ne génères aucun revenu&nbsp;: tu ne dois donc <b>rien</b>. Et même un petit jeu commercial qui rapporte 50&nbsp;000&nbsp;$ ne déclenche aucune redevance, puisqu'on est très loin du million. La redevance ne mord que sur le <b>succès</b>, et seulement sur sa fraction la plus haute&nbsp;: c'est un risque que la plupart des créateurs aimeraient avoir.</p>
+
+            <h4>Comparaison avec la licence Unity Personal</h4>
+            <p>Côté Unity, le modèle est différent (détaillé en <a href="../../cours/unity/u01-installation.html">U1</a>)&nbsp;: la licence <b>Unity Personal est gratuite</b> tant que tes revenus restent <b>sous 200&nbsp;000&nbsp;$/an</b>, et elle ne prélève <b>aucune royalty</b> — c'est un palier d'éligibilité, pas une redevance. En résumé&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Aspect</th><th>Unreal Engine (Epic)</th><th>Unity Personal</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Coût pour apprendre</td><td>Gratuit</td><td>Gratuit</td></tr>
+                  <tr><td>Mécanisme</td><td>Royalty de <b>5&nbsp;%</b> au-delà d'un seuil</td><td>Palier d'éligibilité, <b>pas</b> de royalty</td></tr>
+                  <tr><td>Seuil</td><td>1&nbsp;M$ de revenus bruts cumulés <b>par jeu</b></td><td>200&nbsp;000&nbsp;$/an de revenus</td></tr>
+                  <tr><td>Au-delà du seuil</td><td>5&nbsp;% sur la part supplémentaire</td><td>Passage à une licence payante (Pro)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Retiens l'essentiel&nbsp;: pour un débutant ou un projet modeste, <b>les deux moteurs sont gratuits</b>. La différence de modèle ne devient un vrai sujet qu'au moment où un jeu commence à rapporter beaucoup. Tu choisis donc ton moteur sur des critères techniques et artistiques (voir <a href="../../cours/comparaison/c03-choisir-moteur.html">C3</a>), pas sur le prix d'entrée.</p>
+
+            <h3>Les prérequis système&nbsp;: surtout le GPU</h3>
+            <p>Unreal exige une machine correcte, et le composant le plus déterminant est la <span class="term">GPU</span> (la carte graphique, <em>Graphics Processing Unit</em>&nbsp;: le processeur spécialisé dans le rendu d'images). Les fonctionnalités modernes du moteur — éclairage dynamique <b>Lumen</b>, géométrie <b>Nanite</b> (voir <a href="../../cours/unreal/e07-nanite.html">E7</a>) — reposent lourdement sur la carte graphique. Avant d'installer, vérifie raisonnablement&nbsp;:</p>
+            <ul>
+              <li>Un <b>GPU dédié</b> récent prenant en charge <b>DirectX&nbsp;12</b> (les puces graphiques intégrées bas de gamme peinent énormément).</li>
+              <li>Au moins <b>16&nbsp;Go de RAM</b> (la mémoire vive), 32&nbsp;Go étant nettement plus confortables pour les scènes lourdes.</li>
+              <li>Un <b>SSD</b> avec l'espace libre évoqué plus haut.</li>
+              <li>Les <b>pilotes (drivers) de carte graphique à jour</b>&nbsp;: beaucoup de plantages au lancement viennent simplement d'un pilote périmé.</li>
+            </ul>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Avant même d'installer le moteur, va sur le site du fabricant de ta carte (NVIDIA, AMD ou Intel) et installe le <b>dernier pilote</b>. C'est cinq minutes qui t'épargnent la première et la plus fréquente cause d'échec au démarrage d'Unreal&nbsp;: l'écran qui plante ou reste noir à cause d'un pilote graphique trop ancien.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Flux d'installation d'Unreal Engine en cinq étapes : télécharger le launcher, créer un compte Epic, ouvrir la bibliothèque, installer UE 5.7, puis lancer le moteur">
+                <defs>
+                  <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#8a93a3"/></marker>
+                </defs>
+
+                <!-- étape 1 -->
+                <rect x="14" y="60" width="108" height="72" rx="9" class="svg-surface" stroke="#59b0ff"/>
+                <text x="68" y="84" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1</text>
+                <text x="68" y="104" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Télécharger</text>
+                <text x="68" y="118" text-anchor="middle" class="svg-dim" font-size="9.5">le Launcher</text>
+
+                <!-- étape 2 -->
+                <rect x="146" y="60" width="108" height="72" rx="9" class="svg-surface" stroke="#59b0ff"/>
+                <text x="200" y="84" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">2</text>
+                <text x="200" y="104" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Compte Epic</text>
+                <text x="200" y="118" text-anchor="middle" class="svg-dim" font-size="9.5">créer / se connecter</text>
+
+                <!-- étape 3 -->
+                <rect x="278" y="60" width="108" height="72" rx="9" class="svg-surface" stroke="#59b0ff"/>
+                <text x="332" y="84" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">3</text>
+                <text x="332" y="104" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Bibliothèque</text>
+                <text x="332" y="118" text-anchor="middle" class="svg-dim" font-size="9.5">onglet Unreal Engine</text>
+
+                <!-- étape 4 (accent orange = action clé) -->
+                <rect x="410" y="60" width="108" height="72" rx="9" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441"/>
+                <text x="464" y="84" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">4</text>
+                <text x="464" y="104" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Installer</text>
+                <text x="464" y="118" text-anchor="middle" class="svg-dim" font-size="9.5">UE 5.7 (stable)</text>
+
+                <!-- étape 5 -->
+                <rect x="542" y="60" width="84" height="72" rx="9" class="svg-surface" stroke="#5ad19a"/>
+                <text x="584" y="84" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">5</text>
+                <text x="584" y="104" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Lancer</text>
+                <text x="584" y="118" text-anchor="middle" class="svg-dim" font-size="9.5">projet test</text>
+
+                <!-- flèches -->
+                <line x1="122" y1="96" x2="144" y2="96" stroke="#8a93a3" stroke-width="1.6" marker-end="url(#ar)"/>
+                <line x1="254" y1="96" x2="276" y2="96" stroke="#8a93a3" stroke-width="1.6" marker-end="url(#ar)"/>
+                <line x1="386" y1="96" x2="408" y2="96" stroke="#8a93a3" stroke-width="1.6" marker-end="url(#ar)"/>
+                <line x1="518" y1="96" x2="540" y2="96" stroke="#8a93a3" stroke-width="1.6" marker-end="url(#ar)"/>
+
+                <text x="320" y="30" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Du téléchargement au premier lancement</text>
+                <text x="320" y="166" text-anchor="middle" class="svg-dim" font-size="10">Le Launcher (étapes 1–3) gère le compte&nbsp;; le moteur (étape 4) s'installe ensuite&nbsp;; on valide en lançant (étape 5).</text>
+              </svg>
+              <figcaption>Le parcours d'installation en cinq étapes. Les trois premières concernent le <b>launcher</b> et le compte&nbsp;; l'étape&nbsp;4 (en orange) est l'action clé&nbsp;: installer le <b>moteur</b> UE&nbsp;5.7 lui-même. On ne considère l'installation réussie qu'après l'étape&nbsp;5.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On déroule l'installation complète, écran par écran, en disant à chaque fois <b>ce qui se passe</b> et pas seulement où cliquer. Les noms de boutons peuvent varier d'un mot selon la langue de l'interface&nbsp;; les chemins ci-dessous correspondent à l'interface en français, avec l'équivalent anglais entre parenthèses au besoin.</p>
+            <ol>
+              <li><b>Télécharger le launcher.</b> Ouvre ton navigateur sur le site officiel <code>unrealengine.com</code> et clique sur <span class="menu-path">Download<span class="arrow">▸</span>Télécharger le Launcher</span>. <em>Ce qui se passe&nbsp;:</em> tu récupères un petit installeur de l'<b>Epic Games Launcher</b> (et non le moteur). Télécharge toujours depuis le site officiel d'Epic, jamais depuis un site tiers, pour éviter les versions trafiquées.</li>
+              <li><b>Installer le launcher.</b> Lance le fichier téléchargé&nbsp;; accepte le dossier d'installation proposé. <em>Ce qui se passe&nbsp;:</em> le launcher s'installe en quelques minutes, puis se lance et affiche un écran de connexion.</li>
+              <li><b>Créer un compte Epic.</b> Sur l'écran de connexion, choisis <span class="menu-path">S'inscrire (Sign Up)</span> si tu n'as pas de compte, renseigne ton adresse e-mail, un mot de passe, et valide l'e-mail de confirmation reçu dans ta boîte. <em>Ce qui se passe&nbsp;:</em> ton compte Epic est l'identité qui te suivra partout (moteur, Fab, achats). Si tu as déjà un compte (Fortnite, boutique Epic), connecte-toi simplement avec.</li>
+              <li><b>Ouvrir l'onglet Unreal Engine.</b> Une fois connecté, dans la barre latérale du launcher, clique sur <span class="menu-path">Unreal Engine</span>. <em>Ce qui se passe&nbsp;:</em> tu arrives sur l'espace dédié au moteur, avec ses sous-onglets (Actualités, Apprendre, et surtout <b>Bibliothèque</b>).</li>
+              <li><b>Aller dans la Bibliothèque.</b> Clique sur le sous-onglet <span class="menu-path">Unreal Engine<span class="arrow">▸</span>Bibliothèque (Library)</span>. <em>Ce qui se passe&nbsp;:</em> tu vois la zone <b>Versions du moteur (Engine Versions)</b>, vide pour l'instant&nbsp;: c'est ici qu'on ajoute une version.</li>
+              <li><b>Ajouter une version.</b> Clique sur le bouton <span class="menu-path">+</span> à côté de «&nbsp;Versions du moteur&nbsp;». <em>Ce qui se passe&nbsp;:</em> un emplacement apparaît avec un menu déroulant de versions. Déroule-le et sélectionne <b>5.7</b> (la version stable). <b>Ne choisis pas</b> une entrée marquée «&nbsp;Preview&nbsp;», et ne cherche pas UE6 — elle n'est pas proposée ici, c'est normal.</li>
+              <li><b>Choisir les options d'installation.</b> Avant de lancer le téléchargement, ouvre <span class="menu-path">Options</span> sur l'emplacement de la version. Tu y trouves&nbsp;: les <b>plateformes cibles</b> (Windows par défaut&nbsp;; ajoute Android/Linux seulement si tu en as besoin), le <b>Starter Content</b> (contenu de démarrage&nbsp;: quelques assets et matériaux pour démarrer, à garder), les <b>Templates</b> (modèles de projets), et les <b>Debugging Symbols / Editor symbols</b> (symboles de débogage). <em>Ce qui se passe&nbsp;:</em> chaque case cochée alourdit l'installation. Pour un parcours graphique débutant, <b>décoche les symboles de débogage</b> et les plateformes inutiles&nbsp;; tu économises plusieurs Go.</li>
+              <li><b>Lancer l'installation.</b> Choisis l'emplacement disque (idéalement un SSD avec de la place), puis valide avec <span class="menu-path">Installer (Install)</span>. <em>Ce qui se passe&nbsp;:</em> le launcher télécharge ~&nbsp;30&nbsp;Go et plus, puis décompresse&nbsp;; compte un moment selon ta connexion. Tu peux continuer à utiliser ton ordinateur pendant ce temps.</li>
+              <li><b>Lancer le moteur.</b> Une fois l'installation terminée, la version 5.7 affiche un bouton <span class="menu-path">Lancer (Launch)</span> dans la Bibliothèque. Clique dessus. <em>Ce qui se passe&nbsp;:</em> le moteur démarre et ouvre le <b>navigateur de projets</b> (Project Browser), la fenêtre où l'on crée ou ouvre un projet.</li>
+              <li><b>Créer un projet test.</b> Dans le navigateur de projets, choisis la catégorie <span class="menu-path">Jeux (Games)<span class="arrow">▸</span>Blank (Vierge)</span>, donne-lui un nom (ex.&nbsp;<code>TestInstall</code>), choisis un dossier, puis clique <span class="menu-path">Créer (Create)</span>. <em>Ce qui se passe&nbsp;:</em> l'éditeur Unreal s'ouvre sur une scène vide. Si tu vois la fenêtre 3D avec la grille au sol et les panneaux autour, <b>l'installation est validée</b>. On découvrira cette interface en détail dans <a href="../../cours/unreal/e02-editeur.html">E2 — L'éditeur</a>.</li>
+            </ol>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 230" role="img" aria-label="Barre des revenus d'un jeu sous Unreal : la portion jusqu'à un million de dollars n'engendre aucune royalty, la portion au-delà est soumise à 5 pour cent de redevance">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Modèle de royalties Unreal&nbsp;: gratuit jusqu'à 1&nbsp;M$ brut par jeu</text>
+
+                <!-- zone exonérée -->
+                <rect x="40" y="60" width="360" height="56" rx="6" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                <text x="220" y="84" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">0&nbsp;$ → 1&nbsp;000&nbsp;000&nbsp;$</text>
+                <text x="220" y="102" text-anchor="middle" class="svg-text" font-size="11">Aucune royalty&nbsp;: 0&nbsp;%</text>
+
+                <!-- seuil -->
+                <line x1="400" y1="48" x2="400" y2="170" stroke="#f2b441" stroke-width="2" stroke-dasharray="6 4"/>
+                <text x="400" y="44" text-anchor="middle" fill="#f2b441" font-size="10.5" font-weight="700">seuil 1&nbsp;M$</text>
+
+                <!-- zone taxée -->
+                <rect x="400" y="60" width="200" height="56" rx="6" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="500" y="84" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">au-delà de 1&nbsp;M$</text>
+                <text x="500" y="102" text-anchor="middle" class="svg-text" font-size="11">5&nbsp;% sur la part en plus</text>
+
+                <!-- axe -->
+                <line x1="40" y1="132" x2="600" y2="132" stroke="#8a93a3" stroke-width="1.4"/>
+                <polygon points="600,132 592,128 592,136" fill="#8a93a3"/>
+                <text x="40" y="150" text-anchor="start" class="svg-dim" font-size="10">revenus bruts cumulés du jeu →</text>
+
+                <!-- exemple chiffré -->
+                <text x="320" y="184" text-anchor="middle" class="svg-dim" font-size="10.5">Exemple&nbsp;: un jeu qui rapporte 1,2&nbsp;M$ ne paie 5&nbsp;% que sur 200&nbsp;000&nbsp;$, soit 10&nbsp;000&nbsp;$ de royalties.</text>
+                <text x="320" y="204" text-anchor="middle" class="svg-dim" font-size="10.5">Tant que tu apprends ou prototypes (0&nbsp;$ de revenus), tu ne dois rien.</text>
+              </svg>
+              <figcaption>Le seuil de royalties d'Epic visualisé. La part verte (jusqu'à 1&nbsp;M$ de revenus bruts cumulés <b>par jeu</b>) est exonérée&nbsp;; seule la part orange, <b>au-delà</b> du seuil, supporte la redevance de 5&nbsp;%. Le premier million est donc toujours sans royalty.</figcaption>
+            </figure>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je ne trouve pas UE6 à télécharger, ou je télécharge une build douteuse «&nbsp;UE6&nbsp;» trouvée ailleurs.</div>
+                <div class="pi-cause"><b>Cause</b>UE6 a été <b>annoncée</b> (mai&nbsp;2026) mais n'est <b>pas encore disponible</b> au téléchargement.</div>
+                <div class="pi-fix"><b>Correction</b>Installe <b>UE&nbsp;5.7</b>, la version stable sur laquelle repose tout le cours. Ignore l'annonce d'UE6 pour l'instant.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'installation échoue à mi-chemin ou le launcher se plaint de manque de place.</div>
+                <div class="pi-cause"><b>Cause</b>Espace disque insuffisant&nbsp;: le moteur dépasse 30&nbsp;Go, plus le cache et les projets.</div>
+                <div class="pi-fix"><b>Correction</b>Libère au moins plusieurs dizaines de Go (vise 80–100&nbsp;Go de confort) sur un SSD, et décoche les options inutiles avant d'installer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai installé une version «&nbsp;Preview&nbsp;» et mon projet plante ou se comporte bizarrement.</div>
+                <div class="pi-cause"><b>Cause</b>Une <b>Preview</b> est une pré-version de test, non finalisée&nbsp;; elle n'est pas faite pour un vrai projet.</div>
+                <div class="pi-fix"><b>Correction</b>Désinstalle la Preview et installe la version <b>stable&nbsp;5.7</b>. Réserve les Preview à la curiosité, jamais au travail.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le moteur ne démarre pas, écran noir, ou plantage immédiat au lancement.</div>
+                <div class="pi-cause"><b>Cause</b>GPU non supporté ou, le plus souvent, <b>pilote graphique périmé</b> (pas de DirectX&nbsp;12 fonctionnel).</div>
+                <div class="pi-fix"><b>Correction</b>Mets à jour le pilote depuis le site du fabricant (NVIDIA/AMD/Intel), vérifie le support DirectX&nbsp;12, et redémarre.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai installé le launcher mais je ne vois nulle part le moteur Unreal.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion launcher/moteur&nbsp;: installer le launcher n'installe pas le moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Va dans <span class="menu-path">Unreal Engine<span class="arrow">▸</span>Bibliothèque</span>, clique le bouton <b>+</b> et installe la version&nbsp;5.7.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai peur de devoir payer Unreal pour mon projet d'apprentissage.</div>
+                <div class="pi-cause"><b>Cause</b>Modèle de royalties mal compris&nbsp;: on confond «&nbsp;moteur payant&nbsp;» et «&nbsp;redevance sur le succès&nbsp;».</div>
+                <div class="pi-fix"><b>Correction</b>Le moteur est gratuit&nbsp;; tu ne paies <b>rien</b> tant qu'un jeu n'a pas dépassé 1&nbsp;M$ de revenus bruts. Apprendre est sans frais.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Installe Unreal de bout en bout et vérifie que tout fonctionne, puis raisonne sur le modèle économique.</p>
+              <ol>
+                <li><b>Vérifie ta machine</b>&nbsp;: note ta carte graphique, ta quantité de RAM et l'espace libre sur ton disque. Mets à jour le pilote graphique.</li>
+                <li><b>Installe</b> l'Epic Games Launcher depuis <code>unrealengine.com</code>, crée ou connecte ton compte Epic.</li>
+                <li><b>Ajoute la version 5.7</b> depuis <span class="menu-path">Unreal Engine<span class="arrow">▸</span>Bibliothèque<span class="arrow">▸</span>+</span>, en décochant les symboles de débogage et les plateformes inutiles.</li>
+                <li><b>Lance le moteur</b>, crée un projet vierge nommé <code>TestInstall</code>, et confirme que l'éditeur s'ouvre sur une scène 3D.</li>
+                <li><b>Calcule</b>&nbsp;: si un jeu réalise 1,5&nbsp;M$ de revenus bruts cumulés, combien dois-tu de royalties à Epic&nbsp;? Et à 800&nbsp;000&nbsp;$&nbsp;?</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'éditeur Unreal <b>5.7</b> s'ouvre sur ton projet test, avec la vue 3D et ses panneaux visibles (et non une Preview).</li>
+                  <li>Tu as installé depuis le <b>site officiel</b> et choisi consciemment tes options (sans symboles de débogage si parcours graphique).</li>
+                  <li>Tu sais expliquer en une phrase <b>pourquoi tu n'as pas installé UE6</b>.</li>
+                  <li>Ton calcul est juste&nbsp;: <b>25&nbsp;000&nbsp;$</b> de royalties à 1,5&nbsp;M$ (5&nbsp;% des 500&nbsp;000&nbsp;$ au-dessus du seuil), et <b>0&nbsp;$</b> à 800&nbsp;000&nbsp;$ (sous le seuil).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Unreal s'installe en deux temps&nbsp;: d'abord l'<b>Epic Games Launcher</b> (gestionnaire léger), puis le <b>moteur</b> via l'onglet <span class="term">Bibliothèque</span>.</li>
+                <li>On installe <b>UE&nbsp;5.7</b> (stable, nov.&nbsp;2025). <b>UE6 est annoncée mais pas téléchargeable</b>&nbsp;: ne la cherche pas. On évite aussi les versions «&nbsp;Preview&nbsp;» pour tout vrai projet.</li>
+                <li>Le moteur est <b>volumineux</b> (~&nbsp;30&nbsp;Go et plus)&nbsp;: prévois de l'espace sur un SSD et décoche les symboles de débogage si tu fais du graphisme.</li>
+                <li>Modèle Epic&nbsp;: <b>gratuit</b>, puis <b>5&nbsp;% de royalties</b> au-delà d'<b>1&nbsp;M$ de revenus bruts cumulés par jeu</b>. Le premier million est exonéré. Unity Personal, lui, est gratuit sous 200&nbsp;000&nbsp;$/an sans royalty.</li>
+                <li>Vérifie le <b>GPU</b> (DirectX&nbsp;12) et mets à jour ses <b>pilotes</b>&nbsp;: c'est la cause n°1 d'échec au lancement.</li>
+                <li>L'installation n'est validée qu'après avoir <b>lancé le moteur et créé un projet test</b> qui s'ouvre correctement.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Unreal Engine (UE)</b> — moteur de jeu d'Epic Games qui assemble assets, logique et éclairage en une application interactive temps réel.</p>
+              <p><b>Epic Games Launcher</b> — application légère qui gère le compte, installe et met à jour les versions du moteur, et donne accès à Fab.</p>
+              <p><b>UE 5.7</b> — version stable d'Unreal Engine (nov.&nbsp;2025) sur laquelle repose tout ce cours.</p>
+              <p><b>Preview</b> — pré-version de test d'Unreal, non finalisée, à éviter pour un vrai projet.</p>
+              <p><b>Royalties</b> — redevance reversée à Epic&nbsp;: 5&nbsp;% des revenus bruts d'un jeu au-delà d'un million de dollars cumulés.</p>
+              <p><b>Symboles de débogage</b> — fichiers optionnels qui aident à localiser précisément les erreurs dans le code du moteur&nbsp;; lourds, inutiles en parcours purement graphique.</p>
+              <p><b>Starter Content</b> — petit lot d'assets et de matériaux fourni avec le moteur pour démarrer rapidement.</p>
+              <p><b>GPU</b> — carte (ou processeur) graphique, composant clé pour le rendu temps réel d'Unreal&nbsp;; doit supporter DirectX&nbsp;12.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unreal/e02-editeur.html">E2 — L'éditeur Unreal</a>&nbsp;: découvrir l'interface du projet test que tu viens de créer.</li>
+              <li><a href="../../cours/unreal/e03-projet.html">E3 — Créer un projet</a>&nbsp;: templates, structure de projet et bonnes pratiques de départ.</li>
+              <li><a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a>&nbsp;: la géométrie virtualisée qui justifie en partie les exigences GPU.</li>
+              <li><a href="../../cours/unity/u01-installation.html">U1 — Installation d'Unity</a>&nbsp;: l'équivalent côté Unity et le détail de la licence Personal.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a> et <a href="../../cours/comparaison/c03-choisir-moteur.html">C3 — Choisir son moteur</a>&nbsp;: comparer modèles, coûts et usages.</li>
+              <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques d'assets</a>&nbsp;: Fab, Megascans et l'écosystème de contenu accessible via le launcher.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

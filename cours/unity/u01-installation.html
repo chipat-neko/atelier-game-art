@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U1 — Installation & configuration · Atelier Game Art</title>
+  <meta name="description" content="Installer Unity proprement : Unity Hub, choix de Unity 6.3 LTS, modules (build support), compte et licence Personal gratuite.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Installation & configuration</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U1 — Installation & configuration</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun. Point de départ de la piste Unity.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est <b>Unity Hub</b> et pourquoi on n'installe jamais Unity «&nbsp;directement&nbsp;» mais toujours via le Hub.</li>
+                <li>Créer un <b>Unity ID</b>, te connecter, et <b>activer une licence Personal</b> (gratuite sous 200&nbsp;000&nbsp;$ de revenus/an) dans les préférences du Hub.</li>
+                <li>Distinguer une version <b>LTS</b> d'une version <b>Tech Stream</b>, et justifier le choix d'<b>Unity 6.3 LTS</b> pour un vrai projet.</li>
+                <li>Installer l'éditeur avec les bons <b>modules de build</b> (Windows/Mac, WebGL, Android, iOS) et expliquer pourquoi on n'installe <em>que</em> ce dont on a besoin.</li>
+                <li>Vérifier ton installation en créant un <b>projet vide de test</b>, et éviter les pièges classiques (version non-LTS, module oublié, surcharge disque, changement de version en cours de projet).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Installer Unity n'est pas un détail technique qu'on expédie&nbsp;: c'est la première décision de production de ta vie de développeur Unity, et une mauvaise décision ici se paie pendant des mois. Choisir la mauvaise version d'éditeur, oublier un module de build, ou laisser plusieurs projets se battre pour la même version&nbsp;: chacun de ces faux pas provoque des heures perdues plus tard, souvent au pire moment (la veille d'une livraison, quand il faut «&nbsp;juste exporter le jeu&nbsp;» et que le module manque).</p>
+            <p>Surtout, comprendre l'installation, c'est comprendre l'<b>architecture du poste de travail Unity</b>&nbsp;: un gestionnaire central (le <span class="term">Unity Hub</span>) qui orchestre plusieurs versions de l'éditeur installées côte à côte, plusieurs projets, et un système de licence. Dans un studio, un même poste héberge couramment trois ou quatre versions d'Unity en parallèle — une par projet vivant — parce qu'on ne migre <em>jamais</em> un projet de version à la légère. Le Hub est l'outil qui rend cela possible. Savoir t'en servir dès le premier jour, c'est adopter d'emblée les réflexes d'un professionnel plutôt que ceux d'un bidouilleur qui réinstalle tout à chaque problème.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Unity Hub&nbsp;: le chef d'orchestre, pas le moteur</h3>
+            <p>Première idée à ancrer&nbsp;: <b>Unity Hub n'est pas Unity</b>. Le Hub est un petit programme «&nbsp;gestionnaire&nbsp;» (en anglais&nbsp;: <em>launcher</em> et <em>version manager</em>) dont le rôle est d'<b>installer, organiser et lancer</b> les vraies versions de l'éditeur Unity. L'éditeur Unity, lui, est le gros logiciel de plusieurs gigaoctets dans lequel tu construiras tes jeux.</p>
+            <p>L'analogie la plus juste est celle d'un <b>gestionnaire de versions</b> à la manière d'un «&nbsp;launcher&nbsp;» de jeu vidéo&nbsp;: tu n'achètes pas un disque par version, tu ouvres une seule application qui sait quelles versions tu as installées, lesquelles tu peux télécharger, et quel projet ouvre quelle version. Concrètement, le Hub gère quatre choses&nbsp;:</p>
+            <ul>
+              <li><b>Les versions de l'éditeur</b> (onglet <em>Installs</em>)&nbsp;: tu peux en avoir plusieurs installées simultanément, chacune dans son propre dossier, sans qu'elles se gênent.</li>
+              <li><b>Les projets</b> (onglet <em>Projects</em>)&nbsp;: la liste de tes projets, chacun <b>épinglé à une version précise</b> de l'éditeur. Double-cliquer un projet ouvre la bonne version automatiquement.</li>
+              <li><b>Le compte et les licences</b> (Unity ID + activation de la licence).</li>
+              <li><b>Les modules</b> (<em>build support</em>) qu'on ajoute à chaque version installée.</li>
+            </ul>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Pourquoi plusieurs versions côte à côte&nbsp;?</div>
+              <p>Un projet Unity est intimement lié à la version d'éditeur qui l'a créé&nbsp;: les fichiers de scène, les <span class="gloss">prefabs</span>, le format de sérialisation changent entre versions. Si tu as un projet stable sous Unity 6.0 et que tu démarres un nouveau projet sous Unity 6.3, tu veux garder <b>les deux éditeurs installés</b> et ne surtout pas «&nbsp;forcer&nbsp;» l'ancien projet dans la nouvelle version. Le Hub rend cette cohabitation propre et explicite&nbsp;: c'est tout l'intérêt.</p>
+            </div>
+
+            <h3>2. Le compte Unity (Unity ID) et la licence</h3>
+            <p>Pour utiliser Unity, il faut un <span class="term">Unity ID</span>&nbsp;: un compte gratuit (e-mail + mot de passe) qui sert à deux choses&nbsp;: t'identifier et <b>rattacher une licence</b> à ta machine. Ce sont deux notions distinctes qu'on confond souvent.</p>
+            <ul>
+              <li>L'<b>Unity ID</b> est ton identité&nbsp;: c'est avec lui que tu te connectes au Hub, au site, et que tu accèdes à <span class="gloss">Fab</span> ou à l'<em>Asset Store</em>.</li>
+              <li>La <b>licence</b> est le droit d'usage de l'éditeur, qui dépend de ton <b>niveau de revenus</b>. Unity distingue trois paliers&nbsp;:</li>
+            </ul>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Licence</th><th>Pour qui</th><th>Coût</th><th>Seuil de revenus</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Personal</b></td><td>Débutants, étudiants, indés, hobbyistes</td><td><b>Gratuite</b></td><td>Revenus &lt; 200&nbsp;000&nbsp;$/an</td></tr>
+                  <tr><td><b>Plus / Pro</b></td><td>Studios et pros au-delà du seuil</td><td>Abonnement payant</td><td>Revenus &ge; 200&nbsp;000&nbsp;$/an</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Pour ce cours et pour tout projet d'apprentissage ou indépendant en deçà du seuil, la licence <b>Personal gratuite</b> est exactement ce qu'il te faut. Elle te donne accès à <em>l'intégralité</em> du moteur — il n'y a pas de bridage de fonctionnalités, contrairement à une idée reçue. La différence entre Personal et Pro tient à des services, au support et à certaines options d'entreprise, pas à la puissance du moteur. Important&nbsp;: depuis 2024, l'ancien modèle de «&nbsp;Runtime Fee&nbsp;» (taxe à l'installation) a été <b>abandonné</b>&nbsp;; il n'y a plus de redevance à craindre en Personal.</p>
+
+            <h3>3. LTS vs Tech Stream&nbsp;: la question qui décide de ta tranquillité</h3>
+            <p>C'est le concept le plus important de cette leçon, et celui que les débutants comprennent souvent trop tard. Unity publie ses versions selon deux «&nbsp;canaux&nbsp;»&nbsp;:</p>
+            <ul>
+              <li><span class="term">Tech Stream</span> (flux technologique)&nbsp;: des versions intermédiaires qui introduisent de <b>nouvelles fonctionnalités</b> en avant-première. Elles servent à expérimenter, mais elles sont <b>moins stables</b> et leur support est <b>court</b>. On y trouve des bugs de jeunesse et des changements d'API encore mouvants.</li>
+              <li><span class="term">LTS</span> (<em>Long-Term Support</em>, support à long terme)&nbsp;: une version <b>figée et stabilisée</b>, qui ne reçoit plus de nouvelles fonctionnalités mais <b>uniquement des correctifs</b> pendant une longue période (typiquement deux ans). C'est la version sur laquelle on <b>construit un vrai projet</b>.</li>
+            </ul>
+            <p>Le <em>pourquoi</em> est limpide&nbsp;: un jeu se développe sur des mois, parfois des années. Tu veux que la fondation (le moteur) <b>ne bouge plus sous tes pieds</b> et qu'elle continue de recevoir des corrections de bugs jusqu'à ta sortie. Choisir une LTS, c'est choisir la <b>prévisibilité</b>&nbsp;: pas de surprise d'API, des bugs connus et documentés, une communauté qui utilise la même version que toi (donc des solutions trouvables). Choisir une Tech Stream pour un vrai projet, c'est bâtir une maison sur un chantier qui bouge encore.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Les versions à jour (juin 2026)</div>
+              <p>La dernière LTS recommandée est <b>Unity&nbsp;6.3 LTS</b> (publiée en décembre 2025), supportée <b>jusqu'à décembre 2027</b>&nbsp;: c'est notre choix par défaut dans tout le cours. La précédente, <b>Unity&nbsp;6.0 LTS</b>, reste supportée <b>jusqu'à octobre 2026</b>&nbsp;: parfaitement valable pour un projet déjà commencé dessus, mais à ne plus choisir pour un <em>nouveau</em> projet puisque sa fin de support approche. Règle simple&nbsp;: <b>nouveau projet = dernière LTS</b>.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Timeline comparant le support d'une version Tech Stream (court) et de deux versions LTS Unity 6.0 et 6.3 (longs)">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">LTS vs Tech Stream&nbsp;: durée de support sur une frise</text>
+                <!-- axe temps -->
+                <line x1="60" y1="250" x2="610" y2="250" class="svg-stroke" stroke-width="1.5"/>
+                <g class="svg-dim" font-size="10" text-anchor="middle">
+                  <text x="110" y="270">2025</text>
+                  <text x="240" y="270">2026</text>
+                  <text x="370" y="270">2027</text>
+                  <text x="500" y="270">2028</text>
+                </g>
+                <line x1="110" y1="244" x2="110" y2="256" class="svg-stroke"/>
+                <line x1="240" y1="244" x2="240" y2="256" class="svg-stroke"/>
+                <line x1="370" y1="244" x2="370" y2="256" class="svg-stroke"/>
+                <line x1="500" y1="244" x2="500" y2="256" class="svg-stroke"/>
+                <!-- Tech Stream : court -->
+                <rect x="150" y="60" width="90" height="34" rx="6" fill="#ff6b6b" fill-opacity="0.20" stroke="#ff6b6b" stroke-width="1.8"/>
+                <text x="195" y="81" text-anchor="middle" class="svg-text" font-size="11.5" font-weight="700" fill="#ff6b6b">Tech Stream</text>
+                <text x="252" y="81" class="svg-dim" font-size="10">support court &amp; instable</text>
+                <line x1="150" y1="100" x2="150" y2="250" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3 3"/>
+                <line x1="240" y1="100" x2="240" y2="250" stroke="#ff6b6b" stroke-width="1" stroke-dasharray="3 3"/>
+                <!-- Unity 6.0 LTS -->
+                <rect x="90" y="120" width="160" height="34" rx="6" fill="#f2b441" fill-opacity="0.20" stroke="#f2b441" stroke-width="1.8"/>
+                <text x="170" y="141" text-anchor="middle" class="svg-text" font-size="11.5" font-weight="700">Unity 6.0 LTS</text>
+                <text x="262" y="141" class="svg-dim" font-size="10">support jusqu'à oct. 2026</text>
+                <line x1="250" y1="137" x2="250" y2="250" stroke="#f2b441" stroke-width="1" stroke-dasharray="3 3"/>
+                <!-- Unity 6.3 LTS -->
+                <rect x="190" y="180" width="290" height="34" rx="6" fill="#5ad19a" fill-opacity="0.20" stroke="#5ad19a" stroke-width="1.8"/>
+                <text x="335" y="201" text-anchor="middle" class="svg-text" font-size="11.5" font-weight="700" fill="#5ad19a">Unity 6.3 LTS — notre choix</text>
+                <line x1="480" y1="197" x2="480" y2="250" stroke="#5ad19a" stroke-width="1" stroke-dasharray="3 3"/>
+                <text x="492" y="201" class="svg-dim" font-size="10">jusqu'à déc. 2027</text>
+                <text x="320" y="232" text-anchor="middle" class="svg-dim" font-size="10.5" font-style="italic">Plus la barre LTS est longue, plus longtemps tu reçois des correctifs sans changer de moteur.</text>
+              </svg>
+              <figcaption>Une Tech Stream (rouge) a un support bref&nbsp;; une <b>LTS</b> (vert/or) reçoit des correctifs sur ~2&nbsp;ans. Pour un nouveau projet en 2026, on prend <b>Unity&nbsp;6.3 LTS</b>&nbsp;; on ne démarre plus sur 6.0&nbsp;LTS dont la fin de support approche.</figcaption>
+            </figure>
+
+            <h3>4. Les modules (build support)&nbsp;: n'installe que le nécessaire</h3>
+            <p>Une version d'éditeur Unity sait, par défaut, faire tourner ton jeu <em>dans l'éditeur</em>. Mais pour <b>exporter</b> (compiler) ton jeu vers une plateforme cible — Windows, Android, iOS, le Web… — il faut le <span class="term">module de build</span> (en anglais&nbsp;: <em>build support</em>) correspondant. Un module est un paquet qui ajoute les outils de compilation propres à une plateforme.</p>
+            <p>L'erreur de débutant&nbsp;: tout cocher «&nbsp;au cas où&nbsp;». Mauvaise idée, pour deux raisons. D'abord le <b>poids disque</b>&nbsp;: certains modules sont énormes. Le support <b>Android</b>, en particulier, embarque le <span class="term">SDK</span> (kit de développement), le <span class="term">NDK</span> (outils natifs C/C++) et un <span class="term">JDK</span> (Java)&nbsp;: à eux seuls plusieurs gigaoctets. Ensuite la <b>maintenance</b>&nbsp;: chaque module ajouté est une chose de plus à mettre à jour et à diagnostiquer. La règle de production&nbsp;: <b>installe les modules de tes plateformes cibles réelles, rien d'autre</b>&nbsp;; tu pourras toujours en ajouter plus tard en un clic depuis le Hub.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Module</th><th>Sert à</th><th>Poids / remarque</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Windows / Mac Build Support</b></td><td>Exporter un exécutable PC/Mac (souvent le module de base de ta plateforme).</td><td>Léger ; généralement déjà coché pour ta plateforme.</td></tr>
+                  <tr><td><b>WebGL Build Support</b></td><td>Exporter un jeu jouable dans le navigateur (idéal pour partager un prototype par un simple lien).</td><td>Moyen ; très pratique en apprentissage.</td></tr>
+                  <tr><td><b>Android Build Support</b> (SDK&nbsp;/&nbsp;NDK&nbsp;/&nbsp;JDK)</td><td>Exporter vers smartphones/tablettes Android.</td><td><b>Lourd</b> (plusieurs Go) à cause du NDK ; n'installe que si tu cibles Android.</td></tr>
+                  <tr><td><b>iOS Build Support</b></td><td>Exporter vers iPhone/iPad (la compilation finale nécessite ensuite un Mac + Xcode).</td><td>Moyen ; inutile sans projet iOS.</td></tr>
+                  <tr><td><b>Documentation</b> / packs de langue</td><td>Doc hors-ligne ; interface localisée.</td><td>Optionnel ; la doc en ligne suffit souvent.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Tu n'es pas obligé de tout prévoir au moment de l'installation. Si plus tard tu décides de cibler une nouvelle plateforme, ouvre le Hub, onglet <em>Installs</em>, clique sur l'engrenage de ta version puis <span class="menu-path">Add modules</span>, coche le module manquant&nbsp;: il s'installe sans toucher au reste. Donc <b>en cas de doute, n'installe pas</b> — c'est réversible.</p>
+            </div>
+
+            <h3>5. Les pipelines de rendu&nbsp;: un mot d'avance</h3>
+            <p>Au moment de créer un projet, le Hub te proposera des <b>modèles (templates)</b>&nbsp;: <em>Built-in</em>, <em>URP</em>, <em>HDRP</em>… Ce sont les trois <span class="term">render pipelines</span> (pipelines de rendu) d'Unity, c'est-à-dire les trois façons dont le moteur calcule l'image. On les étudiera en détail en <a href="../../cours/unity/u03-render-pipelines.html">U3</a>&nbsp;; pour l'installation, retiens seulement qu'<b>aucun module spécial n'est requis</b> pour eux&nbsp;: le choix se fait à la création du projet, pas à l'installation de l'éditeur. Pour un premier projet de test, le modèle <em>3D (URP)</em> ou <em>3D (Built-in)</em> conviennent parfaitement.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif concret&nbsp;: installer le Hub, activer la licence Personal, installer <b>Unity&nbsp;6.3 LTS</b> avec les modules <b>Windows</b> et <b>WebGL</b>, puis valider par un projet vide.</p>
+            <ol>
+              <li><b>Télécharge Unity Hub.</b> Va sur <code>unity.com</code> et cherche le bouton de téléchargement (souvent libellé <span class="menu-path">Download<span class="arrow">▸</span>Download for Windows</span>). Tu télécharges l'installeur du <b>Hub</b>, pas l'éditeur&nbsp;: c'est un petit fichier (quelques dizaines de Mo). Lance-le et suis l'installation standard. Ce qui se passe&nbsp;: tu installes le gestionnaire qui servira à tout le reste.</li>
+              <li><b>Ouvre le Hub et connecte-toi.</b> Au premier lancement, le Hub te demande de te connecter. Clique sur l'icône de compte en haut à droite puis <span class="menu-path">Sign in</span>. Si tu n'as pas de compte, choisis <span class="menu-path">Create account</span> pour créer ton <b>Unity ID</b> (e-mail + mot de passe, confirmation par e-mail). Ce qui se passe&nbsp;: le Hub mémorise ton identité, nécessaire pour activer une licence.</li>
+              <li><b>Active la licence Personal.</b> Ouvre <span class="menu-path">Preferences<span class="arrow">▸</span>Licenses</span>, clique <span class="menu-path">Add</span> puis choisis <span class="menu-path">Get a free personal license</span>. Le Hub enregistre alors une licence <b>Personal</b> sur ta machine. Ce qui se passe&nbsp;: sans cette étape, l'éditeur refusera de s'ouvrir («&nbsp;no valid license&nbsp;»). C'est l'étape qu'on oublie le plus.</li>
+              <li><b>Va dans l'onglet Installs.</b> Dans la colonne de gauche du Hub, ouvre <span class="menu-path">Installs</span>. C'est ici que vivent tes versions d'éditeur. Clique <span class="menu-path">Install Editor</span>. Ce qui se passe&nbsp;: le Hub liste les versions téléchargeables, classées par canal.</li>
+              <li><b>Choisis Unity&nbsp;6.3 LTS.</b> Dans la liste, repère l'onglet ou le tag <b>LTS</b> et sélectionne <b>Unity&nbsp;6.3 LTS</b> (le badge «&nbsp;LTS&nbsp;» et la date déc.&nbsp;2025 te confirment le bon choix). Ce qui se passe&nbsp;: tu épingles la version stable et supportée jusqu'à fin 2027, plutôt qu'une Tech Stream tentante mais fragile.</li>
+              <li><b>Coche les bons modules.</b> L'écran suivant liste les <em>add-ons</em>. Coche <b>Windows Build Support</b> (s'il ne l'est pas déjà pour ta plateforme) et <b>WebGL Build Support</b>. <b>Laisse Android et iOS décochés</b> pour l'instant&nbsp;: tu n'en as pas besoin et le NDK Android pèse lourd. Valide avec <span class="menu-path">Install</span>. Ce qui se passe&nbsp;: le Hub télécharge l'éditeur (plusieurs Go) et les modules choisis, puis les installe dans leur propre dossier.</li>
+              <li><b>Patiente puis vérifie.</b> Une barre de progression s'affiche sur la vignette de la version. Une fois terminée, la version apparaît dans <em>Installs</em> avec ses modules listés sous elle. Ce qui se passe&nbsp;: ton éditeur est prêt, isolé des autres versions éventuelles.</li>
+              <li><b>Crée un projet vide de test.</b> Va dans <span class="menu-path">Projects<span class="arrow">▸</span>New project</span>, vérifie en haut que la version active est bien <b>6.3 LTS</b>, choisis le modèle <b>3D (URP)</b>, nomme le projet (ex.&nbsp;<em>Test-Install</em>), choisis un dossier sans accents ni espaces, puis <span class="menu-path">Create project</span>. Ce qui se passe&nbsp;: l'éditeur s'ouvre sur une scène par défaut. S'il s'ouvre sans erreur de licence ni module manquant, ton installation est validée.</li>
+            </ol>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Config recommandée</div>
+              <p>Vise au minimum&nbsp;: <b>16&nbsp;Go de RAM</b> (8&nbsp;Go tiennent pour de petits projets mais c'est juste), un <b>SSD</b> (l'éditeur et l'import d'assets sont gourmands en lecture/écriture), un <b>GPU dédié</b> récent, et surtout de la <b>place disque</b>&nbsp;: compte ~10&nbsp;Go par version d'éditeur installée, plus l'espace de tes projets. Range tes projets dans un chemin <b>court, sans accents ni espaces</b> (ex.&nbsp;<code>D:\Unity\MonJeu</code>)&nbsp;: certains outils tiers gèrent mal les caractères spéciaux.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Flux d'installation en cinq étapes : télécharger le Hub, créer le compte Unity ID, activer la licence Personal, installer l'éditeur 6.3 LTS, choisir les modules">
+                <defs>
+                  <marker id="arf" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#717c8c"/></marker>
+                </defs>
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Le parcours d'installation, étape par étape</text>
+                <!-- 1 -->
+                <rect x="18" y="70" width="108" height="64" rx="8" fill="#59b0ff" fill-opacity="0.15" stroke="#59b0ff" stroke-width="1.8"/>
+                <text x="72" y="96" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">1. Télécharger</text>
+                <text x="72" y="112" text-anchor="middle" class="svg-dim" font-size="9.5">Unity Hub</text>
+                <text x="72" y="126" text-anchor="middle" class="svg-dim" font-size="9">(unity.com)</text>
+                <line x1="126" y1="102" x2="146" y2="102" stroke="#717c8c" stroke-width="2.2" marker-end="url(#arf)"/>
+                <!-- 2 -->
+                <rect x="148" y="70" width="108" height="64" rx="8" fill="#c89bff" fill-opacity="0.15" stroke="#c89bff" stroke-width="1.8"/>
+                <text x="202" y="96" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">2. Compte</text>
+                <text x="202" y="112" text-anchor="middle" class="svg-dim" font-size="9.5">Unity ID</text>
+                <text x="202" y="126" text-anchor="middle" class="svg-dim" font-size="9">(Sign in)</text>
+                <line x1="256" y1="102" x2="276" y2="102" stroke="#717c8c" stroke-width="2.2" marker-end="url(#arf)"/>
+                <!-- 3 -->
+                <rect x="278" y="70" width="108" height="64" rx="8" fill="#5ad19a" fill-opacity="0.15" stroke="#5ad19a" stroke-width="1.8"/>
+                <text x="332" y="96" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">3. Licence</text>
+                <text x="332" y="112" text-anchor="middle" class="svg-dim" font-size="9.5">Personal</text>
+                <text x="332" y="126" text-anchor="middle" class="svg-dim" font-size="9">(gratuite)</text>
+                <line x1="386" y1="102" x2="406" y2="102" stroke="#717c8c" stroke-width="2.2" marker-end="url(#arf)"/>
+                <!-- 4 -->
+                <rect x="408" y="70" width="108" height="64" rx="8" fill="#f2b441" fill-opacity="0.15" stroke="#f2b441" stroke-width="1.8"/>
+                <text x="462" y="96" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">4. Install Editor</text>
+                <text x="462" y="112" text-anchor="middle" class="svg-dim" font-size="9.5">Unity 6.3 LTS</text>
+                <text x="462" y="126" text-anchor="middle" class="svg-dim" font-size="9">(onglet Installs)</text>
+                <line x1="516" y1="102" x2="536" y2="102" stroke="#717c8c" stroke-width="2.2" marker-end="url(#arf)"/>
+                <!-- 5 -->
+                <rect x="528" y="70" width="100" height="64" rx="8" fill="#f2b441" fill-opacity="0.15" stroke="#f2b441" stroke-width="1.8"/>
+                <text x="578" y="96" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">5. Modules</text>
+                <text x="578" y="112" text-anchor="middle" class="svg-dim" font-size="9">Windows</text>
+                <text x="578" y="126" text-anchor="middle" class="svg-dim" font-size="9">+ WebGL</text>
+                <text x="320" y="170" text-anchor="middle" class="svg-dim" font-size="10.5" font-style="italic">Le Hub orchestre tout&nbsp;: une fois cette chaîne faite, double-cliquer un projet ouvre la bonne version.</text>
+              </svg>
+              <figcaption>Les cinq étapes dans l'ordre&nbsp;: <b>Hub → Unity ID → licence Personal → Install Editor (6.3&nbsp;LTS) → modules</b>. Chaque flèche est une dépendance&nbsp;: sans licence, l'éditeur ne s'ouvre pas&nbsp;; sans module, on ne peut pas exporter vers la plateforme correspondante.</figcaption>
+            </figure>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon projet «&nbsp;sérieux&nbsp;» a des bugs étranges qu'on ne retrouve nulle part, et les tutoriels ne correspondent pas à mon interface.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as installé une version <b>Tech Stream</b> (ou bêta) au lieu d'une LTS&nbsp;: instabilité et décalage avec la communauté.</div>
+                <div class="pi-fix"><b>Correction</b>Démarre tout nouveau projet sur la <b>dernière LTS</b> (Unity&nbsp;6.3&nbsp;LTS). Installe-la depuis l'onglet <em>Installs</em> en repérant le badge «&nbsp;LTS&nbsp;».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Au moment d'exporter mon jeu, la plateforme cible (Android, WebGL…) est grisée ou absente du menu de build.</div>
+                <div class="pi-cause"><b>Cause</b><b>Module de build manquant</b>&nbsp;: tu n'as pas installé le <em>build support</em> de cette plateforme avec l'éditeur.</div>
+                <div class="pi-fix"><b>Correction</b>Hub <span class="menu-path">Installs<span class="arrow">▸</span>(engrenage)<span class="arrow">▸</span>Add modules</span>, coche le module manquant. Pas besoin de réinstaller l'éditeur.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon disque est plein après l'installation, alors que je n'ai installé «&nbsp;qu'une&nbsp;» version.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as coché <b>Android Build Support</b> (SDK&nbsp;+&nbsp;NDK&nbsp;+&nbsp;JDK) «&nbsp;au cas où&nbsp;»&nbsp;: plusieurs gigaoctets inutiles.</div>
+                <div class="pi-fix"><b>Correction</b>Désinstalle les modules superflus depuis <em>Add modules</em> (décoche-les), ou réinstalle en ne cochant que tes vraies cibles. N'installe Android que si tu vises Android.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'éditeur refuse de s'ouvrir avec un message «&nbsp;no valid license&nbsp;» / licence expirée.</div>
+                <div class="pi-cause"><b>Cause</b>Aucune licence activée, ou tu n'es pas connecté à ton Unity ID dans le Hub.</div>
+                <div class="pi-fix"><b>Correction</b>Connecte-toi (Sign in) puis <span class="menu-path">Preferences<span class="arrow">▸</span>Licenses<span class="arrow">▸</span>Add<span class="arrow">▸</span>Get a free personal license</span>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai ouvert mon projet dans une version plus récente «&nbsp;pour voir&nbsp;», et maintenant des choses sont cassées ou impossibles à rouvrir dans l'ancienne version.</div>
+                <div class="pi-cause"><b>Cause</b><b>Changement de version en cours de projet</b> sans précaution&nbsp;: la mise à niveau ré-écrit les fichiers et n'est pas réversible.</div>
+                <div class="pi-fix"><b>Correction</b>Ne change jamais de version sans <b>sauvegarde</b> (copie ou commit Git) au préalable, et garde l'ancienne version installée. Migre seulement quand c'est volontaire et testé.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des erreurs bizarres dès la création du projet, ou des chemins introuvables.</div>
+                <div class="pi-cause"><b>Cause</b>Le projet est dans un dossier au chemin <b>trop long ou contenant des accents/espaces</b>.</div>
+                <div class="pi-fix"><b>Correction</b>Place tes projets dans un chemin court sans caractères spéciaux (ex.&nbsp;<code>D:\Unity\MonJeu</code>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Installe un poste Unity propre, de bout en bout, en adoptant les réflexes de production&nbsp;:</p>
+              <ol>
+                <li>Installe <b>Unity Hub</b> depuis <code>unity.com</code>, lance-le et <b>connecte-toi</b> (crée ton Unity ID si besoin).</li>
+                <li>Active une licence <b>Personal</b> via <span class="menu-path">Preferences<span class="arrow">▸</span>Licenses</span> et vérifie qu'elle apparaît bien comme active.</li>
+                <li>Dans <span class="menu-path">Installs<span class="arrow">▸</span>Install Editor</span>, installe <b>Unity&nbsp;6.3&nbsp;LTS</b> en cochant <b>uniquement</b> les modules <b>Windows</b> (ou Mac selon ton OS) et <b>WebGL</b>.</li>
+                <li>Crée un projet vide nommé <em>Test-Install</em> avec le modèle <b>3D (URP)</b>, dans un chemin sans accents ni espaces. Vérifie qu'il s'ouvre sans erreur.</li>
+                <li>Ouvre <span class="menu-path">Installs<span class="arrow">▸</span>(engrenage)<span class="arrow">▸</span>Add modules</span> et <b>repère</b> (sans l'installer) le module Android&nbsp;: observe son poids annoncé pour mesurer ce que tu as évité.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le Hub affiche ton Unity ID connecté et une licence <b>Personal</b> active.</li>
+                  <li>L'onglet <em>Installs</em> montre <b>Unity&nbsp;6.3&nbsp;LTS</b> avec les modules Windows/Mac et WebGL listés dessous.</li>
+                  <li>Le projet <em>Test-Install</em> s'ouvre dans l'éditeur <b>sans message d'erreur de licence ni de module manquant</b>.</li>
+                  <li>Tu sais expliquer, en une phrase, pourquoi tu as choisi une <b>LTS</b> et pourquoi tu n'as <b>pas</b> coché Android.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Unity Hub ≠ Unity</b>&nbsp;: le Hub est le gestionnaire qui installe, organise et lance les versions de l'éditeur&nbsp;; on installe toujours <em>via</em> le Hub.</li>
+                <li>Il faut un <b>Unity ID</b> (gratuit) pour se connecter, et une <b>licence Personal</b> (gratuite sous 200&nbsp;000&nbsp;$/an) à activer dans <span class="menu-path">Preferences<span class="arrow">▸</span>Licenses</span>. Personal donne accès à tout le moteur.</li>
+                <li><b>LTS</b> = stable et supportée longtemps&nbsp;; <b>Tech Stream</b> = nouveautés mais fragile. <b>Nouveau projet = dernière LTS</b> → <b>Unity&nbsp;6.3&nbsp;LTS</b> (support jusqu'à déc.&nbsp;2027). 6.0&nbsp;LTS reste OK jusqu'à oct.&nbsp;2026 mais on n'y démarre plus.</li>
+                <li><b>Modules de build</b>&nbsp;: n'installe que tes plateformes cibles. Android (SDK/NDK/JDK) est <b>lourd</b>&nbsp;; on l'ajoute plus tard en un clic si besoin.</li>
+                <li>Garde les <b>anciennes versions installées</b> et ne change <b>jamais</b> de version d'un projet sans sauvegarde&nbsp;: la migration n'est pas réversible.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Unity Hub</b> — application gestionnaire qui installe, organise et lance les versions de l'éditeur Unity et tes projets.</p>
+              <p><b>Unity ID</b> — compte Unity gratuit servant à s'identifier et à rattacher une licence à la machine.</p>
+              <p><b>Licence Personal</b> — licence gratuite d'Unity pour des revenus inférieurs à 200&nbsp;000&nbsp;$/an&nbsp;; donne accès à tout le moteur.</p>
+              <p><b>Licence Plus / Pro</b> — abonnements payants destinés aux studios dépassant le seuil de revenus.</p>
+              <p><b>LTS (Long-Term Support)</b> — version d'éditeur figée et stabilisée, ne recevant que des correctifs pendant ~2&nbsp;ans&nbsp;; le choix pour un vrai projet.</p>
+              <p><b>Tech Stream</b> — versions intermédiaires apportant des nouveautés mais moins stables et faiblement supportées.</p>
+              <p><b>Module de build (build support)</b> — paquet ajoutant les outils de compilation d'une plateforme cible (Windows, WebGL, Android, iOS…).</p>
+              <p><b>SDK / NDK / JDK</b> — kits d'outils (Android&nbsp;: kit de dév, outils natifs C/C++, environnement Java) nécessaires à l'export Android&nbsp;; volumineux.</p>
+              <p><b>Render pipeline</b> — façon dont Unity calcule l'image (Built-in, URP, HDRP)&nbsp;; choisi à la création du projet, détaillé en U3.</p>
+              <p>Tous ces termes (et d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u02-editeur.html">U2 — Anatomie de l'éditeur Unity</a>&nbsp;: une fois installé, comprendre les fenêtres et le modèle GameObject + Components.</li>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>&nbsp;: choisir entre Built-in, URP et HDRP au moment de créer un projet.</li>
+              <li><a href="../../cours/unity/u04-projet-graphique.html">U4 — Mettre en place un projet graphique</a>&nbsp;: organiser un projet propre dès le départ.</li>
+              <li><a href="../../cours/unity/u10-plugins-packages.html">U10 — Plugins &amp; packages</a>&nbsp;: étendre l'éditeur via le Package Manager.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: comment Unreal gère, lui, ses versions et son installation.</li>
+              <li><a href="../../cours/comparaison/c03-choisir-moteur.html">C3 — Choisir son moteur</a>&nbsp;: licences, coûts et seuils comparés entre moteurs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

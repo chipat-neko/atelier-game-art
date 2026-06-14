@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G8 — Environnement & post-processing dans Godot · Atelier Game Art</title>
+  <meta name="description" content="Le WorldEnvironment de Godot pour le post-processing : tonemap, glow/bloom, SSAO, SSR, SSIL, fog volumétrique et adjustments.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Environnement &amp; post-processing</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G8 — Environnement &amp; post-processing</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g07-eclairage.html">G7 — Éclairage</a> et <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> (HDR).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Régler le <b>Tonemap</b> (indispensable pour un rendu HDR correct).</li>
+                <li>Activer et doser le <b>Glow</b> (bloom), le <b>SSAO</b>, le <b>SSR</b>, le <b>SSIL</b>.</li>
+                <li>Ajouter du <b>fog</b> (brouillard) et des <b>Adjustments</b> (color grading).</li>
+                <li>Doser sans tomber dans le « trop » qui rend l'image illisible.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le post-processing applique des effets sur l'<b>image finale</b> (renvoi <a href="../../cours/unity/u08-post-processing.html">U8</a>). Dans Godot, tout passe par la ressource <b>Environment</b> (portée par le <a href="../../cours/godot/g07-eclairage.html">WorldEnvironment</a>) — au même endroit que le ciel et la GI. Le réglage le plus important, souvent oublié, est le <b>Tonemap</b>&nbsp;: sans lui, le HDR (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>) est cramé. Les autres effets ajoutent l'ambiance — à condition de les doser.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Tonemap (le réglage vital)</h3>
+            <p>La scène est calculée en HDR&nbsp;; il faut la ramener à l'écran via un <b>Tonemap</b> (section <em>Tonemap</em> de l'Environment)&nbsp;: modes <em>Linear</em>, <em>Reinhard</em>, <em>Filmic</em>, <em>ACES</em>. <b>ACES</b> ou <em>Filmic</em> donnent un rendu cinématographique équilibré. Sans tonemap adapté, les hautes lumières «&nbsp;brûlent&nbsp;» en blanc. C'est l'équivalent du tonemapping d'Unity (renvoi <a href="../../cours/unity/u08-post-processing.html">U8</a>). On règle aussi l'<em>Exposure</em> ici.</p>
+
+            <h3>2. Les effets d'écran (screen-space)</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Effet</th><th>Rôle</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Glow</b> (bloom)</td><td>Halo lumineux autour des zones très claires (&gt; 1.0)&nbsp;: alimente les néons/émissifs (renvoi <a href="../../cours/godot/g06-materiaux.html">G6</a>).</td></tr>
+                  <tr><td><b>SSAO</b></td><td>Occlusion ambiante en espace écran&nbsp;: assombrit les recoins, renforce le volume (renvoi <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>).</td></tr>
+                  <tr><td><b>SSR</b></td><td>Screen-Space Reflections&nbsp;: reflets calculés à partir de l'image (surfaces lisses, flaques). Forward+.</td></tr>
+                  <tr><td><b>SSIL</b></td><td>Screen-Space Indirect Lighting&nbsp;: éclairage indirect d'écran qui complète la GI.</td></tr>
+                  <tr><td><b>Fog</b></td><td>Brouillard, et <em>Volumetric Fog</em> (rayons de lumière, brume volumétrique) pour l'atmosphère.</td></tr>
+                  <tr><td><b>Adjustments</b></td><td>Color grading final&nbsp;: luminosité, contraste, saturation, et correction par <em>color correction</em> (LUT).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Plusieurs de ces effets (SSR, SSIL, volumétriques) demandent le renderer <b>Forward+</b> (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Chaîne de post-processing Godot dans l'Environment">
+                <defs><marker id="g8ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="14" y="64" width="120" height="44" rx="7" class="svg-surface" stroke="#313c4c"/><text x="74" y="90" text-anchor="middle" font-weight="700">Scène (HDR)</text>
+                  <rect x="160" y="64" width="100" height="44" rx="7" fill="#4f9bd9" fill-opacity="0.14" stroke="#4f9bd9"/><text x="210" y="83" text-anchor="middle" font-weight="700">SSAO</text><text x="210" y="99" text-anchor="middle" class="svg-dim" font-size="9">SSR · SSIL</text>
+                  <rect x="286" y="64" width="100" height="44" rx="7" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="336" y="83" text-anchor="middle" font-weight="700">Glow</text><text x="336" y="99" text-anchor="middle" class="svg-dim" font-size="9">fog</text>
+                  <rect x="412" y="64" width="110" height="44" rx="7" fill="#c084fc" fill-opacity="0.14" stroke="#c084fc"/><text x="467" y="83" text-anchor="middle" font-weight="700">Tonemap</text><text x="467" y="99" text-anchor="middle" class="svg-dim" font-size="9">ACES · exposure</text>
+                  <rect x="548" y="64" width="80" height="44" rx="7" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="588" y="83" text-anchor="middle" font-weight="700">Grading</text><text x="588" y="99" text-anchor="middle" class="svg-dim" font-size="9">→ écran</text>
+                </g>
+                <g stroke="#4f9bd9" stroke-width="1.7" marker-end="url(#g8ar)">
+                  <line x1="134" y1="86" x2="158" y2="86"/><line x1="260" y1="86" x2="284" y2="86"/><line x1="386" y1="86" x2="410" y2="86"/><line x1="522" y1="86" x2="546" y2="86"/>
+                </g>
+                <text x="320" y="140" text-anchor="middle" class="svg-dim" font-size="11">Le Tonemap est l'étape qui ramène le HDR à l'écran : sans lui, image cramée.</text>
+              </svg>
+              <figcaption>La chaîne de post-process de l'Environment&nbsp;: effets d'écran, glow/fog, puis tonemap et color grading vers l'écran.</figcaption>
+            </figure>
+
+            <h3>3. Doser (le piège du « trop »)</h3>
+            <p>Le bloom à fond, un SSAO trop sombre, une saturation excessive&nbsp;: l'image devient illisible et fatigante. Le post-processing doit <b>servir</b> la lecture, pas l'écraser. Règle d'or&nbsp;: commence par un bon Tonemap + une exposition correcte, puis ajoute les effets <b>subtilement</b>, en jugeant sur des scènes représentatives.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sélectionne ton <code>WorldEnvironment</code> (renvoi <a href="../../cours/godot/g07-eclairage.html">G7</a>) et édite sa ressource <em>Environment</em>.</li>
+              <li>Section <em>Tonemap</em>&nbsp;: choisis <em>ACES</em>, ajuste l'<em>Exposure</em> jusqu'à une image bien lisible.</li>
+              <li>Active <em>Glow</em>&nbsp;: monte légèrement l'intensité&nbsp;; un matériau émissif (néon, renvoi <a href="../../cours/godot/g06-materiaux.html">G6</a>) doit maintenant rayonner.</li>
+              <li>Active <em>SSAO</em> (subtil) pour renforcer les recoins, puis <em>SSR</em> si tu as des surfaces lisses (Forward+).</li>
+              <li>Ajoute un peu de <em>Fog</em> pour la profondeur, puis <em>Adjustments</em> (contraste/saturation) pour l'ambiance finale.</li>
+              <li>Compare avant/après&nbsp;: vérifie que tu n'as pas «&nbsp;noyé&nbsp;» la lisibilité.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes hautes lumières sont cramées en blanc pur.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de Tonemap adapté (ou mode Linear).</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <em>ACES</em> ou <em>Filmic</em> et règle l'exposition.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon image est trop « brillante » / illisible.</div>
+                <div class="pi-cause"><b>Cause</b>Glow et/ou saturation excessifs.</div>
+                <div class="pi-fix"><b>Correction</b>Baisse l'intensité du Glow et modère les Adjustments&nbsp;; le post-process doit rester subtil.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>SSR/SSIL/volumétriques sont absents ou sans effet.</div>
+                <div class="pi-cause"><b>Cause</b>Renderer Compatibility/Mobile au lieu de Forward+.</div>
+                <div class="pi-fix"><b>Correction</b>Passe en Forward+ pour ces effets (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le SSAO crée des halos noirs disgracieux.</div>
+                <div class="pi-cause"><b>Cause</b>Intensité/rayon du SSAO trop élevés.</div>
+                <div class="pi-fix"><b>Correction</b>Réduis l'intensité et le rayon&nbsp;; le SSAO doit suggérer, pas marquer.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Sur ta scène de G7, configure un Tonemap ACES + exposition correcte.</li>
+                <li>Active Glow (pour un néon), un SSAO subtil et un léger fog.</li>
+                <li>Ajoute des Adjustments pour poser une ambiance (froide ou chaude) sans nuire à la lisibilité.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune zone cramée&nbsp;; le tonemap est correct.</li>
+                  <li>Les effets ajoutent de l'ambiance sans rendre l'image illisible.</li>
+                  <li>Tu sais quels effets exigent Forward+.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Tout le post-process vit dans la ressource <b>Environment</b> (WorldEnvironment).</li>
+                <li>Le <b>Tonemap</b> (ACES/Filmic) est vital&nbsp;: sans lui, le HDR est cramé.</li>
+                <li><b>Glow, SSAO, SSR, SSIL, fog, Adjustments</b> ajoutent l'ambiance&nbsp;; SSR/SSIL/volumétriques → Forward+.</li>
+                <li><b>Dose</b> tout subtilement&nbsp;: le post-process sert la lecture, ne l'écrase pas.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Environment (Godot)</b> — ressource qui regroupe ciel, ambiant, GI et post-processing.</p>
+              <p><b>Tonemap</b> — conversion du HDR vers l'écran (ACES, Filmic…)&nbsp;; évite l'image cramée.</p>
+              <p><b>Glow</b> — effet de halo lumineux (bloom) de Godot, alimenté par les zones très claires/émissives.</p>
+              <p><b>SSAO / SSR / SSIL</b> — effets d'écran&nbsp;: occlusion ambiante, réflexions, éclairage indirect.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u08-post-processing.html">U8 — Post-processing (Unity)</a>&nbsp;: l'équivalent côté Unity.</li>
+              <li><a href="../../cours/godot/g07-eclairage.html">G7 — Éclairage</a>&nbsp;: le WorldEnvironment et la GI.</li>
+              <li><a href="../../cours/godot/g11-optimisation.html">G11 — Optimisation</a>&nbsp;: le coût des effets d'écran.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

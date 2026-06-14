@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F2 — Théorie artistique de base · Atelier Game Art</title>
+  <meta name="description" content="Couleur (TSV), harmonies, valeur et contraste, composition, lumière et ombre, lisibilité de la silhouette : les bases artistiques transférables à tout asset.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Théorie artistique de base</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F2 — Théorie artistique de base</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun, mais lis d'abord <a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a> pour la partie couleur.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Décrire une couleur en <b>TSV</b> (Teinte, Saturation, Valeur) et expliquer <em>pourquoi</em> un artiste raisonne en TSV plutôt qu'en RVB.</li>
+                <li>Construire une palette à partir d'une <b>harmonie</b> (complémentaire, analogue, triadique) et placer une <b>couleur d'accent</b>.</li>
+                <li>Tester une image en <b>niveaux de gris</b> pour vérifier que sa structure de <b>valeurs</b> tient debout.</li>
+                <li>Appliquer les bases de <b>composition</b> (règle des tiers, point focal, lignes directrices, équilibre) à un perso, un prop, un décor ou une UI.</li>
+                <li>Distinguer <b>lumière directe</b>, <b>ambiante</b> et <b>réfléchie</b>, ainsi que <b>ombre propre</b> et <b>ombre portée</b>, et raisonner sur la <b>température de couleur</b>.</li>
+                <li>Évaluer un asset par le <b>test de la silhouette</b> et comprendre le lien avec l'<b>albedo</b> du <a href="../../cours/fondamentaux/f07-pbr.html">PBR (F7)</a>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>On croit souvent que la qualité d'un asset 3D vient du nombre de polygones ou de la résolution des textures. C'est faux. Un personnage à 200&nbsp;000 polygones avec une palette boueuse et une silhouette confuse aura toujours l'air <em>amateur</em>&nbsp;; un prop à 800 polygones avec des valeurs nettes et une couleur d'accent bien placée se lira instantanément à l'écran. La différence, ce n'est pas la technique&nbsp;: c'est la <b>théorie artistique</b>.</p>
+            <p>Dans un vrai pipeline de production, ces notions interviennent <em>partout</em>. Le <b>concept artist</b> fixe la palette et la composition avant qu'une seule maille ne soit modélisée. Le <b>texture artist</b> peint en raisonnant valeur d'abord, couleur ensuite. Le <b>lighting artist</b> sculpte l'ambiance avec la température et le contraste. Le <b>directeur artistique</b> valide ou refuse un asset en regardant… sa silhouette en noir et son histogramme de valeurs. Si tu ne parles pas ce langage, tu produis des assets que ton équipe devra refaire.</p>
+            <p>Et surtout&nbsp;: ces principes sont <b>transférables</b>. Ils valent pour un personnage, un rocher, un niveau entier, une icône d'interface ou un effet de particules. Apprends-les une fois, applique-les toute ta carrière, dans n'importe quel logiciel (<a href="../../cours/logiciels/l01-blender.html">Blender</a>, <a href="../../cours/logiciels/l02-substance.html">Substance</a>) et n'importe quel moteur (<a href="../../cours/unity/u01-installation.html">Unity</a>, <a href="../../cours/unreal/e01-installation.html">Unreal</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La couleur en TSV&nbsp;: penser comme un peintre, pas comme un écran</h3>
+            <p>Un écran fabrique la couleur en mélangeant trois lumières&nbsp;: <b>R</b>ouge, <b>V</b>ert, <b>B</b>leu. C'est le modèle <span class="gloss">RVB</span>, parfait pour la machine mais désastreux pour le cerveau humain. Pose-toi la question&nbsp;: pour rendre un orange <em>un peu plus pâle</em>, tu fais quoi en RVB&nbsp;? Tu dois augmenter le bleu… mais pas trop, tout en gardant le rouge plus haut que le vert. C'est de l'arithmétique, pas de la peinture.</p>
+            <p>Le modèle <span class="term">TSV</span> (en anglais <span class="term">HSV</span>&nbsp;: <em>Hue, Saturation, Value</em>) décrit la <em>même</em> couleur mais avec trois axes qui correspondent à la façon dont on perçoit&nbsp;:</p>
+            <ul>
+              <li><b>Teinte</b> (<em>Hue</em>) — la couleur «&nbsp;de base&nbsp;», repérée par un angle sur la roue chromatique de 0° à 360°&nbsp;: rouge ≈ 0°, vert ≈ 120°, bleu ≈ 240°. C'est ce qu'on désigne quand on dit «&nbsp;rouge&nbsp;», «&nbsp;turquoise&nbsp;».</li>
+              <li><b>Saturation</b> — l'intensité, la pureté. À 0&nbsp;%, plus aucune couleur&nbsp;: c'est un gris. À 100&nbsp;%, la couleur est éclatante, presque criarde.</li>
+              <li><b>Valeur</b> (<em>Value</em>, ou luminosité) — la quantité de lumière, du noir (0&nbsp;%) au plus clair (100&nbsp;%).</li>
+            </ul>
+            <p>Avec TSV, rendre l'orange plus pâle devient évident&nbsp;: tu baisses la <b>saturation</b>, point. L'éclaircir&nbsp;? Tu montes la <b>valeur</b>. Le faire virer au rouge&nbsp;? Tu tournes la <b>teinte</b>. Chaque intention artistique correspond à <em>un seul</em> curseur. C'est pour ça que tous les sélecteurs de couleur professionnels (Photoshop, Substance, l'éditeur de matériaux des moteurs) proposent une vue TSV&nbsp;: ce n'est pas une autre couleur, c'est une autre <b>grammaire</b> pour la même couleur.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce de production</div>
+              <p>Quand tu peins une texture et qu'une zone «&nbsp;jure&nbsp;», ne touche pas au RVB au hasard. Demande-toi&nbsp;: c'est un problème de <b>teinte</b> (mauvaise couleur), de <b>saturation</b> (trop criard / trop terne) ou de <b>valeur</b> (trop clair / trop sombre)&nbsp;? Neuf fois sur dix, c'est la valeur. Tu corriges <em>un</em> curseur au lieu de tâtonner sur trois.</p>
+            </div>
+
+            <h4>TSL / HSL&nbsp;: le cousin de TSV</h4>
+            <p>Tu croiseras aussi <span class="term">TSL</span> (HSL&nbsp;: <em>Hue, Saturation, Lightness</em>). C'est la même idée, mais l'axe «&nbsp;Lightness&nbsp;» (luminosité) place le blanc et le noir aux deux extrêmes, avec la couleur pure au milieu. TSV met le maximum de saturation <em>au sommet</em>. En pratique, TSV est plus intuitif pour peindre des matériaux&nbsp;; TSL apparaît souvent dans les outils web et CSS. Retiens surtout le principe commun&nbsp;: <b>séparer la teinte de l'intensité et de la lumière</b>.</p>
+
+            <h3>2. Les harmonies colorées&nbsp;: choisir des couleurs qui «&nbsp;vont ensemble&nbsp;»</h3>
+            <p>Une <span class="term">harmonie colorée</span> est une relation géométrique sur la roue chromatique qui produit une palette agréable et lisible. Plutôt que de piocher des couleurs au hasard, on les choisit selon leur <b>angle de teinte</b> relatif. Les trois familles à connaître&nbsp;:</p>
+            <ul>
+              <li><b>Complémentaire</b> — deux teintes <em>opposées</em> sur la roue (à 180°), par exemple orange et bleu. Contraste maximal, très dynamique. C'est le couple roi du cinéma (le fameux «&nbsp;orange &amp; teal&nbsp;»)&nbsp;: la peau chaude des acteurs ressort sur des ombres froides.</li>
+              <li><b>Analogue</b> — des teintes <em>voisines</em> (à 30°–60° les unes des autres), par exemple jaune, orange, rouge. Sensation d'unité, de calme, d'ambiance cohérente. Idéal pour un décor de coucher de soleil ou une forêt automnale.</li>
+              <li><b>Triadique</b> — trois teintes <em>équidistantes</em> (à 120°), par exemple rouge, jaune, bleu. Vif et équilibré&nbsp;; courant dans les jeux colorés et stylisés (un platformer cartoon, par exemple).</li>
+            </ul>
+            <p>Le piège du débutant&nbsp;: utiliser ces couleurs en quantités <b>égales</b>. Une palette équilibrée ne l'est jamais en surface. La règle de production la plus utile est celle du <b>60/30/10</b>&nbsp;: 60&nbsp;% une couleur dominante (souvent désaturée), 30&nbsp;% une couleur secondaire, et 10&nbsp;% une <span class="term">couleur d'accent</span> vive qui attire l'œil.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>La couleur d'accent comme outil de game design</div>
+              <p>Dans <em>Mirror's Edge</em>, le rouge n'est pas décoratif&nbsp;: il guide le joueur («&nbsp;saute ici&nbsp;»). Dans beaucoup de jeux, les objets ramassables sont la seule chose franchement <b>saturée</b> dans un décor désaturé. La couleur d'accent n'est pas qu'esthétique&nbsp;: c'est de la <b>signalétique</b>. Réserve tes couleurs les plus pures aux éléments que le joueur doit remarquer.</p>
+            </div>
+
+            <h3>3. La valeur&nbsp;: le squelette de l'image</h3>
+            <p>S'il ne fallait retenir qu'une chose de cette leçon, ce serait celle-ci&nbsp;: la <span class="term">valeur</span> (le clair/foncé, indépendamment de la couleur) est <b>la donnée la plus importante</b> d'une image. La couleur, c'est le maquillage&nbsp;; la valeur, c'est le squelette. Une image dont les valeurs sont justes fonctionnera même en noir et blanc&nbsp;; une image aux belles couleurs mais aux valeurs molles sera toujours plate et confuse.</p>
+            <p>Pourquoi&nbsp;? Parce que l'œil humain lit la <b>forme</b> et la <b>profondeur</b> par le contraste de luminosité bien avant la couleur. Nos cellules photoréceptrices sensibles à la luminosité (les bâtonnets) sont bien plus nombreuses que celles sensibles à la couleur (les cônes). On voit le monde en valeurs d'abord. C'est aussi pour ça que les vieux films en noir et blanc restent parfaitement lisibles.</p>
+            <p>Le <span class="term">contraste de valeur</span> est l'écart de luminosité entre des zones voisines. C'est lui qui crée la <b>séparation</b>&nbsp;: un objet clair se détache sur un fond sombre, et inversement. Sans contraste de valeur suffisant entre un personnage et son décor, le perso «&nbsp;se noie&nbsp;» dans l'arrière-plan, quelles que soient ses couleurs.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Le test en niveaux de gris</div>
+              <p>Le réflexe pro&nbsp;: désature ton image (un calque de réglage <b>noir et blanc</b> en 2D, ou un mode d'affichage <em>luminance</em> dans le viewport). Si la composition reste lisible et hiérarchisée en gris, les valeurs sont bonnes. Si tout devient une bouillie uniforme, aucune couleur ne te sauvera&nbsp;: il faut réétager les valeurs. Fais ce test <b>tôt</b> et <b>souvent</b>.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Roue chromatique annotée : teinte autour, saturation vers le centre, valeur en luminosité, avec les harmonies complémentaire, analogue et triadique">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Roue chromatique &amp; harmonies</text>
+                <!-- Roue : 12 secteurs de teinte -->
+                <g transform="translate(160,160)">
+                  <g stroke="#222a36" stroke-width="1">
+                    <path d="M0 0 L100 0 A100 100 0 0 1 86.6 50 Z" fill="#ff3b30"/>
+                    <path d="M0 0 L86.6 50 A100 100 0 0 1 50 86.6 Z" fill="#f2b441"/>
+                    <path d="M0 0 L50 86.6 A100 100 0 0 1 0 100 Z" fill="#f2b441"/>
+                    <path d="M0 0 L0 100 A100 100 0 0 1 -50 86.6 Z" fill="#cddc39"/>
+                    <path d="M0 0 L-50 86.6 A100 100 0 0 1 -86.6 50 Z" fill="#5ad19a"/>
+                    <path d="M0 0 L-86.6 50 A100 100 0 0 1 -100 0 Z" fill="#26c6b6"/>
+                    <path d="M0 0 L-100 0 A100 100 0 0 1 -86.6 -50 Z" fill="#29b6f6"/>
+                    <path d="M0 0 L-86.6 -50 A100 100 0 0 1 -50 -86.6 Z" fill="#59b0ff"/>
+                    <path d="M0 0 L-50 -86.6 A100 100 0 0 1 0 -100 Z" fill="#7986cb"/>
+                    <path d="M0 0 L0 -100 A100 100 0 0 1 50 -86.6 Z" fill="#c89bff"/>
+                    <path d="M0 0 L50 -86.6 A100 100 0 0 1 86.6 -50 Z" fill="#e066b3"/>
+                    <path d="M0 0 L86.6 -50 A100 100 0 0 1 100 0 Z" fill="#f0507a"/>
+                  </g>
+                  <circle cx="0" cy="0" r="40" fill="#9aa3ad"/>
+                  <circle cx="0" cy="0" r="40" fill="none" stroke="#313c4c"/>
+                  <text x="0" y="-2" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">S = 0%</text>
+                  <text x="0" y="11" text-anchor="middle" class="svg-text" font-size="9">(gris)</text>
+                  <line x1="93" y1="-25" x2="-93" y2="25" stroke="#0e1116" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="93" cy="-25" r="6" fill="#0e1116"/>
+                  <circle cx="-93" cy="25" r="6" fill="#0e1116"/>
+                </g>
+                <text x="160" y="288" text-anchor="middle" class="svg-dim" font-size="11">Teinte = angle • Saturation = distance au centre</text>
+                <g transform="translate(380,60)">
+                  <text x="0" y="0" class="svg-text" font-weight="700" font-size="13">Harmonies</text>
+                  <line x1="0" y1="22" x2="36" y2="22" stroke="#0e1116" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="0" cy="22" r="5" fill="#f2b441"/><circle cx="36" cy="22" r="5" fill="#59b0ff"/>
+                  <text x="48" y="26" class="svg-text" font-size="12">Complémentaire (180°)</text>
+                  <g transform="translate(0,46)">
+                    <circle cx="0" cy="0" r="5" fill="#f2b441"/><circle cx="18" cy="0" r="5" fill="#f2b441"/><circle cx="36" cy="0" r="5" fill="#ff3b30"/>
+                    <text x="48" y="4" class="svg-text" font-size="12">Analogue (voisines)</text>
+                  </g>
+                  <g transform="translate(0,72)">
+                    <circle cx="0" cy="0" r="5" fill="#ff3b30"/><circle cx="18" cy="0" r="5" fill="#f2b441"/><circle cx="36" cy="0" r="5" fill="#59b0ff"/>
+                    <text x="48" y="4" class="svg-text" font-size="12">Triadique (120°)</text>
+                  </g>
+                  <g transform="translate(0,104)">
+                    <text x="0" y="0" class="svg-text" font-weight="700" font-size="13">Dosage 60/30/10</text>
+                    <rect x="0" y="10" width="120" height="16" fill="#3b4a5a"/>
+                    <rect x="120" y="10" width="60" height="16" fill="#6b7a8a"/>
+                    <rect x="180" y="10" width="20" height="16" fill="#f2b441"/>
+                    <text x="0" y="42" class="svg-dim" font-size="10">dominante • secondaire • accent</text>
+                  </g>
+                </g>
+              </svg>
+              <figcaption>La <b>teinte</b> est un angle&nbsp;; la <b>saturation</b> décroît vers le centre (gris)&nbsp;; les <b>harmonies</b> sont des figures géométriques sur la roue. À droite, le dosage 60/30/10 avec sa couleur d'accent.</figcaption>
+            </figure>
+
+            <h3>4. La composition&nbsp;: guider le regard</h3>
+            <p>La <span class="term">composition</span> est l'art d'organiser les éléments dans le cadre pour que l'œil aille où l'on veut, dans l'ordre où on le veut. Même un seul prop posé dans une scène a une composition&nbsp;: où le place-t-on, comment l'oriente-t-on, qu'est-ce qui attire d'abord&nbsp;?</p>
+            <ul>
+              <li><b>Règle des tiers</b> — on divise le cadre par deux lignes horizontales et deux verticales, formant une grille 3×3. Placer les éléments importants <em>sur</em> ces lignes ou à leurs intersections est plus dynamique qu'au centre. Ce n'est pas une loi, c'est un point de départ fiable.</li>
+              <li><b>Point focal</b> — l'endroit où l'œil se pose en premier. On le crée par le plus fort <b>contraste</b> (de valeur, de saturation, ou de netteté) et par la convergence des lignes. Une image sans point focal clair fatigue&nbsp;: l'œil ne sait pas où aller.</li>
+              <li><b>Lignes directrices</b> (<em>leading lines</em>) — des lignes du décor (une route, un bras tendu, un rayon de lumière) qui conduisent le regard vers le point focal. Le cerveau suit naturellement les lignes.</li>
+              <li><b>Équilibre</b> — la répartition du «&nbsp;poids&nbsp;» visuel. Un gros élément sombre d'un côté peut être contrebalancé par un petit élément très saturé de l'autre. Un déséquilibre <em>volontaire</em> crée de la tension&nbsp;; un déséquilibre <em>subi</em> donne une image bancale.</li>
+            </ul>
+            <p>Pour une <b>UI</b>, ces principes se traduisent directement&nbsp;: le bouton d'action principal est le point focal (couleur d'accent, fort contraste), l'alignement des éléments crée des lignes directrices, et l'espace vide (<em>negative space</em>) équilibre la densité. Une bonne interface se compose exactement comme une bonne illustration.</p>
+
+            <h3>5. Lumière &amp; ombre&nbsp;: d'où vient le volume</h3>
+            <p>Un objet 3D n'a de volume <em>perçu</em> que grâce à la façon dont la lumière le frappe. Comprendre les types de lumière, c'est comprendre comment naît la forme.</p>
+            <ul>
+              <li><b>Lumière directe</b> — la source principale (soleil, lampe). Elle crée les zones les plus claires (les <em>hautes lumières</em>) sur les surfaces qui lui font face.</li>
+              <li><b>Lumière ambiante</b> — la lumière diffuse de l'environnement, sans direction nette (le ciel entier, une pièce éclairée indirectement). Elle empêche les ombres d'être totalement noires&nbsp;: même dans l'ombre, on voit quelque chose.</li>
+              <li><b>Lumière réfléchie</b> (<em>bounce light</em>) — la lumière qui ricoche sur les surfaces alentour et vient ré-éclairer faiblement les ombres, souvent en y apportant la <b>couleur</b> de la surface qui a renvoyé (un sol rouge teinte de rouge le dessous d'un objet). C'est ce détail qui fait «&nbsp;vrai&nbsp;».</li>
+            </ul>
+            <p>Côté ombres, il faut distinguer deux choses qu'on confond toujours&nbsp;:</p>
+            <ul>
+              <li><b>Ombre propre</b> (<em>form shadow</em>) — la partie de l'objet qui n'est pas tournée vers la lumière. Sa transition est <b>douce</b> (la surface s'incline progressivement). C'est elle qui révèle le volume.</li>
+              <li><b>Ombre portée</b> (<em>cast shadow</em>) — l'ombre que l'objet projette sur une <em>autre</em> surface. Son bord est plus <b>net</b> près de l'objet et s'adoucit en s'éloignant. C'est elle qui ancre l'objet dans la scène (sans ombre portée, un objet semble «&nbsp;flotter&nbsp;»).</li>
+            </ul>
+            <p>S'ajoute l'<span class="gloss">occlusion ambiante</span> (AO)&nbsp;: dans les recoins étroits (sous un bras, entre deux plis, au creux d'un boulon), la lumière ambiante pénètre mal&nbsp;; ces zones sont donc naturellement plus sombres. C'est un assombrissement de contact, subtil mais essentiel pour donner du poids et de la profondeur. On le calcule et on le cuit en texture lors du <a href="../../cours/fondamentaux/f08-baking.html">baking (F8)</a>.</p>
+
+            <h4>Température de couleur&nbsp;: chaud contre froid</h4>
+            <p>La <span class="term">température de couleur</span> décrit si une lumière tire vers le <b>chaud</b> (rouges, oranges, jaunes&nbsp;: bougie, soleil bas, ampoule) ou le <b>froid</b> (bleus, cyans&nbsp;: ciel, néon, clair de lune). C'est l'un des outils les plus puissants pour l'ambiance et la lisibilité&nbsp;: si la lumière directe est chaude, ses ombres tendent vers le froid (et inversement). Ce contraste chaud/froid renforce le volume <em>sans</em> jouer sur la valeur, et explique pourquoi tant de scènes pro opposent une key light chaude à un ciel froid.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Schéma d'éclairage d'une sphère posée sur un sol : source de lumière, haute lumière, ombre propre, terminateur, lumière réfléchie, ombre portée et occlusion de contact">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Anatomie de la lumière sur une sphère</text>
+                <rect x="40" y="200" width="560" height="60" class="svg-surface" stroke="#313c4c"/>
+                <circle cx="120" cy="70" r="20" fill="#f2b441"/>
+                <g stroke="#f2b441" stroke-width="2" stroke-linecap="round">
+                  <line x1="120" y1="40" x2="120" y2="28"/><line x1="146" y1="55" x2="156" y2="48"/>
+                  <line x1="94" y1="55" x2="84" y2="48"/><line x1="146" y1="85" x2="156" y2="92"/>
+                </g>
+                <text x="120" y="108" text-anchor="middle" class="svg-dim" font-size="11">source (lumière directe, chaude)</text>
+                <line x1="138" y1="84" x2="270" y2="150" stroke="#f2b441" stroke-width="1.5" stroke-dasharray="4 4"/>
+                <defs>
+                  <radialGradient id="sph" cx="0.32" cy="0.30" r="0.85">
+                    <stop offset="0" stop-color="#e9eef3"/>
+                    <stop offset="0.45" stop-color="#9aa6b2"/>
+                    <stop offset="0.80" stop-color="#3c4654"/>
+                    <stop offset="1" stop-color="#2a3340"/>
+                  </radialGradient>
+                </defs>
+                <ellipse cx="330" cy="205" rx="95" ry="16" fill="#10151c" opacity="0.55"/>
+                <circle cx="330" cy="170" r="62" fill="url(#sph)"/>
+                <path d="M300 220 a62 62 0 0 0 56 -8" fill="none" stroke="#5ad19a" stroke-width="3" opacity="0.5"/>
+                <circle cx="312" cy="150" r="3" fill="#fff"/>
+                <text x="312" y="136" text-anchor="middle" class="svg-text" font-size="11">haute lumière</text>
+                <line x1="362" y1="160" x2="430" y2="148" stroke="#313c4c" stroke-width="1"/>
+                <text x="436" y="151" class="svg-text" font-size="11">terminateur (cœur d'ombre)</text>
+                <line x1="372" y1="195" x2="430" y2="183" stroke="#313c4c" stroke-width="1"/>
+                <text x="436" y="186" class="svg-text" font-size="11">ombre propre (douce)</text>
+                <line x1="356" y1="216" x2="436" y2="222" stroke="#5ad19a" stroke-width="1"/>
+                <text x="442" y="226" class="svg-dim" font-size="11">lumière réfléchie (bounce)</text>
+                <text x="300" y="246" text-anchor="middle" class="svg-text" font-size="11">ombre portée (sur le sol)</text>
+                <line x1="305" y1="218" x2="240" y2="252" stroke="#313c4c" stroke-width="1"/>
+                <text x="234" y="256" text-anchor="end" class="svg-dim" font-size="11">occlusion de contact</text>
+              </svg>
+              <figcaption>Une simple sphère contient tout&nbsp;: haute lumière, ombre propre (transition douce) avec son <b>terminateur</b>, ombre portée (bord plus net), <b>lumière réfléchie</b> qui rouvre l'ombre, et l'assombrissement de contact à la base.</figcaption>
+            </figure>
+
+            <h3>6. La silhouette&nbsp;: la lisibilité au premier coup d'œil</h3>
+            <p>La <span class="term">silhouette</span> est le contour de l'objet, sa forme remplie en noir, sans aucun détail interne. C'est la <b>première</b> information que le cerveau traite — avant la couleur, avant la texture, avant les détails. Un bon asset se reconnaît à sa seule silhouette&nbsp;: c'est ce qui permet de distinguer un ennemi d'un allié à 50&nbsp;mètres, une arme d'un soin, un mur d'une porte.</p>
+            <p>Le <span class="term">test de la silhouette</span> consiste à remplir l'objet d'un noir uni et à se demander&nbsp;: «&nbsp;Est-ce que je reconnais ce que c'est&nbsp;? Est-ce que ça raconte quelque chose&nbsp;?&nbsp;» Si la réponse est non, aucun détail de surface ne sauvera l'asset&nbsp;: on dit qu'il «&nbsp;se lit&nbsp;» mal. Les studios de production conçoivent leurs personnages <em>en silhouette d'abord</em>, justement pour garantir cette lisibilité.</p>
+            <p>C'est aussi pourquoi un bon asset «&nbsp;se lit à contre-jour&nbsp;»&nbsp;: éclairé par-derrière, il perd ses détails internes et n'offre plus que sa silhouette. S'il reste reconnaissable, la forme est solide. Pour y arriver, on cherche des <b>formes variées</b> (gros, moyen, petit), des angles tranchés contre des courbes, des creux et des saillies marqués — on évite les contours mous et symétriques qui produisent une «&nbsp;patate&nbsp;» indistincte.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 230" role="img" aria-label="Une même hache montrée en couleur détaillée et en silhouette noire, à côté d'une forme molle qui échoue au test de silhouette">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Le test de la silhouette</text>
+                <g transform="translate(60,50)">
+                  <text x="60" y="-8" text-anchor="middle" class="svg-dim" font-size="11">en couleur</text>
+                  <rect x="52" y="20" width="14" height="140" rx="4" fill="#8a5a32" stroke="#313c4c"/>
+                  <path d="M40 28 Q90 14 96 44 Q92 70 40 64 Z" fill="#9aa6b2" stroke="#313c4c"/>
+                  <path d="M44 34 Q78 26 86 44 Q80 58 46 56 Z" fill="#c3ccd4"/>
+                  <circle cx="59" cy="44" r="3" fill="#5a4028"/>
+                </g>
+                <g transform="translate(240,50)">
+                  <text x="60" y="-8" text-anchor="middle" class="svg-dim" font-size="11">silhouette ✔</text>
+                  <rect x="52" y="20" width="14" height="140" rx="4" fill="#0e1116"/>
+                  <path d="M40 28 Q90 14 96 44 Q92 70 40 64 Z" fill="#0e1116"/>
+                </g>
+                <text x="240" y="200" text-anchor="middle" class="svg-text" font-size="11">Reconnaissable → la forme «&nbsp;se lit&nbsp;»</text>
+                <g transform="translate(440,50)">
+                  <text x="80" y="-8" text-anchor="middle" class="svg-dim" font-size="11">silhouette ✘</text>
+                  <path d="M30 90 Q20 40 70 36 Q130 30 140 80 Q150 130 90 138 Q34 142 30 90 Z" fill="#0e1116"/>
+                </g>
+                <text x="520" y="200" text-anchor="middle" class="svg-text" font-size="11">«&nbsp;Patate&nbsp;» → indéchiffrable</text>
+              </svg>
+              <figcaption>À gauche, une hache détaillée. Au centre, sa silhouette reste claire&nbsp;: la forme est bonne. À droite, une masse molle et symétrique échoue au test&nbsp;: aucun détail de texture ne la rendra lisible.</figcaption>
+            </figure>
+
+            <h3>7. Le lien avec le PBR&nbsp;: ne jamais peindre la lumière dans l'albedo</h3>
+            <p>Voici un point que cette leçon prépare et que <a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a> approfondira. En rendu moderne <span class="gloss">PBR</span> (<em>Physically Based Rendering</em>), la texture de couleur de base s'appelle l'<span class="term">albedo</span> (ou <em>base color</em>). Elle doit contenir <b>uniquement la couleur propre du matériau</b> — la couleur du bois, de la peinture, de la peau — <b>sans</b> aucune lumière ni ombre incrustée.</p>
+            <p>Pourquoi&nbsp;? Parce que le moteur <em>calcule lui-même</em> la lumière, les ombres et les reflets en temps réel, selon les lampes de la scène. Si tu as déjà peint une ombre sombre ou une haute lumière dans l'albedo, elle sera <b>recalculée par-dessus</b>&nbsp;: tu obtiens des ombres doublées, des hautes lumières qui ne suivent pas la vraie lampe, un objet qui paraît sale et faux dès qu'il change d'éclairage. C'est l'erreur classique des artistes venant de la peinture matte ou du rendu pré-calculé.</p>
+            <p>La théorie de cette leçon reste donc valable — mais elle se <b>répartit</b>&nbsp;: la <em>couleur d'accent</em> et les <em>harmonies</em> vivent dans l'albedo&nbsp;; la <em>valeur</em>, la <em>lumière</em> et les <em>ombres</em> sont produites par l'éclairage du moteur (sauf l'occlusion ambiante de contact, qui se cuit séparément). Comprendre cette séparation maintenant t'évitera l'un des bugs visuels les plus tenaces du débutant.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif&nbsp;: vérifier les valeurs et poser une couleur d'accent sur une texture, dans un logiciel 2D type Photoshop / Krita / GIMP (les noms varient peu — voir <a href="../../cours/logiciels/l03-logiciels-2d.html">L3 — Logiciels 2D</a>).</p>
+            <ol>
+              <li><b>Ouvre ta texture (ou ton concept).</b> Peu importe qu'elle soit finie&nbsp;: on va d'abord auditer sa structure de valeurs, pas ses couleurs.</li>
+              <li><b>Ajoute un calque de réglage de désaturation par-dessus tout.</b> Via <span class="menu-path">Calque<span class="arrow">▸</span>Nouveau calque de réglage<span class="arrow">▸</span>Noir et blanc</span>. Effet&nbsp;: tu vois maintenant l'image en pures valeurs. Ce calque est <em>non destructif</em>&nbsp;: il ne modifie pas tes pixels, tu peux le masquer à tout moment.</li>
+              <li><b>Audite la lisibilité.</b> Demande-toi&nbsp;: le sujet principal se détache-t-il du fond&nbsp;? Repère la zone la plus claire et la plus sombre. Si tout flotte dans un gris moyen uniforme, ton image manque de <b>contraste de valeur</b>&nbsp;: c'est le diagnostic, pas un détail cosmétique.</li>
+              <li><b>Corrige les valeurs avant les couleurs.</b> Masque le calque noir et blanc, puis utilise <span class="menu-path">Image<span class="arrow">▸</span>Réglages<span class="arrow">▸</span>Niveaux</span> (ou Courbes) pour écarter les valeurs&nbsp;: assombris les ombres, éclaircis les lumières du sujet. Effet&nbsp;: tu réétages la luminosité pour créer la séparation que le test a révélée manquante.</li>
+              <li><b>Bascule ton sélecteur de couleur en mode TSV.</b> Dans le sélecteur, choisis l'affichage <b>TSV/HSB</b>. Effet&nbsp;: tu pilotes désormais teinte, saturation et valeur séparément, au lieu de tâtonner en RVB.</li>
+              <li><b>Désature la majorité de la palette.</b> Baisse la <b>saturation</b> des grandes zones (le 60&nbsp;% dominant). Une scène entièrement saturée n'a aucune respiration et aucune hiérarchie&nbsp;: on désature pour faire ressortir l'accent.</li>
+              <li><b>Pose la couleur d'accent.</b> Sur un petit élément à mettre en valeur, choisis une teinte <b>complémentaire</b> de la dominante et monte la saturation. Effet&nbsp;: l'œil est immédiatement attiré là — tu viens de créer ou de renforcer le <b>point focal</b>.</li>
+              <li><b>Re-teste en niveaux de gris.</b> Réactive le calque noir et blanc. Vérifie que ton accent reste un point focal <em>aussi</em> par sa valeur, pas seulement par sa couleur (un daltonien doit pouvoir le repérer). Si oui, ta hiérarchie est robuste.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Le personnage «&nbsp;disparaît&nbsp;» dans le décor à distance, malgré de belles couleurs.</p>
+                <p class="pi-cause"><b>Cause</b> — Le contraste de <b>valeur</b> entre le perso et l'arrière-plan est trop faible&nbsp;: ils ont la même luminosité.</p>
+                <p class="pi-fix"><b>Correction</b> — Fais le test en niveaux de gris. Écarte les valeurs&nbsp;: si le décor est clair, assombris le perso (ou inversement). La couleur ne crée pas la séparation, la valeur si.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — La palette est «&nbsp;criarde&nbsp;», agressive, fatigante.</p>
+                <p class="pi-cause"><b>Cause</b> — Trop de couleurs à <b>saturation</b> maximale, en quantités égales. Tout crie en même temps, donc rien ne ressort.</p>
+                <p class="pi-fix"><b>Correction</b> — Applique le 60/30/10&nbsp;: désature largement la dominante, réserve la haute saturation à la seule couleur d'accent.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — En jeu, l'asset paraît «&nbsp;sale&nbsp;» et ses ombres ne suivent pas la lampe&nbsp;; il y a des ombres en double.</p>
+                <p class="pi-cause"><b>Cause</b> — De la lumière et des ombres ont été <b>peintes dans l'albedo</b>, puis le moteur a recalculé l'éclairage par-dessus.</p>
+                <p class="pi-fix"><b>Correction</b> — Repeins un albedo «&nbsp;plat&nbsp;»&nbsp;: uniquement la couleur du matériau, sans lumière ni ombre. Laisse l'éclairage au moteur (voir <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>).</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — L'objet semble «&nbsp;flotter&nbsp;», détaché du sol.</p>
+                <p class="pi-cause"><b>Cause</b> — Absence d'<b>ombre portée</b> et d'<b>occlusion de contact</b> à la base&nbsp;: rien n'ancre l'objet dans la scène.</p>
+                <p class="pi-fix"><b>Correction</b> — Vérifie que les ombres reçoivent bien la projection&nbsp;; ajoute/active l'occlusion ambiante. Un assombrissement net au point de contact suffit à «&nbsp;poser&nbsp;» l'objet.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Le concept de perso ne ressemble à rien en miniature&nbsp;; on ne sait pas ce que c'est.</p>
+                <p class="pi-cause"><b>Cause</b> — La <b>silhouette</b> est molle et symétrique&nbsp;: rien ne dépasse, aucune forme caractéristique.</p>
+                <p class="pi-fix"><b>Correction</b> — Retravaille la silhouette en noir d'abord&nbsp;: varie les tailles de formes, ajoute des saillies/creux, casse la symétrie jusqu'à ce que la forme se lise seule.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Une scène intérieure a l'air «&nbsp;morte&nbsp;», plate, sans atmosphère.</p>
+                <p class="pi-cause"><b>Cause</b> — Aucun contraste de <b>température</b>&nbsp;: tout est à la même teinte neutre, lumières comme ombres.</p>
+                <p class="pi-fix"><b>Correction</b> — Réchauffe la lumière directe et refroidis légèrement les ombres (ou l'inverse). Ce contraste chaud/froid crée de la profondeur sans toucher aux valeurs.</p>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Prends une photo ou un screenshot de jeu que tu trouves «&nbsp;beau&nbsp;», et un de tes propres rendus / textures. Pour chacun&nbsp;:</p>
+              <ol>
+                <li>Désature-le et compare les structures de valeurs. Repère où est le point le plus clair et le plus sombre, et identifie le <b>point focal</b>.</li>
+                <li>Identifie l'<b>harmonie colorée</b> dominante (complémentaire&nbsp;? analogue&nbsp;? triadique&nbsp;?) et localise la <b>couleur d'accent</b>.</li>
+                <li>Repère la <b>source de lumière</b> principale, sa <b>température</b>, et distingue une <b>ombre propre</b> d'une <b>ombre portée</b>.</li>
+                <li>Remplis le sujet principal en noir (silhouette) et juge sa lisibilité.</li>
+                <li>Note <b>une</b> chose à corriger sur ton propre rendu, et applique-la.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais dire, sur les deux images, où se situe le point focal et <em>par quel moyen</em> (valeur, saturation, lignes) il est créé.</li>
+                  <li>Tu nommes l'harmonie colorée et tu pointes la couleur d'accent.</li>
+                  <li>Tu distingues correctement ombre propre et ombre portée, et tu identifies la température de la lumière directe.</li>
+                  <li>Le sujet de chaque image reste reconnaissable en silhouette noire — ou tu sais expliquer pourquoi il ne l'est pas.</li>
+                  <li>Tu as appliqué une correction concrète à ton rendu et tu peux justifier <em>pourquoi</em> elle l'améliore.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>On raisonne la couleur en <b>TSV</b> (teinte / saturation / valeur)&nbsp;: chaque intention artistique = un seul curseur.</li>
+                <li>La <b>valeur</b> est le squelette de l'image&nbsp;; le <b>test en niveaux de gris</b> est ton premier réflexe de diagnostic.</li>
+                <li>Les <b>harmonies</b> (complémentaire, analogue, triadique) + le dosage <b>60/30/10</b> avec une <b>couleur d'accent</b> donnent des palettes lisibles.</li>
+                <li>La <b>composition</b> guide le regard&nbsp;: point focal par contraste, lignes directrices, équilibre — valable même pour une UI.</li>
+                <li>Le volume naît de la lumière&nbsp;: distingue <b>ombre propre</b> (douce) et <b>ombre portée</b> (bord net), pense <b>lumière réfléchie</b> et contraste de <b>température</b>.</li>
+                <li>Un bon asset passe le <b>test de la silhouette</b>&nbsp;: il se lit en noir, à contre-jour.</li>
+                <li>En PBR, l'<b>albedo</b> ne contient <em>jamais</em> de lumière ni d'ombre peintes&nbsp;: le moteur s'en charge.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>TSV / HSV</b> — Modèle de couleur à trois axes&nbsp;: Teinte (la couleur, un angle), Saturation (l'intensité) et Valeur (la luminosité). Plus intuitif que le RVB pour peindre.</p>
+              <p><b>Teinte</b> — Position de la couleur sur la roue chromatique, exprimée en degrés (rouge 0°, vert 120°, bleu 240°).</p>
+              <p><b>Saturation</b> — Pureté ou intensité d'une couleur&nbsp;: 0&nbsp;% = gris, 100&nbsp;% = couleur éclatante.</p>
+              <p><b>Valeur</b> — Quantité de lumière d'une couleur, du noir au plus clair&nbsp;; donnée structurelle la plus importante d'une image.</p>
+              <p><b>Harmonie colorée</b> — Relation géométrique entre teintes sur la roue (complémentaire à 180°, analogue voisines, triadique à 120°) produisant une palette cohérente.</p>
+              <p><b>Couleur d'accent</b> — Teinte vive et minoritaire (les 10&nbsp;% du dosage 60/30/10) qui attire l'œil et sert souvent de signalétique en jeu.</p>
+              <p><b>Contraste de valeur</b> — Écart de luminosité entre zones voisines&nbsp;; il crée la séparation et la profondeur indépendamment de la couleur.</p>
+              <p><b>Point focal</b> — Endroit où l'œil se pose en premier, créé par le plus fort contraste et la convergence des lignes directrices.</p>
+              <p><b>Ombre propre</b> — Zone sombre d'un objet qui n'est pas tournée vers la lumière&nbsp;; transition douce qui révèle le volume.</p>
+              <p><b>Ombre portée</b> — Ombre projetée par un objet sur une autre surface&nbsp;; ancre l'objet dans la scène.</p>
+              <p><b>Température de couleur</b> — Tendance d'une lumière vers le chaud (oranges) ou le froid (bleus)&nbsp;; outil clé d'ambiance et de profondeur.</p>
+              <p><b>Silhouette</b> — Contour rempli en noir d'un objet&nbsp;; première information lue par le cerveau et test de lisibilité d'un asset.</p>
+              <p><b>Albedo</b> — Texture de couleur de base en PBR, qui ne doit contenir aucune lumière ni ombre incrustée.</p>
+              <p>Consulte le <a href="../../glossaire.html">glossaire global</a> pour les termes transversaux (RVB, alpha, occlusion ambiante, PBR…).</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a> &nbsp;: comment la couleur est stockée (RVB, profondeur, sRGB vs linéaire).</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a> &nbsp;: pourquoi l'albedo doit rester «&nbsp;plat&nbsp;» et comment le moteur calcule la lumière.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a> &nbsp;: cuire l'occlusion ambiante et les ombres de contact en texture.</li>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a> &nbsp;: traduire couleur et lumière en propriétés de surface.</li>
+              <li><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage (Unity)</a> et <a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage (Unreal)</a> &nbsp;: appliquer température et types de lumière dans un moteur.</li>
+              <li><a href="../../cours/logiciels/l03-logiciels-2d.html">L3 — Logiciels 2D</a> &nbsp;: les outils pour tester valeurs et palettes.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C2 — Transférer des assets entre moteurs · Atelier Game Art</title>
+  <meta name="description" content="Transférer des assets de Blender vers Unity/Unreal et entre moteurs : conventions d'échelle et d'axes, formats, et pièges fréquents.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="c02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/comparaison/c01-unity-vs-unreal.html">Comparaison</a><span class="sep">/</span>
+            <span>Transférer des assets</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>C2 — Transférer des assets entre moteurs</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 6 · Comparaison</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3 — Formats de fichiers</a> et <a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a> (export).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Gérer l'<b>échelle</b> entre Blender, Unity (mètres) et Unreal (centimètres) — le piège n°1.</li>
+                <li>Comprendre les <b>systèmes d'axes</b> différents et corriger l'orientation.</li>
+                <li>Choisir le bon <b>format</b> de transfert et exporter un FBX/glTF propre.</li>
+                <li>Savoir que les <b>matériaux ne se transfèrent pas tels quels</b> et qu'il faut les reconstruire.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un asset voyage&nbsp;: il naît dans Blender, se texture dans Substance, et atterrit dans Unity ou Unreal. À chaque frontière, des conventions différentes (échelle, axes, espaces colorimétriques) peuvent le faire arriver <b>100&nbsp;fois trop grand</b>, <b>couché sur le côté</b> ou avec un relief inversé. Ces bugs paraissent mystérieux mais ils ont des causes précises et des correctifs simples. Maîtriser le transfert, c'est éviter des heures de «&nbsp;pourquoi mon perso fait 200&nbsp;mètres de haut&nbsp;».</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'échelle&nbsp;: le piège n°1</h3>
+            <p>Les logiciels n'ont pas la même unité de base&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Logiciel</th><th>Unité de base</th><th>Conséquence</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Blender</b></td><td>1 unité = 1 mètre</td><td>Référence «&nbsp;humaine&nbsp;».</td></tr>
+                  <tr><td><b>Unity</b></td><td>1 unité = 1 mètre</td><td>Cohérent avec Blender (en théorie).</td></tr>
+                  <tr><td><b>Unreal</b></td><td>1 unité (uu) = 1 centimètre</td><td>Un cube de 1&nbsp;m dans Blender devient 1&nbsp;cm dans Unreal s'il n'est pas converti.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>D'où le fameux facteur <b>×100</b> (ou ÷100) lors d'un transfert mal réglé. Les bons réflexes&nbsp;: dans Blender, <b>appliquer les transforms</b> avant export (<span class="menu-path">Object<span class="arrow">▸</span>Apply<span class="arrow">▸</span>All Transforms</span>, ou <span class="kbd">Ctrl</span>+<span class="kbd">A</span>) pour repartir d'une échelle 1&nbsp;; à l'export FBX, cocher <em>Apply Unit</em> / régler le <em>Scale</em>&nbsp;; à l'import, vérifier le <em>Scale Factor</em> (Unity) ou l'<em>Import Uniform Scale</em> (Unreal). Le glTF gère mieux les unités nativement.</p>
+
+            <h3>2. Les systèmes d'axes&nbsp;: qui regarde où&nbsp;?</h3>
+            <p>Chaque logiciel définit «&nbsp;le haut&nbsp;» et «&nbsp;l'avant&nbsp;» différemment&nbsp;:</p>
+            <ul>
+              <li><b>Blender</b>&nbsp;: <b>Z vers le haut</b>, −Y vers l'avant.</li>
+              <li><b>Unity</b>&nbsp;: <b>Y vers le haut</b>, Z vers l'avant (repère gaucher).</li>
+              <li><b>Unreal</b>&nbsp;: <b>Z vers le haut</b>, X vers l'avant.</li>
+            </ul>
+            <p>Si l'export ne convertit pas, l'objet arrive <b>couché</b> ou tourné de 90°. Solutions&nbsp;: régler <em>Forward</em>/<em>Up</em> dans l'export FBX de Blender (souvent −Z forward, Y up pour viser le standard FBX), activer <em>Bake Axis Conversion</em>, ou corriger la rotation à l'import. L'essentiel est d'être <b>cohérent</b> et de vérifier l'orientation après import.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 220" role="img" aria-label="Systèmes d'axes de Blender, Unity et Unreal côte à côte">
+                <g stroke-width="2.4" font-size="11" class="svg-text">
+                  <!-- Blender -->
+                  <g transform="translate(110,120)">
+                    <text x="0" y="-78" text-anchor="middle" font-weight="700">Blender</text>
+                    <line x1="0" y1="0" x2="0" y2="-55" stroke="#59b0ff" marker-end="url(#caZ)"/><text x="6" y="-50" fill="#59b0ff">Z (haut)</text>
+                    <line x1="0" y1="0" x2="48" y2="22" stroke="#5ad19a"/><text x="40" y="40" fill="#5ad19a">Y</text>
+                    <line x1="0" y1="0" x2="50" y2="-14" stroke="#ff6b6b"/><text x="46" y="-18" fill="#ff6b6b">X</text>
+                  </g>
+                  <!-- Unity -->
+                  <g transform="translate(320,120)">
+                    <text x="0" y="-78" text-anchor="middle" font-weight="700">Unity</text>
+                    <line x1="0" y1="0" x2="0" y2="-55" stroke="#5ad19a"/><text x="6" y="-50" fill="#5ad19a">Y (haut)</text>
+                    <line x1="0" y1="0" x2="48" y2="22" stroke="#59b0ff"/><text x="40" y="40" fill="#59b0ff">Z</text>
+                    <line x1="0" y1="0" x2="50" y2="-14" stroke="#ff6b6b"/><text x="46" y="-18" fill="#ff6b6b">X</text>
+                  </g>
+                  <!-- Unreal -->
+                  <g transform="translate(530,120)">
+                    <text x="0" y="-78" text-anchor="middle" font-weight="700">Unreal</text>
+                    <line x1="0" y1="0" x2="0" y2="-55" stroke="#59b0ff"/><text x="6" y="-50" fill="#59b0ff">Z (haut)</text>
+                    <line x1="0" y1="0" x2="50" y2="-14" stroke="#ff6b6b"/><text x="44" y="-18" fill="#ff6b6b">X (avant)</text>
+                    <line x1="0" y1="0" x2="48" y2="22" stroke="#5ad19a"/><text x="40" y="40" fill="#5ad19a">Y</text>
+                  </g>
+                </g>
+                <text x="320" y="206" text-anchor="middle" class="svg-dim" font-size="11">« Haut » et « avant » diffèrent&nbsp;: sans conversion à l'export, l'objet arrive couché ou tourné.</text>
+              </svg>
+              <figcaption>Trois conventions d'axes&nbsp;: Blender et Unreal sont Z-up, Unity est Y-up. C'est la cause des objets «&nbsp;couchés&nbsp;» après import.</figcaption>
+            </figure>
+
+            <h3>3. Le bon format selon le besoin</h3>
+            <p>Rappel de <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>, appliqué au transfert&nbsp;:</p>
+            <ul>
+              <li><b>FBX</b>&nbsp;: le pivot universel, transporte maillage, UV, normales, squelette et animations. Le choix par défaut pour les personnages animés.</li>
+              <li><b>glTF/GLB</b>&nbsp;: ouvert, moderne, PBR natif, bonne gestion des unités&nbsp;; excellent pour le statique et l'échange.</li>
+              <li><b>OBJ</b>&nbsp;: statique simple uniquement (pas d'animation).</li>
+              <li><b>USD</b>&nbsp;: de plus en plus utilisé comme pivot de scène entre logiciels.</li>
+            </ul>
+
+            <h3>4. Ce qui ne se transfère PAS tel quel</h3>
+            <p>Point crucial&nbsp;: les <b>matériaux</b> ne suivent quasi jamais proprement d'un logiciel à l'autre. Un Principled BSDF de Blender n'est pas un URP Lit ni un Material Unreal. La bonne pratique&nbsp;: exporter le <b>mesh + UV</b> en FBX/glTF, exporter les <b>textures séparément</b> (depuis Substance, renvoi <a href="../../cours/logiciels/l02-substance.html">L2</a>), puis <b>reconstruire le matériau</b> dans le moteur (renvoi <a href="../../cours/unity/u06-materiaux.html">U6</a> / <a href="../../cours/unreal/e05-material-editor.html">E5</a>). Attention aussi&nbsp;: le packing diffère (Unity = Metallic + Smoothness où smoothness = 1 − roughness&nbsp;; Unreal = ORM), et la convention de normal map (OpenGL/Y+ côté Unity, DirectX/Y− côté Unreal — renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Le pivot/origine compte autant que l'échelle</div>
+              <p>Place l'<b>origine</b> de l'objet là où il doit pivoter (le pied d'un personnage, le gond d'une porte) <em>avant</em> l'export&nbsp;: dans le moteur, c'est ce point qui sert de centre de rotation et de position. Une origine décalée donne des rotations «&nbsp;folles&nbsp;».</p>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Exportons une caisse de Blender vers Unity ET Unreal proprement.</p>
+            <ol>
+              <li>Dans Blender&nbsp;: place l'origine de la caisse à sa base (<span class="menu-path">Object<span class="arrow">▸</span>Set Origin<span class="arrow">▸</span>Origin to Geometry/3D Cursor</span>), puis applique les transforms (<span class="kbd">Ctrl</span>+<span class="kbd">A</span> ▸ All Transforms).</li>
+              <li>Exporte en glTF&nbsp;: <span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>glTF 2.0</span>, en n'incluant que l'objet sélectionné. (Le glTF gère bien unités et axes.)</li>
+              <li><b>Vers Unity</b>&nbsp;: dépose le fichier dans le projet&nbsp;; vérifie l'échelle (1 unité = 1&nbsp;m, la caisse doit faire sa vraie taille) et l'orientation. Reconstruis le matériau URP Lit avec tes textures (renvoi <a href="../../cours/unity/u05-import-assets.html">U5</a>).</li>
+              <li><b>Vers Unreal</b>&nbsp;: importe&nbsp;; vérifie l'<em>Import Uniform Scale</em> (UE est en cm&nbsp;: la caisse doit faire la bonne taille, pas 1&nbsp;cm). Reconstruis le matériau (renvoi <a href="../../cours/unreal/e04-import-assets.html">E4</a>, <a href="../../cours/unreal/e05-material-editor.html">E5</a>) et n'oublie pas la convention de normal map.</li>
+              <li>Compare&nbsp;: même asset, deux moteurs, échelle et orientation correctes des deux côtés.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet arrive minuscule (ou gigantesque) dans Unreal.</div>
+                <div class="pi-cause"><b>Cause</b>Différence d'unité (Blender m → Unreal cm), facteur ×100/÷100, transforms non appliqués.</div>
+                <div class="pi-fix"><b>Correction</b>Applique l'échelle dans Blender, règle l'Import Uniform Scale, ou exporte en glTF.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon modèle est couché sur le côté ou tourné de 90°.</div>
+                <div class="pi-cause"><b>Cause</b>Systèmes d'axes différents (Z-up vs Y-up) non convertis à l'export.</div>
+                <div class="pi-fix"><b>Correction</b>Règle Forward/Up à l'export FBX (ou Bake Axis Conversion), ou corrige la rotation à l'import.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'objet tourne autour d'un point bizarre.</div>
+                <div class="pi-cause"><b>Cause</b>Origine/pivot décalé par rapport à la géométrie.</div>
+                <div class="pi-fix"><b>Correction</b>Repositionne l'origine au bon endroit dans Blender avant l'export.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes matériaux sont gris/roses, le relief est inversé.</div>
+                <div class="pi-cause"><b>Cause</b>Les matériaux ne se transfèrent pas&nbsp;; packing/normal map de convention différente.</div>
+                <div class="pi-fix"><b>Correction</b>Reconstruis les matériaux dans le moteur&nbsp;; respecte ORM (Unreal) / smoothness (Unity) et la convention de normal map.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Modélise (ou récupère) un objet simple avec un haut/bas et un avant clairs (ex. une chaise).</li>
+                <li>Exporte-le proprement et importe-le dans Unity ET Unreal&nbsp;: il doit avoir la bonne taille, la bonne orientation, le bon pivot dans les deux.</li>
+                <li>Reconstruis un matériau de base dans chaque moteur à partir des mêmes textures.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'échelle est correcte des deux côtés (l'objet n'est ni microscopique ni géant).</li>
+                  <li>L'orientation et le pivot sont justes.</li>
+                  <li>Tu sais expliquer pourquoi les matériaux doivent être refaits et ce qui change (packing, normal map).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Échelle</b>&nbsp;: Blender et Unity en mètres, Unreal en centimètres → applique les transforms et vérifie le scale à l'import (le ×100).</li>
+                <li><b>Axes</b>&nbsp;: Blender/Unreal Z-up, Unity Y-up → convertis à l'export pour ne pas arriver couché.</li>
+                <li><b>Format</b>&nbsp;: FBX pour l'animé, glTF pour le statique/échange, OBJ pour le figé simple.</li>
+                <li>Les <b>matériaux</b> se reconstruisent dans le moteur&nbsp;; attention au packing (ORM vs Smoothness) et à la convention de normal map.</li>
+                <li>Soigne aussi le <b>pivot/origine</b> avant export.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Unité de scène</b> — taille de base d'un logiciel (Blender/Unity&nbsp;: 1&nbsp;m&nbsp;; Unreal&nbsp;: 1&nbsp;cm).</p>
+              <p><b>Système d'axes (Z-up / Y-up)</b> — convention définissant le haut et l'avant&nbsp;; cause des objets couchés à l'import.</p>
+              <p><b>Apply Transforms</b> — figer position/rotation/échelle d'un objet (échelle 1) avant export.</p>
+              <p><b>Pivot / origine</b> — point autour duquel l'objet tourne et se positionne dans le moteur.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3 — Formats de fichiers</a>&nbsp;: ce que transporte chaque format.</li>
+              <li><a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a>&nbsp;: l'export FBX/glTF propre en détail.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5</a> &amp; <a href="../../cours/unreal/e04-import-assets.html">E4</a>&nbsp;: les réglages d'import côté moteur.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

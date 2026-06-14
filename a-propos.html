@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À propos &amp; comment utiliser · Atelier Game Art</title>
+  <meta name="description" content="Comment utiliser ce cours hors-ligne, prérequis matériels et logiciels, et méthode d'apprentissage conseillée.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <article class="content">
+        <div class="prose">
+          <nav class="breadcrumb"><a href="index.html">Accueil</a><span class="sep">/</span><span>À propos</span></nav>
+          <h1>À propos &amp; comment utiliser le site</h1>
+
+          <h2>Ce que tu vas apprendre</h2>
+          <p>Ce site est un cours complet de <b>création de graphismes et d'assets pour le jeu vidéo</b>. Il part des bases (le pixel, la couleur, la topologie) et va jusqu'à l'intégration dans les deux moteurs majeurs&nbsp;: <b>Unity&nbsp;6.3 LTS</b> et <b>Unreal&nbsp;Engine&nbsp;5.7</b>. L'objectif est de t'expliquer <b>pourquoi</b> les choses fonctionnent ainsi, pas seulement quelle case cocher.</p>
+
+          <div class="callout astuce">
+            <div class="callout-title"><span class="ico">💡</span>Méthode conseillée</div>
+            <p>Suis la <b>Piste&nbsp;0 (Fondamentaux)</b> en premier, dans l'ordre&nbsp;: tout le reste s'appuie dessus. Ensuite, fais la <b>Piste&nbsp;1 (Logiciels)</b> pour un panorama des outils, puis approfondis l'outil 3D gratuit avec la <b>Piste&nbsp;2 (Blender)</b>, de A à Z. Choisis alors ton moteur (Piste&nbsp;3 Unity, Piste&nbsp;4 Unreal <em>ou</em> Piste&nbsp;5 Godot — le moteur libre)&nbsp;; la <b>Piste&nbsp;6</b> t'aide justement à choisir. Coche «&nbsp;Leçon terminée&nbsp;» au fur et à mesure&nbsp;: ta progression s'affiche dans la barre latérale.</p>
+          </div>
+
+          <h2>100% local, 100% hors-ligne</h2>
+          <p>Ce site fonctionne en ouvrant <span class="term">index.html</span> par un simple double-clic, <b>sans serveur ni connexion internet</b>. Tout est embarqué&nbsp;: aucune police distante, aucune librairie en ligne, aucun appel réseau. Tu peux le consulter en mode avion, l'archiver sur une clé USB, l'imprimer.</p>
+          <ul>
+            <li><b>Progression&nbsp;:</b> enregistrée dans le <span class="gloss">localStorage</span> de <em>ce</em> navigateur. Elle ne te suit pas d'un appareil à l'autre, et se vide si tu effaces les données du site.</li>
+            <li><b>Thème clair/sombre&nbsp;:</b> bouton en haut à droite, préférence mémorisée.</li>
+            <li><b>Recherche&nbsp;:</b> touche <span class="kbd">/</span> (ou <span class="kbd">Ctrl</span>+<span class="kbd">K</span>) pour chercher une leçon ou un terme.</li>
+            <li><b>Impression&nbsp;:</b> chaque leçon a une mise en page d'impression propre (<span class="kbd">Ctrl</span>+<span class="kbd">P</span>).</li>
+          </ul>
+          <p style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <button id="reset-progress" class="btn btn-ghost" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"/><path d="M3 3v5h5"/></svg>
+              Réinitialiser ma progression
+            </button>
+            <span style="font-size:.85rem;color:var(--text-faint)">Efface les leçons cochées « terminées » dans ce navigateur.</span>
+          </p>
+
+          <h2>Prérequis matériels</h2>
+          <p>Tu n'as <b>pas</b> besoin d'une machine surpuissante pour <em>apprendre</em>, mais la 3D temps réel est gourmande. Voici des repères réalistes&nbsp;:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Élément</th><th>Minimum confortable</th><th>Pourquoi</th></tr></thead>
+              <tbody>
+                <tr><td><b>Carte graphique (GPU)</b></td><td>GPU dédié avec 4–6 Go de VRAM</td><td>Unreal (Lumen/Nanite) et Unity HDRP sollicitent fortement le GPU et la mémoire vidéo.</td></tr>
+                <tr><td><b>Mémoire vive (RAM)</b></td><td>16 Go (32 Go idéal)</td><td>Les moteurs, Blender et Substance ouverts en même temps consomment beaucoup.</td></tr>
+                <tr><td><b>Stockage</b></td><td>SSD, 50–100 Go libres</td><td>Un projet Unreal et ses caches pèsent vite plusieurs dizaines de Go.</td></tr>
+                <tr><td><b>Écran</b></td><td>1080p calibré</td><td>Pour juger correctement les valeurs et les couleurs (voir <a href="cours/fondamentaux/f01-image-numerique.html">F1</a>).</td></tr>
+                <tr><td><b>Périphérique</b></td><td>Souris à molette ; tablette graphique pour le texturing</td><td>La navigation 3D et la peinture de textures gagnent énormément avec le bon matériel.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout info">
+            <div class="callout-title"><span class="ico">ℹ️</span>Logiciels utilisés (tous installables gratuitement pour apprendre)</div>
+            <p><b>Blender</b> (gratuit), <b>Krita</b>/<b>GIMP</b> (gratuits) pour la 2D, <b>Unity</b> (licence Personal gratuite), <b>Unreal&nbsp;Engine</b> (gratuit, royalties seulement au-delà d'1&nbsp;M$). <b>Substance 3D</b> est payant mais des alternatives sont indiquées. Les versions exactes sont précisées dans chaque leçon concernée pour rester repérables dans le temps.</p>
+          </div>
+
+          <h2>Conventions de lecture</h2>
+          <p>Les encadrés colorés t'aident à repérer l'information&nbsp;:</p>
+          <div class="callout objectif"><div class="callout-title"><span class="ico">🎯</span>Objectif</div><p>Ce que tu sauras faire à la fin d'une leçon.</p></div>
+          <div class="callout info"><div class="callout-title"><span class="ico">ℹ️</span>Info / Définition</div><p>Un point de contexte ou la définition d'un terme.</p></div>
+          <div class="callout astuce"><div class="callout-title"><span class="ico">💡</span>Astuce</div><p>Un raccourci ou une bonne pratique de pro.</p></div>
+          <div class="callout piege"><div class="callout-title"><span class="ico">⚠️</span>Piège courant</div><p>Une erreur fréquente, sa cause et sa correction.</p></div>
+          <div class="callout pratique"><div class="callout-title"><span class="ico">🔧</span>Pratique</div><p>Un exercice, avec ses critères de réussite.</p></div>
+          <div class="callout retenir"><div class="callout-title"><span class="ico">📌</span>À retenir</div><p>Le récapitulatif essentiel d'une leçon.</p></div>
+
+          <h2>Honnêteté sur les versions</h2>
+          <p>Le logiciel évolue vite. Au moment de la rédaction (juin&nbsp;2026)&nbsp;: <b>Unity&nbsp;6.3 LTS</b>, <b>Unreal&nbsp;Engine&nbsp;5.7</b> (UE6 annoncé mais pas encore téléchargeable), et la marketplace unifiée <b>Fab</b> qui a remplacé l'ancienne Unreal Marketplace, Quixel.com, le Sketchfab Store et l'ArtStation Marketplace. Les interfaces peuvent légèrement bouger&nbsp;: les <em>principes</em> expliqués ici, eux, restent valables.</p>
+
+          <p style="margin-top:2em"><a class="btn btn-primary" href="cours/fondamentaux/f01-image-numerique.html">Commencer la première leçon
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></p>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/site-data.js"></script>
+  <script src="js/glossaire-data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/main.js"></script>
+  <script src="assets/vendor/highlight-mini.js"></script>
+  <script>
+    (function () {
+      var rp = document.getElementById("reset-progress");
+      if (!rp || !window.Progress) return;
+      rp.addEventListener("click", function () {
+        if (confirm("Réinitialiser toute ta progression ?\nCette action décoche toutes les leçons marquées comme terminées dans ce navigateur. Elle est irréversible.")) {
+          window.Progress.reset();
+          if (window.refreshSidebarProgress) window.refreshSidebarProgress();
+          var old = rp.innerHTML;
+          rp.innerHTML = "Progression réinitialisée ✓";
+          setTimeout(function () { rp.innerHTML = old; }, 1900);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

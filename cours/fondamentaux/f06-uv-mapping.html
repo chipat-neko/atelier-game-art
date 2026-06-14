@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F6 — UV mapping en profondeur · Atelier Game Art</title>
+  <meta name="description" content="UV, seams, unwrap, packing, texel density et UDIM : comprendre pourquoi un mauvais UV ruine n'importe quelle texture.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>UV mapping en profondeur</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F6 — UV mapping en profondeur</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a> et <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Définir précisément une <b>coordonnée UV</b> et expliquer <em>pourquoi</em> elle relie une surface 3D à une image 2D dans l'espace normalisé <code>0–1</code>.</li>
+                <li>Décider <em>où</em> placer les <b>coutures</b> (<span class="term">seams</span>) en arbitrant entre distorsion et nombre de coutures, et dire pourquoi une couture crée une discontinuité visible.</li>
+                <li>Comprendre ce que fait un <b>dépliage</b> (<span class="term">unwrap</span>), la différence entre projection <b>angle-based</b> et <b>conformal (LSCM)</b>, et vérifier l'étirement avec une <b>checker map</b>.</li>
+                <li>Ranger les <b>îlots</b> dans le carré <code>0–1</code> (<span class="term">packing</span>) avec une <b>marge</b> (padding) suffisante pour éviter le <span class="term">bleeding</span> entre mipmaps.</li>
+                <li>Calculer et homogénéiser la <b>densité de texels</b> (texel density) pour une netteté cohérente, et savoir quand passer aux tuiles <span class="term">UDIM</span>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Une texture est une image plate. Un modèle 3D est une surface dans l'espace. Entre les deux, il faut un <b>plan d'adressage</b> qui dise, pour chaque point du modèle, quel pixel de l'image lui colle dessus. Ce plan, ce sont les <span class="gloss">UV</span>. Sans UV, ta texture la plus magnifique ne sait littéralement pas où se poser&nbsp;: elle bave, s'étire, se répète n'importe comment.</p>
+            <p>Dans un pipeline de production, le dépliage UV est le <b>maillon silencieux</b> entre la modélisation (<a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>) et tout ce qui touche au <i>look</i>&nbsp;: la peinture de textures, le <a href="../../cours/fondamentaux/f08-baking.html">baking</a> de normal maps (F8), les matériaux <a href="../../cours/fondamentaux/f07-pbr.html">PBR</a> (F7). C'est aussi une étape redoutée parce qu'elle est invisible au client mais impitoyable&nbsp;: un mauvais UV ne se voit pas tant qu'on n'a pas texturé, et quand le défaut apparaît, il faut souvent <b>tout reprendre</b> — déplier <em>après</em> avoir peint, c'est repeindre.</p>
+            <p>Un studio juge la propreté d'un UV à trois critères&nbsp;: <b>étirement minimal</b> (la texture garde ses proportions), <b>coutures discrètes</b> (placées là où l'œil ne traîne pas), et <b>densité homogène</b> (deux objets côte à côte ont la même netteté). Maîtriser ces trois points, c'est livrer un asset qui «&nbsp;tient&nbsp;» dans n'importe quel moteur.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Qu'est-ce qu'une coordonnée UV&nbsp;?</h3>
+            <p>On appelle <b>coordonnée UV</b> une paire de nombres <code>(U, V)</code> attachée à chaque sommet du maillage, qui désigne un emplacement dans une image 2D. <b>U</b> est l'axe horizontal, <b>V</b> l'axe vertical. On utilise les lettres <i>U</i> et <i>V</i> tout simplement parce que <i>X, Y, Z</i> sont déjà prises par l'espace 3D&nbsp;: il fallait deux lettres libres pour le plan de la texture, et <i>U, V</i> (juste avant dans l'alphabet) se sont imposées par convention.</p>
+            <p>Le point crucial&nbsp;: cet espace est <b>normalisé</b>. Peu importe que ta texture fasse 512, 2&nbsp;048 ou 8&nbsp;192 pixels de côté, l'espace UV va toujours de <code>0</code> à <code>1</code>. <code>(0, 0)</code> est un coin (en bas à gauche dans Blender, en haut à gauche dans certains autres logiciels), <code>(1, 1)</code> le coin opposé. <code>(0.5, 0.5)</code> tombe pile au centre de l'image, quelle que soit sa résolution. C'est ce qui permet de changer la résolution d'une texture sans toucher au dépliage&nbsp;: les UV pointent vers des <em>proportions</em>, pas des pixels.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>UV ≠ pixels, et c'est volontaire</div>
+              <p>Comme l'espace UV est en <code>0–1</code>, un même dépliage marche avec une texture 1K en prototypage puis 4K en production. Le passage de la coordonnée UV au pixel concret est fait à la volée par le GPU&nbsp;: <code>pixel_x = U × largeur</code>. C'est exactement l'idée d'<a href="../../cours/fondamentaux/f01-image-numerique.html">image numérique</a> vue en F1, appliquée au mapping.</p>
+            </div>
+
+            <h4>L'analogie du carton qu'on déplie (et de l'écorché)</h4>
+            <p>Imagine une boîte en carton fermée. Pour l'imprimer à plat, tu la <b>déplies</b>&nbsp;: tu coupes le long de certaines arêtes avec un cutter, et tu rabats les six faces dans le plan jusqu'à obtenir un patron en croix. Le dépliage UV, c'est exactement ça&nbsp;: prendre une surface 3D et la <b>mettre à plat</b> dans le carré <code>0–1</code>. Les endroits où tu donnes un coup de cutter, ce sont les <b>coutures</b>.</p>
+            <p>L'autre image, plus crue mais très juste en game art, est l'<b>écorché</b> (le <i>skinning</i> au sens propre)&nbsp;: déplier un personnage, c'est comme retirer sa peau d'un seul tenant et l'étaler à plat sur une table. Là où tu coupes la peau pour pouvoir l'aplatir sans la déchirer, ce sont les coutures. C'est pour ça qu'on parle de <i>seams</i> (coutures, comme sur un vêtement)&nbsp;: une bonne couture UV se place là où une couture de vêtement irait — sous le bras, à l'intérieur des jambes, dans le dos.</p>
+
+            <h3>2. Les coutures (seams)&nbsp;: le grand compromis</h3>
+            <p>Une <b>couture</b> est une arête le long de laquelle le maillage est «&nbsp;découpé&nbsp;» dans l'espace UV. De part et d'autre d'une couture, la surface est séparée en deux morceaux distincts dans le plan&nbsp;: ce sont des <b>îlots</b> UV (<span class="term">UV islands</span>). Sans couture, impossible d'aplatir quoi que ce soit qui ne soit pas déjà plat — une sphère ou un visage refusera de s'étaler sans se déchirer ou s'étirer monstrueusement.</p>
+
+            <h4>Pourquoi une couture est un mal nécessaire</h4>
+            <p>Le dilemme fondamental du dépliage&nbsp;: <b>plus tu coupes, moins ça s'étire&nbsp;; moins tu coupes, plus c'est continu mais déformé.</b> Ce sont deux objectifs opposés.</p>
+            <ul>
+              <li><b>Beaucoup de coutures</b> → chaque morceau s'aplatit presque sans distorsion (la texture reste fidèle), mais tu multiplies les <b>discontinuités</b> et tu gaspilles de l'espace UV en marges.</li>
+              <li><b>Peu de coutures</b> → la texture est continue sur de grandes zones, mais les régions très courbes <b>s'étirent</b> et la texture y est déformée.</li>
+            </ul>
+            <p>Une couture n'est jamais «&nbsp;gratuite&nbsp;» visuellement&nbsp;: à l'endroit où passe une couture, la texture peut présenter une <b>cassure</b> — un léger décalage, une ligne visible, une teinture qui ne raccorde pas pile. Sur une normal map, une couture mal gérée peut même créer un liseré d'ombre. D'où la règle d'or&nbsp;: <b>on cache les coutures dans les zones peu vues</b>. Sous les aisselles, dans une rainure, à l'arrière d'un objet, le long d'une arête déjà dure. Jamais en plein milieu d'une joue ou sur le logo de face d'un produit.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Le réflexe «&nbsp;couture = arête dure&nbsp;»</div>
+              <p>Place tes coutures là où le modèle a déjà des <b>arêtes dures</b> (hard edges) ou des changements de matériau. L'œil accepte déjà une rupture à ces endroits, donc la discontinuité UV s'y fond. Sur un coffre en bois cerclé de métal, coupe pile sur la jointure bois/métal&nbsp;: la couture devient invisible <em>et</em> sert de frontière de matériau.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Un cube 3D déplié en patron en croix dans le carré UV 0 à 1, avec les coutures en surbrillance orange">
+                <text x="20" y="24" class="svg-text" font-weight="700" font-size="14">Le cube en 3D</text>
+                <!-- cube 3D -->
+                <g transform="translate(30,40)">
+                  <polygon points="60,30 170,30 170,140 60,140" class="svg-surface" fill="#59b0ff" fill-opacity="0.12" stroke="#313c4c" stroke-width="2"/>
+                  <polygon points="60,30 100,8 210,8 170,30" fill="#59b0ff" fill-opacity="0.22" stroke="#313c4c" stroke-width="2"/>
+                  <polygon points="170,30 210,8 210,118 170,140" fill="#59b0ff" fill-opacity="0.05" stroke="#313c4c" stroke-width="2"/>
+                  <!-- seams highlighted -->
+                  <line x1="60" y1="30" x2="170" y2="30" stroke="#f2b441" stroke-width="3.5"/>
+                  <line x1="60" y1="30" x2="60" y2="140" stroke="#f2b441" stroke-width="3.5"/>
+                  <line x1="170" y1="30" x2="210" y2="8" stroke="#f2b441" stroke-width="3.5"/>
+                  <text x="135" y="172" text-anchor="middle" class="svg-dim" font-size="11">coutures = coups de cutter</text>
+                </g>
+                <!-- arrow -->
+                <text x="305" y="100" text-anchor="middle" class="svg-text" font-size="26" fill="#5ad19a">▸</text>
+                <text x="305" y="120" text-anchor="middle" class="svg-dim" font-size="10">déplier</text>
+                <!-- UV square -->
+                <text x="350" y="24" class="svg-text" font-weight="700" font-size="14">Le patron dans l'espace UV</text>
+                <g transform="translate(360,38)">
+                  <rect x="0" y="0" width="240" height="240" class="svg-surface" fill-opacity="0" stroke="#313c4c" stroke-width="1.5"/>
+                  <!-- croix : faces -->
+                  <g stroke="#f2b441" stroke-width="2.5" fill="#5ad19a" fill-opacity="0.16">
+                    <rect x="80" y="0" width="80" height="60"/>
+                    <rect x="0" y="60" width="80" height="80"/>
+                    <rect x="80" y="60" width="80" height="80"/>
+                    <rect x="160" y="60" width="80" height="80"/>
+                    <rect x="80" y="140" width="80" height="80"/>
+                    <rect x="80" y="220" width="80" height="20"/>
+                  </g>
+                  <text x="120" y="105" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">avant</text>
+                  <text x="40" y="105" text-anchor="middle" class="svg-text" font-size="10">gauche</text>
+                  <text x="200" y="105" text-anchor="middle" class="svg-text" font-size="10">droite</text>
+                  <text x="120" y="35" text-anchor="middle" class="svg-text" font-size="10">dessus</text>
+                  <!-- origin labels -->
+                  <text x="-4" y="252" class="svg-dim" font-size="11" font-weight="700" fill="#59b0ff">(0,0)</text>
+                  <text x="208" y="-6" class="svg-dim" font-size="11" font-weight="700" fill="#59b0ff">(1,1)</text>
+                </g>
+              </svg>
+              <figcaption>On coupe le cube le long de certaines arêtes (en orange), puis on aplatit les six faces dans le carré <code>0–1</code>. Le coin <code>(0,0)</code> et le coin <code>(1,1)</code> bornent l'espace UV&nbsp;; tout îlot doit tenir à l'intérieur.</figcaption>
+            </figure>
+
+            <h3>3. Le dépliage (unwrap)&nbsp;: comment la machine aplatit</h3>
+            <p><b>Déplier</b>, c'est calculer, pour chaque sommet, sa position <code>(U, V)</code> dans le plan, en respectant au mieux deux contraintes contradictoires&nbsp;: ne pas <b>étirer</b> (les longueurs doivent être préservées) et ne pas <b>cisailler</b> (les angles doivent être préservés). Sur une surface courbe, on ne peut pas avoir les deux parfaitement à la fois — c'est mathématiquement impossible d'aplatir une sphère sans déformation, comme le sait tout cartographe. Les algorithmes choisissent donc lequel privilégier.</p>
+
+            <h4>Projection simple vs dépliage assisté</h4>
+            <p>Le plus basique est la <b>projection</b>&nbsp;: on «&nbsp;photographie&nbsp;» le modèle depuis un axe (projection planaire), depuis un cylindre ou une sphère, et on prend cette image comme UV. Rapide, parfait pour une forme qui colle au volume projeté (un mur → planaire, un tuyau → cylindrique), mais catastrophique sur une forme organique&nbsp;: les flancs perpendiculaires à l'axe de projection s'écrasent en une ligne.</p>
+            <p>Pour les formes complexes, on utilise des <b>solveurs de dépliage</b> qui, à partir des coutures que <em>tu</em> as posées, calculent la mise à plat optimale. Deux familles dominent&nbsp;:</p>
+            <ul>
+              <li><b>Conformal — LSCM</b> (<i>Least Squares Conformal Maps</i>)&nbsp;: privilégie la <b>préservation des angles</b>. Les formes locales restent fidèles (un carré reste un carré), mais les tailles relatives entre zones peuvent dériver. C'est une méthode «&nbsp;Unwrap&nbsp;» classique de Blender. Robuste, prévisible, idéale quand tu as posé de bonnes coutures.</li>
+              <li><b>Angle-based — ABF</b> (<i>Angle Based Flattening</i>)&nbsp;: travaille directement à minimiser la distorsion d'angle de chaque triangle. Souvent un poil plus fidèle que LSCM sur des surfaces très bombées, au prix d'un calcul plus lourd. C'est l'option par défaut de l'Unwrap de Blender.</li>
+            </ul>
+            <p>Dans la pratique, tu ne codes rien&nbsp;: tu choisis la méthode dans un menu, tu poses des coutures intelligentes, et tu laisses le solveur faire. Le travail d'artiste, c'est <b>où couper</b> — l'algorithme s'occupe du calcul.</p>
+
+            <h4>La checker map&nbsp;: le détecteur d'étirement</h4>
+            <p>Comment voir si un dépliage étire&nbsp;? On applique une <b>checker map</b> (texture en damier de carrés colorés régulier). La règle de lecture est limpide&nbsp;:</p>
+            <ul>
+              <li><b>Carrés restés carrés et de taille égale partout</b> → dépliage sain, densité homogène.</li>
+              <li><b>Carrés devenus rectangles</b> → <b>étirement</b> dans une direction (la texture sera tirée).</li>
+              <li><b>Carrés plus gros à un endroit qu'à un autre</b> → <b>densité de texels incohérente</b> (cette zone aura une texture plus floue).</li>
+            </ul>
+            <p>La checker map est l'outil de diagnostic numéro un. On l'allume <em>avant</em> de peindre quoi que ce soit, on corrige les coutures et la densité tant que le damier n'est pas propre, puis seulement on texture.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Comparaison d'une checker map sur un îlot bien proportionné aux carrés réguliers et sur un îlot étiré aux carrés déformés en rectangles">
+                <text x="20" y="22" class="svg-text" font-weight="700" font-size="14">Dépliage SAIN</text>
+                <text x="20" y="40" class="svg-dim" font-size="11">damier régulier → 0 étirement</text>
+                <!-- good checker -->
+                <g transform="translate(30,54)">
+                  <rect x="0" y="0" width="200" height="180" fill="none" stroke="#5ad19a" stroke-width="2.5"/>
+                  <g>
+                    <rect x="0" y="0" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="80" y="0" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="160" y="0" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="40" y="36" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="120" y="36" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="0" y="72" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="80" y="72" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="160" y="72" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="40" y="108" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="120" y="108" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="0" y="144" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="80" y="144" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                    <rect x="160" y="144" width="40" height="36" fill="#5ad19a" fill-opacity="0.35"/>
+                  </g>
+                  <g stroke="#313c4c" stroke-width="0.8" opacity="0.6">
+                    <line x1="40" y1="0" x2="40" y2="180"/><line x1="80" y1="0" x2="80" y2="180"/><line x1="120" y1="0" x2="120" y2="180"/><line x1="160" y1="0" x2="160" y2="180"/>
+                    <line x1="0" y1="36" x2="200" y2="36"/><line x1="0" y1="72" x2="200" y2="72"/><line x1="0" y1="108" x2="200" y2="108"/><line x1="0" y1="144" x2="200" y2="144"/>
+                  </g>
+                </g>
+                <text x="430" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Dépliage ÉTIRÉ</text>
+                <text x="430" y="40" text-anchor="middle" class="svg-dim" font-size="11">carrés → rectangles : la texture est tirée</text>
+                <!-- stretched checker -->
+                <g transform="translate(340,54)">
+                  <polygon points="0,0 200,30 180,180 20,150" fill="none" stroke="#ff6b6b" stroke-width="2.5"/>
+                  <g fill="#ff6b6b" fill-opacity="0.30">
+                    <polygon points="0,0 50,7 47,45 0,38"/>
+                    <polygon points="100,15 150,22 146,60 96,53"/>
+                    <polygon points="50,45 100,52 96,90 47,83"/>
+                    <polygon points="150,60 200,67 196,105 146,98"/>
+                    <polygon points="0,76 47,83 44,121 0,114"/>
+                    <polygon points="96,91 146,98 142,136 92,129"/>
+                    <polygon points="44,121 92,129 88,167 40,159"/>
+                  </g>
+                  <g stroke="#313c4c" stroke-width="0.8" opacity="0.5">
+                    <line x1="50" y1="7" x2="44" y2="158"/><line x1="100" y1="15" x2="92" y2="166"/><line x1="150" y1="22" x2="142" y2="173"/>
+                    <line x1="3" y1="38" x2="190" y2="66"/><line x1="2" y1="76" x2="186" y2="103"/><line x1="20" y1="150" x2="180" y2="180"/>
+                  </g>
+                </g>
+                <text x="430" y="258" text-anchor="middle" class="svg-dim" font-size="10.5">à corriger avant de peindre</text>
+              </svg>
+              <figcaption>À gauche, les carrés du damier restent carrés et de même taille&nbsp;: la texture se posera sans déformation. À droite, ils s'allongent et changent de taille&nbsp;: la texture sera étirée et localement plus floue. La <b>checker map</b> rend l'invisible visible.</figcaption>
+            </figure>
+
+            <h3>4. Le packing&nbsp;: ranger les îlots dans le carré</h3>
+            <p>Une fois les morceaux aplatis, il faut les <b>ranger</b> dans le carré <code>0–1</code> sans qu'ils se chevauchent et en gaspillant le moins d'espace possible. C'est le <b>packing</b> (ou <i>layout</i>). Plus l'espace est rempli, plus chaque îlot reçoit de pixels donc de netteté&nbsp;: le packing influe directement sur la qualité finale.</p>
+
+            <h4>La marge (padding) et le bleeding</h4>
+            <p>On ne colle <b>jamais</b> deux îlots bord à bord. On laisse une <b>marge</b> (<span class="term">padding</span>, parfois appelée <i>gutter</i>) entre eux. Pourquoi&nbsp;? À cause de deux phénomènes&nbsp;:</p>
+            <ul>
+              <li>Le <b>filtrage bilinéaire</b> du GPU mélange un pixel avec ses voisins. Au bord d'un îlot, il va piocher de la couleur dans l'îlot d'à côté&nbsp;: c'est le <b>bleeding</b> (bavure), un liseré parasite sur la couture.</li>
+              <li>Les <b>mipmaps</b> — les versions réduites de la texture, générées pour les objets lointains (voir <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>) — divisent la résolution par deux à chaque niveau. À chaque réduction, les îlots se «&nbsp;rapprochent&nbsp;» en pixels et finissent par se contaminer si la marge est trop fine. Plus l'objet est loin, plus la bavure est large.</li>
+            </ul>
+            <p>Règle pratique&nbsp;: une marge d'environ <b>4 pixels pour une texture 1K, 8 px pour 2K, 16 px pour 4K</b> (en gros, on garde la même marge <em>relative</em>). On accompagne d'un <b>dilate / edge padding</b> au moment de l'export des textures&nbsp;: on étale la couleur au-delà du bord de l'îlot pour nourrir les mipmaps. Substance et Blender le font automatiquement, mais il faut que la marge UV existe pour qu'ils aient de la place.</p>
+
+            <h4>Orientation et cohérence</h4>
+            <p>On oriente les îlots de façon <b>cohérente</b> (par exemple, le «&nbsp;haut&nbsp;» du modèle vers le haut de l'UV) pour deux raisons&nbsp;: faciliter la peinture manuelle (on s'y retrouve), et aligner le <b>grain</b> des textures directionnelles (bois, brossage métal) qui doit suivre le même sens partout. Pour des éléments répétés (les boulons d'une plaque), on peut volontairement <b>empiler</b> (overlap) les îlots identiques au même endroit&nbsp;: ils partagent les mêmes pixels, on économise de l'espace UV — c'est le seul chevauchement légitime, et il doit être <em>intentionnel</em>.</p>
+
+            <h3>5. La densité de texels (texel density)</h3>
+            <p>La <b>densité de texels</b> est le nombre de <b>pixels de texture par unité de surface réelle</b> du modèle, exprimé en <b>px/cm</b> (ou px/m, ou texels/unité). C'est la mesure objective de la «&nbsp;netteté&nbsp;» d'une surface. Deux objets avec la même densité auront des textures aussi nettes l'une que l'autre&nbsp;; un objet à densité deux fois plus faible aura une texture deux fois plus floue, à distance de vue égale.</p>
+            <p>Le réflexe pro est d'<b>homogénéiser</b> la densité de texels sur tout un set d'assets&nbsp;: sans ça, un mur ultra net jouxtera une caisse toute molle, et l'œil le remarque immédiatement. On définit une cible projet (par exemple <b>10,24 px/cm</b>, soit 1024&nbsp;px pour un mètre) et tous les assets s'y tiennent. La plupart des studios ont une valeur de référence écrite dans leur <i>style guide</i> technique.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Plus de densité là où l'œil se pose</div>
+              <p>L'homogénéité est la règle, mais on s'autorise des exceptions <b>intentionnelles</b>&nbsp;: le visage d'un héros vu en gros plan mérite plus de densité que la plante de ses pieds qu'on ne voit jamais. On parle de budget&nbsp;: on <em>investit</em> les pixels là où la caméra regarde. Une arme tenue en main (vue de très près) reçoit souvent une densité bien supérieure à un décor lointain.</p>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type d'asset</th><th>Densité indicative</th><th>Pourquoi</th></tr></thead>
+                <tbody>
+                  <tr><td>Décor lointain / skybox</td><td>~2–5 px/cm</td><td>Jamais vu de près&nbsp;: gaspiller des pixels serait inutile.</td></tr>
+                  <tr><td>Environnement jouable standard</td><td>~5–10 px/cm</td><td>Compromis netteté / coût mémoire pour les murs, sols, props.</td></tr>
+                  <tr><td>Personnage / arme vue en main</td><td>~10–20 px/cm</td><td>Vu de près en permanence&nbsp;: la netteté est critique.</td></tr>
+                  <tr><td>Gros plan ciné / héros</td><td>UDIM, &gt;20 px/cm</td><td>Le moindre pore doit être net en 4K.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>6. UDIM&nbsp;: quand un seul carré ne suffit plus</h3>
+            <p>L'espace <code>0–1</code> a une limite&nbsp;: une seule texture pour tout l'objet. Pour un héros de cinéma qu'on veut net en très haute résolution, une seule 4K ne donne pas assez de densité. La solution est le système <b>UDIM</b> (<i>U-Dimension</i>)&nbsp;: on étale le dépliage sur une <b>grille de tuiles</b> de <code>0–1</code> côte à côte, chacune portant sa propre texture.</p>
+            <p>Les tuiles sont numérotées selon une convention précise&nbsp;: la première, en bas à gauche, est <b>1001</b>. On avance vers la droite (1002, 1003, 1004… jusqu'à dix par rangée), puis on remonte d'une rangée à <b>1011</b>, et ainsi de suite. La formule&nbsp;: <code>1001 + U + (V × 10)</code> où U et V sont les indices de colonne et de rangée à partir de 0. Ainsi une tuile une rangée au-dessus de 1001 est 1011&nbsp;; deux colonnes à droite et une rangée au-dessus, c'est 1013.</p>
+            <ul>
+              <li><b>Quand l'utiliser&nbsp;:</b> cinéma, VFX, cinématiques, personnages héros&nbsp;— bref, quand la densité prime sur le coût temps réel.</li>
+              <li><b>Quand l'éviter&nbsp;:</b> le jeu temps réel classique. La plupart des moteurs gèrent mal ou coûteusement les UDIM en runtime&nbsp;; on préfère un seul atlas <code>0–1</code> bien packé, ou plusieurs matériaux séparés.</li>
+              <li><b>Comment&nbsp;:</b> on déplie normalement, puis on <em>déplace</em> des îlots entiers dans les tuiles voisines. Substance Painter et Mari peignent ensuite à travers les tuiles de façon transparente.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 240" role="img" aria-label="Grille de tuiles UDIM numérotées 1001 à 1004 sur la première rangée et 1011 à 1014 sur la deuxième">
+                <text x="20" y="22" class="svg-text" font-weight="700" font-size="14">Numérotation des tuiles UDIM</text>
+                <g transform="translate(40,40)">
+                  <!-- row 0 -->
+                  <g>
+                    <rect x="0" y="100" width="120" height="90" class="svg-surface" fill="#59b0ff" fill-opacity="0.14" stroke="#313c4c" stroke-width="1.5"/>
+                    <rect x="125" y="100" width="120" height="90" class="svg-surface" fill="#59b0ff" fill-opacity="0.08" stroke="#313c4c" stroke-width="1.5"/>
+                    <rect x="250" y="100" width="120" height="90" class="svg-surface" fill="#59b0ff" fill-opacity="0.08" stroke="#313c4c" stroke-width="1.5"/>
+                    <rect x="375" y="100" width="120" height="90" class="svg-surface" fill="#59b0ff" fill-opacity="0.08" stroke="#313c4c" stroke-width="1.5"/>
+                  </g>
+                  <!-- row 1 -->
+                  <g>
+                    <rect x="0" y="5" width="120" height="90" class="svg-surface" fill="#c89bff" fill-opacity="0.10" stroke="#313c4c" stroke-width="1.5"/>
+                    <rect x="125" y="5" width="120" height="90" class="svg-surface" fill="#c89bff" fill-opacity="0.10" stroke="#313c4c" stroke-width="1.5"/>
+                    <rect x="250" y="5" width="120" height="90" class="svg-surface" fill="#c89bff" fill-opacity="0.10" stroke="#313c4c" stroke-width="1.5"/>
+                    <rect x="375" y="5" width="120" height="90" class="svg-surface" fill="#c89bff" fill-opacity="0.10" stroke="#313c4c" stroke-width="1.5"/>
+                  </g>
+                  <!-- labels row 0 -->
+                  <text x="60" y="150" text-anchor="middle" class="svg-text" font-size="14" font-weight="700" fill="#59b0ff">1001</text>
+                  <text x="185" y="150" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1002</text>
+                  <text x="310" y="150" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1003</text>
+                  <text x="435" y="150" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1004</text>
+                  <!-- labels row 1 -->
+                  <text x="60" y="55" text-anchor="middle" class="svg-text" font-size="14" font-weight="700" fill="#c89bff">1011</text>
+                  <text x="185" y="55" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1012</text>
+                  <text x="310" y="55" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1013</text>
+                  <text x="435" y="55" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">1014</text>
+                  <!-- origin marker -->
+                  <circle cx="0" cy="190" r="5" fill="#f2b441"/>
+                  <text x="8" y="208" class="svg-dim" font-size="11" fill="#f2b441">origine (0,0) = tuile 1001</text>
+                  <text x="300" y="208" class="svg-dim" font-size="11">→ on remplit vers la droite, puis on remonte</text>
+                </g>
+              </svg>
+              <figcaption>La tuile <b>1001</b> est l'espace <code>0–1</code> classique. On numérote vers la droite, puis on saute à <b>1011</b> en montant d'une rangée. Chaque tuile porte sa propre texture&nbsp;: la densité grimpe sans limite, au prix de plusieurs fichiers et d'un coût temps réel élevé.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif&nbsp;: déplier proprement une caisse en bois dans Blender, vérifier l'absence d'étirement, puis packer le tout. On part d'un cube auquel on a donné un peu de relief.</p>
+            <ol>
+              <li><b>Passer en mode édition.</b> Sélectionne l'objet, appuie sur <code>Tab</code>. Tu vois maintenant les vertices, edges et faces. <em>Ce qui se passe&nbsp;:</em> Blender t'autorise à manipuler la géométrie et, surtout, à marquer des coutures.</li>
+              <li><b>Sélectionner les arêtes de coupe.</b> Passe en mode arête (<code>2</code>), puis sélectionne les arêtes où tu veux couper&nbsp;: typiquement les arêtes verticales arrière de la caisse, là où on ne regarde pas. <em>Ce qui se passe&nbsp;:</em> rien encore — tu désignes juste le futur tracé du cutter.</li>
+              <li><b>Marquer la couture.</b> <span class="menu-path">Edge<span class="arrow">▸</span>Mark Seam</span> (ou clic droit puis <i>Mark Seam</i>). Les arêtes choisies deviennent <b>rouges</b>. <em>Ce qui se passe&nbsp;:</em> tu as dit au solveur «&nbsp;c'est ici que la peau peut s'ouvrir pour s'aplatir&nbsp;».</li>
+              <li><b>Tout sélectionner et déplier.</b> <code>A</code> pour tout sélectionner, puis <span class="menu-path">UV<span class="arrow">▸</span>Unwrap</span> (méthode <i>Angle Based</i> par défaut). <em>Ce qui se passe&nbsp;:</em> Blender résout la mise à plat en respectant tes coutures et minimise l'étirement. Le résultat apparaît dans l'<b>UV Editor</b>.</li>
+              <li><b>Ouvrir l'UV Editor et activer la checker map.</b> Bascule sur l'espace de travail <span class="menu-path">UV Editing</span> (onglet en haut). Dans la vue 3D, en mode <i>Material Preview</i>, applique une texture damier&nbsp;: <span class="menu-path">Material<span class="arrow">▸</span>Base Color<span class="arrow">▸</span>Image Texture</span> puis génère une image de type <i>UV Grid</i> via <span class="menu-path">New<span class="arrow">▸</span>Generated<span class="arrow">▸</span>UV Grid</span>. <em>Ce qui se passe&nbsp;:</em> le damier se plaque sur la caisse&nbsp;; tu peux lire l'étirement.</li>
+              <li><b>Diagnostiquer.</b> Tourne autour de la caisse. Carrés réguliers&nbsp;? Parfait. Carrés étirés près d'une arête&nbsp;? Ajoute ou déplace une couture (étapes 2–4) et redéplie. <em>Ce qui se passe&nbsp;:</em> tu itères jusqu'à ce que le damier soit propre — c'est le vrai travail.</li>
+              <li><b>Vérifier la densité.</b> Active l'add-on <i>Texel Density Checker</i> (ou regarde la taille des carrés à l'œil)&nbsp;: tous les îlots doivent afficher des carrés de même taille. <em>Ce qui se passe&nbsp;:</em> tu garantis une netteté homogène.</li>
+              <li><b>Packer.</b> Dans l'UV Editor, <code>A</code> puis <span class="menu-path">UV<span class="arrow">▸</span>Pack Islands</span>. Règle la <b>marge</b> (par ex. 0,01–0,02 pour ~2K) dans le panneau d'options en bas à gauche. <em>Ce qui se passe&nbsp;:</em> Blender range automatiquement les îlots dans <code>0–1</code> en respectant la marge, ce qui évite le bleeding sur les mipmaps.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>&nbsp;: la texture est tirée, comme barbouillée le long d'une face.</div>
+                <div class="pi-cause"><b>Cause</b>&nbsp;: étirement — il manque une couture, le damier montre des rectangles au lieu de carrés.</div>
+                <div class="pi-fix"><b>Correction</b>&nbsp;: ajoute une couture dans la zone tendue (souvent une arête de forte courbure cachée) et redéplie. Vérifie avec la checker map.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>&nbsp;: deux parties du modèle reçoivent exactement le même motif, ou un détail peint déteint ailleurs.</div>
+                <div class="pi-cause"><b>Cause</b>&nbsp;: des îlots se <b>chevauchent</b> dans l'espace UV sans que ce soit voulu.</div>
+                <div class="pi-fix"><b>Correction</b>&nbsp;: dans l'UV Editor, active l'affichage des îlots et le <i>display stretching / overlap</i>&nbsp;; sépare les îlots ou repack. N'autorise le chevauchement que sur des éléments répétés <em>volontairement</em> empilés.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>&nbsp;: un liseré de mauvaise couleur apparaît sur les coutures quand l'objet s'éloigne.</div>
+                <div class="pi-cause"><b>Cause</b>&nbsp;: <b>padding insuffisant</b> — les mipmaps font baver les îlots voisins l'un sur l'autre (bleeding).</div>
+                <div class="pi-fix"><b>Correction</b>&nbsp;: augmente la marge au packing (4&nbsp;px/1K, 8&nbsp;px/2K, 16&nbsp;px/4K) et active le <i>dilate / edge padding</i> à l'export des textures.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>&nbsp;: un objet est net, l'objet voisin paraît flou alors qu'il a la même taille de texture.</div>
+                <div class="pi-cause"><b>Cause</b>&nbsp;: <b>densité de texels incohérente</b> — un îlot occupe moins d'espace UV par cm réel.</div>
+                <div class="pi-fix"><b>Correction</b>&nbsp;: mesure la densité (add-on Texel Density), fixe une cible projet et mets tous les îlots à l'échelle pour l'atteindre, puis repack.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Déplie une <b>caisse en bois</b> (cube avec quelques arêtes biseautées si tu veux) dans Blender, du marquage des coutures au packing final, en n'utilisant qu'une texture 2K.</p>
+              <ol>
+                <li>Marque les coutures uniquement sur les arêtes <b>arrière et inférieures</b> (zones peu vues).</li>
+                <li>Déplie en <i>Angle Based</i>, applique une <b>UV Grid</b> et tourne autour pour traquer l'étirement.</li>
+                <li>Corrige jusqu'à obtenir des carrés réguliers partout, puis packe avec une marge adaptée au 2K.</li>
+                <li>Note la densité de texels obtenue et compare-la à une cible de 10&nbsp;px/cm.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le damier affiche des <b>carrés</b> (pas de rectangles) sur <b>toutes</b> les faces&nbsp;: zéro étirement visible.</li>
+                  <li>Les carrés ont la <b>même taille</b> sur les six faces&nbsp;: densité homogène.</li>
+                  <li>Aucune couture n'est visible sur une face <b>vue de face</b>&nbsp;; elles sont toutes à l'arrière ou dessous.</li>
+                  <li>Les îlots ne se chevauchent pas et conservent une <b>marge visible</b> entre eux dans le carré <code>0–1</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une <b>coordonnée UV</b> <code>(U, V)</code> relie chaque sommet à un emplacement de l'image, dans l'espace <b>normalisé <code>0–1</code></b> indépendant de la résolution.</li>
+                <li>Le dépliage est un <b>compromis</b>&nbsp;: plus de coutures = moins d'étirement&nbsp;; on <b>cache les coutures</b> dans les zones peu vues et sur les arêtes dures.</li>
+                <li>La <b>checker map</b> est ton détecteur d'étirement&nbsp;: carrés réguliers = sain, rectangles = étirement, tailles inégales = densité incohérente.</li>
+                <li>Au <b>packing</b>, laisse une <b>marge (padding)</b> proportionnelle à la résolution pour éviter le <b>bleeding</b> des mipmaps.</li>
+                <li><b>Homogénéise la densité de texels</b> (px/cm) sur tout le set&nbsp;; passe aux <b>UDIM</b> seulement en ciné/perso héros, pas en jeu temps réel courant.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Coordonnée UV</b> — paire <code>(U, V)</code> attachée à un sommet, qui désigne un point de l'image 2D dans l'espace normalisé <code>0–1</code>.</p>
+              <p><b>Espace UV (0–1)</b> — repère normalisé où se range le dépliage&nbsp;; <code>(0,0)</code> et <code>(1,1)</code> en sont les coins, quelle que soit la résolution de la texture.</p>
+              <p><b>Couture (seam)</b> — arête le long de laquelle le maillage est découpé pour pouvoir s'aplatir&nbsp;; elle crée une discontinuité qu'on cache dans les zones peu visibles.</p>
+              <p><b>Îlot UV (island)</b> — morceau de surface aplati d'un seul tenant, délimité par des coutures.</p>
+              <p><b>Dépliage (unwrap)</b> — calcul de la mise à plat des sommets dans le plan UV en minimisant l'étirement et le cisaillement.</p>
+              <p><b>LSCM / Angle-based</b> — familles de solveurs de dépliage&nbsp;: LSCM préserve les angles (conformal), l'angle-based (ABF) minimise la distorsion d'angle de chaque triangle.</p>
+              <p><b>Checker map</b> — texture en damier régulier servant à diagnostiquer l'étirement et l'irrégularité de densité d'un dépliage.</p>
+              <p><b>Packing</b> — agencement des îlots dans le carré <code>0–1</code> sans chevauchement et avec un remplissage maximal.</p>
+              <p><b>Padding / bleeding</b> — la marge laissée entre îlots&nbsp;; le bleeding est la bavure de couleur entre îlots voisins causée par le filtrage et les mipmaps quand la marge manque.</p>
+              <p><b>Densité de texels (texel density)</b> — nombre de pixels de texture par unité de surface réelle (px/cm)&nbsp;; mesure objective de la netteté à homogénéiser.</p>
+              <p><b>UDIM</b> — système de tuiles <code>0–1</code> juxtaposées numérotées dès 1001, employé pour de très hautes densités (ciné, personnages héros).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>&nbsp;: comprendre comment l'UV est stocké par sommet.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a>&nbsp;: pourquoi un bon dépliage est indispensable avant de cuire une normal map.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>&nbsp;: comment les UV nourrissent les maps albedo, roughness, metallic.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: mipmaps, atlas et budget de texture en temps réel.</li>
+              <li><a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a> et <a href="../../cours/logiciels/l02-substance.html">L2 — Substance</a>&nbsp;: les outils de dépliage et de texturing en pratique.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

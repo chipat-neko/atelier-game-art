@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 — Substance 3D Painter & Designer · Atelier Game Art</title>
+  <meta name="description" content="Texturing PBR avec Substance 3D Painter & Designer : smart materials, peinture de textures, export des maps prêtes pour Unity et Unreal.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>Substance 3D Painter & Designer</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L2 — Substance 3D Painter & Designer</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 1 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>, <a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a> et <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV</a>.</div>
+          </header>
+
+          <div class="prose">
+
+<div class="callout objectif">
+  <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+  <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+  <ul>
+    <li>distinguer <b>Substance 3D Painter</b> (peinture sur le mesh) de <b>Substance 3D Designer</b> (matériaux procéduraux par nœuds) et choisir le bon outil selon la tâche&nbsp;;</li>
+    <li>monter un projet Painter propre&nbsp;: importer un low-poly avec ses <span class="gloss">UV</span> et <b>baker les mesh maps</b> (normal, AO, courbure, position…)&nbsp;;</li>
+    <li>expliquer <em>pourquoi</em> les mesh maps sont indispensables aux générateurs et aux smart materials&nbsp;;</li>
+    <li>construire une pile de calques non destructive&nbsp;: fill layer, masque, generator de courbure pour l'usure des arêtes&nbsp;;</li>
+    <li>appliquer un <b>smart material</b> et le faire vivre via un masque procédural&nbsp;;</li>
+    <li>exporter avec le bon preset (Unity URP / Unreal) et comprendre le <b>channel packing</b> (ORM) et le piège <b>roughness vs smoothness</b>.</li>
+  </ul>
+</div>
+
+<h2>Pourquoi c'est important</h2>
+<p>Dans un pipeline de production moderne, la modélisation (vue en <a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a>) ne produit qu'une <em>forme grise</em>. C'est le <b>texturing</b> qui donne la matière&nbsp;: le métal rayé, le bois patiné, la rouille qui coule des boulons. Substance 3D Painter et Designer sont devenus le standard de fait de cette étape dans le jeu vidéo et le cinéma, parce qu'ils sont entièrement <b>non destructifs</b> et entièrement <b>PBR</b> (voir <a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>).</p>
+<p>«&nbsp;Non destructif&nbsp;» veut dire que chaque coup de pinceau, chaque effet d'usure, vit sur un <b>calque</b> ou un <b>masque</b> qu'on peut réajuster à tout moment, sans repartir de zéro. C'est crucial en production&nbsp;: le directeur artistique demande «&nbsp;moins de rouille, plus de griffures&nbsp;» la veille de la livraison — avec une texture peinte à plat dans Photoshop, c'est une journée de retouches&nbsp;; dans Substance, c'est deux curseurs. Et comme la sortie est une série de <b>maps</b> (textures) au format PBR standard, le même travail alimente Unity, Unreal ou un moteur maison, sans repeindre.</p>
+<p>Designer, lui, sert à fabriquer des <b>matériaux 100&nbsp;% procéduraux</b> et <b>résolution-indépendants</b>&nbsp;: un sol de briques, un crépi, une tôle, définis par un graphe de nœuds qu'on peut réutiliser, paramétrer et exporter en 4K comme en 256&nbsp;px. C'est l'usine à textures de l'équipe&nbsp;; Painter en est l'atelier de finition sur l'objet.</p>
+
+<h2>Théorie en profondeur</h2>
+
+<h3>PBR&nbsp;: ce qu'on peint, en fait</h3>
+<p>Avant tout, rappelons ce qu'on produit. Une surface PBR (<span class="term">Physically Based Rendering</span>, rendu basé sur la physique) n'est pas «&nbsp;une image collée&nbsp;»&nbsp;: c'est un jeu de canaux qui décrivent la <em>physique</em> de la matière. Dans le modèle <b>Metallic/Roughness</b> (celui d'Unity et d'Unreal), on peint principalement&nbsp;:</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Canal</th><th>Ce qu'il décrit</th><th>Espace couleur</th></tr></thead>
+  <tbody>
+    <tr><td><b>Base Color</b> (albédo)</td><td>La couleur «&nbsp;pure&nbsp;» de la matière, sans ombre ni reflet</td><td>sRGB</td></tr>
+    <tr><td><b>Roughness</b></td><td>0 = miroir lisse, 1 = totalement mat</td><td>Linéaire</td></tr>
+    <tr><td><b>Metallic</b></td><td>0 = diélectrique (plastique, bois), 1 = métal pur</td><td>Linéaire</td></tr>
+    <tr><td><b>Normal</b></td><td>Faux relief encodé en RVB (voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>)</td><td>Linéaire</td></tr>
+    <tr><td><b>Height / AO / Emissive…</b></td><td>Détail de hauteur, occlusion, émission lumineuse</td><td>selon le canal</td></tr>
+  </tbody>
+</table></div>
+<p>Painter affiche en temps réel le résultat de ces canaux à travers un <b>shader PBR</b> dans son viewport&nbsp;: ce que tu vois ressemble très fortement à ce que le moteur affichera. C'est ce qu'on appelle un aperçu <span class="term">WYSIWYG</span> («&nbsp;ce que tu vois est ce que tu obtiens&nbsp;»).</p>
+
+<h3>Painter vs Designer&nbsp;: deux philosophies</h3>
+<p>Les deux logiciels partagent la même base technologique (le moteur Substance) mais répondent à deux questions différentes.</p>
+<h4>Painter — peindre sur l'objet</h4>
+<p>Painter charge <em>ton</em> mesh et te laisse peindre directement dessus en 3D, comme sur une maquette. Tu travailles par <b>calques</b> empilés (comme dans Photoshop) mais en 3D&nbsp;: chaque calque peut affecter plusieurs canaux à la fois (color + roughness + normal…). On l'utilise pour les <b>assets uniques</b>&nbsp;: une arme, un coffre, un personnage — tout ce qui a une histoire visuelle propre («&nbsp;cette épée a été rouillée <em>ici</em>, ébréchée <em>là</em>&nbsp;»).</p>
+<h4>Designer — fabriquer la matière</h4>
+<p>Designer ne connaît pas ton mesh. C'est un éditeur de graphes&nbsp;: tu connectes des <b>nœuds</b> (bruit, transformation, mélange, courbe…) pour générer une matière <em>tileable</em> (qui se répète sans couture). Le résultat est un fichier <span class="term">.sbsar</span> paramétrable. On l'utilise pour les <b>matériaux répétables</b> et les <b>bibliothèques d'équipe</b>&nbsp;: un mur, un sol, un tissu — réglables par curseurs et réutilisables sur mille objets.</p>
+<div class="callout info">
+  <div class="callout-title"><span class="ico">ℹ️</span>Ils se complètent</div>
+  <p>Le flux le plus courant&nbsp;: l'équipe crée des matériaux de base dans <b>Designer</b> (<span class="term">.sbsar</span>), les artistes les <em>appliquent et personnalisent</em> dans <b>Painter</b> sur chaque objet, puis exportent des maps figées pour le moteur. Cette leçon se concentre sur Painter, qui est l'outil quotidien de la majorité des graphistes 3D.</p>
+</div>
+
+<h3>Le rôle clé des mesh maps (le «&nbsp;pourquoi&nbsp;» central)</h3>
+<p>Un <b>mesh map</b> est une texture <em>calculée à partir de la géométrie</em> de ton objet&nbsp;: elle n'est pas peinte, elle est <b>bakée</b> (cuite) une fois au départ. Ce sont elles qui rendent Painter «&nbsp;intelligent&nbsp;». Sans elles, les générateurs procéduraux ne savent <em>rien</em> de la forme de ton objet et ne produisent que du gris uniforme.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Mesh map</th><th>Ce qu'elle encode</th><th>À quoi ça sert dans Painter</th></tr></thead>
+  <tbody>
+    <tr><td><b>Normal (du high-poly)</b></td><td>Le détail fin du modèle haute densité reporté sur le low-poly</td><td>Faux relief de base, alimente Curvature</td></tr>
+    <tr><td><b>Ambient Occlusion</b> (AO)</td><td>Les zones d'ombre de contact (creux, recoins)</td><td>Salir les creux, accumuler poussière/rouille</td></tr>
+    <tr><td><b>Curvature</b> (courbure)</td><td>Les arêtes saillantes (clair) et les creux (sombre)</td><td>Usure des arêtes, peinture écaillée sur les angles</td></tr>
+    <tr><td><b>World Space Normal</b></td><td>L'orientation de chaque face dans l'espace monde</td><td>Effets directionnels (poussière «&nbsp;par le haut&nbsp;»)</td></tr>
+    <tr><td><b>Thickness</b> (épaisseur)</td><td>L'épaisseur locale de la matière</td><td>Translucidité, dépôts dans les zones fines</td></tr>
+    <tr><td><b>Position</b></td><td>La coordonnée 3D de chaque point</td><td>Dégradés et masques basés sur la hauteur</td></tr>
+  </tbody>
+</table></div>
+<p>Concrètement&nbsp;: quand tu poses un <b>generator de courbure</b> pour faire ressortir l'usure sur les arêtes d'une caisse métallique, ce generator <em>lit la map Curvature</em> pour savoir où sont les arêtes. Si la Curvature n'a pas été bakée, elle est vide → le generator ne produit rien. C'est l'erreur n°1 des débutants (voir Pièges). Le baking est traité en profondeur en <a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a>&nbsp;; ici, retiens que <b>baker est la première chose à faire</b>, avant de peindre quoi que ce soit.</p>
+
+<h3>Calques, masques et générateurs</h3>
+<p>La pile de calques de Painter ressemble à Photoshop, mais avec des types spécialisés&nbsp;:</p>
+<ul>
+  <li><b>Fill layer</b> (calque de remplissage)&nbsp;: applique une matière <em>uniforme</em> sur tous les canaux à la fois (couleur, rugosité, métal, normal…). C'est la brique de base.</li>
+  <li><b>Paint layer</b> (calque de peinture)&nbsp;: te laisse peindre à la main avec un pinceau (poussière localisée, logo, salissures précises).</li>
+  <li><b>Masque</b>&nbsp;: une couche en niveaux de gris attachée à un calque, qui décide <em>où</em> il est visible (blanc = visible, noir = caché). On y empile des effets.</li>
+  <li><b>Generator</b>&nbsp;: un effet procédural placé <em>dans un masque</em>, qui lit les mesh maps pour produire automatiquement un motif — par exemple <b>Curvature</b> (usure sur arêtes), <b>Dirt</b> (saleté dans les creux, basée sur l'AO) ou <b>Metal Edge Wear</b>.</li>
+  <li><b>Smart mask</b>&nbsp;: un masque complet (avec ses générateurs et réglages) sauvegardé pour être réutilisé sur n'importe quel objet — il se réadapte aux mesh maps du nouvel objet.</li>
+</ul>
+
+<h3>Smart materials&nbsp;: la matière qui s'adapte</h3>
+<p>Un <b>smart material</b> est une pile de calques complète (un matériau «&nbsp;rouillé&nbsp;», par exemple) empaquetée et réutilisable. Sa magie&nbsp;: il est construit sur les mesh maps, donc quand tu le glisses sur un <em>autre</em> objet, l'usure se replace toute seule sur les nouvelles arêtes, la saleté retombe dans les nouveaux creux. Tu obtiens 80&nbsp;% du résultat en un glisser-déposer, et tu finis à la main les 20&nbsp;% spécifiques. C'est ce qui fait la productivité de Painter en studio.</p>
+
+<h3>Installation et alternatives</h3>
+<p>Substance 3D Painter et Designer sont édités par <b>Adobe</b> et fonctionnent par <b>abonnement</b> (versions millésimées, p. ex. <b>Substance 3D Painter 2025</b>). On les installe via l'application <span class="term">Adobe Creative Cloud</span> ou le <span class="term">Substance 3D Launcher</span>. Configuration recommandée&nbsp;: GPU dédié avec pilotes à jour (le baking et le rendu temps réel s'appuient lourdement sur le GPU), 16&nbsp;Go de RAM minimum, 32&nbsp;Go confortables sur des textures 4K.</p>
+<div class="callout astuce">
+  <div class="callout-title"><span class="ico">💡</span>Alternatives gratuites ou moins chères</div>
+  <p>Si l'abonnement n'est pas une option&nbsp;: <b>ArmorPaint</b> (peinture PBR open source, payant en binaire mais bon marché, gratuit à compiler), <b>Material Maker</b> (équivalent gratuit de Designer, par nœuds), <b>Quixel Mixer</b> (héritage, gratuit mais arrêté), et le <b>mode Texture Paint</b> de <a href="../../cours/logiciels/l01-blender.html">Blender</a> (suffisant pour des cas simples). Aucun n'égale encore l'écosystème de smart materials de Painter, mais les concepts (calques, masques, mesh maps, PBR) sont transférables.</p>
+</div>
+
+<h2>🔧 Démonstration pas à pas</h2>
+<p>Objectif&nbsp;: texturer une caisse métallique en «&nbsp;métal rouillé&nbsp;», ajouter une usure sur les arêtes, et exporter pour Unreal. On part d'un low-poly déjà déplié (UV faits, voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) et d'un high-poly pour le bake.</p>
+<ol>
+  <li><b>Créer le projet.</b> <span class="menu-path">File<span class="arrow">▸</span>New</span>. Choisis le template <b>PBR — Metallic Roughness</b> (le modèle qu'attendent Unity et Unreal). Dans <b>Mesh</b>, charge ton low-poly (<span class="term">.fbx</span>). <em>Ce qui se passe</em>&nbsp;: Painter charge la géométrie et lit ses UV pour savoir comment dérouler les textures. Coche la résolution de document (2048&nbsp;px pour commencer).</li>
+  <li><b>Baker les mesh maps.</b> <span class="menu-path">Texture Set Settings<span class="arrow">▸</span>Bake Mesh Maps</span>. Dans <b>High poly mesh</b>, charge ton high-poly. Vérifie le <b>Max Frontal/Rear Distance</b> (la «&nbsp;cage&nbsp;» de projection) puis lance <b>Bake selected textures</b>. <em>Ce qui se passe</em>&nbsp;: Painter calcule Normal, AO, Curvature, World Space Normal, Thickness et Position. Sans cette étape, les générateurs seront muets.</li>
+  <li><b>Appliquer un smart material.</b> Dans l'onglet <span class="menu-path">Assets<span class="arrow">▸</span>Smart Materials</span>, fais glisser un matériau «&nbsp;Steel Painted&nbsp;» ou «&nbsp;Rusted Metal&nbsp;» sur l'objet dans le viewport. <em>Ce qui se passe</em>&nbsp;: une pile de calques entière se crée d'un coup, et l'usure se place automatiquement grâce aux mesh maps bakées à l'étape 2.</li>
+  <li><b>Ajouter une usure de courbure.</b> Crée un <b>Fill layer</b> (couleur métal nu, roughness basse). Clic droit <span class="arrow">▸</span> <b>Add black mask</b> pour le cacher entièrement. Sur ce masque&nbsp;: clic droit <span class="arrow">▸</span> <b>Add generator</b> <span class="arrow">▸</span> <b>Curvature</b> (ou <b>Metal Edge Wear</b>). <em>Ce qui se passe</em>&nbsp;: le métal nu apparaît <em>uniquement</em> sur les arêtes, là où la peinture s'écaillerait dans la vraie vie. Règle l'intensité avec les curseurs du generator.</li>
+  <li><b>Peaufiner à la main.</b> Ajoute un <b>Paint layer</b> au-dessus et peins quelques coulures de rouille ciblées avec un pinceau. <em>Ce qui se passe</em>&nbsp;: tu racontes l'histoire propre à <em>cet</em> objet, que le procédural ne peut deviner.</li>
+  <li><b>Exporter les textures.</b> <span class="menu-path">File<span class="arrow">▸</span>Export Textures</span>. Dans <b>Output template</b>, choisis <b>Unreal Engine 4/5 (Packed)</b>. Règle le <b>format</b> (PNG ou TGA, 8 bits pour la color, voire 16 bits pour normal/height) et la <b>taille</b> (2048). Clique <b>Export</b>. <em>Ce qui se passe</em>&nbsp;: Painter assemble les canaux dans les fichiers attendus par Unreal, dont la fameuse texture <b>ORM</b> packée (voir SVG ci-dessous).</li>
+</ol>
+<div class="callout info">
+  <div class="callout-title"><span class="ico">ℹ️</span>Pour Unity URP</div>
+  <p>Même menu, mais choisis le preset <b>Unity Universal Render Pipeline (Metallic Standard)</b>. Unity travaille en <b>Smoothness</b> (lissé) et non en Roughness&nbsp;: le preset s'occupe de la conversion <code>smoothness = 1 − roughness</code> et range la Smoothness dans le canal alpha de la texture Metallic. Voir le piège dédié plus bas.</p>
+</div>
+
+<figure class="schema">
+  <svg viewBox="0 0 640 360" role="img" aria-label="Pile de calques Substance : un fill métal masqué par un generator de courbure produit l'usure sur les arêtes">
+    <rect x="0" y="0" width="640" height="360" fill="none"/>
+    <text x="20" y="28" class="svg-text" font-size="15" font-weight="bold">Panneau Layers — usure sur arêtes</text>
+
+    <rect x="20" y="48" width="300" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+    <text x="34" y="70" class="svg-text" font-size="12" font-weight="bold">Paint layer — coulures rouille</text>
+    <text x="34" y="86" class="svg-dim" font-size="10">peint à la main (objet unique)</text>
+
+    <rect x="20" y="104" width="300" height="70" rx="6" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+    <text x="34" y="126" class="svg-text" font-size="12" font-weight="bold">Fill — métal nu</text>
+    <rect x="232" y="112" width="22" height="22" rx="3" fill="#1b1f27" stroke="#313c4c"/>
+    <text x="258" y="128" class="svg-dim" font-size="10">masque noir</text>
+    <text x="34" y="146" class="svg-dim" font-size="10">+ Generator : Curvature</text>
+    <text x="34" y="162" class="svg-dim" font-size="10">lit la mesh map Curvature →</text>
+
+    <rect x="20" y="184" width="300" height="58" rx="6" class="svg-surface" stroke="#313c4c"/>
+    <text x="34" y="206" class="svg-text" font-size="12" font-weight="bold">Smart material — Rusted Metal</text>
+    <text x="34" y="224" class="svg-dim" font-size="10">pile complète, posée en glisser-déposer</text>
+
+    <text x="20" y="270" class="svg-dim" font-size="11">⬆ Les calques du haut recouvrent ceux du bas</text>
+
+    <rect x="360" y="104" width="170" height="70" rx="6" class="svg-surface" stroke="#f2b441"/>
+    <text x="374" y="126" class="svg-text" font-size="11" font-weight="bold">Mesh map : Curvature</text>
+    <text x="374" y="144" class="svg-dim" font-size="10">arêtes = clair</text>
+    <text x="374" y="160" class="svg-dim" font-size="10">bakée à partir de la géo</text>
+    <path d="M360 139 L324 139" stroke="#f2b441" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+
+    <rect x="360" y="200" width="260" height="120" rx="8" class="svg-surface" stroke="#5ad19a"/>
+    <text x="374" y="222" class="svg-text" font-size="11" font-weight="bold">Résultat sur l'objet</text>
+    <rect x="380" y="236" width="220" height="68" rx="6" fill="#3a3026" stroke="#313c4c"/>
+    <path d="M380 236 L600 236" stroke="#f2b441" stroke-width="4"/>
+    <path d="M380 304 L600 304" stroke="#f2b441" stroke-width="4"/>
+    <path d="M380 236 L380 304" stroke="#f2b441" stroke-width="4"/>
+    <path d="M600 236 L600 304" stroke="#f2b441" stroke-width="4"/>
+    <text x="490" y="274" class="svg-dim" font-size="10">métal nu visible sur les arêtes</text>
+
+    <defs>
+      <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#f2b441"/></marker>
+    </defs>
+  </svg>
+  <figcaption>Pile de calques&nbsp;: le fill «&nbsp;métal nu&nbsp;» est masqué par un generator de courbure qui lit la mesh map <b>Curvature</b> et ne révèle le métal que sur les arêtes saillantes.</figcaption>
+</figure>
+
+<h3>Export&nbsp;: channel packing et espaces couleur</h3>
+<p>Les moteurs n'aiment pas gaspiller&nbsp;: lire trois textures séparées pour Occlusion, Roughness et Metallic, c'est trois échantillonnages. On les <b>compacte</b> donc dans une seule texture RVB&nbsp;: c'est le <b>channel packing</b>. Chaque canal de la texture (Rouge, Vert, Bleu) porte une map différente en niveaux de gris.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Moteur</th><th>Texture packée</th><th>R</th><th>G</th><th>B</th><th>A</th></tr></thead>
+  <tbody>
+    <tr><td><b>Unreal</b></td><td>ORM</td><td>Occlusion (AO)</td><td>Roughness</td><td>Metallic</td><td>—</td></tr>
+    <tr><td><b>Unity (URP)</b></td><td>Metallic + Smoothness</td><td colspan="3">Metallic dans R</td><td>Smoothness dans A</td></tr>
+  </tbody>
+</table></div>
+<p>Deux points qui font échouer les imports&nbsp;:</p>
+<ul>
+  <li><b>Espace couleur.</b> Seule la <b>Base Color</b> (et l'Emissive) doit être en <b>sRGB</b>. Roughness, Metallic, Normal, AO, ORM sont des <em>données</em>, pas des couleurs&nbsp;: elles doivent être en <b>linéaire</b>. Si tu coches sRGB sur une map de roughness à l'import, le moteur la «&nbsp;corrige&nbsp;» et la matière paraît trop lisse ou trop rugueuse. Les presets gèrent ça à l'export, mais vérifie côté moteur (voir <a href="../../cours/unity/u05-import-assets.html">U5</a> et <a href="../../cours/unreal/e04-import-assets.html">E4</a>).</li>
+  <li><b>Roughness vs Smoothness.</b> Unreal pense en rugosité, Unity en lissé. Ce sont des inverses&nbsp;: <code>smoothness = 1 − roughness</code>. Le bon preset fait l'inversion&nbsp;; un mauvais preset donne une surface au comportement inversé (le mat devient brillant).</li>
+</ul>
+
+<figure class="schema">
+  <svg viewBox="0 0 640 320" role="img" aria-label="Channel packing : trois maps en niveaux de gris compactées dans une texture RVB ORM pour Unreal">
+    <rect x="0" y="0" width="640" height="320" fill="none"/>
+    <text x="20" y="28" class="svg-text" font-size="15" font-weight="bold">Channel packing → texture ORM</text>
+
+    <rect x="20" y="56" width="120" height="60" rx="6" fill="#3a3a3a" stroke="#313c4c"/>
+    <text x="80" y="90" font-size="12" fill="#e7ecf2" text-anchor="middle">AO</text>
+    <text x="80" y="132" class="svg-dim" font-size="10" text-anchor="middle">niveaux de gris</text>
+
+    <rect x="20" y="138" width="120" height="60" rx="6" fill="#6e6e6e" stroke="#313c4c"/>
+    <text x="80" y="172" font-size="12" fill="#1b1f27" text-anchor="middle">Roughness</text>
+
+    <rect x="20" y="220" width="120" height="60" rx="6" fill="#1a1a1a" stroke="#313c4c"/>
+    <text x="80" y="254" font-size="12" fill="#cfd6df" text-anchor="middle">Metallic</text>
+
+    <path d="M140 86 L250 100" stroke="#ff6b6b" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+    <path d="M140 168 L250 168" stroke="#5ad19a" stroke-width="2.5" fill="none" marker-end="url(#ag)"/>
+    <path d="M140 250 L250 236" stroke="#59b0ff" stroke-width="2.5" fill="none" marker-end="url(#ab)"/>
+
+    <rect x="258" y="80" width="150" height="32" rx="4" fill="#ff6b6b" opacity="0.9"/>
+    <text x="333" y="101" font-size="13" fill="#1b1f27" font-weight="bold" text-anchor="middle">R = Occlusion</text>
+    <rect x="258" y="152" width="150" height="32" rx="4" fill="#5ad19a" opacity="0.9"/>
+    <text x="333" y="173" font-size="13" fill="#1b1f27" font-weight="bold" text-anchor="middle">G = Roughness</text>
+    <rect x="258" y="224" width="150" height="32" rx="4" fill="#59b0ff" opacity="0.9"/>
+    <text x="333" y="245" font-size="13" fill="#1b1f27" font-weight="bold" text-anchor="middle">B = Metallic</text>
+
+    <path d="M408 168 L450 168" stroke="#313c4c" stroke-width="2.5" fill="none" marker-end="url(#an)"/>
+
+    <rect x="456" y="120" width="100" height="100" rx="8" fill="#5a6b58" stroke="#f2b441" stroke-width="2"/>
+    <text x="506" y="168" class="svg-text" font-size="14" font-weight="bold" text-anchor="middle">ORM</text>
+    <text x="506" y="186" class="svg-dim" font-size="9" text-anchor="middle">1 texture RVB</text>
+    <text x="506" y="240" class="svg-dim" font-size="11" text-anchor="middle">→ Unreal</text>
+
+    <text x="20" y="306" class="svg-dim" font-size="11">Unity URP : Metallic dans R, Smoothness (= 1 − Roughness) dans le canal Alpha</text>
+
+    <defs>
+      <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#ff6b6b"/></marker>
+      <marker id="ag" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#5ad19a"/></marker>
+      <marker id="ab" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#59b0ff"/></marker>
+      <marker id="an" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#5b6573"/></marker>
+    </defs>
+  </svg>
+  <figcaption>Channel packing&nbsp;: trois maps en niveaux de gris (AO, Roughness, Metallic) compactées dans les canaux R/V/B d'une seule texture <b>ORM</b> pour Unreal. Unity range plutôt Metallic+Smoothness.</figcaption>
+</figure>
+
+<h2>⚠️ Pièges &amp; erreurs courantes</h2>
+<div class="piege-grid">
+  <div class="piege-item">
+    <div class="pi-sym"><b>Symptôme</b> Les générateurs de courbure/saleté ne produisent rien, tout reste gris uniforme.</div>
+    <div class="pi-cause"><b>Cause</b> Les <b>mesh maps n'ont pas été bakées</b> (ou pas la Curvature/AO). Le generator lit une map vide.</div>
+    <div class="pi-fix"><b>Correction</b> <span class="menu-path">Texture Set Settings<span class="arrow">▸</span>Bake Mesh Maps</span> avant de peindre. Vérifie que Curvature et AO ne sont pas noires.</div>
+  </div>
+  <div class="piege-item">
+    <div class="pi-sym"><b>Symptôme</b> Dans le moteur, le mat paraît brillant et le brillant paraît mat.</div>
+    <div class="pi-cause"><b>Cause</b> Confusion <b>Roughness vs Smoothness</b> (Unity), ou map exportée non inversée.</div>
+    <div class="pi-fix"><b>Correction</b> Utilise le preset <b>Unity URP (Metallic Standard)</b> qui calcule <code>smoothness = 1 − roughness</code>.</div>
+  </div>
+  <div class="piege-item">
+    <div class="pi-sym"><b>Symptôme</b> Les couleurs sont délavées ou la rugosité semble fausse une fois dans le moteur.</div>
+    <div class="pi-cause"><b>Cause</b> Mauvais <b>espace couleur</b> à l'import&nbsp;: sRGB coché sur des maps de données (Roughness, Normal, ORM).</div>
+    <div class="pi-fix"><b>Correction</b> sRGB uniquement sur Base Color/Emissive&nbsp;; tout le reste en <b>linéaire</b>.</div>
+  </div>
+  <div class="piege-item">
+    <div class="pi-sym"><b>Symptôme</b> La texture est floue/pixelisée sur certaines parties de l'objet, nette sur d'autres.</div>
+    <div class="pi-cause"><b>Cause</b> <b>Texel density</b> incohérente&nbsp;: les UV donnent plus de pixels à certaines îles qu'à d'autres (problème en amont, voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>).</div>
+    <div class="pi-fix"><b>Correction</b> Reprendre les UV avant Painter&nbsp;: uniformiser la densité, éviter les chevauchements non voulus.</div>
+  </div>
+  <div class="piege-item">
+    <div class="pi-sym"><b>Symptôme</b> Mauvais preset choisi&nbsp;: il manque des fichiers ou les maps sont mal nommées pour le moteur.</div>
+    <div class="pi-cause"><b>Cause</b> Export avec un <b>Output template</b> générique au lieu de celui du moteur cible.</div>
+    <div class="pi-fix"><b>Correction</b> Choisir explicitement <b>Unreal (Packed)</b> ou <b>Unity URP</b> dans <span class="menu-path">File<span class="arrow">▸</span>Export Textures</span>.</div>
+  </div>
+  <div class="piege-item">
+    <div class="pi-sym"><b>Symptôme</b> Le smart material posé sur un nouvel objet «&nbsp;ne s'adapte pas&nbsp;».</div>
+    <div class="pi-cause"><b>Cause</b> Le nouvel objet n'a pas ses propres mesh maps bakées&nbsp;; le smart material n'a rien à lire.</div>
+    <div class="pi-fix"><b>Correction</b> Baker les mesh maps de <em>chaque</em> nouvelle texture set avant d'appliquer le smart material.</div>
+  </div>
+</div>
+
+<div class="exercice">
+  <h4><span>🔧</span>Exercice pratique</h4>
+  <p>Prends un objet simple avec arêtes nettes (une caisse, un jerrican, un coffre) déjà déplié en UV. Si tu n'as pas de high-poly, biseaute les arêtes du low-poly pour obtenir une Curvature exploitable.</p>
+  <ol>
+    <li>Crée un projet Painter en <b>PBR Metallic Roughness</b> et importe le low-poly.</li>
+    <li><b>Bake</b> toutes les mesh maps. Inspecte la Curvature et l'AO dans la liste des channels&nbsp;: elles doivent montrer les arêtes et les creux.</li>
+    <li>Applique un <b>smart material</b> métallique, puis crée un fill «&nbsp;métal nu&nbsp;» masqué par un <b>generator Curvature</b> pour l'usure des arêtes.</li>
+    <li>Ajoute un paint layer de saleté ciblée à la main.</li>
+    <li>Exporte deux fois&nbsp;: une fois en preset <b>Unreal (Packed)</b>, une fois en <b>Unity URP</b>. Ouvre le dossier et compare les fichiers générés.</li>
+  </ol>
+  <div class="reussite">
+    <b>Critères de réussite</b>
+    <ul>
+      <li>Les mesh maps Curvature et AO sont bakées et non vides.</li>
+      <li>L'usure apparaît <em>sur les arêtes</em> et non au hasard sur les faces planes.</li>
+      <li>L'export Unreal contient une texture <b>ORM</b> packée&nbsp;; l'export Unity contient une Metallic avec Smoothness en alpha.</li>
+      <li>Tu peux expliquer pourquoi la Base Color est en sRGB et l'ORM en linéaire.</li>
+      <li>Aucun calque n'est «&nbsp;aplati&nbsp;»&nbsp;: tout reste réglable (non destructif).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="callout retenir">
+  <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+  <ul>
+    <li><b>Painter</b> = peindre des maps PBR sur ton objet (calques)&nbsp;; <b>Designer</b> = fabriquer des matériaux procéduraux par nœuds (réutilisables).</li>
+    <li>On <b>bake les mesh maps avant tout</b>&nbsp;: sans elles, générateurs et smart materials sont muets.</li>
+    <li>Le travail est <b>non destructif</b> (calques + masques + générateurs) et donc ré-ajustable jusqu'au dernier moment.</li>
+    <li>À l'export, choisis le <b>preset du moteur cible</b>&nbsp;: <b>ORM</b> pour Unreal, <b>Metallic+Smoothness</b> pour Unity (avec <code>smoothness = 1 − roughness</code>).</li>
+    <li><b>Espace couleur</b>&nbsp;: Base Color en sRGB, toutes les maps de données en linéaire.</li>
+  </ul>
+</div>
+
+<h2>Glossaire des termes introduits</h2>
+<dl class="prose">
+  <p><b>Substance 3D Painter</b> — logiciel Adobe de peinture de textures PBR directement sur le mesh 3D, par calques non destructifs.</p>
+  <p><b>Substance 3D Designer</b> — éditeur de matériaux 100&nbsp;% procéduraux par graphes de nœuds, produisant des fichiers <span class="term">.sbsar</span> paramétrables et tileables.</p>
+  <p><b>Mesh map</b> — texture calculée (bakée) à partir de la géométrie de l'objet (Normal, AO, Curvature, Thickness, Position…) qui nourrit les générateurs.</p>
+  <p><b>Fill layer</b> — calque qui applique une matière uniforme sur plusieurs canaux PBR à la fois.</p>
+  <p><b>Generator</b> — effet procédural placé dans un masque, qui lit les mesh maps pour produire un motif (usure des arêtes, saleté dans les creux…).</p>
+  <p><b>Smart material</b> — pile de calques complète et réutilisable, qui se réadapte automatiquement aux mesh maps du nouvel objet.</p>
+  <p><b>Channel packing</b> — compactage de plusieurs maps en niveaux de gris dans les canaux R/V/B d'une seule texture (p. ex. ORM).</p>
+  <p><b>ORM</b> — texture packée d'Unreal&nbsp;: Occlusion (R), Roughness (G), Metallic (B).</p>
+  <p><b>Roughness vs Smoothness</b> — rugosité (Unreal) et lissé (Unity) sont inverses&nbsp;: <code>smoothness = 1 − roughness</code>.</p>
+  <p><b>Texel density</b> — densité de pixels de texture par unité de surface 3D&nbsp;; doit être cohérente pour une netteté uniforme.</p>
+  <p>Plus de définitions dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+</dl>
+
+<h2>Pour aller plus loin</h2>
+<ul>
+  <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>&nbsp;: ce que signifient réellement Base Color, Roughness et Metallic.</li>
+  <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a>&nbsp;: comment sont calculées les mesh maps (cage, projection, high vers low).</li>
+  <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: dépliage, texel density et îles propres en amont de Painter.</li>
+  <li><a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a>&nbsp;: modéliser et exporter le low-poly/high-poly à texturer.</li>
+  <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux Unity</a> et <a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor Unreal</a>&nbsp;: brancher tes maps exportées.</li>
+  <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques d'assets</a>&nbsp;: Fab et Megascans comme sources de matériaux.</li>
+</ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

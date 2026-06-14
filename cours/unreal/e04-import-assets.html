@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E4 — Import d'assets · Atelier Game Art</title>
+  <meta name="description" content="Importer dans Unreal : FBX/glTF (collision, LOD, matériaux), Nanite à l'import, textures et Virtual Textures.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Import d'assets</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E4 — Import d'assets</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unreal/e03-projet.html">E3</a>, <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a> et <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li><b>Importer un mesh</b> dans Unreal de deux façons (glisser-déposer dans le <span class="term">Content Browser</span> ou bouton <span class="term">Import</span>) et lire la fenêtre <b>FBX Import Options</b> sans paniquer.</li>
+                <li>Distinguer <b>Static Mesh</b> et <b>Skeletal Mesh</b>, et savoir quand activer <b>Build Nanite</b> dès l'import (et quand surtout ne pas le faire).</li>
+                <li>Régler la <b>collision</b> (simple vs complexe, convention <span class="term">UCX_</span>), les <b>LOD</b>, les <b>normales</b> et l'<b>échelle</b> — et comprendre <b>pourquoi</b> chaque option existe.</li>
+                <li>Diagnostiquer et corriger le <b>piège d'échelle</b> classique Blender (mètres) → Unreal (centimètres).</li>
+                <li>Importer des <b>textures</b> avec la bonne <b>compression</b> et le bon réglage <b>sRGB</b> (couleur vs <em>data</em>), et savoir <b>pourquoi</b> une normal map ne doit jamais être en compression couleur.</li>
+                <li>Savoir ce qu'est le <b>Virtual Texturing</b> (streaming et runtime) et <b>quand</b> l'activer.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'import est le <b>sas d'entrée</b> de ton pipeline Unreal. Tout ce que tu fabriques ailleurs — un mesh sculpté dans <a href="../../cours/logiciels/l01-blender.html">Blender</a>, des textures peintes dans <a href="../../cours/logiciels/l02-substance.html">Substance 3D Painter</a> — doit franchir cette porte pour exister dans le moteur. Et c'est précisément là que se jouent la moitié des problèmes que les débutants traînent ensuite pendant des heures&nbsp;: un objet dix fois trop petit, une normal map qui «&nbsp;brille&nbsp;» bizarrement, un personnage qu'on traverse, des matériaux dupliqués et sales partout dans le projet.</p>
+            <p>La bonne nouvelle&nbsp;: ces problèmes ne sont pas des fatalités, ce sont des <b>cases mal cochées</b>. Importer proprement, c'est comprendre ce que chaque option de la fenêtre d'import <em>fait réellement</em> aux données, plutôt que d'appuyer sur «&nbsp;Import All&nbsp;» en espérant. En production, un asset bien importé du premier coup, c'est une chaîne en aval (matériaux <a href="../../cours/unreal/e05-material-editor.html">E5</a>, éclairage <a href="../../cours/unreal/e06-eclairage.html">E6</a>, optimisation <a href="../../cours/unreal/e10-optimisation.html">E10</a>) qui ne part pas sur des bases pourries. Le temps gagné se compte en journées sur un projet réel.</p>
+            <p>Mention de version&nbsp;: ce cours se base sur <b>Unreal Engine 5.7</b> (la version stable de nov.&nbsp;2025). UE6 a été annoncée en mai&nbsp;2026 mais n'est pas encore téléchargeable&nbsp;; on n'en parle donc pas ici.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>Le Content Browser&nbsp;: où atterrissent les assets</h3>
+            <p>Le <span class="term">Content Browser</span> (navigateur de contenu) est le panneau d'Unreal qui affiche, sous forme de vignettes, tous les <b>assets</b> de ton projet&nbsp;: meshes, textures, matériaux, sons… C'est l'équivalent d'un explorateur de fichiers, mais Unreal y range des objets <em>déjà digérés</em>. Car importer, ce n'est pas «&nbsp;copier un fichier&nbsp;»&nbsp;: c'est <b>convertir</b> ton <span class="gloss">FBX</span> ou ton PNG en un format interne propre à Unreal (un <code>.uasset</code>), optimisé pour le rendu temps réel.</p>
+            <p>C'est une distinction fondamentale. Ton fichier source (le <code>.fbx</code> sur ton disque) reste dehors&nbsp;; Unreal en crée une <b>copie transformée</b> dans le dossier <code>Content</code> du projet. Après import, modifier le <code>.fbx</code> d'origine ne change rien dans Unreal tant que tu ne <b>réimportes</b> pas. Cette frontière entre «&nbsp;source&nbsp;» et «&nbsp;asset moteur&nbsp;» explique pourquoi les réglages d'import comptent autant&nbsp;: ils figent <em>comment</em> la conversion s'est faite.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>FBX, glTF&nbsp;: quel format&nbsp;?</div>
+              <p>Unreal 5.7 importe les meshes via <span class="term">FBX</span> (le format pivot historique, parfait pour la 3D animée et statique) et <span class="term">glTF</span>/<code>.glb</code> (format ouvert, plus moderne, bon pour les assets PBR). Pour la plupart des chaînes Blender → Unreal, le FBX reste le choix le plus prévisible et le mieux documenté&nbsp;; on s'appuie dessus dans cette leçon. Le détail des formats est traité en <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>.</p>
+            </div>
+
+            <h3>Static Mesh vs Skeletal Mesh&nbsp;: deux natures, deux pipelines</h3>
+            <p>À l'import d'un mesh, Unreal te demande implicitement <b>ce qu'est cet objet</b>. Deux grandes familles&nbsp;:</p>
+            <ul>
+              <li><b>Static Mesh</b> (maillage statique)&nbsp;: une géométrie <b>rigide</b>, sans squelette. Murs, caisses, rochers, props, décor. Elle peut bouger en bloc (une caisse qui tombe) mais ne se <b>déforme</b> pas. C'est de loin le cas le plus fréquent en décor.</li>
+              <li><b>Skeletal Mesh</b> (maillage squeletté)&nbsp;: une géométrie <b>liée à un squelette</b> (un ensemble d'os) qui la <b>déforme</b>. Personnages, créatures, bras articulé, drapeau riggé. L'import lit alors aussi le <b>skinning</b> (les poids qui attachent chaque sommet aux os&nbsp;; voir <a href="../../cours/fondamentaux/f10-rigging-animation.html">F10</a>).</li>
+            </ul>
+            <p>Unreal décide souvent automatiquement&nbsp;: si le FBX contient un squelette, la case <b>Skeletal Mesh</b> se coche d'elle-même. Mais tu peux te tromper de famille, et les conséquences sont lourdes. Un personnage importé par erreur en Static Mesh n'aura <b>pas</b> de squelette&nbsp;: impossible de l'animer. Vérifie donc toujours la case <b>Skeletal Mesh</b> dans la fenêtre d'import&nbsp;: cochée pour de l'animé, décochée pour du décor.</p>
+
+            <h4>Build Nanite&nbsp;: virtualiser la géométrie dès l'entrée</h4>
+            <p><span class="term">Nanite</span> est le système de <b>géométrie virtualisée</b> d'Unreal&nbsp;: il permet d'afficher des meshes à très haute densité de polygones sans s'effondrer en performance, en ne dessinant que le niveau de détail utile à l'écran (détaillé en <a href="../../cours/unreal/e07-nanite.html">E7</a>). La case <b>Build Nanite</b> dans la fenêtre d'import active cette virtualisation directement à la conversion&nbsp;: pratique, car tu n'as pas à l'activer asset par asset ensuite.</p>
+            <p><b>Le piège&nbsp;:</b> Nanite est conçu pour la géométrie <b>opaque et essentiellement statique</b>. Il ne s'applique pas (ou mal) à un <b>Skeletal Mesh</b> qui se déforme via un squelette — le support des meshes animés/déformés est limité et a ses contraintes. La règle saine&nbsp;: <b>Build Nanite sur les Static Meshes</b> de décor à forte densité (rochers, statues, kitbash) ; <b>pas</b> sur un personnage skeletal classique. Activer Nanite à l'aveugle sur tout casse plus qu'il n'aide.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Nanite n'est pas obligatoire. Tu peux toujours importer un Static Mesh <b>sans</b> Nanite, puis l'activer plus tard d'un clic dans l'éditeur de Static Mesh (<span class="menu-path">Nanite Settings<span class="arrow">▸</span>Enable Nanite Support</span>). Cocher la case à l'import te fait juste gagner cette étape. En cas de doute sur un asset, importe d'abord sans, observe, puis décide.</p>
+            </div>
+
+            <h3>La collision&nbsp;: sans elle, on traverse tout</h3>
+            <p>Un mesh, pour le moteur de rendu, n'est qu'une coquille visuelle&nbsp;: une surface qu'on voit, mais à travers laquelle on passe. Pour qu'un personnage <b>se cogne</b> contre un mur ou <b>se pose</b> sur un sol, il faut une <span class="term">collision</span>&nbsp;: une forme physique invisible attachée au mesh, que le moteur de physique utilise pour détecter les contacts. Sans collision, l'objet est <b>traversable</b> (on dit «&nbsp;fantôme&nbsp;»).</p>
+            <p>La fenêtre d'import propose <b>Generate Collision</b> (générer une collision). Deux grandes catégories à distinguer&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Type</th><th>Ce que c'est</th><th>Coût / usage</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Simple collision</b></td><td>Formes primitives englobantes&nbsp;: boîtes, capsules, sphères, ou convexes grossiers</td><td><b>Peu coûteuse</b>&nbsp;: idéale pour tout ce qui bouge ou se heurte souvent. Le choix par défaut.</td></tr>
+                  <tr><td><b>Complex collision</b></td><td>Utilise la <b>géométrie de rendu exacte</b> comme surface de collision (per-poly)</td><td><b>Chère</b>&nbsp;: réservée au décor statique précis (terrain ciselé). À éviter pour les objets dynamiques.</td></tr>
+                  <tr><td><b>UCX_ (collision custom)</b></td><td>Un mesh de collision que <b>tu modélises toi-même</b> dans Blender, nommé <code>UCX_NomDuMesh</code></td><td>Contrôle total&nbsp;: tu dessines la coque exacte. Importé automatiquement avec le mesh.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><b>Pourquoi la convention UCX_ est si pratique.</b> Une collision auto-générée est parfois trop grossière (un personnage flotte au-dessus d'un escalier) ou trop fine (chère). En modélisant dans Blender un volume simplifié nommé <code>UCX_</code> suivi du <b>nom exact</b> du mesh visuel (par exemple un mesh <code>SM_Caisse</code> avec sa collision <code>UCX_SM_Caisse</code>), Unreal <b>reconnaît automatiquement</b> ce volume comme collision à l'import. C'est la méthode des studios&nbsp;: une collision <b>propre, prévisible et bon marché</b>, dessinée à la main.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>«&nbsp;Complex&nbsp;» n'est pas «&nbsp;mieux&nbsp;»</div>
+              <p>Tentation classique du débutant&nbsp;: choisir <b>Complex collision</b> partout «&nbsp;pour que ce soit précis&nbsp;». C'est une erreur de performance. La collision per-poly fait travailler le moteur de physique sur des milliers de triangles à chaque test de contact. Sur du décor jouable et des objets mobiles, on veut du <b>simple</b> (quelques formes), et on réserve le <em>complex</em> aux cas où la précision est indispensable et l'objet immobile.</p>
+            </div>
+
+            <h3>LOD et normales&nbsp;: deux réglages qu'on néglige à tort</h3>
+            <h4>Import LODs / Auto LOD</h4>
+            <p>Un <span class="term">LOD</span> (<em>Level Of Detail</em>, niveau de détail) est une version <b>allégée</b> du même mesh, affichée quand l'objet est loin de la caméra (où l'œil ne verra pas la différence). Cela économise des polygones là où ils ne servent à rien (concept détaillé en <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>). À l'import, deux voies&nbsp;:</p>
+            <ul>
+              <li><b>Import LODs</b>&nbsp;: tu as <b>fabriqué toi-même</b> tes niveaux dans Blender et le FBX les contient&nbsp;; Unreal les récupère tels quels. Contrôle maximal.</li>
+              <li><b>Auto LOD</b> (génération automatique côté Unreal)&nbsp;: le moteur calcule des versions simplifiées pour toi. Pratique et rapide&nbsp;; la qualité dépend du mesh. À noter&nbsp;: si tu utilises <b>Nanite</b>, le LOD manuel devient en grande partie superflu, Nanite gérant lui-même le niveau de détail en continu.</li>
+            </ul>
+            <h4>Normales&nbsp;: Import vs Compute, et MikkTSpace</h4>
+            <p>Les <span class="term">normales</span> sont les vecteurs qui indiquent, pour chaque sommet/face, «&nbsp;de quel côté la surface fait face&nbsp;»&nbsp;: elles dictent comment la lumière rebondit et donc l'aspect lisse ou facetté du mesh. À l'import, l'option <b>Normal Import Method</b> propose typiquement&nbsp;:</p>
+            <ul>
+              <li><b>Import Normals</b>&nbsp;: Unreal <b>respecte</b> les normales que tu as définies dans Blender (recommandé&nbsp;: tu gardes le résultat voulu, notamment les <em>shading groups</em> et arêtes dures).</li>
+              <li><b>Compute Normals</b>&nbsp;: Unreal les <b>recalcule</b> lui-même, en ignorant les tiennes. À éviter si tu as soigné ton lissage en amont.</li>
+            </ul>
+            <p>Le terme <span class="term">MikkTSpace</span> désigne le standard de calcul des <b>tangentes</b> (l'espace tangent qui accompagne les normales pour lire les normal maps). Il est important que ton logiciel de baking (Substance, voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) et Unreal utilisent <b>le même standard</b> MikkTSpace&nbsp;: sinon, ta normal map peut produire des coutures ou un relief légèrement faux. C'est aujourd'hui le standard de facto&nbsp;; garde-le actif des deux côtés et tes détails baked s'afficheront fidèlement.</p>
+
+            <h3>Combine Meshes et l'épineuse question de l'échelle</h3>
+            <p><b>Combine Meshes</b> fusionne plusieurs objets séparés d'un même FBX en <b>un seul</b> Static Mesh. Utile quand ton fichier contient des morceaux qui forment un tout indissociable (une chaise en 4 pièces) ; à éviter si tu veux garder chaque pièce manipulable séparément. Réfléchis à l'usage&nbsp;: un seul mesh est plus simple à poser, mais moins flexible.</p>
+            <h4>L'échelle&nbsp;: le piège n°1 Blender → Unreal</h4>
+            <p>Voici le piège le plus universel, et il vient des <b>unités</b>. Unreal travaille en <b>centimètres</b>&nbsp;: 1 unité Unreal = 1&nbsp;cm. Blender, lui, raisonne par défaut en <b>mètres</b>&nbsp;: 1 unité Blender = 1&nbsp;m. Si la chaîne d'export ne convertit pas, un personnage de 1,8 «&nbsp;unité&nbsp;» (pensé comme 1,8&nbsp;m dans Blender) peut arriver dans Unreal comme 1,8&nbsp;<b>cm</b> — soit cent fois trop petit, une fourmi sur la grille.</p>
+            <p>L'option <b>Import Uniform Scale</b> dans la fenêtre d'import multiplie tout par un facteur. Beaucoup de débutants «&nbsp;réparent&nbsp;» en mettant <code>100</code> ici. Ça marche, mais ce n'est qu'un pansement&nbsp;: la <b>vraie</b> correction se fait <b>à l'export depuis Blender</b>, en réglant correctement les unités et l'échelle de l'exporteur FBX pour que l'asset arrive à la bonne taille naturellement. Le transfert d'assets entre logiciels (échelle, axes, orientation) est traité en détail en <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>.</p>
+            <p>Le bloc <b>Transform</b> de la fenêtre permet aussi d'appliquer un <b>offset</b> de position, de <b>rotation</b> et d'échelle à l'import&nbsp;: pratique pour corriger une orientation, mais à utiliser avec parcimonie. Un asset propre n'a en principe besoin d'aucune correction&nbsp;: si tu te retrouves à tout rectifier dans Transform, le problème est en amont, dans ton export.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 360" role="img" aria-label="Anatomie de la fenêtre FBX Import Options d'Unreal, avec ses sections Mesh, LOD, Collision, Normales, Transform et Matériaux annotées">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Fenêtre « FBX Import Options » — les réglages qui comptent</text>
+
+                <!-- cadre fenêtre -->
+                <rect x="24" y="40" width="592" height="296" rx="10" class="svg-surface" stroke="#313c4c"/>
+                <rect x="24" y="40" width="592" height="26" rx="10" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/>
+                <text x="40" y="58" class="svg-text" font-size="11" font-weight="700">FBX Import Options</text>
+
+                <!-- Mesh -->
+                <rect x="40" y="80" width="270" height="100" rx="7" class="svg-surface" stroke="#f2b441"/>
+                <text x="52" y="98" class="svg-text" font-size="11" font-weight="700">Mesh</text>
+                <text x="52" y="116" class="svg-dim" font-size="10">☐ Skeletal Mesh (animé) / Static</text>
+                <text x="52" y="132" class="svg-dim" font-size="10">☑ Build Nanite (static dense)</text>
+                <text x="52" y="148" class="svg-dim" font-size="10">☐ Combine Meshes</text>
+                <text x="52" y="164" class="svg-dim" font-size="10">Normals → Import (pas Compute)</text>
+
+                <!-- LOD & Collision -->
+                <rect x="330" y="80" width="266" height="100" rx="7" class="svg-surface" stroke="#5ad19a"/>
+                <text x="342" y="98" class="svg-text" font-size="11" font-weight="700">LOD &amp; Collision</text>
+                <text x="342" y="116" class="svg-dim" font-size="10">☐ Import LODs / Auto LOD</text>
+                <text x="342" y="132" class="svg-dim" font-size="10">☑ Generate Collision (simple)</text>
+                <text x="342" y="148" class="svg-dim" font-size="10">UCX_ reconnu automatiquement</text>
+                <text x="342" y="164" class="svg-dim" font-size="10">Complex = cher (décor fixe)</text>
+
+                <!-- Transform / Scale -->
+                <rect x="40" y="196" width="270" height="84" rx="7" class="svg-surface" stroke="#f2b441"/>
+                <text x="52" y="214" class="svg-text" font-size="11" font-weight="700">Transform</text>
+                <text x="52" y="232" class="svg-dim" font-size="10">Import Uniform Scale : 1.0</text>
+                <text x="52" y="248" class="svg-dim" font-size="10">⚠ Blender m → UE cm</text>
+                <text x="52" y="264" class="svg-dim" font-size="10">Corrige plutôt à l'export FBX</text>
+
+                <!-- Matériaux -->
+                <rect x="330" y="196" width="266" height="84" rx="7" class="svg-surface" stroke="#c89bff"/>
+                <text x="342" y="214" class="svg-text" font-size="11" font-weight="700">Matériaux &amp; Textures</text>
+                <text x="342" y="232" class="svg-dim" font-size="10">☐ Import Materials (souvent NON)</text>
+                <text x="342" y="248" class="svg-dim" font-size="10">Mieux : textures à part + E5</text>
+                <text x="342" y="264" class="svg-dim" font-size="10">évite les doublons « sales »</text>
+
+                <!-- boutons -->
+                <rect x="372" y="300" width="100" height="24" rx="6" class="svg-surface" stroke="#313c4c"/>
+                <text x="422" y="316" text-anchor="middle" class="svg-dim" font-size="10">Cancel</text>
+                <rect x="486" y="300" width="110" height="24" rx="6" fill="#f2b441" fill-opacity="0.18" stroke="#f2b441"/>
+                <text x="541" y="316" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">Import All</text>
+              </svg>
+              <figcaption>Carte mentale de la fenêtre <b>FBX Import Options</b>. Les quatre blocs colorés correspondent aux décisions clés&nbsp;: nature du mesh + Nanite (orange), LOD &amp; collision (vert), échelle/Transform (or), matériaux (violet). C'est ce panneau qu'on apprend à lire dans cette leçon.</figcaption>
+            </figure>
+
+            <h3>Matériaux &amp; textures&nbsp;: pourquoi importer les textures à part</h3>
+            <p>Quand un FBX référence des matériaux, la fenêtre propose <b>Import Materials</b> et <b>Import Textures</b>. Tentant&nbsp;: tout arrive d'un coup. En pratique, dans les studios, on <b>décoche souvent Import Materials</b>. Pourquoi&nbsp;?</p>
+            <ul>
+              <li>Les matériaux auto-générés par l'import sont <b>basiques et désordonnés</b>&nbsp;: noms génériques, branchements approximatifs, réglages PBR par défaut qui ne respectent pas tes intentions.</li>
+              <li>Réimporter le mesh peut <b>recréer des doublons</b>&nbsp;: ton Content Browser se remplit de matériaux <code>M_lambert1</code>, <code>M_lambert1_2</code>… qu'on ne maîtrise plus.</li>
+              <li>Tu perds le contrôle sur l'architecture de tes matériaux (instances, paramètres réutilisables) que tu construiras proprement en <a href="../../cours/unreal/e05-material-editor.html">E5</a>.</li>
+            </ul>
+            <p>La méthode propre&nbsp;: <b>importer le mesh sans ses matériaux</b>, importer les <b>textures séparément</b> (en réglant leur compression, on y vient), puis <b>construire ses matériaux à la main</b> dans le Material Editor. Plus de travail au départ, mais un projet net, sans doublons, et des matériaux que tu comprends.</p>
+
+            <h3>Les textures&nbsp;: compression et sRGB, le cœur du sujet</h3>
+            <p>Une texture importée n'est pas stockée «&nbsp;telle quelle&nbsp;»&nbsp;: Unreal la <b>compresse</b> pour économiser la <span class="gloss">VRAM</span> (la mémoire de la carte graphique). Le réglage <b>Compression Settings</b> détermine <em>comment</em>, et il dépend de <b>ce que représente la texture</b>. C'est ici que se joue la qualité — et le piège le plus sournois du débutant.</p>
+            <p>Il faut d'abord comprendre une distinction décrite en <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>&nbsp;: certaines textures sont des <b>couleurs perçues</b> (ce que l'œil voit), d'autres sont des <b>données brutes</b> (des nombres qui pilotent le shader). Les couleurs sont stockées en espace <span class="term">sRGB</span> (une courbe qui correspond à la vision humaine)&nbsp;; les données, elles, doivent rester <b>linéaires</b>, sans cette courbe, sinon les nombres sont faussés.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Type de texture</th><th>Compression Settings</th><th>sRGB</th><th>Pourquoi</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Base Color / Albedo</b> (couleur visible)</td><td><b>Default</b> (couleur)</td><td><b>✓ activé</b></td><td>C'est une couleur perçue&nbsp;: on veut la courbe sRGB.</td></tr>
+                  <tr><td><b>Normal map</b> (relief)</td><td><b>Normalmap</b></td><td><b>✗ désactivé</b> (auto)</td><td>Encode des directions XYZ&nbsp;: format dédié, compression spéciale, jamais sRGB.</td></tr>
+                  <tr><td><b>Roughness / Metallic / AO / Mask / ORM</b> (data)</td><td><b>Masks</b> ou Default sans sRGB</td><td><b>✗ désactivé</b></td><td>Ce sont des nombres (0→1), pas des couleurs&nbsp;: la courbe sRGB les fausserait.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><b>La case sRGB</b> (dans les propriétés de la texture après import) est donc la décision centrale&nbsp;: <b>cochée</b> pour les couleurs, <b>décochée</b> pour toute donnée (roughness, metallic, masques, ORM…). Une texture <span class="term">ORM</span> (Occlusion-Roughness-Metallic packée dans les canaux R/G/B) est de la pure data&nbsp;: sRGB <b>off</b>, impérativement. Si tu laisses sRGB sur une roughness, tes valeurs sont décalées et ton matériau paraît «&nbsp;faux&nbsp;» — souvent trop brillant ou trop mat sans qu'on comprenne pourquoi.</p>
+            <p><b>La compression Normalmap</b> mérite une insistance particulière. Une normal map qu'on importe en compression <b>couleur (Default)</b> est dégradée&nbsp;: les blocs de compression couleur abîment les directions encodées, et le relief devient «&nbsp;sale&nbsp;», avec des artefacts en escalier sur les surfaces lisses. La compression <b>Normalmap</b> est spécialement conçue pour préserver ces vecteurs. Règle d'or&nbsp;: <b>normal map → Normalmap, toujours.</b></p>
+
+            <h4>Les autres réglages de texture</h4>
+            <ul>
+              <li><b>Mip Gen Settings</b>&nbsp;: les <span class="term">mipmaps</span> sont des versions pré-réduites de la texture, utilisées quand la surface est loin&nbsp;; elles évitent le scintillement (aliasing) au loin et accélèrent le rendu. Laisse la génération par défaut (<code>FromTextureGroup</code>) sauf cas particulier.</li>
+              <li><b>Power of Two (puissance de deux)</b>&nbsp;: les GPU adorent les dimensions en puissance de deux (256, 512, 1024, 2048…). Une texture <b>non-puissance-de-deux</b> peut perdre ses mipmas et le streaming. Exporte tes textures en 1024×1024, 2048×2048, etc.</li>
+              <li><b>Texture Group</b>&nbsp;: un classement (World, Character, UI…) qui pilote des réglages globaux de qualité/streaming par catégorie. Utile pour gérer la mémoire à l'échelle du projet.</li>
+              <li><b>Maximum Texture Size</b>&nbsp;: plafonne la taille en mémoire&nbsp;; on peut importer une 4K mais la limiter à 2K dans le moteur pour économiser la VRAM sans retoucher le fichier source.</li>
+            </ul>
+
+            <h3>Virtual Texturing&nbsp;: pour les très grosses textures</h3>
+            <p>Le <span class="term">Virtual Texturing</span> (texturage virtuel) résout un problème précis&nbsp;: quand une texture est <b>énorme</b> (paysage de 8K, atlas géant), la charger entièrement en VRAM la sature. Le principe&nbsp;: ne charger que les <b>petits morceaux (tuiles) réellement visibles</b> à l'écran, à la résolution utile, comme une carte routière dont on ne déplie que le carré qu'on regarde. Deux variantes&nbsp;:</p>
+            <ul>
+              <li><b>Streaming Virtual Texturing (SVT)</b>&nbsp;: pour les <b>textures stockées</b> très lourdes. On coche <b>Virtual Texture Streaming</b> sur la texture concernée&nbsp;; Unreal ne fait remonter en mémoire que les tuiles nécessaires. Idéal pour d'immenses textures sans faire exploser la VRAM.</li>
+              <li><b>Runtime Virtual Texturing (RVT)</b>&nbsp;: une texture <b>calculée à la volée</b>, surtout utilisée pour les <b>landscapes</b> (terrains)&nbsp;: le moteur compose le rendu du sol dans une texture virtuelle, ce qui accélère le blending de matériaux sur de vastes surfaces.</li>
+            </ul>
+            <p><b>Quand l'activer&nbsp;?</b> Pas par défaut. Le Virtual Texturing a un coût de mise en place et n'a d'intérêt que pour de <b>très grandes</b> textures ou des terrains. Pour des textures de props ordinaires (1K–2K), c'est inutile, voire contre-productif. Active-le quand tu constates une pression mémoire due à des textures gigantesques, ou pour un système de landscape. Le terme est repris dans le <a href="../../glossaire.html">glossaire</a>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Arbre de décision pour régler une texture à l'import : couleur en sRGB activé, normal map en compression Normalmap, données ORM ou roughness en sRGB désactivé">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Décision « comment régler cette texture ? »</text>
+
+                <!-- racine -->
+                <rect x="240" y="40" width="160" height="40" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="320" y="58" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Que représente</text>
+                <text x="320" y="72" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">la texture ?</text>
+
+                <!-- branches -->
+                <line x1="320" y1="80" x2="110" y2="130" stroke="#8a93a3" stroke-width="1.4"/>
+                <line x1="320" y1="80" x2="320" y2="130" stroke="#8a93a3" stroke-width="1.4"/>
+                <line x1="320" y1="80" x2="530" y2="130" stroke="#8a93a3" stroke-width="1.4"/>
+
+                <!-- couleur -->
+                <rect x="30" y="130" width="170" height="120" rx="8" fill="#5ad19a" fill-opacity="0.12" stroke="#5ad19a"/>
+                <text x="115" y="150" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Couleur visible</text>
+                <text x="115" y="166" text-anchor="middle" class="svg-dim" font-size="10">(Base Color / Albedo)</text>
+                <text x="115" y="192" text-anchor="middle" class="svg-text" font-size="10.5">Compression : Default</text>
+                <text x="115" y="212" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">sRGB : ✓ activé</text>
+                <text x="115" y="234" text-anchor="middle" class="svg-dim" font-size="9.5">courbe perceptuelle voulue</text>
+
+                <!-- normal -->
+                <rect x="235" y="130" width="170" height="120" rx="8" fill="#c89bff" fill-opacity="0.12" stroke="#c89bff"/>
+                <text x="320" y="150" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Relief</text>
+                <text x="320" y="166" text-anchor="middle" class="svg-dim" font-size="10">(Normal map)</text>
+                <text x="320" y="192" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Compression : Normalmap</text>
+                <text x="320" y="212" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">sRGB : ✗ off</text>
+                <text x="320" y="234" text-anchor="middle" class="svg-dim" font-size="9.5">encode des directions XYZ</text>
+
+                <!-- data -->
+                <rect x="440" y="130" width="170" height="120" rx="8" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441"/>
+                <text x="525" y="150" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Données (data)</text>
+                <text x="525" y="166" text-anchor="middle" class="svg-dim" font-size="10">Rough / Metal / AO / ORM</text>
+                <text x="525" y="192" text-anchor="middle" class="svg-text" font-size="10.5">Compression : Masks</text>
+                <text x="525" y="212" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">sRGB : ✗ off</text>
+                <text x="525" y="234" text-anchor="middle" class="svg-dim" font-size="9.5">des nombres, pas des couleurs</text>
+              </svg>
+              <figcaption>Le réflexe à automatiser à chaque texture importée. La seule question utile&nbsp;: <b>est-ce une couleur ou de la data&nbsp;?</b> La couleur garde sRGB&nbsp;; le relief passe en compression <b>Normalmap</b>&nbsp;; toute donnée (roughness, metallic, ORM…) a sRGB <b>désactivé</b>.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On importe un rocher en FBX avec Nanite et collision, puis ses textures réglées proprement, et on assemble un matériau minimal pour vérifier. Les noms de menus correspondent à l'interface anglaise d'Unreal 5.7 (la plus répandue en production).</p>
+            <ol>
+              <li><b>Préparer un dossier d'arrivée.</b> Dans le <span class="menu-path">Content Browser</span>, crée un dossier propre, par exemple <code>Content/Rochers</code>, en faisant un clic droit puis <span class="menu-path">New Folder</span>. <em>Ce qui se passe&nbsp;:</em> tu ranges dès le départ&nbsp;; un projet en vrac devient vite ingérable.</li>
+              <li><b>Lancer l'import du mesh.</b> Glisse-dépose ton <code>SM_Rocher.fbx</code> depuis l'explorateur Windows directement dans ce dossier, ou clique <span class="menu-path">Import</span> dans le Content Browser et choisis le fichier. <em>Ce qui se passe&nbsp;:</em> la fenêtre <b>FBX Import Options</b> s'ouvre.</li>
+              <li><b>Régler le mesh.</b> Vérifie que <span class="menu-path">Mesh<span class="arrow">▸</span>Skeletal Mesh</span> est <b>décoché</b> (c'est du décor statique). Coche <span class="menu-path">Build Nanite</span>. Dans <span class="menu-path">Normal Import Method</span>, choisis <b>Import Normals</b>. <em>Ce qui se passe&nbsp;:</em> tu obtiendras un Static Mesh haute densité virtualisé par Nanite, avec ton lissage Blender préservé.</li>
+              <li><b>Régler la collision.</b> Si tu as modélisé un <code>UCX_SM_Rocher</code> dans Blender, il sera détecté automatiquement&nbsp;; sinon, active <span class="menu-path">Generate Collision</span> en mode <b>simple</b>. <em>Ce qui se passe&nbsp;:</em> ton rocher cessera d'être traversable&nbsp;; un personnage pourra grimper dessus.</li>
+              <li><b>Vérifier l'échelle.</b> Laisse <span class="menu-path">Transform<span class="arrow">▸</span>Import Uniform Scale</span> à <code>1.0</code> si ton export Blender est correct. <em>Ce qui se passe&nbsp;:</em> après import, sélectionne le mesh&nbsp;; s'il fait quelques centimètres au lieu de plusieurs mètres, ton export Blender était en mètres non convertis — reviens corriger l'export plutôt que de bricoler un ×100 ici (voir <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</li>
+              <li><b>Décocher les matériaux auto.</b> Dans la section <span class="menu-path">Material<span class="arrow">▸</span>Import Materials</span>, <b>décoche</b>. <em>Ce qui se passe&nbsp;:</em> Unreal n'inventera pas de matériau sale&nbsp;; tu garderas la main. Valide avec <span class="menu-path">Import All</span>.</li>
+              <li><b>Importer les textures à part.</b> Glisse maintenant tes fichiers <code>Rocher_BaseColor.png</code>, <code>Rocher_Normal.png</code> et <code>Rocher_ORM.png</code> dans le dossier. <em>Ce qui se passe&nbsp;:</em> trois assets texture apparaissent. C'est le réglage de chacune qui fait la qualité.</li>
+              <li><b>Régler la Base Color.</b> Double-clique <code>Rocher_BaseColor</code>. Vérifie <span class="menu-path">Compression Settings</span> = <b>Default (Color)</b> et que <span class="menu-path">sRGB</span> est <b>coché</b>. <em>Ce qui se passe&nbsp;:</em> la couleur conserve sa courbe perceptuelle correcte.</li>
+              <li><b>Régler la Normal.</b> Double-clique <code>Rocher_Normal</code>. Mets <span class="menu-path">Compression Settings</span> = <b>Normalmap</b> et assure-toi que <span class="menu-path">sRGB</span> est <b>décoché</b> (Unreal le fait souvent seul). <em>Ce qui se passe&nbsp;:</em> ton relief reste net, sans artefacts en escalier.</li>
+              <li><b>Régler l'ORM.</b> Double-clique <code>Rocher_ORM</code>. <b>Décoche sRGB</b> (c'est de la data&nbsp;: occlusion, roughness, metallic). Compression <b>Masks</b> ou Default. <em>Ce qui se passe&nbsp;:</em> tes valeurs de rugosité et de métal seront lues telles quelles, sans décalage.</li>
+              <li><b>Assembler un matériau minimal.</b> Clic droit dans le dossier&nbsp;: <span class="menu-path">Materials<span class="arrow">▸</span>Material</span>, nomme-le <code>M_Rocher</code>, ouvre-le. Branche <code>BaseColor</code> sur l'entrée <b>Base Color</b>, <code>Normal</code> sur <b>Normal</b>, et l'ORM via ses canaux R/G/B sur <b>Ambient Occlusion</b>, <b>Roughness</b>, <b>Metallic</b>. <em>Ce qui se passe&nbsp;:</em> tu obtiens un matériau PBR de base&nbsp;; on approfondira en <a href="../../cours/unreal/e05-material-editor.html">E5</a>.</li>
+              <li><b>Vérifier en scène.</b> Glisse <code>SM_Rocher</code> dans le viewport, applique <code>M_Rocher</code>. <em>Ce qui se passe&nbsp;:</em> si le rocher est à la bonne taille, texturé proprement et qu'on ne le traverse pas, l'import est réussi.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet est minuscule (ou géant) dans Unreal, perdu sur la grille.</div>
+                <div class="pi-cause"><b>Cause</b>Conflit d'unités&nbsp;: Blender exporte en mètres, Unreal lit en centimètres (×100 d'écart).</div>
+                <div class="pi-fix"><b>Correction</b>Corrige l'<b>export Blender</b> (unités/échelle de l'exporteur FBX). En dépannage rapide, <b>Import Uniform Scale</b> = 100, mais répare la source (voir <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map donne un relief « sale », en escalier sur les surfaces lisses.</div>
+                <div class="pi-cause"><b>Cause</b>Importée en <b>compression couleur (Default)</b>&nbsp;: les blocs couleur abîment les directions encodées.</div>
+                <div class="pi-fix"><b>Correction</b>Passe <b>Compression Settings = Normalmap</b> et laisse <b>sRGB désactivé</b>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon matériau paraît trop brillant/mat ou « faux », sans raison évidente.</div>
+                <div class="pi-cause"><b>Cause</b><b>sRGB activé sur une texture data</b> (roughness, metallic, ORM)&nbsp;: la courbe fausse les valeurs.</div>
+                <div class="pi-fix"><b>Correction</b><b>Décoche sRGB</b> sur toute texture de données. La couleur perçue garde sRGB&nbsp;; la data, non.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon personnage/objet est traversable, on passe au travers.</div>
+                <div class="pi-cause"><b>Cause</b><b>Aucune collision</b> générée ou importée à l'entrée.</div>
+                <div class="pi-fix"><b>Correction</b>Active <b>Generate Collision</b> (simple) ou fournis un <code>UCX_</code> modélisé. Vérifie la collision dans l'éditeur de Static Mesh.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai coché Build Nanite sur mon personnage et il s'affiche/anime mal.</div>
+                <div class="pi-cause"><b>Cause</b>Nanite est pensé pour la géométrie <b>statique opaque</b>, pas pour un Skeletal Mesh qui se déforme.</div>
+                <div class="pi-fix"><b>Correction</b>Réserve Nanite aux Static Meshes de décor. Importe le personnage en <b>Skeletal Mesh sans Nanite</b> (voir <a href="../../cours/unreal/e07-nanite.html">E7</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon Content Browser se remplit de matériaux en double, mal nommés et sales.</div>
+                <div class="pi-cause"><b>Cause</b><b>Import Materials</b> laissé coché&nbsp;: Unreal recrée des matériaux à chaque (ré)import.</div>
+                <div class="pi-fix"><b>Correction</b><b>Décoche Import Materials</b>, importe les textures à part et construis tes matériaux à la main en <a href="../../cours/unreal/e05-material-editor.html">E5</a>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Importe un asset de bout en bout, proprement, et prouve que chaque réglage est correct.</p>
+              <ol>
+                <li><b>Importe un Static Mesh</b> (un prop ou un rocher) en FBX, avec <b>Build Nanite</b> coché et <b>Generate Collision</b> (simple). <b>Décoche Import Materials.</b></li>
+                <li><b>Contrôle l'échelle</b>&nbsp;: place le mesh à côté d'un personnage de référence (ou d'un cube de 1&nbsp;m). S'il est cent fois trop petit, retourne corriger l'export et réimporte.</li>
+                <li><b>Importe trois textures</b> (Base Color, Normal, ORM) et règle chacune&nbsp;: couleur en sRGB on, normal en compression <b>Normalmap</b>, ORM en sRGB <b>off</b>.</li>
+                <li><b>Construis un matériau</b> minimal branchant les trois textures, applique-le, et regarde le mesh sous un éclairage.</li>
+                <li><b>Vérifie la collision</b>&nbsp;: lance le mode jeu et confirme que tu ne traverses pas l'objet.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'objet est à la <b>bonne échelle</b> (taille plausible face à la référence), pas une fourmi ni un géant.</li>
+                  <li>La <b>normal map</b> est en compression <b>Normalmap</b> (relief net, pas d'escaliers) et toutes les textures <b>data</b> ont <b>sRGB décoché</b>.</li>
+                  <li>Aucun <b>matériau auto-importé en double</b> ne pollue le Content Browser&nbsp;: tu n'as que le tien.</li>
+                  <li>L'objet a une <b>collision</b> fonctionnelle&nbsp;: on ne le traverse pas en jeu.</li>
+                  <li>Nanite est activé sur ce Static Mesh (et tu sais expliquer pourquoi tu ne l'activerais pas sur un personnage).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Importer = <b>convertir</b> ton FBX/texture en asset interne Unreal. Le fichier source reste dehors&nbsp;; modifie-le, puis <b>réimporte</b>.</li>
+                <li><b>Static Mesh</b> = décor rigide&nbsp;; <b>Skeletal Mesh</b> = objet animé par un squelette. <b>Build Nanite</b> sur le static dense&nbsp;; <b>jamais</b> sur un skeletal déformé.</li>
+                <li>Sans <b>collision</b>, on traverse l'objet. <b>Simple</b> par défaut (pas cher)&nbsp;; <b>complex</b> réservé au décor fixe précis&nbsp;; <b>UCX_</b> pour une collision modélisée à la main.</li>
+                <li>Le <b>piège d'échelle</b> Blender (m) → Unreal (cm) se corrige <b>à l'export</b>, pas avec un ×100 cosmétique.</li>
+                <li>Textures&nbsp;: <b>couleur → sRGB on</b>&nbsp;; <b>normal → compression Normalmap, sRGB off</b>&nbsp;; <b>data (rough/metal/ORM) → sRGB off</b>. C'est la règle qui sauve le plus de matériaux.</li>
+                <li>Préfère <b>décocher Import Materials</b> et reconstruire tes matériaux proprement (<a href="../../cours/unreal/e05-material-editor.html">E5</a>).</li>
+                <li>Le <b>Virtual Texturing</b> (streaming ou runtime/landscape) sert aux <b>très grosses</b> textures&nbsp;; ne l'active pas par défaut.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Content Browser</b> — navigateur de contenu d'Unreal&nbsp;: affiche et range tous les assets (meshes, textures, matériaux) d'un projet.</p>
+              <p><b>Static Mesh</b> — maillage rigide sans squelette, pour le décor et les props&nbsp;; ne se déforme pas.</p>
+              <p><b>Skeletal Mesh</b> — maillage lié à un squelette qui le déforme&nbsp;; pour personnages, créatures et objets animés.</p>
+              <p><b>Build Nanite</b> — option d'import activant la géométrie virtualisée Nanite, pour afficher du static très dense sans coût prohibitif.</p>
+              <p><b>Collision (simple / complex / UCX_)</b> — forme physique invisible d'un mesh&nbsp;: simple = primitives bon marché, complex = géométrie exacte chère, UCX_ = collision modélisée à la main reconnue par son nom.</p>
+              <p><b>LOD</b> — <em>Level Of Detail</em>&nbsp;: version allégée d'un mesh affichée au loin pour économiser des polygones.</p>
+              <p><b>Normales / MikkTSpace</b> — vecteurs d'orientation des surfaces (lissage, lecture des normal maps)&nbsp;; MikkTSpace est le standard de calcul des tangentes à garder identique entre baking et moteur.</p>
+              <p><b>Import Uniform Scale</b> — facteur d'échelle appliqué à l'import&nbsp;; utile pour corriger le décalage d'unités, mais à régler idéalement à l'export.</p>
+              <p><b>Compression Settings / Normalmap / Masks</b> — réglage de compression d'une texture&nbsp;: Default pour la couleur, Normalmap pour le relief, Masks pour les données.</p>
+              <p><b>sRGB</b> — espace de stockage perceptuel des couleurs&nbsp;: activé pour les textures couleur, désactivé pour toute texture de données.</p>
+              <p><b>ORM</b> — texture packée Occlusion-Roughness-Metallic (canaux R/G/B)&nbsp;: de la data pure, donc sRGB désactivé.</p>
+              <p><b>Virtual Texturing</b> — technique qui ne charge que les tuiles visibles d'une texture énorme (Streaming) ou compose le rendu à la volée (Runtime, landscapes), pour ménager la VRAM.</p>
+              <p>Tous ces termes (et d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor</a>&nbsp;: assembler proprement les textures que tu viens d'importer en vrais matériaux PBR.</li>
+              <li><a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a>&nbsp;: comprendre en profondeur la géométrie virtualisée que tu actives dès l'import.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>&nbsp;: échelle, axes et orientation entre Blender et les moteurs (le fond du piège d'échelle).</li>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a>&nbsp;: la distinction couleur/data et la courbe sRGB, socle des réglages de texture.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a> et <a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a>&nbsp;: d'où viennent normal maps, ORM et autres cartes que tu importes.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: LOD, budgets de polygones et de mémoire texture.</li>
+              <li><a href="../../cours/unreal/e04-import-assets.html">E4</a> côté pratique&nbsp;: relis cette leçon une fois ton premier asset en scène pour ancrer chaque réglage.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

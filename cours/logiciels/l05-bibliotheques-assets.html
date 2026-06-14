@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L5 — Bibliothèques d'assets & scans · Atelier Game Art</title>
+  <meta name="description" content="Fab (la marketplace d'Epic), Poly Haven et les scans : trouver, importer des assets et surtout lire les licences.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>Bibliothèques d'assets & scans</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L5 — Bibliothèques d'assets & scans</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 1 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun prérequis technique. Utile après <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est <b>Fab</b> (fab.com) et pourquoi cette marketplace a <b>remplacé</b> l'Unreal Engine Marketplace, le Sketchfab Store, Quixel.com et l'ArtStation Marketplace.</li>
+                <li>Citer les grandes <b>banques d'assets</b> (Fab, Poly Haven, ambientCG, Mixamo, Kenney…) et dire pour chacune si c'est gratuit, payant ou <span class="gloss">CC0</span>.</li>
+                <li><b>Importer</b> un asset depuis Fab vers Unreal et vers Unity, et télécharger des maps PBR + un HDRI depuis Poly Haven.</li>
+                <li><b>Lire une licence</b> avant d'utiliser un asset&nbsp;: distinguer CC0, CC-BY et licences propriétaires, et savoir si l'usage commercial, la redistribution et l'attribution sont autorisés.</li>
+                <li>Éviter les pièges juridiques classiques&nbsp;: l'asset «&nbsp;gratuit&nbsp;» utilisé en commercial sans vérifier, la source redistribuée, l'attribution CC-BY oubliée.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Personne, dans un vrai studio, ne modélise <em>tout</em> à la main. Le temps coûte cher&nbsp;: une caisse en bois quelconque, un rocher de fond, un panneau de signalisation, un <span class="gloss">HDRI</span> pour éclairer une scène — autant d'éléments qu'on peut <b>récupérer</b> plutôt que de réinventer. Savoir où trouver des assets de qualité, et le faire <b>vite</b>, est une compétence de production aussi réelle que savoir modéliser.</p>
+            <p>Mais il y a un piège que beaucoup de débutants découvrent trop tard&nbsp;: «&nbsp;trouvé sur Internet&nbsp;» ne veut <b>pas</b> dire «&nbsp;libre d'utilisation&nbsp;». Un asset téléchargé gratuitement peut être interdit en usage commercial, exiger une attribution écrite, ou interdire la redistribution. Utiliser le mauvais asset dans un jeu vendu, c'est s'exposer à un retrait de plateforme, à une mise en demeure, voire à un procès. Cette leçon t'apprend donc <b>deux choses indissociables</b>&nbsp;: où trouver les bons assets, <em>et</em> comment vérifier que tu as le droit de les utiliser. Le second point est le plus important — c'est lui qu'on néglige, et c'est lui qui coûte cher.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Asset, ça veut dire quoi&nbsp;?</div>
+              <p>Un <span class="term">asset</span> (ou «&nbsp;ressource&nbsp;») est tout élément réutilisable d'un projet&nbsp;: un modèle 3D, une texture, un son, une animation, un HDRI, un <span class="term">material</span> (matériau). Une <b>bibliothèque d'assets</b> (ou <em>marketplace</em>) est un catalogue, gratuit ou payant, où l'on télécharge ces ressources. On parle de <b>scan</b> quand l'asset a été produit par <span class="term">photogrammétrie</span> — reconstruction 3D à partir de centaines de photos d'un objet réel — d'où un réalisme très élevé.</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Fab&nbsp;: la marketplace unifiée d'Epic (depuis octobre 2024)</h3>
+            <p>Pendant des années, l'écosystème des assets était fragmenté en plusieurs boutiques séparées. En <b>octobre 2024</b>, Epic Games a lancé <b>Fab</b> (<span class="term">fab.com</span>) pour <b>tout regrouper</b>. Fab a <b>remplacé</b> quatre boutiques d'un coup&nbsp;:</p>
+            <ul>
+              <li>l'<b>Unreal Engine Marketplace</b> (l'ancienne boutique intégrée à Unreal)&nbsp;;</li>
+              <li>le <b>Sketchfab Store</b> (la partie vente de Sketchfab)&nbsp;;</li>
+              <li><b>Quixel.com</b> (le site historique des scans Megascans)&nbsp;;</li>
+              <li>l'<b>ArtStation Marketplace</b> (la boutique du portfolio ArtStation).</li>
+            </ul>
+            <p>Conséquence pratique très importante&nbsp;: si tu lis un tutoriel ou une vidéo qui parle de l'«&nbsp;Unreal Marketplace&nbsp;», c'est <b>obsolète</b>. Aujourd'hui, tout passe par <b>Fab</b>. Et contrairement à l'ancien Unreal Marketplace, Fab n'est <b>pas réservé à Unreal</b>&nbsp;: c'est une marketplace <b>multi-moteurs</b> qui sert aussi <b>Unity</b> et d'autres logiciels (Blender, Godot…). Beaucoup d'assets y sont proposés dans plusieurs formats pour cette raison.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Le filtre le plus utile sur Fab est le filtre de <b>prix</b>&nbsp;: coche «&nbsp;Free&nbsp;» (gratuit) pour ne voir que ce que tu peux récupérer sans payer. Pense aussi à filtrer par <b>moteur cible</b> et par <b>type</b> (3D Model, Material, Environment…). Et regarde toujours la <b>licence</b> affichée sur la fiche avant d'ajouter à ton compte — sur Fab elle est explicite (Standard / Personal / Professional).</p>
+            </div>
+
+            <h4>Megascans&nbsp;: le cas des scans haute qualité</h4>
+            <p><b>Megascans</b> est la célèbre bibliothèque de <b>scans photogrammétriques</b> (rochers, sols, surfaces, végétation) produite par Quixel. Elle est désormais <b>hébergée sur Fab</b>. Attention au changement de modèle économique&nbsp;: depuis <b>2025</b>, la <b>majorité de Megascans est payante</b>&nbsp;; seuls <b>certains assets restent gratuits</b>. L'époque où l'intégralité de Megascans était gratuite pour les utilisateurs d'Unreal est révolue. Pour <b>MetaHuman</b> (les personnages humains photoréalistes d'Epic), on continue d'utiliser l'outil <b>Quixel Bridge</b>, qui n'a pas disparu.</p>
+
+            <h3>2. Poly Haven&nbsp;: le standard du gratuit et du libre (CC0)</h3>
+            <p>Face aux marketplaces payantes, il existe des banques <b>entièrement gratuites</b>. La plus précieuse pour apprendre est <b>Poly Haven</b>. Elle propose trois familles de ressources, toutes en <b>CC0</b> (on y revient juste après)&nbsp;:</p>
+            <ul>
+              <li><b>HDRI</b> — des images d'environnement à 360° qui servent à <b>éclairer</b> une scène de façon réaliste (ciel, intérieur, studio). Indispensable pour tester un matériau ou cadrer un rendu.</li>
+              <li><b>Textures PBR</b> — des jeux de maps (albedo, normal, roughness, displacement…) prêts pour le <span class="gloss">PBR</span> (voir <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>).</li>
+              <li><b>Modèles 3D</b> — des objets prêts à poser, souvent issus de scans, livrés avec leurs textures.</li>
+            </ul>
+            <p><b>Pourquoi c'est gratuit&nbsp;?</b> Parce que Poly Haven est financé par les <b>dons de sa communauté</b> (modèle de financement participatif, type Patreon). Ce n'est pas une faille à exploiter&nbsp;: c'est un choix assumé de mettre les ressources dans le <b>domaine public</b>. Si tu en fais un usage professionnel régulier, soutenir le site est la bonne attitude — c'est ce qui garantit qu'il existera encore demain.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>HDRI&nbsp;: pourquoi c'est si pratique pour l'éclairage</div>
+              <p>Un <span class="term">HDRI</span> (<em>High Dynamic Range Image</em>) est une photo panoramique 360° qui stocke des valeurs de luminosité <b>bien au-delà du blanc d'écran</b> (plage dynamique étendue). Projetée autour de la scène, elle éclaire tes objets avec une <b>lumière réelle</b> et fournit des <b>reflets</b> crédibles, sans avoir à placer de lampes une par une. C'est pour cela qu'on s'en sert pour tester un matériau&nbsp;: l'objet est instantanément éclairé «&nbsp;comme dans la vraie vie&nbsp;». On exploite ça dans Unity (<a href="../../cours/unity/u07-eclairage.html">U7</a>) et Unreal (<a href="../../cours/unreal/e06-eclairage.html">E6</a>).</p>
+            </div>
+
+            <h3>3. Les autres sources à connaître</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Source</th><th>Contenu</th><th>Modèle / licence</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Fab</b> (fab.com)</td><td>Modèles, materials, environnements, VFX, Megascans</td><td>Gratuit <em>et</em> payant&nbsp;; licences Standard/Pro explicites&nbsp;; Unreal + Unity</td></tr>
+                  <tr><td><b>Poly Haven</b></td><td>HDRI, textures PBR, modèles 3D</td><td>100&nbsp;% gratuit, <b>CC0</b> (financé par dons)</td></tr>
+                  <tr><td><b>ambientCG</b></td><td>Textures PBR, HDRI, quelques modèles</td><td>Gratuit, <b>CC0</b></td></tr>
+                  <tr><td><b>Kenney</b></td><td>Assets <em>low-poly</em> et 2D (kits de jeu, icônes, sons)</td><td>Gratuit, <b>CC0</b></td></tr>
+                  <tr><td><b>Mixamo</b> (Adobe)</td><td>Personnages riggés + bibliothèque d'<b>animations</b></td><td>Gratuit (compte Adobe)&nbsp;; usage large, mais lis les conditions</td></tr>
+                  <tr><td><b>Sketchfab</b></td><td>Modèles 3D téléchargeables (la communauté)</td><td>Variable&nbsp;: <b>chaque modèle a sa licence</b> (CC-BY, CC0, propriétaire…)</td></tr>
+                  <tr><td><b>itch.io</b></td><td>Packs d'assets indés (2D, 3D, audio)</td><td>Variable&nbsp;: <b>licence définie par l'auteur</b>, à lire au cas par cas</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>La leçon à retenir de ce tableau&nbsp;: <b>«&nbsp;gratuit&nbsp;» et «&nbsp;CC0&nbsp;» ne sont pas synonymes.</b> Poly Haven, ambientCG et Kenney sont à la fois gratuits <em>et</em> CC0, donc utilisables sans contrainte. Mixamo est gratuit mais sous une licence propriétaire d'Adobe. Sketchfab et itch.io sont des <b>places de marché</b> où chaque auteur fixe sa propre licence&nbsp;: il faut vérifier <b>asset par asset</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 380" role="img" aria-label="Carte des sources d'assets : Fab gratuit et payant, Poly Haven, ambientCG, Kenney en CC0, Mixamo gratuit propriétaire, Sketchfab et itch.io à licence variable, alimentant un projet de jeu.">
+                <text x="20" y="26" class="svg-text" font-weight="700" font-size="15">D'où viennent mes assets&nbsp;?</text>
+
+                <!-- Colonne CC0 (vert) -->
+                <g transform="translate(20,50)">
+                  <text x="0" y="-4" class="svg-dim" font-size="11">Gratuit &amp; CC0 — aucun souci</text>
+                  <rect x="0" y="6" width="180" height="40" rx="6" fill="#5ad19a" fill-opacity="0.12" stroke="#5ad19a"/>
+                  <text x="14" y="25" class="svg-text" font-size="12" font-weight="700">Poly Haven</text>
+                  <text x="14" y="40" class="svg-dim" font-size="10">HDRI · textures · modèles</text>
+                  <rect x="0" y="54" width="180" height="38" rx="6" fill="#5ad19a" fill-opacity="0.12" stroke="#5ad19a"/>
+                  <text x="14" y="78" class="svg-text" font-size="12" font-weight="700">ambientCG</text>
+                  <rect x="0" y="100" width="180" height="38" rx="6" fill="#5ad19a" fill-opacity="0.12" stroke="#5ad19a"/>
+                  <text x="14" y="124" class="svg-text" font-size="12" font-weight="700">Kenney (low-poly, 2D)</text>
+                </g>
+
+                <!-- Colonne mixte / payant (orange & or & bleu) -->
+                <g transform="translate(230,50)">
+                  <text x="0" y="-4" class="svg-dim" font-size="11">Gratuit ET payant — lire la licence</text>
+                  <rect x="0" y="6" width="190" height="56" rx="6" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                  <text x="14" y="27" class="svg-text" font-size="12" font-weight="700">Fab (fab.com)</text>
+                  <text x="14" y="43" class="svg-dim" font-size="10">remplace UE Mkt + Sketchfab Store</text>
+                  <text x="14" y="56" class="svg-dim" font-size="10">+ Quixel + ArtStation Mkt</text>
+                  <rect x="0" y="70" width="190" height="40" rx="6" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441"/>
+                  <text x="14" y="89" class="svg-text" font-size="12" font-weight="700">Megascans (sur Fab)</text>
+                  <text x="14" y="104" class="svg-dim" font-size="10">majorité payante depuis 2025</text>
+                  <rect x="0" y="118" width="190" height="40" rx="6" fill="#59b0ff" fill-opacity="0.12" stroke="#59b0ff"/>
+                  <text x="14" y="137" class="svg-text" font-size="12" font-weight="700">Mixamo (Adobe)</text>
+                  <text x="14" y="152" class="svg-dim" font-size="10">anims gratuites, licence propriétaire</text>
+                </g>
+
+                <!-- Colonne variable (violet) -->
+                <g transform="translate(440,50)">
+                  <text x="0" y="-4" class="svg-dim" font-size="11">Licence variable — au cas par cas</text>
+                  <rect x="0" y="6" width="180" height="40" rx="6" fill="#c89bff" fill-opacity="0.14" stroke="#c89bff"/>
+                  <text x="14" y="25" class="svg-text" font-size="12" font-weight="700">Sketchfab</text>
+                  <text x="14" y="40" class="svg-dim" font-size="10">une licence par modèle</text>
+                  <rect x="0" y="54" width="180" height="40" rx="6" fill="#c89bff" fill-opacity="0.14" stroke="#c89bff"/>
+                  <text x="14" y="73" class="svg-text" font-size="12" font-weight="700">itch.io</text>
+                  <text x="14" y="88" class="svg-dim" font-size="10">licence fixée par l'auteur</text>
+                </g>
+
+                <!-- Flèches vers le projet -->
+                <g stroke="#313c4c" stroke-width="2" fill="none">
+                  <path d="M110 200 L300 250" marker-end="url(#ar5)"/>
+                  <path d="M325 220 L320 250" marker-end="url(#ar5)"/>
+                  <path d="M530 150 L340 250" marker-end="url(#ar5)"/>
+                </g>
+                <defs>
+                  <marker id="ar5" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#313c4c"/></marker>
+                </defs>
+
+                <!-- Projet -->
+                <g transform="translate(225,256)">
+                  <rect x="0" y="0" width="190" height="56" rx="8" class="svg-surface" stroke="#59b0ff" stroke-width="2"/>
+                  <text x="95" y="26" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Mon projet de jeu</text>
+                  <text x="95" y="44" text-anchor="middle" class="svg-dim" font-size="10.5">Unity / Unreal</text>
+                </g>
+                <text x="320" y="338" text-anchor="middle" class="svg-dim" font-size="11">Avant d'intégrer&nbsp;: TOUJOURS vérifier la licence (voir 2e schéma)</text>
+              </svg>
+              <figcaption>Les grandes sources d'assets, classées par modèle&nbsp;: CC0 sans contrainte (vert), gratuit/payant à licence explicite (or/orange/bleu), licence variable au cas par cas (violet).</figcaption>
+            </figure>
+
+            <h3>4. Les licences&nbsp;: la section qu'il ne faut PAS sauter</h3>
+            <p>Une <span class="term">licence</span> est le contrat qui dit ce que tu as le droit de faire avec un asset. Télécharger un fichier ne te donne <b>aucun droit automatique</b>&nbsp;: c'est la licence qui les accorde (ou les refuse). Trois grandes familles couvrent 95&nbsp;% des cas.</p>
+
+            <h4>CC0 — domaine public (le plus permissif)</h4>
+            <p><span class="term">CC0</span> (Creative Commons Zero) place l'œuvre dans le <b>domaine public</b>&nbsp;: l'auteur renonce à ses droits. Tu peux l'utiliser <b>pour tout</b> — projet perso, jeu commercial, modification, intégration — <b>sans demander la permission et sans devoir créditer</b>. C'est le cas de Poly Haven, ambientCG et Kenney. C'est le confort maximal&nbsp;; créditer reste poli, mais n'est pas obligatoire.</p>
+
+            <h4>CC-BY — attribution obligatoire</h4>
+            <p><span class="term">CC-BY</span> (Creative Commons Attribution) autorise quasiment tout, <b>à une condition impérative</b>&nbsp;: tu dois <b>créditer l'auteur</b> (BY = <em>by</em>, «&nbsp;par&nbsp;»). Concrètement, tu indiques le nom de l'auteur et la source, souvent dans un écran «&nbsp;Crédits&nbsp;» du jeu. Oublier l'attribution n'est pas un détail&nbsp;: c'est une <b>violation de licence</b>, même si l'asset était gratuit. Attention aussi aux variantes plus restrictives&nbsp;: <b>CC-BY-NC</b> interdit l'usage commercial (NC = <em>Non Commercial</em>), <b>CC-BY-ND</b> interdit les modifications (ND = <em>No Derivatives</em>), <b>CC-BY-SA</b> impose de repartager sous la même licence (SA = <em>Share Alike</em>).</p>
+
+            <h4>Licences propriétaires — «&nbsp;per-seat&nbsp;» et royalties</h4>
+            <p>Les marketplaces payantes (Fab, anciennes boutiques) utilisent des <b>licences propriétaires</b> rédigées par le vendeur. Elles définissent précisément l'usage&nbsp;: souvent <b>par poste</b> (<span class="term">per-seat</span>&nbsp;: une licence par développeur de l'équipe), parfois avec des <b>royalties</b> (un pourcentage des revenus), et presque toujours avec une interdiction de <b>redistribuer</b> l'asset «&nbsp;tel quel&nbsp;». Sur Fab, ces licences sont normalisées en niveaux <b>Personal</b> (perso/petits revenus) et <b>Professional</b> (studio), ce qui rend la lecture plus simple — mais ne dispense <b>pas</b> de la faire.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>«&nbsp;Gratuit&nbsp;» ne dit RIEN sur les droits</div>
+              <p>Le prix et les droits sont <b>deux choses séparées</b>. Un asset à 0&nbsp;€ peut être&nbsp;: CC0 (tout permis), CC-BY-NC (perso seulement, pas de commercial), ou «&nbsp;gratuit pour les étudiants&nbsp;». À l'inverse, un asset payant t'accorde généralement un usage commercial — c'est même ce que tu paies. <b>Ne déduis jamais tes droits du prix&nbsp;: lis la licence.</b></p>
+            </div>
+
+            <h4>Trois questions à se poser, et la question de l'IA</h4>
+            <p>Avant d'intégrer un asset, pose-toi <b>trois questions</b>, dans cet ordre&nbsp;: (1) <b>Usage commercial autorisé&nbsp;?</b> — sinon, interdit dès que ton projet rapporte de l'argent. (2) <b>Attribution requise&nbsp;?</b> — si oui, note l'auteur tout de suite, tu oublieras plus tard. (3) <b>Redistribution&nbsp;?</b> — presque toujours interdite&nbsp;: tu peux livrer le <em>jeu</em> qui contient l'asset, mais pas revendre ou repartager les fichiers sources. Une quatrième question monte en puissance&nbsp;: <b>l'entraînement d'IA</b>. De plus en plus de licences interdisent explicitement d'utiliser l'asset pour entraîner un modèle d'IA générative. Si c'est ton intention, c'est un point à vérifier spécifiquement.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 420" role="img" aria-label="Arbre de décision pour une licence : la licence existe-t-elle, autorise-t-elle l'usage commercial, l'attribution est-elle requise, la redistribution est-elle interdite.">
+                <text x="20" y="26" class="svg-text" font-weight="700" font-size="15">Puis-je utiliser cet asset&nbsp;? — arbre de décision</text>
+
+                <defs>
+                  <marker id="arL" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#313c4c"/></marker>
+                </defs>
+
+                <!-- Q0 -->
+                <g transform="translate(180,44)">
+                  <rect x="0" y="0" width="280" height="44" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="140" y="20" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Une licence est-elle indiquée&nbsp;?</text>
+                  <text x="140" y="36" text-anchor="middle" class="svg-dim" font-size="10">page de l'asset, fichier LICENSE, conditions</text>
+                </g>
+                <text x="120" y="106" class="svg-dim" font-size="11">NON</text>
+                <text x="470" y="106" class="svg-dim" font-size="11">OUI</text>
+                <g stroke="#313c4c" stroke-width="2" fill="none">
+                  <path d="M250 88 L150 116" marker-end="url(#arL)"/>
+                  <path d="M390 88 L470 116" marker-end="url(#arL)"/>
+                </g>
+
+                <!-- branche NON : stop rouge -->
+                <g transform="translate(40,118)">
+                  <rect x="0" y="0" width="220" height="44" rx="8" fill="#ff6b6b" fill-opacity="0.14" stroke="#ff6b6b"/>
+                  <text x="110" y="20" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">NE PAS utiliser</text>
+                  <text x="110" y="36" text-anchor="middle" class="svg-dim" font-size="10">pas de licence = pas de droit</text>
+                </g>
+
+                <!-- Q1 commercial -->
+                <g transform="translate(360,118)">
+                  <rect x="0" y="0" width="250" height="44" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="125" y="20" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Usage commercial autorisé&nbsp;?</text>
+                  <text x="125" y="36" text-anchor="middle" class="svg-dim" font-size="10">(ton projet rapportera-t-il de l'argent&nbsp;?)</text>
+                </g>
+                <text x="318" y="186" class="svg-dim" font-size="11">NON → perso OK</text>
+                <text x="528" y="186" class="svg-dim" font-size="11">OUI</text>
+                <g stroke="#313c4c" stroke-width="2" fill="none">
+                  <path d="M430 162 L360 196" marker-end="url(#arL)"/>
+                  <path d="M520 162 L520 196" marker-end="url(#arL)"/>
+                </g>
+
+                <!-- NC -> usage perso only (or) -->
+                <g transform="translate(200,198)">
+                  <rect x="0" y="0" width="170" height="40" rx="8" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                  <text x="85" y="18" text-anchor="middle" class="svg-text" font-size="11.5" font-weight="700">Projet perso seulement</text>
+                  <text x="85" y="33" text-anchor="middle" class="svg-dim" font-size="10">jamais dans un jeu vendu</text>
+                </g>
+
+                <!-- Q2 attribution -->
+                <g transform="translate(420,198)">
+                  <rect x="0" y="0" width="200" height="44" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="100" y="20" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Attribution requise&nbsp;?</text>
+                  <text x="100" y="36" text-anchor="middle" class="svg-dim" font-size="10">(CC-BY, crédits exigés)</text>
+                </g>
+                <g stroke="#313c4c" stroke-width="2" fill="none">
+                  <path d="M520 242 L520 270" marker-end="url(#arL)"/>
+                </g>
+                <text x="540" y="262" class="svg-dim" font-size="10">si OUI → noter l'auteur</text>
+
+                <!-- Q3 redistribution -->
+                <g transform="translate(420,272)">
+                  <rect x="0" y="0" width="200" height="44" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="100" y="20" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Redistribution OK&nbsp;?</text>
+                  <text x="100" y="36" text-anchor="middle" class="svg-dim" font-size="10">(revendre / repartager la source)</text>
+                </g>
+                <g stroke="#313c4c" stroke-width="2" fill="none">
+                  <path d="M520 316 L520 344" marker-end="url(#arL)"/>
+                </g>
+
+                <!-- Final vert -->
+                <g transform="translate(360,346)">
+                  <rect x="0" y="0" width="250" height="50" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/>
+                  <text x="125" y="22" text-anchor="middle" class="svg-text" font-size="12.5" font-weight="700">Utilisable ✓</text>
+                  <text x="125" y="39" text-anchor="middle" class="svg-dim" font-size="10">crédite si requis · ne redistribue pas la source</text>
+                </g>
+              </svg>
+              <figcaption>Le réflexe à automatiser&nbsp;: pas de licence → on s'arrête&nbsp;; sinon on vérifie commercial, puis attribution, puis redistribution avant d'intégrer.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif concret&nbsp;: récupérer un <b>HDRI</b> gratuit sur Poly Haven et s'en servir pour <b>éclairer</b> une scène, en suivant la règle de licence du début à la fin. On verra aussi comment importer depuis Fab.</p>
+
+            <h4>A. Importer depuis Fab</h4>
+            <ol>
+              <li>Ouvre <b>fab.com</b> dans le navigateur et connecte-toi avec ton <b>compte Epic Games</b>. Le bouton <span class="menu-path">Filters<span class="arrow">▸</span>Price<span class="arrow">▸</span>Free</span> masque tout ce qui est payant&nbsp;: tu travailles ainsi en sécurité côté budget.</li>
+              <li>Ouvre la fiche d'un asset. <b>Lis le bloc licence</b> (Standard / Personal / Professional) — c'est <em>l'étape</em> à ne pas zapper. Clique <span class="menu-path">Add to My Library</span>&nbsp;: l'asset rejoint ta bibliothèque Fab, attachée à ton compte.</li>
+              <li><b>Vers Unreal</b>&nbsp;: dans l'<b>Epic Games Launcher</b> (ou le plugin Fab intégré à Unreal), onglet <span class="menu-path">Fab<span class="arrow">▸</span>Library</span>, retrouve l'asset et clique <span class="menu-path">Add to Project</span>. Unreal le copie dans le <span class="term">Content Browser</span> du projet, prêt à glisser dans la scène. Détail&nbsp;: voir <a href="../../cours/unreal/e04-import-assets.html">E4</a>.</li>
+              <li><b>Vers Unity</b>&nbsp;: télécharge l'asset depuis Fab au format proposé (souvent un <span class="term">.unitypackage</span> ou du <span class="gloss">glTF</span>/FBX). Dans Unity, <span class="menu-path">Assets<span class="arrow">▸</span>Import Package<span class="arrow">▸</span>Custom Package…</span> pour un <code>.unitypackage</code>, ou glisse simplement le glTF/FBX dans la fenêtre <b>Project</b>. Détail&nbsp;: voir <a href="../../cours/unity/u05-import-assets.html">U5</a>.</li>
+            </ol>
+
+            <h4>B. Récupérer un HDRI sur Poly Haven et éclairer une scène</h4>
+            <ol>
+              <li>Va sur <b>polyhaven.com</b>, section <b>HDRIs</b>. Choisis une ambiance (par exemple un ciel extérieur clair pour un test de matériau). La licence <b>CC0</b> est affichée&nbsp;: aucune contrainte, attribution facultative.</li>
+              <li>Sur la fiche, choisis la <b>résolution</b> avant de télécharger. <b>Ce qui se passe&nbsp;:</b> un HDRI 16K pèse des centaines de Mo et ralentit tout&nbsp;; pour de l'éclairage, <b>2K ou 4K suffisent largement</b> car on l'utilise comme source lumineuse, pas comme décor net à l'écran. Télécharge le fichier <code>.hdr</code> (ou <code>.exr</code>).</li>
+              <li><b>Dans Unreal&nbsp;5.7</b>&nbsp;: importe le <code>.hdr</code> dans le Content Browser, puis ajoute un acteur <span class="menu-path">Place Actors<span class="arrow">▸</span>HDRI Backdrop</span> (ou règle la <b>Skylight</b> sur cette image). <b>Ce qui se passe&nbsp;:</b> la scène entière est désormais éclairée par l'image — ombres douces et reflets apparaissent sans aucune lampe. Voir <a href="../../cours/unreal/e06-eclairage.html">E6</a>.</li>
+              <li><b>Dans Unity (URP/HDRP)&nbsp;:</b> importe le <code>.hdr</code>, crée un <b>Material</b> de type <em>Skybox</em> et assigne-y la texture, puis ouvre <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Lighting</span> et place ce skybox dans <b>Environment</b>. <b>Ce qui se passe&nbsp;:</b> l'<em>Environment Lighting</em> utilise l'HDRI comme source ambiante&nbsp;; tes objets PBR réagissent immédiatement. Voir <a href="../../cours/unity/u07-eclairage.html">U7</a>.</li>
+              <li><b>Crédite si requis.</b> Le CC0 ne l'exige pas, mais prends l'habitude&nbsp;: ouvre un fichier <code>CREDITS.txt</code> dans le projet et note «&nbsp;HDRI&nbsp;: <em>nom</em> — Poly Haven (CC0)&nbsp;». Pour un asset <b>CC-BY</b>, cette ligne devient <b>obligatoire</b>. Prendre l'habitude dès maintenant t'évitera d'oublier quand ce sera exigé.</li>
+            </ol>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce&nbsp;: tiens un fichier de crédits dès le jour&nbsp;1</div>
+              <p>Crée un <code>CREDITS.txt</code> (ou un tableur) <b>dès le début</b> du projet et inscris chaque asset au moment où tu le télécharges&nbsp;: nom, auteur, source, licence, lien. Reconstituer ça six mois plus tard, à la veille de publier, est un cauchemar — et c'est précisément là qu'on oublie une attribution CC-BY.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Le jeu sort sur Steam, puis une mise en demeure tombe&nbsp;: un asset «&nbsp;gratuit&nbsp;» était en réalité interdit en commercial.</p>
+                <p class="pi-cause"><b>Cause</b> — On a confondu «&nbsp;téléchargé gratuitement&nbsp;» et «&nbsp;libre d'usage commercial&nbsp;». L'asset était en CC-BY-NC ou sous une licence «&nbsp;perso seulement&nbsp;».</p>
+                <p class="pi-fix"><b>Correction</b> — Vérifier l'usage <b>commercial</b> sur la fiche AVANT d'intégrer. En cas de doute, choisir du CC0 (Poly Haven, ambientCG, Kenney) qui ne pose jamais ce problème.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Un autre développeur récupère et revend les fichiers sources d'un asset que tu avais acheté&nbsp;; ou c'est toi qui partages le pack.</p>
+                <p class="pi-cause"><b>Cause</b> — Redistribution interdite par la quasi-totalité des licences propriétaires&nbsp;: on a le droit de livrer le jeu, pas de repartager la source.</p>
+                <p class="pi-fix"><b>Correction</b> — Ne jamais mettre les fichiers sources dans un dépôt public ou un pack. Intégrer l'asset dans le projet, point. La source reste privée.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Un asset CC-BY est utilisé mais l'auteur n'apparaît nulle part dans le jeu.</p>
+                <p class="pi-cause"><b>Cause</b> — Attribution oubliée&nbsp;: gratuit ≠ sans condition. CC-BY <b>exige</b> de créditer.</p>
+                <p class="pi-fix"><b>Correction</b> — Tenir un <code>CREDITS.txt</code> dès le jour&nbsp;1 et l'afficher dans le jeu. Noter l'auteur au moment du téléchargement.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — L'asset importé est minuscule, géant, couché sur le côté ou avec des textures grises.</p>
+                <p class="pi-cause"><b>Cause</b> — Problème d'<b>échelle</b>/<b>orientation</b> (unités et axes différents entre logiciels) ou maps non rebranchées au bon endroit.</p>
+                <p class="pi-fix"><b>Correction</b> — Vérifier l'échelle à l'import et l'axe <em>up</em>, rebrancher les maps PBR. Procédure détaillée dans <a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Impossible d'adapter l'asset à l'art direction du projet&nbsp;: il «&nbsp;jure&nbsp;» et on ne peut pas le retoucher.</p>
+                <p class="pi-cause"><b>Cause</b> — Dépendance à un asset <b>non modifiable</b> (licence ND, ou fichier livré sans sources éditables).</p>
+                <p class="pi-fix"><b>Correction</b> — Privilégier des assets <b>modifiables</b> (sources fournies, licence autorisant les dérivés) quand on prévoit de les adapter. Vérifier la mention «&nbsp;No Derivatives&nbsp;» avant.</p>
+              </div>
+              <div class="piege-item">
+                <p class="pi-sym"><b>Symptôme</b> — Tu suis un tuto qui dit «&nbsp;télécharge sur l'Unreal Marketplace&nbsp;» mais tu ne trouves pas la boutique.</p>
+                <p class="pi-cause"><b>Cause</b> — L'Unreal Engine Marketplace n'existe plus&nbsp;: il a été remplacé par <b>Fab</b> en octobre 2024. Le tuto est obsolète.</p>
+                <p class="pi-fix"><b>Correction</b> — Passer par <b>fab.com</b> et le plugin Fab. Mentalement, traduire systématiquement «&nbsp;Unreal Marketplace&nbsp;» par «&nbsp;Fab&nbsp;».</p>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Constitue un mini «&nbsp;kit d'environnement légal&nbsp;» et documente-le. Étapes&nbsp;:</p>
+              <ol>
+                <li>Télécharge <b>un HDRI</b> en 2K ou 4K sur Poly Haven et utilise-le pour éclairer une scène simple (un sol + un objet) dans Unity <b>ou</b> Unreal.</li>
+                <li>Télécharge <b>un jeu de textures PBR</b> sur Poly Haven ou ambientCG et applique-le sur le sol.</li>
+                <li>Ajoute <b>un asset issu de Fab</b> (filtre Free) ou de Sketchfab, et note <b>explicitement sa licence</b>.</li>
+                <li>Rédige un <code>CREDITS.txt</code> listant, pour chaque asset&nbsp;: nom, auteur, source, licence (CC0 / CC-BY / propriétaire), et lien. Indique pour chacun si l'<b>usage commercial</b> est autorisé.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La scène est éclairée par l'HDRI&nbsp;: ombres et reflets visibles, <b>aucune lampe ajoutée à la main</b>.</li>
+                  <li>Le sol affiche bien la texture PBR (relief par la normal map, pas une couleur plate).</li>
+                  <li>Le <code>CREDITS.txt</code> contient <b>au moins 3 assets</b>, chacun avec sa licence nommée correctement.</li>
+                  <li>Pour chaque asset, tu peux répondre par OUI/NON aux 3 questions&nbsp;: usage commercial&nbsp;? attribution requise&nbsp;? redistribution autorisée&nbsp;?</li>
+                  <li>Aucun asset «&nbsp;sans licence indiquée&nbsp;» n'a été retenu.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Fab</b> (fab.com, oct. 2024) a remplacé l'Unreal Engine Marketplace, le Sketchfab Store, Quixel.com et l'ArtStation Marketplace&nbsp;; il sert <b>Unreal ET Unity</b>. Ne dis plus «&nbsp;Unreal Marketplace&nbsp;».</li>
+                <li><b>Megascans</b> est sur Fab&nbsp;: <b>majorité payante depuis 2025</b>, quelques assets gratuits. <b>Quixel Bridge</b> sert encore, notamment pour MetaHuman.</li>
+                <li><b>Poly Haven</b>, <b>ambientCG</b> et <b>Kenney</b> sont gratuits <b>et CC0</b>&nbsp;: usage libre, attribution facultative. Idéal pour apprendre et pour les HDRI d'éclairage.</li>
+                <li><b>Prix ≠ droits.</b> Toujours lire la licence&nbsp;: <b>CC0</b> (tout permis), <b>CC-BY</b> (créditer), <b>propriétaire</b> (per-seat / royalties, pas de redistribution).</li>
+                <li>Réflexe avant d'intégrer&nbsp;: <b>commercial ? attribution ? redistribution ?</b> (et de plus en plus&nbsp;: <b>IA ?</b>). Tiens un <code>CREDITS.txt</code> dès le jour&nbsp;1.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Asset</b> — Tout élément réutilisable d'un projet (modèle 3D, texture, son, animation, HDRI, matériau). Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+              <p><b>Fab</b> — Marketplace unifiée d'Epic Games (fab.com, lancée oct. 2024) qui a remplacé l'Unreal Engine Marketplace, le Sketchfab Store, Quixel.com et l'ArtStation Marketplace&nbsp;; sert Unreal, Unity et d'autres logiciels.</p>
+              <p><b>Megascans</b> — Bibliothèque de scans photogrammétriques (rochers, sols, surfaces, végétation) de Quixel, hébergée sur Fab&nbsp;; majoritairement payante depuis 2025.</p>
+              <p><b>Photogrammétrie / scan</b> — Reconstruction d'un modèle 3D et de ses textures à partir de nombreuses photos d'un objet réel&nbsp;; produit un réalisme élevé.</p>
+              <p><b>HDRI</b> — Image panoramique 360° à plage dynamique étendue, utilisée pour éclairer une scène de façon réaliste (lumière et reflets) sans placer de lampes.</p>
+              <p><b>CC0</b> — Licence Creative Commons «&nbsp;Zero&nbsp;»&nbsp;: l'œuvre est dans le domaine public, utilisable pour tout, sans permission ni attribution.</p>
+              <p><b>CC-BY</b> — Licence Creative Commons «&nbsp;Attribution&nbsp;»&nbsp;: usage très large autorisé à condition de créditer l'auteur (variantes&nbsp;: NC = pas de commercial, ND = pas de modification, SA = partage à l'identique).</p>
+              <p><b>Licence propriétaire</b> — Contrat rédigé par le vendeur définissant l'usage autorisé&nbsp;; souvent par poste (per-seat), parfois avec royalties, et interdisant la redistribution des sources.</p>
+              <p><b>Per-seat</b> — Modèle de licence où l'on paie une licence par utilisateur (poste de travail) de l'équipe.</p>
+              <p><b>Redistribution</b> — Fait de revendre ou repartager les fichiers sources d'un asset&nbsp;; presque toujours interdite, même quand l'intégration dans un jeu est permise.</p>
+              <p><b>Attribution</b> — Mention obligatoire de l'auteur et de la source (exigée par CC-BY), typiquement dans un écran ou fichier de crédits.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3 — Formats de fichiers</a> (FBX, glTF&nbsp;: ce que tu télécharges et importes).</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a> (comprendre les maps d'un jeu de textures Poly Haven).</li>
+              <li><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage Unity</a> et <a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage Unreal</a> (utiliser un HDRI comme source de lumière).</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets dans Unity</a> et <a href="../../cours/unreal/e04-import-assets.html">E4 — Import d'assets dans Unreal</a>.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a> (échelle, orientation, formats entre logiciels).</li>
+              <li><a href="../../glossaire.html">Glossaire global</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

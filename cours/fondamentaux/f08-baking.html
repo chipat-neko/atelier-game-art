@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F8 — Le baking de maps · Atelier Game Art</title>
+  <meta name="description" content="Baker le high-poly sur le low-poly : normal map (tangent vs object space), AO, curvature, cage, et comment éviter les artefacts de projection.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Le baking de maps</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F8 — Le baking de maps</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV</a>, <a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a> et <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a> (normales).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer le <b>principe du baking</b>&nbsp;: projeter l'information d'un <b>high-poly</b> sur les UV d'un <b>low-poly</b> via des rayons, et la stocker en texture.</li>
+                <li>Décomposer une <b>normal map</b> (RGB = vecteur XYZ) et distinguer <b>tangent space</b> et <b>object space</b>, en sachant lequel choisir.</li>
+                <li>Diagnostiquer un éclairage «&nbsp;en creux inversé&nbsp;» causé par la convention <b>OpenGL (Y+)</b> contre <b>DirectX (Y−)</b>.</li>
+                <li>Nommer les autres maps cuites (<b>AO</b>, <b>curvature</b>, <b>thickness</b>, <b>position</b>, <b>world normal</b>) et leur usage en texturisation.</li>
+                <li>Régler une <b>cage</b> et une <b>ray distance</b>, et corriger les artefacts classiques (skew, intersections, gradients sales, padding).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Imagine une caisse de munitions militaire pour un jeu&nbsp;: dans la réalité, elle est couverte de rivets, de soudures, de bosses, de lettres en relief estampées dans le métal. Modéliser tout ce détail en vraie géométrie demanderait des <b>centaines de milliers de polygones</b> — bien trop lourd pour une scène où cinquante caisses peuvent apparaître à l'écran. Pourtant, le joueur doit <em>voir</em> ces rivets accrocher la lumière.</p>
+            <p>Le <span class="term">baking</span> («&nbsp;cuisson&nbsp;» en anglais) résout exactement ce dilemme. On sculpte ou modélise une version <b>ultra-détaillée</b> de l'objet, le <span class="term">high-poly</span>, puis on «&nbsp;cuit&nbsp;» son détail dans des <b>textures</b> qu'on applique sur une version légère, le <span class="term">low-poly</span>. Le résultat&nbsp;: la caisse n'a peut-être que 500 triangles, mais elle <em>réagit à la lumière</em> comme si elle en avait un million. Le détail visuel est conservé&nbsp;; le coût géométrique, lui, s'effondre.</p>
+            <p>C'est l'une des étapes les plus structurantes du <a href="../../cours/fondamentaux/f05-pipeline-asset.html">pipeline d'asset</a>&nbsp;: elle se situe juste après l'<a href="../../cours/fondamentaux/f06-uv-mapping.html">UV mapping</a> et alimente toute la texturisation <a href="../../cours/fondamentaux/f07-pbr.html">PBR</a>. Une normal map, l'AO, la curvature qui pilote les masques d'usure dans <a href="../../cours/logiciels/l02-substance.html">Substance Painter</a> — tout cela <b>provient d'un bake</b>. Un bake raté (rayons qui débordent, normales sales, mauvaise convention) contamine ensuite chaque texture, et la faute remonte jusqu'au moteur. Savoir baker proprement, c'est savoir produire des assets qui tiennent la route partout, de Blender à <a href="../../cours/unreal/e04-import-assets.html">Unreal</a>.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le principe&nbsp;: projeter le détail par des rayons</h3>
+            <p>Le baking repose sur une idée géométrique simple. On place le low-poly et le high-poly <b>au même endroit</b> dans l'espace, l'un «&nbsp;dans&nbsp;» l'autre. Puis, pour chaque <span class="gloss">texel</span> du low-poly (chaque pixel de sa future texture, posé sur sa surface via les <a href="../../cours/fondamentaux/f06-uv-mapping.html">UV</a>), le moteur de bake lance un <b>rayon</b>.</p>
+            <p>Ce rayon part de la surface du low-poly et file <b>le long de la normale</b> (perpendiculairement à la surface, voir <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>). Il finit par <b>frapper</b> le high-poly à proximité. Au point d'impact, le moteur lit l'information qui l'intéresse — l'orientation exacte de la surface détaillée, son occlusion, sa courbure… — et l'<b>enregistre dans le texel de départ</b>. En répétant l'opération pour tous les texels, on remplit une texture complète qui «&nbsp;décrit&nbsp;» le high-poly vu depuis la peau du low-poly.</p>
+            <p>C'est exactement comme prendre l'empreinte d'une pièce en relief&nbsp;: on presse une feuille souple (le low-poly, plat) contre l'objet sculpté (le high-poly), et la feuille enregistre les creux et les bosses. La feuille reste fine, mais elle <em>contient</em> l'information du relief.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Bake ≠ baking de lumière</div>
+              <p>Attention au faux ami&nbsp;: dans les moteurs, on parle aussi de «&nbsp;baking de l'éclairage&nbsp;» (lightmaps). C'est un autre sujet&nbsp;: là on précalcule des <em>ombres et de la lumière</em> dans une texture. Ici, on parle du <b>transfert de détail géométrique</b> du high-poly vers le low-poly. Même mot, deux opérations distinctes.</p>
+            </div>
+
+            <h3>2. La normal map en profondeur&nbsp;: une couleur qui encode un vecteur</h3>
+            <p>La star du baking est la <span class="term">normal map</span>. Pour la comprendre, il faut accepter une idée contre-intuitive&nbsp;: <b>ce n'est pas une image, c'est un tableau de vecteurs déguisé en image</b>.</p>
+            <p>Souviens-toi (<a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>) qu'une <b>normale</b> est une flèche perpendiculaire à la surface, qui indique «&nbsp;de quel côté regarde&nbsp;» le point. C'est elle qui dit au moteur comment la lumière doit rebondir. Or une direction dans l'espace, c'est trois nombres&nbsp;: <code>X</code>, <code>Y</code>, <code>Z</code>. Et une couleur, c'est aussi trois nombres&nbsp;: <code>R</code>, <code>V</code>, <code>B</code>. L'astuce du baking&nbsp;: <b>ranger chaque composante du vecteur dans un canal de couleur</b>.</p>
+            <ul>
+              <li>Le canal <b>Rouge</b> stocke la composante <b>X</b> de la normale (gauche ↔ droite).</li>
+              <li>Le canal <b>Vert</b> stocke la composante <b>Y</b> (bas ↔ haut).</li>
+              <li>Le canal <b>Bleu</b> stocke la composante <b>Z</b> (vers l'extérieur ↔ vers l'intérieur).</li>
+            </ul>
+            <p>Comme une couleur va de 0 à 1 mais qu'un vecteur va de −1 à +1, on encode avec une petite transformation&nbsp;: <code>canal = (composante + 1) / 2</code>. Une normale qui pointe «&nbsp;tout droit vers l'extérieur&nbsp;» (X=0, Y=0, Z=1) donne donc R=0,5, V=0,5, B=1 → un <b>violet-bleu</b>. C'est pour ça qu'une normal map au repos a cette teinte lavande caractéristique&nbsp;: la majorité de ses texels regardent «&nbsp;tout droit&nbsp;», et seuls les détails inclinent le vecteur, faisant virer la couleur vers le rouge, le vert ou le cyan.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Pourquoi le bleu domine</div>
+              <p>Le bleu (canal Z) est presque toujours élevé, parce que la plupart des micro-surfaces regardent globalement «&nbsp;vers le dehors&nbsp;». C'est aussi pourquoi une normal map se lit obligatoirement en <b>linéaire / Non-Color</b> (jamais sRGB)&nbsp;: ce sont des coordonnées, pas une couleur perçue par l'œil. Une normal map lue en sRGB éclaire de travers (rappel <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>).</p>
+            </div>
+
+            <h4>Tangent space&nbsp;: le standard, qui suit la surface</h4>
+            <p>Il existe deux référentiels pour encoder ces vecteurs. Le plus courant, et le réglage par défaut partout, est le <span class="term">tangent space</span> («&nbsp;espace tangent&nbsp;»). Ici, le vecteur n'est <b>pas</b> exprimé par rapport au monde, mais <b>relativement à la surface locale</b>&nbsp;: «&nbsp;Z&nbsp;» pointe toujours vers l'extérieur de la face, «&nbsp;X&nbsp;» et «&nbsp;Y&nbsp;» suivent l'orientation des UV de cette face.</p>
+            <p>L'avantage est décisif&nbsp;: comme tout est relatif à la surface, la normal map reste <b>valable même si le mesh bouge</b>. Tu peux tourner l'objet, le plier, l'animer (un personnage qui marche, un drapeau qui ondule) — le détail reste correct, parce qu'il «&nbsp;voyage&nbsp;» avec la surface. C'est aussi le tangent space qui permet de <b>réutiliser</b> la même portion de texture sur des îlots symétriques. C'est pour ces raisons qu'il domine en jeu temps réel. Visuellement&nbsp;: une normal map tangent space est <b>majoritairement bleue</b>.</p>
+
+            <h4>Object space&nbsp;: arc-en-ciel, pour les objets rigides</h4>
+            <p>L'autre référentiel est l'<span class="term">object space</span> («&nbsp;espace objet&nbsp;»)&nbsp;: chaque vecteur est exprimé par rapport au repère de l'objet entier, indépendamment de la surface locale. Du coup les couleurs partent dans toutes les directions selon l'orientation des faces&nbsp;: une normal map object space est <b>multicolore, «&nbsp;arc-en-ciel&nbsp;»</b> (rouge à gauche, vert en haut, etc.).</p>
+            <p>Avantage&nbsp;: un décodage plus simple et parfois un poil plus précis. Inconvénient majeur&nbsp;: elle est <b>rigidement liée à la forme</b>. Si le mesh se déforme ou s'anime, la map devient fausse. On la réserve donc aux <b>objets parfaitement rigides</b> (un casque, un rocher qui ne bouge pas) et à certains pipelines spécifiques. En game art généraliste, on travaille presque toujours en <b>tangent space</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 260" role="img" aria-label="Décomposition d'une normal map : les canaux R, V, B encodent les composantes X, Y, Z d'un vecteur, et comparaison entre tangent space majoritairement bleu et object space multicolore">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Une normal map encode un vecteur dans RVB</text>
+
+                <!-- vecteur décomposé -->
+                <g transform="translate(30,48)">
+                  <rect x="0" y="0" width="250" height="180" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="125" y="22" text-anchor="middle" class="svg-dim" font-size="11">normale = direction (X, Y, Z)</text>
+                  <!-- repère -->
+                  <line x1="60" y1="140" x2="200" y2="140" stroke="#ff6b6b" stroke-width="3"/>
+                  <polygon points="200,140 188,134 188,146" fill="#ff6b6b"/>
+                  <text x="206" y="144" class="svg-text" font-size="12" font-weight="700" fill="#ff6b6b">X → R</text>
+                  <line x1="60" y1="140" x2="60" y2="50" stroke="#5ad19a" stroke-width="3"/>
+                  <polygon points="60,50 54,62 66,62" fill="#5ad19a"/>
+                  <text x="36" y="46" class="svg-text" font-size="12" font-weight="700" fill="#5ad19a">Y → V</text>
+                  <line x1="60" y1="140" x2="120" y2="92" stroke="#59b0ff" stroke-width="3"/>
+                  <polygon points="120,92 108,94 116,104" fill="#59b0ff"/>
+                  <text x="124" y="86" class="svg-text" font-size="12" font-weight="700" fill="#59b0ff">Z → B</text>
+                  <circle cx="60" cy="140" r="4" fill="#313c4c"/>
+                </g>
+
+                <!-- deux nuanciers -->
+                <g transform="translate(310,48)">
+                  <text x="150" y="-6" text-anchor="middle" class="svg-dim" font-size="11">à quoi ça ressemble</text>
+                  <!-- tangent -->
+                  <rect x="0" y="6" width="140" height="86" rx="8" fill="#8a8aff" stroke="#313c4c"/>
+                  <ellipse cx="50" cy="44" rx="20" ry="13" fill="#9d8cff"/>
+                  <ellipse cx="95" cy="62" rx="16" ry="11" fill="#7f96ff"/>
+                  <rect x="20" y="30" width="8" height="34" fill="#a0a0ff"/>
+                  <text x="70" y="110" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Tangent space</text>
+                  <text x="70" y="124" text-anchor="middle" class="svg-dim" font-size="10">bleu dominant · animable</text>
+                  <!-- object -->
+                  <defs>
+                    <linearGradient id="osp" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#ff6b6b"/><stop offset="0.4" stop-color="#f2b441"/>
+                      <stop offset="0.7" stop-color="#5ad19a"/><stop offset="1" stop-color="#59b0ff"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="160" y="6" width="140" height="86" rx="8" fill="url(#osp)" stroke="#313c4c"/>
+                  <text x="230" y="110" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Object space</text>
+                  <text x="230" y="124" text-anchor="middle" class="svg-dim" font-size="10">arc-en-ciel · rigide</text>
+                </g>
+              </svg>
+              <figcaption>À gauche&nbsp;: les trois axes du vecteur normal sont rangés dans les canaux R (X), V (Y), B (Z). À droite&nbsp;: en tangent space le bleu domine (tout regarde «&nbsp;vers le dehors&nbsp;») et la map survit à l'animation&nbsp;; en object space les couleurs partent dans tous les sens et la map ne convient qu'aux objets rigides.</figcaption>
+            </figure>
+
+            <h4>La convention OpenGL vs DirectX&nbsp;: la cause n°1 du relief inversé</h4>
+            <p>Voici le piège qui fait perdre des heures à tout débutant. Tout le monde est d'accord sur les canaux R (X) et B (Z), mais <b>pas sur le sens du canal Vert (Y)</b>. Deux conventions s'affrontent&nbsp;:</p>
+            <ul>
+              <li><span class="term">OpenGL</span> (dit «&nbsp;<b>Y+</b>&nbsp;»)&nbsp;: le vert pointe vers le <b>haut</b>. Les bosses semblent éclairées par le haut.</li>
+              <li><span class="term">DirectX</span> (dit «&nbsp;<b>Y−</b>&nbsp;»)&nbsp;: le vert est <b>inversé</b>, il pointe vers le bas.</li>
+            </ul>
+            <p>La seule différence entre les deux, c'est le canal Vert <b>retourné</b>. Mais cette inversion a une conséquence spectaculaire&nbsp;: si tu utilises une normal map de la mauvaise convention, le moteur croit que les <b>bosses sont des creux</b> et inversement. L'éclairage devient «&nbsp;à l'envers&nbsp;»&nbsp;: les rivets paraissent enfoncés, les rainures ressortent, et l'objet semble bizarrement «&nbsp;gonflé&nbsp;» quand la lumière bouge. C'est le symptôme classique du <b>relief inversé</b>.</p>
+            <p>Repères pratiques pour les deux moteurs de cette formation&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Logiciel / Moteur</th><th>Convention attendue</th><th>Note</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Unity</b></td><td><b>OpenGL (Y+)</b></td><td>Importe des normal maps Y+. Exporte/cuis en OpenGL pour Unity.</td></tr>
+                  <tr><td><b>Unreal Engine</b></td><td><b>DirectX (Y−)</b></td><td>Attend du Y−. Une map OpenGL y paraîtra creusée à l'envers.</td></tr>
+                  <tr><td><b>Blender</b> (Principled)</td><td><b>OpenGL (Y+)</b></td><td>Comme Unity&nbsp;; sinon il faut inverser le canal vert.</td></tr>
+                  <tr><td><b>Substance Painter</b> (viewport)</td><td>OpenGL par défaut</td><td>À l'export, choisis le preset du moteur cible (Unity = OpenGL, Unreal = DirectX).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Le test infaillible</div>
+              <p>Dans le doute, regarde le canal <b>Vert</b> isolé&nbsp;: pose-toi sur une bosse éclairée d'en haut. Si la moitié <b>supérieure</b> de la bosse est claire dans le vert → <b>OpenGL (Y+)</b>. Si c'est la moitié inférieure → <b>DirectX (Y−)</b>. Pour convertir l'une en l'autre, il suffit d'<b>inverser le canal vert</b> — c'est une opération sans perte, faisable dans Substance, Photoshop ou un nœud de moteur.</p>
+            </div>
+
+            <h3>3. Les autres maps qu'on cuit</h3>
+            <p>La normal map est la plus connue, mais un bake en produit toute une famille. Chacune lit une <b>information différente</b> au point d'impact du rayon sur le high-poly.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Map cuite</th><th>Ce qu'elle enregistre</th><th>À quoi elle sert</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Normal</b></td><td>L'orientation détaillée de la surface (vecteur)</td><td>Faire réagir la lumière comme sur le high-poly, sans polygones.</td></tr>
+                  <tr><td><b>Ambient Occlusion (AO)</b></td><td>À quel point chaque point est «&nbsp;coincé&nbsp;» dans un recoin</td><td>Assombrir les creux&nbsp;; base de saleté et de profondeur en texturisation.</td></tr>
+                  <tr><td><b>Curvature</b></td><td>Si la surface est <b>convexe</b> (arête saillante) ou <b>concave</b> (creux)</td><td><b>Masques d'usure</b> dans Substance&nbsp;: l'usure se concentre sur les arêtes saillantes.</td></tr>
+                  <tr><td><b>Thickness</b></td><td>L'épaisseur de matière «&nbsp;derrière&nbsp;» chaque point (rayons vers l'intérieur)</td><td>Translucidité (cire, peau, feuilles), saleté dans les zones fines.</td></tr>
+                  <tr><td><b>Position</b></td><td>La position 3D de chaque point, encodée en couleur</td><td>Effets de dégradé sur l'objet (poussière qui monte du bas, gradients verticaux).</td></tr>
+                  <tr><td><b>World Space Normal</b></td><td>La normale exprimée dans le repère du monde</td><td>Masques par orientation (ex. neige sur les faces «&nbsp;vers le haut&nbsp;»).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Ces maps secondaires forment ce qu'on appelle les <b>«&nbsp;mesh maps&nbsp;»</b> dans Substance Painter&nbsp;: elles ne s'affichent pas forcément telles quelles, mais <b>nourrissent les masques procéduraux</b>. Par exemple, un effet d'usure réaliste combine la <b>curvature</b> (pour cibler les arêtes) et l'<b>AO</b> (pour épargner les recoins protégés). Sans bake de curvature, l'usure procédurale n'a aucune information sur où mordre&nbsp;: elle devient aléatoire et fausse. C'est pourquoi on <b>cuit toujours ces maps avant de texturer</b>.</p>
+
+            <h3>4. La cage&nbsp;: contrôler jusqu'où vont les rayons</h3>
+            <p>Le talon d'Achille du baking, c'est que les rayons partent du low-poly et peuvent partir <b>n'importe où</b>. Si un rayon est trop court, il ne touche pas le high-poly (texel vide). S'il est trop long, ou mal orienté, il peut traverser une pièce et frapper le <b>mauvais</b> morceau du high-poly. C'est là qu'intervient la <span class="term">cage</span>.</p>
+            <p>Une cage est une <b>enveloppe</b> — une copie légèrement gonflée du low-poly — qui définit le <b>volume de recherche</b> des rayons. Concrètement&nbsp;: les rayons ne partent plus de la surface elle-même, mais de la surface de la cage, et s'arrêtent à la surface du low-poly. Cela donne deux contrôles&nbsp;:</p>
+            <ul>
+              <li>La cage doit <b>englober tout le high-poly</b> (sinon des bosses dépassent et ne sont pas captées).</li>
+              <li>La cage ne doit <b>pas être trop large</b> (sinon ses rayons franchissent l'espace entre deux pièces voisines et capturent la mauvaise surface — le <b>débordement</b>).</li>
+            </ul>
+            <p>Quand on n'a pas de cage explicite, on utilise plutôt une <b>ray distance</b>&nbsp;: une distance maximale vers l'avant (<span class="term">Max Frontal Distance</span>, vers l'extérieur) et vers l'arrière (<span class="term">Max Rear Distance</span>, vers l'intérieur). C'est l'équivalent d'une cage uniforme&nbsp;: «&nbsp;cherche le high-poly jusqu'à tant de centimètres devant et derrière la surface, pas plus loin&nbsp;». La cage manuelle reste plus fine pour les formes compliquées, parce qu'on peut la gonfler localement.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Schéma de projection : un low-poly à peu de segments enveloppe un high-poly ondulé, des rayons partent de la cage le long des normales et transfèrent le détail dans une texture normal">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Projection du high-poly vers le low-poly</text>
+
+                <!-- légende couleurs -->
+                <g font-size="10" class="svg-dim">
+                  <rect x="40" y="34" width="14" height="6" fill="#59b0ff"/><text x="60" y="40">low-poly</text>
+                  <rect x="130" y="34" width="14" height="6" fill="#f2b441"/><text x="150" y="40">high-poly</text>
+                  <line x1="218" y1="37" x2="240" y2="37" stroke="#c89bff" stroke-width="2" stroke-dasharray="4 3"/><text x="246" y="40">cage</text>
+                  <line x1="290" y1="37" x2="312" y2="37" stroke="#5ad19a" stroke-width="2"/><text x="318" y="40">rayon</text>
+                </g>
+
+                <!-- high-poly ondulé (orange) -->
+                <path d="M80 175 q15 -28 30 0 q15 28 30 0 q15 -28 30 0 q15 28 30 0 q15 -28 30 0 q15 28 30 0 q15 -28 30 0 q15 28 30 0"
+                      fill="none" stroke="#f2b441" stroke-width="3"/>
+                <!-- low-poly (bleu, peu de segments) -->
+                <line x1="80" y1="175" x2="320" y2="175" stroke="#59b0ff" stroke-width="3"/>
+                <line x1="320" y1="175" x2="440" y2="175" stroke="#59b0ff" stroke-width="3"/>
+                <text x="86" y="200" class="svg-dim" font-size="10">surface low-poly (plate)</text>
+                <!-- cage (violet pointillé, au-dessus) -->
+                <line x1="80" y1="120" x2="440" y2="120" stroke="#c89bff" stroke-width="2" stroke-dasharray="5 4"/>
+                <text x="360" y="113" class="svg-dim" font-size="10">cage (enveloppe gonflée)</text>
+
+                <!-- rayons verts, de la cage vers le low-poly, le long de la normale -->
+                <g stroke="#5ad19a" stroke-width="1.6">
+                  <line x1="110" y1="120" x2="110" y2="175"/>
+                  <line x1="170" y1="120" x2="170" y2="175"/>
+                  <line x1="230" y1="120" x2="230" y2="175"/>
+                  <line x1="290" y1="120" x2="290" y2="175"/>
+                  <line x1="350" y1="120" x2="350" y2="175"/>
+                  <line x1="410" y1="120" x2="410" y2="175"/>
+                </g>
+                <g fill="#5ad19a">
+                  <polygon points="110,175 105,165 115,165"/>
+                  <polygon points="170,175 165,165 175,165"/>
+                  <polygon points="230,175 225,165 235,165"/>
+                  <polygon points="290,175 285,165 295,165"/>
+                  <polygon points="350,175 345,165 355,165"/>
+                  <polygon points="410,175 405,165 415,165"/>
+                </g>
+                <text x="118" y="145" class="svg-dim" font-size="9">le long de la normale</text>
+
+                <!-- flèche transfert -->
+                <line x1="450" y1="150" x2="500" y2="150" class="svg-stroke" stroke="#313c4c" stroke-width="2"/>
+                <polygon points="500,150 490,144 490,156" fill="#313c4c"/>
+                <text x="475" y="140" text-anchor="middle" class="svg-dim" font-size="10">cuit en</text>
+
+                <!-- texture normal résultat -->
+                <rect x="505" y="110" width="100" height="100" rx="6" fill="#8a8aff" stroke="#313c4c"/>
+                <path d="M505 175 q12 -16 24 0 q12 16 24 0 q12 -16 24 0 q12 16 24 0" fill="none" stroke="#6f74ff" stroke-width="3"/>
+                <text x="555" y="226" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">normal map</text>
+              </svg>
+              <figcaption>Le low-poly (bleu, plat) est enveloppé par une cage (violet pointillé). Depuis la cage, des rayons (vert) partent le long de la normale, frappent le high-poly ondulé (orange) et enregistrent son orientation dans une texture (normal map). Le low-poly «&nbsp;hérite&nbsp;» visuellement du relief sans gagner un seul polygone.</figcaption>
+            </figure>
+
+            <h3>5. Les artefacts&nbsp;: ce qui rate, et pourquoi</h3>
+            <p>Comprendre <em>pourquoi</em> un bake foire permet de le réparer sans tâtonner. Voici les mécanismes physiques des artefacts les plus fréquents.</p>
+
+            <h4>Le skew et la «&nbsp;waviness&nbsp;»</h4>
+            <p>Le <span class="term">skew</span> (gauchissement) apparaît quand les rayons frappent le high-poly <b>de biais</b> au lieu de perpendiculairement. Un motif droit (une rangée de rivets, une rainure rectiligne) ressort alors <b>incliné ou ondulé</b> dans la normal map. La cause profonde&nbsp;: là où la surface low-poly est très courbée par rapport au high-poly (typiquement aux coins arrondis), les normales du low-poly «&nbsp;tournent&nbsp;» continûment, donc les rayons changent d'angle d'un texel à l'autre. Une cage <b>trop large</b> aggrave le skew (rayons très inclinés)&nbsp;; une cage <b>trop serrée</b> rate des bosses. Le réglage de la cage est donc un équilibre.</p>
+
+            <h4>Les intersections (débordement)</h4>
+            <p>Quand deux pièces du modèle sont proches (un canon contre une crosse, deux courroies superposées), les rayons d'une pièce peuvent traverser le vide et frapper le high-poly de la <b>pièce voisine</b>. Résultat&nbsp;: des taches «&nbsp;fantômes&nbsp;» de l'autre objet apparaissent dans la texture. La parade reine&nbsp;: <b>exploser le mesh</b> (voir plus bas) pour éloigner les pièces avant le bake.</p>
+
+            <h4>Les gradients sales sur arêtes dures sans seam</h4>
+            <p>C'est le piège le plus subtil, et il relie directement cette leçon à <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>. Sur une arête vive (un coin à 90°), si le low-poly a un <b>hard edge</b> (les normales se «&nbsp;cassent&nbsp;») mais qu'<b>aucune UV seam ne suit cette arête</b>, le tangent space devient incohérent au passage de l'arête. La normal map doit alors compenser par un <b>fort gradient</b> de couleur — qui se traduit, sous éclairage, par un dégradé sombre/sale le long de l'arête. La règle d'or qui en découle&nbsp;: <b>tout hard edge doit être doublé d'une UV seam</b>, et inversement. C'est la fameuse maxime «&nbsp;hard edge = UV seam&nbsp;».</p>
+
+            <h4>Le padding manquant</h4>
+            <p>Comme pour les textures peintes (<a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>), un bake doit être <b>dilaté</b> (edge padding) au-delà des bords d'îlots, sinon le filtrage et les <span class="gloss">mipmap</span> font baver du noir (ou du vide) sur les coutures. Heureusement, la plupart des bakers ajoutent ce padding automatiquement&nbsp;: il suffit de ne pas le mettre à zéro.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Comparaison d'une cage bien réglée donnant des rayons droits et un motif net, contre une cage trop large donnant des rayons inclinés et un motif gauchi (skew)">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Le skew vient d'une cage mal réglée</text>
+
+                <!-- bonne cage -->
+                <g transform="translate(20,40)">
+                  <text x="140" y="0" text-anchor="middle" class="svg-text" font-size="12" font-weight="700" fill="#5ad19a">Cage ajustée → rayons droits</text>
+                  <line x1="20" y1="150" x2="260" y2="150" stroke="#59b0ff" stroke-width="3"/>
+                  <line x1="20" y1="40" x2="260" y2="40" stroke="#c89bff" stroke-width="2" stroke-dasharray="5 4"/>
+                  <g stroke="#5ad19a" stroke-width="1.6">
+                    <line x1="60" y1="40" x2="60" y2="150"/><line x1="100" y1="40" x2="100" y2="150"/>
+                    <line x1="140" y1="40" x2="140" y2="150"/><line x1="180" y1="40" x2="180" y2="150"/>
+                    <line x1="220" y1="40" x2="220" y2="150"/>
+                  </g>
+                  <!-- motif net -->
+                  <rect x="60" y="168" width="160" height="42" rx="4" fill="#8a8aff" stroke="#313c4c"/>
+                  <g stroke="#6f74ff" stroke-width="4"><line x1="78" y1="172" x2="78" y2="206"/><line x1="118" y1="172" x2="118" y2="206"/><line x1="158" y1="172" x2="158" y2="206"/><line x1="198" y1="172" x2="198" y2="206"/></g>
+                  <text x="140" y="226" text-anchor="middle" class="svg-dim" font-size="10">motif droit, net</text>
+                </g>
+
+                <!-- mauvaise cage -->
+                <g transform="translate(340,40)">
+                  <text x="140" y="0" text-anchor="middle" class="svg-text" font-size="12" font-weight="700" fill="#ff6b6b">Cage trop large → rayons inclinés</text>
+                  <line x1="20" y1="150" x2="260" y2="150" stroke="#59b0ff" stroke-width="3"/>
+                  <line x1="0" y1="34" x2="280" y2="34" stroke="#c89bff" stroke-width="2" stroke-dasharray="5 4"/>
+                  <g stroke="#ff6b6b" stroke-width="1.6">
+                    <line x1="40" y1="34" x2="60" y2="150"/><line x1="95" y1="34" x2="105" y2="150"/>
+                    <line x1="160" y1="34" x2="150" y2="150"/><line x1="225" y1="34" x2="200" y2="150"/>
+                  </g>
+                  <!-- motif gauchi -->
+                  <rect x="60" y="168" width="160" height="42" rx="4" fill="#8a8aff" stroke="#313c4c"/>
+                  <g stroke="#6f74ff" stroke-width="4" fill="none">
+                    <path d="M78 172 l10 34"/><path d="M118 172 l8 34"/><path d="M158 172 l-6 34"/><path d="M198 172 l-12 34"/>
+                  </g>
+                  <text x="140" y="226" text-anchor="middle" class="svg-dim" font-size="10">motif gauchi (skew)</text>
+                </g>
+              </svg>
+              <figcaption>À gauche, une cage bien ajustée envoie des rayons perpendiculaires&nbsp;: le motif est transféré droit. À droite, une cage trop large fait diverger les rayons obliquement&nbsp;: le même motif ressort incliné et ondulé — c'est le skew, qu'on corrige en resserrant la cage ou en ajoutant des arêtes de support sur le low-poly.</figcaption>
+            </figure>
+
+            <h3>6. Bien préparer le bake&nbsp;: explosion et nommage</h3>
+            <p>Deux techniques de production évitent la plupart des artefacts en amont.</p>
+            <p><b>Exploser le mesh</b>&nbsp;: avant de baker, on <b>écarte dans l'espace</b> chaque pièce du low-poly et son high-poly correspondant (on les translate vers l'extérieur). Comme les pièces ne se touchent plus, plus aucun rayon ne peut frapper la pièce voisine&nbsp;: fini les intersections. C'est la solution standard pour les assets «&nbsp;à pièces&nbsp;» (armes, machines, props mécaniques).</p>
+            <p><b>Le matchage par nom</b> (<span class="term">Match by Name</span>)&nbsp;: pour que le baker sache quel high-poly va avec quel low-poly une fois tout explosé, on suit une convention de nommage stricte. Chaque paire partage un préfixe et un suffixe&nbsp;: <code>poignee_low</code> / <code>poignee_high</code>, <code>canon_low</code> / <code>canon_high</code>. Le baker ne projette alors les rayons d'une pièce <b>que</b> sur son high-poly homonyme&nbsp;: même si une autre pièce est tout près, elle est ignorée. C'est l'option <b>Match by Name</b> dans Substance Painter et Marmoset Toolbag, l'équivalent de «&nbsp;Selected to Active&nbsp;» bien organisé dans Blender.</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Average Normals</div>
+              <p>L'option <b>Average Normals</b> (normales moyennées) lisse la direction des rayons à la jonction des faces du low-poly, pour éviter les ruptures brutales de tangent space. Active-la quand ton low-poly a des surfaces lisses (cylindres, formes arrondies)&nbsp;: elle réduit fortement le skew. Sur des arêtes franches bien dotées de seams, elle change peu de choses.</p>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Cuisons une paire <b>high/low</b> dans <b>Substance 3D Painter</b>, l'outil le plus utilisé pour le bake en game art (la logique est la même dans <b>Marmoset Toolbag</b> et dans le <b>Bake</b> de <a href="../../cours/logiciels/l01-blender.html">Blender</a>&nbsp;; seuls les noms d'options diffèrent). On part d'un low-poly déjà déplié (<a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) et de son high-poly sculpté.</p>
+            <ol>
+              <li><b>Nomme tes meshes</b> avant l'export depuis ton modeleur&nbsp;: chaque pièce en <code>nom_low</code> et <code>nom_high</code>. <em>Ce qui se passe&nbsp;:</em> tu prépares le terrain pour le matchage automatique — sans ça, le baker mélange les pièces.</li>
+              <li>Dans Substance Painter, crée un projet sur le low-poly&nbsp;: <span class="menu-path">File<span class="arrow">▸</span>New</span>, charge ton <span class="term">.fbx</span> low-poly. <em>Ce qui se passe&nbsp;:</em> Painter lit tes UV et prépare un set de textures par matériau.</li>
+              <li>Ouvre le panneau de bake&nbsp;: <span class="menu-path">Texture Set Settings<span class="arrow">▸</span>Bake Mesh Maps</span>. Une fenêtre liste toutes les mesh maps (Normal, AO, Curvature, Thickness, Position, World Space Normal). <em>Ce qui se passe&nbsp;:</em> c'est le tableau de bord du bake.</li>
+              <li>Dans <span class="menu-path">Common</span>, charge ton high-poly dans <span class="menu-path">High Definition Meshes</span>, puis <b>coche</b> <span class="menu-path">Match by Name</span>. <em>Ce qui se passe&nbsp;:</em> chaque <code>nom_low</code> ne sera projeté que sur son <code>nom_high</code> — la garantie anti-débordement, même sans exploser.</li>
+              <li>Règle la portée des rayons&nbsp;: ajuste <span class="menu-path">Max Frontal Distance</span> et <span class="menu-path">Max Rear Distance</span>, ou active <span class="menu-path">Use Cage</span> si tu as exporté une cage. <em>Ce qui se passe&nbsp;:</em> tu définis la profondeur de recherche. Trop court → trous noirs&nbsp;; trop long → skew et débordement. Commence petit, augmente jusqu'à ce que les trous disparaissent.</li>
+              <li>Dans les options de la <b>Normal</b>, vérifie <span class="menu-path">Average Normals</span> (active sur surfaces lisses). <em>Ce qui se passe&nbsp;:</em> tu lisses les rayons aux jonctions pour limiter le skew.</li>
+              <li>Lance <span class="menu-path">Bake selected textures</span>. <em>Ce qui se passe&nbsp;:</em> Painter tire les rayons pour toutes les maps cochées et remplit les textures. La normal map doit être <b>majoritairement bleue</b>&nbsp;; la curvature, des arêtes claires sur fond gris&nbsp;; l'AO, des recoins sombres.</li>
+              <li><b>Inspecte</b>&nbsp;: cherche des taches d'autres pièces (débordement → explose ou vérifie le Match by Name), des motifs gauchis (skew → resserre la cage / ajoute des arêtes de support), des liserés sombres sur arêtes (hard edge sans seam → corrige l'UV ou les normales).</li>
+              <li><b>Exporte avec la bonne convention</b>&nbsp;: pour Unity, exporte la normal en <b>OpenGL</b>&nbsp;; pour <a href="../../cours/unreal/e04-import-assets.html">Unreal</a>, en <b>DirectX</b>. <em>Ce qui se passe&nbsp;:</em> tu évites le relief inversé au branchement dans le moteur (voir <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Les bosses semblent enfoncées et les creux ressortent&nbsp;; l'objet paraît «&nbsp;gonflé&nbsp;» à l'envers dès que la lumière bouge.</div>
+                <div class="pi-cause"><b>Cause</b> — Mauvaise convention de normal map&nbsp;: une map <b>OpenGL (Y+)</b> branchée dans un moteur <b>DirectX (Y−)</b> (typiquement Unreal), ou l'inverse.</div>
+                <div class="pi-fix"><b>Correction</b> — Inverse le <b>canal vert</b>, ou réexporte avec le bon preset (Unity = OpenGL, Unreal = DirectX). Opération sans perte.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Des taches «&nbsp;fantômes&nbsp;» d'une autre pièce apparaissent dans la normal map ou l'AO.</div>
+                <div class="pi-cause"><b>Cause</b> — Débordement&nbsp;: les rayons d'une pièce frappent le high-poly d'une pièce voisine trop proche.</div>
+                <div class="pi-fix"><b>Correction</b> — <b>Explose le mesh</b> (écarte les pièces) et/ou active <b>Match by Name</b> avec un nommage <code>_low</code>/<code>_high</code> rigoureux.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Un dégradé sombre et «&nbsp;sale&nbsp;» court le long des arêtes vives, visible sous éclairage rasant.</div>
+                <div class="pi-cause"><b>Cause</b> — Un <b>hard edge</b> du low-poly n'est pas suivi d'une <b>UV seam</b>&nbsp;: le tangent space casse et la map doit compenser par un fort gradient.</div>
+                <div class="pi-fix"><b>Correction</b> — Applique la règle <b>«&nbsp;hard edge = UV seam&nbsp;»</b>&nbsp;: ajoute une couture sur chaque arête dure, ou adoucis l'arête. Puis rebake.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Des motifs droits (rivets, rainures) ressortent inclinés ou ondulés sur les zones courbes.</div>
+                <div class="pi-cause"><b>Cause</b> — <b>Skew</b>&nbsp;: les rayons frappent de biais là où le low-poly est trop courbé par rapport au high-poly, souvent avec une cage mal réglée.</div>
+                <div class="pi-fix"><b>Correction</b> — Resserre la cage / la ray distance, active <b>Average Normals</b>, et ajoute des <b>arêtes de support</b> au low-poly pour réduire la courbure locale.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Des trous noirs ou vides apparaissent sur la normal map, comme des morceaux manquants.</div>
+                <div class="pi-cause"><b>Cause</b> — Ray distance / cage <b>trop courte</b>&nbsp;: les rayons n'atteignent pas le high-poly à ces endroits.</div>
+                <div class="pi-fix"><b>Correction</b> — Augmente <b>Max Frontal/Rear Distance</b> (ou gonfle la cage localement) jusqu'à ce que les trous se remplissent, sans aller jusqu'au débordement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — De fines lignes sombres apparaissent sur les coutures, surtout quand l'objet s'éloigne.</div>
+                <div class="pi-cause"><b>Cause</b> — <b>Padding</b> insuffisant&nbsp;: le filtrage et les mipmaps font baver du vide sur les bords d'îlots.</div>
+                <div class="pi-fix"><b>Correction</b> — Laisse le <b>dilation/edge padding</b> à une valeur non nulle à l'export du bake, et garde une marge entre îlots au packing (<a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Cuis un asset «&nbsp;à pièces&nbsp;» de bout en bout. Prends (ou modélise) un objet mécanique simple — une <b>caisse à munitions</b> ou une <b>poignée de porte</b> — avec au moins <b>deux pièces séparées</b> (par exemple le corps + une charnière).</p>
+              <ol>
+                <li>Sculpte ou ajoute le détail haute densité (rivets, biseaux, bosses) sur le <b>high-poly</b>, et garde un <b>low-poly</b> propre, déplié, avec des <b>seams alignées sur les hard edges</b>.</li>
+                <li>Nomme chaque pièce <code>nom_low</code> et <code>nom_high</code>, puis bake dans Substance Painter (ou Marmoset/Blender) avec <b>Match by Name</b> activé.</li>
+                <li>Cuis au minimum&nbsp;: <b>Normal</b>, <b>AO</b> et <b>Curvature</b>. Règle la <b>ray distance</b> pour éliminer trous et débordement.</li>
+                <li>Exporte la normal map <b>une fois en OpenGL</b> (pour Unity) et <b>une fois en DirectX</b> (pour Unreal), et compare-les visuellement (canal vert inversé).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La normal map est <b>majoritairement bleue</b>, sans tache fantôme d'une pièce voisine (débordement maîtrisé).</li>
+                  <li>Aucun <b>trou noir</b> ni motif gauchi visible&nbsp;; les arêtes ne montrent pas de <b>gradient sale</b> (hard edges = seams).</li>
+                  <li>La <b>curvature</b> distingue nettement arêtes saillantes (claires) et creux (sombres), prête pour un masque d'usure.</li>
+                  <li>Tu peux montrer la <b>différence</b> entre l'export OpenGL et DirectX et expliquer lequel va dans Unity, lequel dans Unreal.</li>
+                  <li>Le low-poly final, une fois texturé, paraît détaillé alors qu'il a un <b>budget polygones faible</b>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>baking</b> projette le détail d'un <b>high-poly</b> sur les UV d'un <b>low-poly</b> via des <b>rayons</b>, et le stocke en texture&nbsp;: détail visuel conservé, coût géométrique effondré.</li>
+                <li>Une <b>normal map</b> encode un <b>vecteur (X,Y,Z)</b> dans les canaux <b>(R,V,B)</b>&nbsp;: d'où sa teinte violet-bleu&nbsp;; elle se lit toujours en <b>linéaire</b>.</li>
+                <li><b>Tangent space</b> (bleu dominant) suit la surface et survit à l'animation&nbsp;; <b>object space</b> (arc-en-ciel) est réservé aux objets rigides.</li>
+                <li>Convention <b>OpenGL (Y+)</b> vs <b>DirectX (Y−)</b>&nbsp;: c'est la cause n°1 du relief inversé. Unity/Blender = OpenGL, Unreal = DirectX. On corrige en <b>inversant le canal vert</b>.</li>
+                <li>La <b>cage</b> / <b>ray distance</b> borne les rayons&nbsp;: trop courte → trous, trop large → skew et débordement. <b>Explose</b> le mesh et utilise <b>Match by Name</b>.</li>
+                <li>On cuit aussi <b>AO</b>, <b>curvature</b> (masques d'usure), <b>thickness</b>, <b>position</b>, <b>world normal</b>&nbsp;: ce sont les mesh maps qui nourrissent la texturisation.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Baking</b> — Transfert, par lancer de rayons, du détail d'un mesh high-poly vers une texture appliquée sur un low-poly.</p>
+              <p><b>High-poly / Low-poly</b> — Version ultra-détaillée d'un objet (high) et sa version légère destinée au jeu (low), reliées par le bake.</p>
+              <p><b>Normal map</b> — Texture encodant, pour chaque texel, l'orientation détaillée de la surface (un vecteur XYZ rangé dans les canaux RVB).</p>
+              <p><b>Tangent space</b> — Référentiel d'une normal map relatif à la surface locale&nbsp;: bleu dominant, valable même si le mesh s'anime.</p>
+              <p><b>Object space</b> — Référentiel d'une normal map relatif à l'objet entier&nbsp;: aspect arc-en-ciel, réservé aux objets rigides.</p>
+              <p><b>Convention OpenGL / DirectX (Y+ / Y−)</b> — Sens du canal vert d'une normal map&nbsp;; une inversion produit un relief éclairé «&nbsp;à l'envers&nbsp;».</p>
+              <p><b>Cage</b> — Enveloppe gonflée du low-poly qui borne la distance et l'origine des rayons de bake, pour éviter trous et débordements.</p>
+              <p><b>Ray distance (Max Frontal / Rear)</b> — Distance maximale de recherche des rayons vers l'extérieur et vers l'intérieur de la surface.</p>
+              <p><b>Curvature</b> — Map indiquant les zones convexes (arêtes) et concaves (creux), base des masques d'usure procéduraux.</p>
+              <p><b>Match by Name</b> — Option qui n'associe chaque low-poly qu'à son high-poly homonyme (<code>_low</code>/<code>_high</code>), évitant le débordement entre pièces.</p>
+              <p><b>Skew</b> — Gauchissement du détail dû à des rayons obliques, typique d'une cage mal réglée sur les surfaces courbes.</p>
+              <p>Les termes transverses (texel, mipmap, normale, UV…) sont dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: la règle «&nbsp;hard edge = UV seam&nbsp;» et le padding qui conditionnent un bake propre.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: où branchent la normal, l'AO et les autres maps, et leur espace colorimétrique.</li>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>&nbsp;: revoir normales, hard/smooth edges et tangentes, le socle du baking.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance 3D</a>&nbsp;: baker les mesh maps et piloter l'usure par la curvature.</li>
+              <li><a href="../../cours/logiciels/l04-sculpt-zbrush.html">L4 — Sculpt / ZBrush</a>&nbsp;: produire le high-poly détaillé que l'on cuira.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>&nbsp;: gérer la convention de normal map d'un moteur à l'autre.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

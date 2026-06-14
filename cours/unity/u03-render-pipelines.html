@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U3 — Render pipelines (Built-in / URP / HDRP) · Atelier Game Art</title>
+  <meta name="description" content="Built-in vs URP vs HDRP dans Unity : différences, public visé, lequel choisir et comment créer un projet avec chacun.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Render pipelines (Built-in / URP / HDRP)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U3 — Render pipelines (Built-in / URP / HDRP)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unity/u02-editeur.html">U2</a>. Utile : <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est un <b>render pipeline</b> — la suite d'étapes qui transforme une scène 3D en image affichée — et ce que désigne la <b>SRP</b> (Scriptable Render Pipeline).</li>
+                <li>Distinguer les trois pipelines d'Unity 6.3 LTS&nbsp;: <b>Built-in</b> (historique, en fin de vie), <b>URP</b> (le défaut recommandé, du mobile au PC) et <b>HDRP</b> (haut de gamme PC/console).</li>
+                <li>Choisir le bon pipeline pour un projet selon sa cible matérielle, ses besoins de fidélité et ta marge de complexité — et comprendre <em>pourquoi</em> ce choix se fait <b>tôt</b>.</li>
+                <li>Comprendre pourquoi les <b>shaders et matériaux ne sont pas interchangeables</b> entre pipelines, et reconnaître au premier coup d'œil un <b>matériau rose/magenta</b> (shader manquant).</li>
+                <li>Créer un projet avec un pipeline précis via le <b>template</b> du Unity Hub, ou installer le package et assigner un <b>Render Pipeline Asset</b> dans les Project Settings.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Si l'on devait nommer la <b>source de confusion numéro un</b> chez les débutants Unity, ce serait celle-ci&nbsp;: les <em>render pipelines</em>. Le symptôme est universel — on télécharge un asset magnifique sur <span class="gloss">Fab</span>, on le glisse dans sa scène, et il s'affiche en un <b>rose fluo aveuglant</b>. Panique. Bug&nbsp;? Asset cassé&nbsp;? Non&nbsp;: simple incompatibilité de pipeline. Comprendre cette mécanique, c'est s'éviter des heures de débogage stérile.</p>
+            <p>Au-delà du dépannage, le choix du pipeline est une <b>décision d'architecture</b> qui engage tout le projet. Il détermine quelles plateformes tu pourras viser (un téléphone&nbsp;? une PS5&nbsp;? les deux&nbsp;?), quelle qualité d'éclairage tu obtiendras, quels outils de matériaux tu auras sous la main, et même quel budget de performance tu devras respecter. Pour un artiste qui intègre des assets, applique des matériaux (U6) et pose des lumières (U7), <b>tout ce travail dépend du pipeline actif</b>&nbsp;: un même matériau, un même réglage de lumière ne produisent pas le même résultat — ni parfois aucun résultat — selon le pipeline.</p>
+            <p>Et c'est un choix qu'on regrette de faire tard&nbsp;: <b>migrer un projet d'un pipeline à un autre coûte cher</b> (réassignation des shaders, refonte de l'éclairage, conversion des matériaux). Mieux vaut donc savoir, dès le premier clic du Unity Hub, lequel cocher et pourquoi. Cette leçon te donne cette carte de décision.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Qu'est-ce qu'un render pipeline&nbsp;?</h3>
+            <p>Un <span class="term">render pipeline</span> (chaîne de rendu) est la <b>suite ordonnée d'étapes</b> que le moteur exécute, à chaque image (chaque <em>frame</em>), pour transformer une scène 3D — des maillages, des matériaux, des lumières, une caméra — en l'<b>image en 2 dimensions</b> finalement affichée à l'écran. C'est le pont entre «&nbsp;ce que tu as construit dans la scène&nbsp;» et «&nbsp;les pixels que voit le joueur&nbsp;».</p>
+            <p>Concrètement, à chaque frame, le pipeline doit&nbsp;: déterminer ce qui est visible depuis la caméra (<span class="term">culling</span>, l'élimination de ce qui est hors-champ ou caché), trier les objets, calculer comment chaque surface réagit à la lumière (le travail des shaders), composer les ombres, appliquer la transparence, puis ajouter les effets d'image finaux (le <span class="gloss">post-processing</span>&nbsp;: flou de profondeur, correction de couleurs, etc.). L'ordre et la <em>manière</em> dont ces étapes s'enchaînent — c'est précisément ce qu'on appelle le pipeline.</p>
+            <p>L'analogie d'une <b>chaîne de montage en usine</b> est éclairante. La matière première (ta scène) entre d'un bout&nbsp;; elle traverse une série de postes de travail (chaque étape de rendu)&nbsp;; le produit fini (l'image) sort de l'autre. Selon l'usine, les postes ne sont pas les mêmes, ne sont pas dans le même ordre, et ne visent pas le même produit&nbsp;: une chaîne conçue pour produire vite et pas cher (mobile) n'est pas montée comme une chaîne de luxe (cinéma temps réel).</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Forward vs Deferred (en deux mots)</div>
+              <p>Une grande différence entre pipelines tient à <em>quand</em> on calcule l'éclairage. En <b>forward rendering</b>, chaque objet est éclairé au moment où il est dessiné&nbsp;: simple et rapide avec peu de lumières, idéal mobile. En <b>deferred rendering</b>, on dessine d'abord les propriétés de surface dans des tampons (le <em>G-buffer</em>), puis on applique <em>toutes</em> les lumières en une passe&nbsp;: gourmand mais excellent quand il y a beaucoup de sources lumineuses, d'où son usage en HDRP. Tu n'as pas à choisir cela à la main pour débuter&nbsp;; retiens juste que <b>le pipeline encapsule cette stratégie</b>.</p>
+            </div>
+
+            <h3>2. La SRP&nbsp;: rendre le pipeline programmable</h3>
+            <p>Historiquement, Unity n'offrait qu'<b>une seule</b> chaîne de rendu, codée en dur dans le moteur&nbsp;: le <span class="term">Built-in Render Pipeline</span>. On pouvait régler quelques options, mais on ne pouvait pas <em>réécrire</em> les étapes. Or les besoins ont explosé&nbsp;: un studio mobile veut un rendu ultra-léger&nbsp;; un studio AAA veut un rendu photoréaliste. Une seule chaîne figée ne peut pas servir ces deux extrêmes correctement.</p>
+            <p>La réponse d'Unity est la <span class="term">SRP</span> (<em>Scriptable Render Pipeline</em>, chaîne de rendu scriptable)&nbsp;: une <b>architecture qui expose les étapes du rendu au code</b>, pour que l'on puisse construire des pipelines adaptés à chaque cible. Plutôt que de bricoler une chaîne soi-même (ce qui est un vrai travail de <em>technical artist</em> ou d'ingénieur rendu), Unity fournit <b>deux pipelines prêts à l'emploi</b> bâtis sur la SRP&nbsp;:</p>
+            <ul>
+              <li>l'<span class="term">URP</span> (<em>Universal Render Pipeline</em>) — polyvalent et performant&nbsp;;</li>
+              <li>la <span class="term">HDRP</span> (<em>High Definition Render Pipeline</em>) — haut de gamme.</li>
+            </ul>
+            <p>Le Built-in, lui, est <b>antérieur à la SRP</b>&nbsp;: il n'en fait pas partie. On parle donc de trois options, mais deux familles&nbsp;: l'ancienne (Built-in) et les modernes (URP et HDRP, toutes deux sur SRP).</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Versions de référence (juin 2026)</div>
+              <p>Cette leçon vise <b>Unity 6.3 LTS</b> (déc. 2025, supportée jusqu'à déc. 2027). Sous Unity 6, URP et HDRP sont distribués via le <em>Package Manager</em>&nbsp;; les templates du Unity Hub installent et configurent le pipeline pour toi. La licence <b>Personal est gratuite</b> tant que tes revenus restent sous 200&nbsp;000&nbsp;$/an.</p>
+            </div>
+
+            <h3>3. Le Built-in Render Pipeline (legacy)</h3>
+            <p>Le <span class="term">Built-in</span> est la chaîne de rendu <b>historique</b> d'Unity, celle par défaut pendant plus d'une décennie. Sa grande qualité&nbsp;: la <b>polyvalence</b> et l'énorme quantité de tutoriels, d'assets et de plugins écrits pour lui (tout l'écosystème ancien le suppose). Pour un projet 2D simple ou un prototype rapide, il fonctionne très bien.</p>
+            <p>Ses limites expliquent toutefois pourquoi on n'en fait plus le choix par défaut&nbsp;: il est <b>peu modulaire</b> (on ne peut pas réécrire ses étapes, contrairement à la SRP), son outillage de matériaux est ancien (pas d'éditeur de shaders visuel intégré officiel), et Unity le considère désormais comme <b>en fin de vie</b> — les nouvelles fonctionnalités graphiques arrivent sur URP/HDRP, pas sur lui. On le qualifie de <span class="term">legacy</span> (hérité/historique).</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Tu peux <b>toujours</b> créer un nouveau projet en Built-in (template «&nbsp;3D Built-In&nbsp;»). Mais pour un projet neuf en 2026, demande-toi d'abord&nbsp;: «&nbsp;ai-je une <em>raison précise</em> de rester en legacy&nbsp;?&nbsp;» (par ex. dépendre d'un asset ancien incompatible SRP). Sinon, pars sur URP.</p>
+            </div>
+
+            <h3>4. L'URP&nbsp;: le défaut recommandé</h3>
+            <p>L'<span class="term">URP</span> (<em>Universal Render Pipeline</em>) est aujourd'hui le pipeline <b>recommandé pour la grande majorité des projets</b>. Son nom dit tout&nbsp;: il est <em>universel</em>, pensé pour tourner <b>partout</b> — du téléphone d'entrée de gamme à la console et au PC — en s'adaptant au matériel. C'est le pipeline d'un <b>compromis maîtrisé entre qualité et performance</b>&nbsp;: il offre un rendu moderne et joli sans exiger une machine surpuissante.</p>
+            <p>Ses atouts concrets pour un artiste&nbsp;:</p>
+            <ul>
+              <li>Excellente <b>portabilité multiplateforme</b>&nbsp;: un projet URP cible le mobile, le PC, les consoles, le web et la VR avec le même socle.</li>
+              <li>Le <span class="term">Shader Graph</span> intégré&nbsp;: un éditeur <b>visuel de shaders par nœuds</b> (on relie des boîtes plutôt que d'écrire du code) — capital pour les artistes qui veulent créer des effets de surface sans programmer (voir <a href="../../cours/unity/u06-materiaux.html">U6</a>).</li>
+              <li>Des <b>performances solides</b> grâce à un rendu majoritairement <em>forward</em> et à des optimisations comme le <em>SRP Batcher</em>.</li>
+              <li>Le <span class="gloss">post-processing</span> est <b>intégré</b> au pipeline (système de <em>Volumes</em>), plus besoin de pile séparée comme en Built-in.</li>
+            </ul>
+            <p>Sa contrepartie&nbsp;: il <b>ne vise pas le photoréalisme absolu</b>. Certains effets très haut de gamme (volumétriques poussés, éclairage physique avancé) sont soit absents, soit moins riches qu'en HDRP. Pour 90&nbsp;% des projets — jeux mobiles, indés stylisés, projets multiplateformes — c'est exactement le bon arbitrage.</p>
+
+            <h3>5. La HDRP&nbsp;: le haut de gamme PC/console</h3>
+            <p>La <span class="term">HDRP</span> (<em>High Definition Render Pipeline</em>) vise la <b>fidélité visuelle maximale</b> sur matériel puissant&nbsp;: PC haut de gamme et consoles récentes. C'est le pipeline du <b>photoréalisme</b> et des productions exigeantes (jeux AAA, archi-viz, cinématiques temps réel).</p>
+            <p>Ce qu'elle apporte de plus que l'URP&nbsp;:</p>
+            <ul>
+              <li>Un <b>éclairage et des matériaux physiquement avancés</b>&nbsp;: unités de lumière réelles (lumens, lux), exposition de type appareil photo, modèles de surface plus riches.</li>
+              <li>Les <b>volumétriques</b>&nbsp;: brouillard volumétrique, faisceaux de lumière (<em>god rays</em>), atmosphère réaliste qui interagit avec les sources lumineuses.</li>
+              <li>Du rendu majoritairement <em>deferred</em>, capable de gérer <b>de très nombreuses lumières</b> en même temps&nbsp;; réflexions, transparences et effets de pointe.</li>
+            </ul>
+            <p>Le prix à payer est double&nbsp;: la HDRP <b>exige du matériel</b> (elle ne tourne <b>pas</b> sur mobile ni sur des machines faibles) et elle est <b>nettement plus complexe</b> à prendre en main — plus de réglages, une courbe d'apprentissage raide, des temps de configuration et de calcul plus longs. Ce n'est pas le pipeline d'un débutant qui veut juste afficher un cube&nbsp;: c'est l'outil d'une équipe qui a un objectif visuel haut de gamme et le matériel pour l'assumer.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>HDRP n'est pas «&nbsp;URP en mieux&nbsp;»</div>
+              <p>Erreur classique du débutant&nbsp;: croire que HDRP est simplement la version «&nbsp;qualité supérieure&nbsp;» qu'on prend si on veut du beau. Non. Choisir HDRP pour un jeu mobile, c'est viser une cible qu'elle <b>ne sait pas atteindre</b>&nbsp;: le projet ne tournera tout simplement pas sur l'appareil. Le pipeline se choisit d'abord selon la <b>plateforme cible</b>, ensuite selon l'ambition visuelle.</p>
+            </div>
+
+            <h3>6. Tableau comparatif</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Critère</th><th>Built-in (legacy)</th><th>URP</th><th>HDRP</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Cibles</b></td><td>Tout (ancien), 2D simple, prototypes</td><td>Mobile, PC, consoles, web, VR — partout</td><td>PC haut de gamme, consoles récentes uniquement</td></tr>
+                  <tr><td><b>Performance</b></td><td>Variable, peu optimisée pour le moderne</td><td>Excellente, s'adapte du faible au puissant</td><td>Lourde — exige du matériel</td></tr>
+                  <tr><td><b>Fidélité visuelle</b></td><td>Correcte mais datée</td><td>Bonne, moderne, stylisée ou semi-réaliste</td><td>Photoréalisme, le plus haut niveau</td></tr>
+                  <tr><td><b>Volumétriques / éclairage physique</b></td><td>Limité</td><td>Partiel</td><td>Complet (lumens/lux, brouillard volumétrique)</td></tr>
+                  <tr><td><b>Shader Graph</b></td><td>Non (officiel)</td><td>Oui</td><td>Oui</td></tr>
+                  <tr><td><b>Complexité</b></td><td>Faible à moyenne</td><td>Faible — accessible</td><td>Élevée — courbe raide</td></tr>
+                  <tr><td><b>Shaders compatibles</b></td><td>Shaders Built-in (Standard…)</td><td>Shaders URP (Lit, Unlit…)</td><td>Shaders HDRP (Lit HDRP…)</td></tr>
+                  <tr><td><b>Statut Unity 6</b></td><td>Maintenu mais en fin de vie</td><td><b>Le défaut recommandé</b></td><td>Production haut de gamme</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 380" role="img" aria-label="Positionnement des trois pipelines Unity sur deux axes : performance et portabilité mobile en bas à gauche, fidélité visuelle et matériel puissant en haut à droite">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Built-in / URP / HDRP sur deux axes</text>
+                <rect x="60" y="48" width="520" height="280" rx="8" class="svg-surface" stroke="#313c4c" stroke-width="1.6"/>
+                <defs>
+                  <marker id="axr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#717c8c"/></marker>
+                </defs>
+                <line x1="80" y1="308" x2="566" y2="308" stroke="#717c8c" stroke-width="2" marker-end="url(#axr)"/>
+                <line x1="80" y1="308" x2="80" y2="62" stroke="#717c8c" stroke-width="2" marker-end="url(#axr)"/>
+                <text x="566" y="326" text-anchor="end" class="svg-dim" font-size="11">Fidélité visuelle →</text>
+                <text x="86" y="320" text-anchor="start" class="svg-dim" font-size="11">← léger / perf</text>
+                <text x="74" y="74" text-anchor="start" class="svg-dim" font-size="11">matériel puissant ↑</text>
+                <text x="86" y="300" text-anchor="start" class="svg-dim" font-size="11">mobile ↓</text>
+                <circle cx="180" cy="232" r="40" fill="#f2b441" fill-opacity="0.18" stroke="#f2b441" stroke-width="2"/>
+                <text x="180" y="228" text-anchor="middle" class="svg-text" font-size="12.5" font-weight="700" fill="#f2b441">Built-in</text>
+                <text x="180" y="244" text-anchor="middle" class="svg-dim" font-size="9.5">legacy · polyvalent</text>
+                <circle cx="300" cy="178" r="52" fill="#5ad19a" fill-opacity="0.18" stroke="#5ad19a" stroke-width="2.4"/>
+                <text x="300" y="170" text-anchor="middle" class="svg-text" font-size="13.5" font-weight="700" fill="#5ad19a">URP</text>
+                <text x="300" y="186" text-anchor="middle" class="svg-dim" font-size="9.5">universel</text>
+                <text x="300" y="200" text-anchor="middle" class="svg-dim" font-size="9">mobile → PC</text>
+                <circle cx="470" cy="116" r="46" fill="#c89bff" fill-opacity="0.18" stroke="#c89bff" stroke-width="2.2"/>
+                <text x="470" y="112" text-anchor="middle" class="svg-text" font-size="13" font-weight="700" fill="#c89bff">HDRP</text>
+                <text x="470" y="128" text-anchor="middle" class="svg-dim" font-size="9.5">PC / console</text>
+                <rect x="232" y="240" width="136" height="22" rx="11" fill="#5ad19a" fill-opacity="0.22" stroke="#5ad19a"/>
+                <text x="300" y="255" text-anchor="middle" class="svg-text" font-size="10" font-weight="700" fill="#5ad19a">défaut recommandé</text>
+                <text x="320" y="356" text-anchor="middle" class="svg-dim" font-size="10.5">URP couvre le plus large spectre ; HDRP monte en fidélité mais exige du matériel.</text>
+              </svg>
+              <figcaption>Plus on va vers la droite (fidélité) et le haut (matériel exigé), plus le coût grimpe. L'<b>URP</b> occupe la zone la plus large — d'où son statut de défaut. La <b>HDRP</b> grimpe en fidélité mais abandonne le mobile&nbsp;; le <b>Built-in</b> reste un point legacy polyvalent mais figé.</figcaption>
+            </figure>
+
+            <h3>7. La conséquence majeure&nbsp;: les shaders ne sont pas interchangeables</h3>
+            <p>Voici le point qui cause le plus de douleur, et qu'il faut graver&nbsp;: <b>un matériau écrit pour un pipeline ne fonctionne pas dans un autre</b>. La raison est mécanique. Un <span class="gloss">matériau</span> pointe vers un <span class="gloss">shader</span> (le petit programme qui décrit comment la surface réagit à la lumière). Or chaque pipeline a <b>ses propres shaders</b>, écrits pour <em>ses</em> étapes de rendu&nbsp;: le shader <em>Standard</em> du Built-in, le shader <em>Lit</em> de l'URP, le shader <em>Lit HDRP</em> de la HDRP attendent des données et des passes différentes.</p>
+            <p>Quand Unity tente d'afficher un matériau dont le shader <b>n'existe pas</b> dans le pipeline actif, il ne plante pas&nbsp;: il affiche un <b>magenta criard</b> (rose fluo) comme signal d'alarme universel. C'est le fameux <span class="term">matériau rose</span>. Le rose ne veut <b>pas</b> dire «&nbsp;fichier corrompu&nbsp;»&nbsp;: il veut dire «&nbsp;je ne trouve pas le shader que ce matériau réclame dans le pipeline courant&nbsp;». Le plus souvent&nbsp;: tu as importé un asset (ou un projet) conçu pour le Built-in dans un projet URP, ou l'inverse.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Pourquoi du rose, et pas du noir&nbsp;?</div>
+              <p>Le magenta est choisi <b>exprès</b> parce qu'il n'existe quasiment jamais naturellement dans une scène&nbsp;: impossible de le confondre avec un vrai matériau. C'est une convention de débogage répandue dans tout le secteur du jeu vidéo. Dès que tu vois du rose, ton réflexe doit être&nbsp;: «&nbsp;shader manquant — mauvais pipeline ou matériau à convertir&nbsp;».</p>
+            </div>
+            <p>La solution n'est pas de repeindre à la main&nbsp;: Unity fournit un convertisseur. Le menu <span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert…</span> (le <em>Render Pipeline Converter</em>) <b>réaffecte les shaders</b> des matériaux Built-in vers leurs équivalents URP (ou HDRP). Il fait de son mieux pour transposer couleurs et textures, mais ce n'est pas magique&nbsp;: une vérification visuelle reste nécessaire, et certains effets très spécifiques peuvent demander un ajustement manuel.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Schéma du matériau rose : un matériau Built-in placé dans un projet URP cherche un shader absent et s'affiche en magenta ; la conversion réaffecte le shader URP et restaure la couleur">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Le « matériau rose » : shader introuvable → magenta</text>
+                <rect x="24" y="56" width="150" height="92" rx="8" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+                <text x="99" y="80" text-anchor="middle" class="svg-text" font-size="12" font-weight="700" fill="#f2b441">Matériau</text>
+                <text x="99" y="98" text-anchor="middle" class="svg-dim" font-size="10">shader =</text>
+                <text x="99" y="114" text-anchor="middle" class="svg-dim" font-size="10">« Standard »</text>
+                <text x="99" y="132" text-anchor="middle" class="svg-dim" font-size="9.5">(prévu Built-in)</text>
+                <defs>
+                  <marker id="ar2" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#717c8c"/></marker>
+                </defs>
+                <line x1="174" y1="102" x2="232" y2="102" stroke="#717c8c" stroke-width="2.4" marker-end="url(#ar2)"/>
+                <text x="203" y="93" text-anchor="middle" class="svg-dim" font-size="9.5">importé dans</text>
+                <rect x="234" y="48" width="180" height="120" rx="8" fill="#5ad19a" fill-opacity="0.10" stroke="#5ad19a" stroke-width="2"/>
+                <text x="324" y="70" text-anchor="middle" class="svg-text" font-size="12" font-weight="700" fill="#5ad19a">Projet URP</text>
+                <text x="324" y="88" text-anchor="middle" class="svg-dim" font-size="9.5">shaders dispo : Lit, Unlit…</text>
+                <text x="324" y="106" text-anchor="middle" class="svg-dim" font-size="9.5">« Standard » ABSENT</text>
+                <rect x="300" y="118" width="50" height="28" fill="#ff3df0" stroke="#ff3df0"/>
+                <polygon points="300,146 350,146 362,154 312,154" fill="#ff3df0" stroke="#ff3df0"/>
+                <text x="325" y="136" text-anchor="middle" fill="#1b1b1b" font-size="10" font-weight="700">ROSE</text>
+                <line x1="414" y1="108" x2="470" y2="108" stroke="#5ad19a" stroke-width="2.6" marker-end="url(#ar2)"/>
+                <text x="442" y="99" text-anchor="middle" class="svg-dim" font-size="9.5">Convert</text>
+                <rect x="472" y="48" width="150" height="120" rx="8" fill="#59b0ff" fill-opacity="0.10" stroke="#59b0ff" stroke-width="2"/>
+                <text x="547" y="70" text-anchor="middle" class="svg-text" font-size="11.5" font-weight="700" fill="#59b0ff">Corrigé</text>
+                <text x="547" y="88" text-anchor="middle" class="svg-dim" font-size="9.5">shader → « Lit » (URP)</text>
+                <rect x="522" y="100" width="50" height="28" rx="3" fill="#c89bff" fill-opacity="0.75" stroke="#c89bff"/>
+                <polygon points="522,128 572,128 584,136 534,136" fill="#a87fe0" stroke="#c89bff"/>
+                <text x="547" y="156" text-anchor="middle" class="svg-dim" font-size="9">couleur restaurée</text>
+                <rect x="60" y="210" width="520" height="78" rx="8" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a" stroke-width="1.4"/>
+                <text x="78" y="234" class="svg-text" font-size="12" font-weight="700" fill="#5ad19a">Solution</text>
+                <text x="78" y="256" class="svg-dim" font-size="11">Edit ▸ Rendering ▸ Materials ▸ Convert… (Render Pipeline Converter)</text>
+                <text x="78" y="276" class="svg-dim" font-size="11">réaffecte les shaders Built-in → URP/HDRP, puis on vérifie visuellement.</text>
+              </svg>
+              <figcaption>Un matériau qui réclame un shader absent du pipeline actif s'affiche en <b>magenta</b>. La conversion ne «&nbsp;recolore&nbsp;» pas&nbsp;: elle <b>réaffecte le shader</b> vers l'équivalent du bon pipeline. Une relecture visuelle reste de mise.</figcaption>
+            </figure>
+
+            <h3>8. Comment Unity sait quel pipeline utiliser&nbsp;: le Render Pipeline Asset</h3>
+            <p>Comment le moteur sait-il s'il doit rendre en URP ou en HDRP&nbsp;? Grâce à un fichier précis&nbsp;: le <span class="term">Render Pipeline Asset</span>. C'est un <span class="gloss">asset</span> (un fichier dans la fenêtre Project) qui <b>contient la configuration du pipeline</b> et que l'on <b>assigne</b> au moteur dans <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Graphics</span> (réglages <em>Scriptable Render Pipeline</em>, sous Unity 6) — ainsi que par niveau de qualité dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Quality</span>.</p>
+            <p>Tant qu'un Render Pipeline Asset URP est assigné là, Unity rend en URP. Si ce champ est <b>vide</b>, Unity retombe sur le Built-in. C'est exactement ce levier que tu peux observer pour <em>savoir</em> dans quel pipeline tu travailles, et c'est lui qu'on inspectera dans la démonstration. Les templates du Unity Hub créent et assignent ce fichier automatiquement&nbsp;; tu peux aussi le faire à la main après avoir installé le package URP ou HDRP via le <em>Package Manager</em>.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On va créer un projet <b>URP</b> depuis le Unity Hub, puis aller <em>voir</em> le Render Pipeline Asset qui prouve que le pipeline est bien actif. On terminera par le scénario du matériau rose et sa conversion.</p>
+            <ol>
+              <li><b>Ouvre le Unity Hub et lance un nouveau projet.</b> Onglet <span class="menu-path">Projects<span class="arrow">▸</span>New project</span>. Vérifie en haut que la version d'éditeur est bien une <b>Unity 6.3 LTS</b> (sinon installe-la d'abord).</li>
+              <li><b>Choisis le template.</b> Dans la liste des modèles, repère&nbsp;: <span class="menu-path">3D (Built-In)</span>, <span class="menu-path">Universal 3D</span> (c'est l'URP) et <span class="menu-path">High Definition 3D</span> (c'est la HDRP). Sélectionne <b>Universal 3D</b>. Le template ne change pas que le nom&nbsp;: il <b>installe le package URP</b>, crée le Render Pipeline Asset et l'assigne pour toi.</li>
+              <li><b>Nomme et crée.</b> Donne un nom (par ex. <em>TestURP</em>), choisis l'emplacement, puis <span class="menu-path">Create project</span>. Unity ouvre une scène d'exemple déjà rendue en URP.</li>
+              <li><b>Vérifie que tu es bien en URP.</b> Ouvre <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Graphics</span>. Tu y vois un <b>Render Pipeline Asset URP</b> assigné dans les réglages SRP. C'est la preuve concrète&nbsp;: si ce champ était vide, tu serais en Built-in.</li>
+              <li><b>Repère l'asset dans la Project.</b> Dans la fenêtre <b>Project</b>, cherche le dossier des réglages (souvent <em>Assets/Settings</em>)&nbsp;: tu y trouveras un fichier de type <em>UniversalRenderPipelineAsset</em> et son <em>Renderer</em>. Clique dessus&nbsp;: l'Inspector montre les options du pipeline (qualité des ombres, post-processing, etc.). Tu touches ici le «&nbsp;tableau de bord&nbsp;» du rendu.</li>
+              <li><b>Crée un matériau URP.</b> Clic droit dans la Project <span class="menu-path">Create<span class="arrow">▸</span>Material</span>. Sélectionne-le&nbsp;: dans l'Inspector, son shader est <b>Universal Render Pipeline/Lit</b>. Donne-lui une couleur, applique-le sur un cube&nbsp;: il s'affiche correctement, car son shader existe dans ce pipeline.</li>
+              <li><b>Provoque (et comprends) le matériau rose.</b> Importe un asset ou un matériau conçu pour le <b>Built-in</b> (par ex. un vieux package, ou un matériau dont le shader est <em>Standard</em>). Il apparaît en <b>rose magenta</b>&nbsp;: son shader <em>Standard</em> n'existe pas en URP. Ne panique pas — c'est le comportement attendu.</li>
+              <li><b>Convertis.</b> Lance <span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert Selected Built-in Materials to URP</span> (ou le convertisseur complet du <em>Render Pipeline Converter</em>). Unity réaffecte le shader vers <b>URP/Lit</b>&nbsp;: le rose disparaît, la couleur revient. Vérifie visuellement le résultat.</li>
+            </ol>
+            <p>En huit gestes, tu as vu la chaîne complète&nbsp;: choisir un pipeline à la création, <em>constater</em> le Render Pipeline Asset qui le pilote, créer un matériau compatible, reconnaître un shader manquant et le réparer par conversion. C'est exactement le réflexe à avoir quand un asset de Fab s'affiche en rose.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un asset importé (ou toute ma scène) s'affiche en <b>rose magenta</b>.</div>
+                <div class="pi-cause"><b>Cause</b>Le matériau réclame un shader d'un <b>autre pipeline</b> (souvent <em>Standard</em> du Built-in dans un projet URP)&nbsp;: ce shader est introuvable.</div>
+                <div class="pi-fix"><b>Correction</b><span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert…</span> pour réaffecter le shader, ou choisis à l'achat des assets compatibles avec ton pipeline.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai changé de pipeline en cours de projet et tout est cassé&nbsp;: matériaux roses en masse, éclairage différent.</div>
+                <div class="pi-cause"><b>Cause</b>Migrer de pipeline réaffecte <b>tous</b> les shaders et change le modèle d'éclairage&nbsp;; ce n'est pas une bascule indolore.</div>
+                <div class="pi-fix"><b>Correction</b>Choisis le pipeline <b>au début</b>. Si tu dois migrer, fais une sauvegarde, lance le convertisseur, puis refais l'éclairage et vérifie écran par écran.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon jeu HDRP ne tourne pas (écran noir, crash, plantage au build) sur mobile.</div>
+                <div class="pi-cause"><b>Cause</b>La <b>HDRP ne cible pas le mobile</b> ni les machines faibles&nbsp;: c'est un pipeline PC/console haut de gamme.</div>
+                <div class="pi-fix"><b>Correction</b>Pour le mobile, utilise <b>URP</b>. Réserve HDRP au PC/console quand le matériel le permet&nbsp;; vérifie la plateforme cible avant de coder.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Après conversion, des matériaux restent roses ou ont perdu leurs textures/effets.</div>
+                <div class="pi-cause"><b>Cause</b>Le convertisseur a <b>oublié</b> certains matériaux (non sélectionnés) ou ne sait pas transposer un effet exotique automatiquement.</div>
+                <div class="pi-fix"><b>Correction</b>Relance le convertisseur sur <em>tous</em> les matériaux, puis réassigne à la main les textures/réglages restants et ajuste le shader URP/HDRP.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je suis le tutoriel «&nbsp;Standard Shader&nbsp;» mais ce shader n'apparaît pas dans ma liste.</div>
+                <div class="pi-cause"><b>Cause</b>Le tutoriel suppose le <b>Built-in</b>&nbsp;; tu es en URP/HDRP, où le shader équivalent s'appelle <em>Lit</em>.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie le pipeline de ton projet et celui du tutoriel. En URP, prends <b>Universal Render Pipeline/Lit</b>&nbsp;; adapte les noms.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tout est gris/sans relief et le champ Graphics est vide alors que j'ai installé le package URP.</div>
+                <div class="pi-cause"><b>Cause</b>Aucun <b>Render Pipeline Asset</b> n'est assigné&nbsp;: Unity rend en Built-in (package installé mais non branché au moteur).</div>
+                <div class="pi-fix"><b>Correction</b>Assigne l'asset dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Graphics</span> (et <em>Quality</em>). Sinon, repars d'un template URP propre.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Tu vas comparer concrètement deux pipelines et apprivoiser le matériau rose.</p>
+              <ol>
+                <li>Crée <b>deux projets</b> dans le Unity Hub&nbsp;: un en template <b>Universal 3D</b> (URP), un en template <b>3D (Built-In)</b>. Nomme-les clairement.</li>
+                <li>Dans <em>chaque</em> projet, ouvre <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Graphics</span> et note&nbsp;: y a-t-il un <b>Render Pipeline Asset</b> assigné&nbsp;? De quel type&nbsp;?</li>
+                <li>Dans le projet URP, crée un matériau et vérifie que son shader est <b>Universal Render Pipeline/Lit</b>. Applique-le à un cube.</li>
+                <li>Importe un asset (ou copie un matériau) conçu pour le <b>Built-in</b> dans le projet <b>URP</b>. Observe le <b>rose</b> et explique-le par écrit.</li>
+                <li>Répare-le via <span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert…</span> et vérifie le rendu à l'œil.</li>
+                <li>Rédige 3 lignes&nbsp;: pour un <b>jeu mobile stylisé</b>, lequel des trois pipelines choisirais-tu et <em>pourquoi</em>&nbsp;?</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais retrouver le <b>Render Pipeline Asset</b> d'un projet et dire dans quel pipeline tu travailles.</li>
+                  <li>Tu reproduis le <b>matériau rose</b> volontairement et tu expliques sa cause (shader manquant) sans le confondre avec un bug.</li>
+                  <li>Tu réussis une <b>conversion</b> de matériau Built-in vers URP et tu vérifies le résultat visuellement.</li>
+                  <li>Tu justifies ton choix de pipeline par la <b>cible matérielle</b> d'abord, puis l'ambition visuelle (mobile → URP, jamais HDRP).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un <b>render pipeline</b> est la suite d'étapes qui transforme la scène 3D en image, à chaque frame. La <b>SRP</b> rend ces étapes programmables.</li>
+                <li>Trois options, deux familles&nbsp;: <b>Built-in</b> (legacy, en fin de vie), <b>URP</b> (sur SRP, <em>le défaut recommandé</em>, du mobile au PC) et <b>HDRP</b> (sur SRP, haut de gamme PC/console, exigeant et complexe).</li>
+                <li>On choisit le pipeline <b>selon la plateforme cible d'abord</b> (HDRP <em>ne tourne pas</em> sur mobile), l'ambition visuelle ensuite. Pour 90&nbsp;% des cas&nbsp;: URP.</li>
+                <li>Les <b>shaders/matériaux ne sont pas interchangeables</b> entre pipelines&nbsp;: un matériau dont le shader manque s'affiche en <b>rose magenta</b>. Solution&nbsp;: <span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert…</span>.</li>
+                <li>Le pipeline actif est piloté par un <b>Render Pipeline Asset</b> assigné dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Graphics</span>. On le choisit dès la création via le <b>template du Unity Hub</b>. <b>Migrer coûte cher&nbsp;: décide tôt.</b></li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Render pipeline</b> — suite ordonnée d'étapes qui transforme une scène 3D en image affichée, exécutée à chaque frame.</p>
+              <p><b>SRP (Scriptable Render Pipeline)</b> — architecture d'Unity exposant les étapes du rendu au code&nbsp;; base de l'URP et de la HDRP.</p>
+              <p><b>Built-in Render Pipeline</b> — chaîne de rendu historique d'Unity, polyvalente mais peu modulaire et en fin de vie (legacy).</p>
+              <p><b>URP (Universal Render Pipeline)</b> — pipeline SRP universel et performant, du mobile au PC&nbsp;; défaut recommandé, intègre le Shader Graph.</p>
+              <p><b>HDRP (High Definition Render Pipeline)</b> — pipeline SRP haut de gamme pour PC/console&nbsp;: éclairage physique, volumétriques&nbsp;; exigeant et complexe.</p>
+              <p><b>Render Pipeline Asset</b> — fichier de configuration assigné dans Project Settings ▸ Graphics qui détermine le pipeline actif.</p>
+              <p><b>Matériau rose (magenta)</b> — affichage d'alerte quand le shader réclamé par un matériau est introuvable dans le pipeline courant.</p>
+              <p><b>Shader Graph</b> — éditeur visuel de shaders par nœuds, disponible en URP et HDRP, pensé pour les artistes.</p>
+              <p><b>Forward / Deferred rendering</b> — deux stratégies d'application de l'éclairage&nbsp;: par objet (forward, léger) ou en une passe globale (deferred, pour de nombreuses lumières).</p>
+              <p><b>Legacy</b> — qualifie une technologie héritée/historique encore maintenue mais dépassée par des solutions plus récentes.</p>
+              <p>Tous ces termes (et d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u01-installation.html">U1 — Installation</a>&nbsp;: installer Unity 6.3 LTS et le Unity Hub d'où l'on choisit le template de pipeline.</li>
+              <li><a href="../../cours/unity/u04-projet-graphique.html">U4 — Mon premier projet graphique</a>&nbsp;: mettre en pratique le pipeline choisi sur une vraie scène.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux</a>&nbsp;: les shaders Lit/Unlit d'URP et le Shader Graph en détail.</li>
+              <li><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage</a>&nbsp;: comment l'éclairage diffère entre URP et HDRP.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: pourquoi un asset importé peut arriver en rose et comment l'éviter.</li>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a>&nbsp;: la base théorique de ce qu'est un shader, indépendamment du moteur.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>&nbsp;: le rendu physiquement réaliste, au cœur de ce que poussent URP et surtout HDRP.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

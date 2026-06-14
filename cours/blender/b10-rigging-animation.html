@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B10 — Rigging, skinning & animation · Atelier Game Art</title>
+  <meta name="description" content="Rigger et animer dans Blender : armature, bones, weight paint, IK/FK, keyframes, Dope Sheet et Graph Editor, contraintes de base.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Rigging &amp; animation</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B10 — Rigging, skinning &amp; animation</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f10-rigging-animation.html">F10 — Rigging &amp; animation (théorie)</a> et <a href="../../cours/blender/b03-modelisation.html">B3</a> (topologie pour la déformation).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Créer une <b>armature</b>, ajouter et parenter des <b>bones</b>.</li>
+                <li>Lier le mesh au squelette (skinning) et corriger les poids en <b>weight paint</b>.</li>
+                <li>Mettre en place une chaîne <b>IK</b> et poser des <b>keyframes</b>.</li>
+                <li>Lire et nettoyer une animation dans le <b>Dope Sheet</b> et le <b>Graph Editor</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La théorie du rigging est vue en <a href="../../cours/fondamentaux/f10-rigging-animation.html">F10</a> : ici, on l'applique dans Blender, qui possède un système d'armature et d'animation complet et gratuit. Pour un personnage, une porte, une machine, savoir poser un squelette, peser correctement la peau et animer quelques poses suffit déjà à exporter des animations vers Unity/Unreal (renvoi <a href="../../cours/blender/b11-rendu-export.html">B11</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'armature et les bones</h3>
+            <p>On ajoute une <span class="term">armature</span> (<span class="menu-path">Add<span class="arrow">▸</span>Armature</span>) — un objet qui contient des <b>bones</b> (os). En Edit Mode de l'armature, on extrude des bones (<span class="kbd">E</span>) pour bâtir le squelette, on les parente (chaque bone enfant suit son parent). La <b>hiérarchie</b> et l'<b>orientation</b> (le «&nbsp;roll&nbsp;») des bones comptent&nbsp;: un squelette propre facilite l'animation et l'export (renvoi <a href="../../cours/fondamentaux/f10-rigging-animation.html">F10</a>).</p>
+
+            <h3>2. Skinning et weight paint</h3>
+            <p>On lie le mesh à l'armature&nbsp;: sélectionne le mesh puis l'armature, <span class="kbd">Ctrl</span>+<span class="kbd">P</span> ▸ <em>With Automatic Weights</em>. Blender calcule des <span class="gloss">weight painting</span> (poids) automatiques&nbsp;: chaque vertex est influencé par un ou plusieurs bones (somme = 1). En <b>Weight Paint Mode</b>, on visualise et corrige ces poids en peignant du bleu (0) au rouge (1) — indispensable aux articulations (coude, genou) où l'auto-weight pince ou déforme mal. La <b>topologie</b> (boucles aux articulations, renvoi <a href="../../cours/blender/b03-modelisation.html">B3</a>) conditionne la qualité de la déformation.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Bras avec armature et dégradé de poids à l'articulation">
+                <g class="svg-text" font-size="11">
+                  <text x="170" y="26" text-anchor="middle" font-weight="700">Mesh + armature</text>
+                  <rect x="60" y="70" width="220" height="40" rx="20" fill="#0c1320" stroke="#2e425f"/>
+                  <line x1="80" y1="90" x2="160" y2="90" stroke="#e0a14b" stroke-width="3"/><circle cx="160" cy="90" r="4" fill="#e0a14b"/>
+                  <line x1="160" y1="90" x2="260" y2="90" stroke="#38bdf8" stroke-width="3"/><circle cx="80" cy="90" r="4" fill="#e0a14b"/>
+                  <text x="160" y="132" text-anchor="middle" class="svg-dim" font-size="9">deux bones, articulation au milieu</text>
+
+                  <text x="480" y="26" text-anchor="middle" font-weight="700">Weight paint (articulation)</text>
+                  <defs><linearGradient id="b10w" x1="0" x2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="0.5" stop-color="#4ade80"/><stop offset="1" stop-color="#f87171"/></linearGradient></defs>
+                  <rect x="380" y="70" width="200" height="40" rx="20" fill="url(#b10w)" fill-opacity="0.6" stroke="#2e425f"/>
+                  <text x="400" y="132" class="svg-dim" font-size="9">bleu = 0</text><text x="540" y="132" text-anchor="end" class="svg-dim" font-size="9">rouge = 1</text>
+                  <text x="480" y="150" text-anchor="middle" class="svg-dim" font-size="9">dégradé doux pour une flexion propre</text>
+                </g>
+              </svg>
+              <figcaption>Le weight paint pondère l'influence des bones&nbsp;: un dégradé doux à l'articulation évite les pincements (« candy wrapper »).</figcaption>
+            </figure>
+
+            <h3>3. FK et IK</h3>
+            <p>Par défaut, on anime en <b>FK</b> (renvoi <a href="../../cours/fondamentaux/f10-rigging-animation.html">F10</a>)&nbsp;: on tourne chaque bone. Pour garder un pied au sol ou une main sur un objet, on ajoute une contrainte <b>Inverse Kinematics</b> sur le dernier bone d'une chaîne, avec un <em>Target</em> (un bone de contrôle)&nbsp;: bouger la cible plie automatiquement la chaîne. On limite la <em>Chain Length</em> pour ne pas affecter tout le squelette. C'est posé via <span class="menu-path">Bone Constraint Properties<span class="arrow">▸</span>Inverse Kinematics</span>.</p>
+
+            <h3>4. Animer&nbsp;: keyframes, Dope Sheet, Graph Editor</h3>
+            <p>En <b>Pose Mode</b> (sur l'armature), on pose les bones puis on insère une <span class="gloss">keyframe</span> (<span class="kbd">I</span> ▸ choisir Location/Rotation/Scale, ou un <em>Keying Set</em>). On avance dans le temps (Timeline) et on pose une nouvelle clé&nbsp;; Blender interpole entre les deux. On gère les clés dans&nbsp;:</p>
+            <ul>
+              <li>Le <b>Dope Sheet</b>&nbsp;: vue «&nbsp;partition&nbsp;» des keyframes dans le temps — pour déplacer/copier/régler le <em>timing</em>.</li>
+              <li>Le <b>Graph Editor</b>&nbsp;: les <b>courbes</b> d'interpolation (renvoi <a href="../../cours/fondamentaux/f10-rigging-animation.html">F10</a>)&nbsp;: ease in/out, vitesse, pour rendre l'animation vivante plutôt que mécanique.</li>
+            </ul>
+            <p>Pour le jeu&nbsp;: on respecte les contraintes (nombre de bones raisonnable, max ~4 influences par vertex), on prévoit la <b>root motion</b> si nécessaire, et on découpe les animations en actions exportables (renvoi <a href="../../cours/blender/b11-rendu-export.html">B11</a>).</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: animer un bras</h2>
+            <ol>
+              <li>Sur un mesh de bras simple, ajoute une armature (<span class="menu-path">Add<span class="arrow">▸</span>Armature</span>). En Edit Mode, extrude pour faire 2-3 bones (épaule → coude → poignet).</li>
+              <li>Lie le mesh&nbsp;: sélectionne le mesh, <span class="kbd">Maj</span>+clic l'armature, <span class="kbd">Ctrl</span>+<span class="kbd">P</span> ▸ <em>With Automatic Weights</em>.</li>
+              <li>Passe en <b>Pose Mode</b>, tourne le bone du coude (<span class="kbd">R</span>) : observe la déformation. Va en <b>Weight Paint</b> corriger les pincements au coude.</li>
+              <li>Ajoute une IK&nbsp;: crée un bone de contrôle au poignet, mets une contrainte IK sur l'avant-bras ciblant ce bone, Chain Length = 2.</li>
+              <li>Anime&nbsp;: en Pose Mode, image 1, pose neutre, <span class="kbd">I</span> ▸ Rotation. Avance à l'image 20, plie le bras, <span class="kbd">I</span> à nouveau. Lis (<span class="kbd">Espace</span>).</li>
+              <li>Ouvre le <em>Graph Editor</em> et adoucis les entrées/sorties (ease) pour un mouvement plus naturel.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La peau se pince ou se « tord » à l'articulation.</div>
+                <div class="pi-cause"><b>Cause</b>Poids mal répartis, ou topologie insuffisante (pas de boucles au coude/genou).</div>
+                <div class="pi-fix"><b>Correction</b>Corrige en Weight Paint (dégradé doux)&nbsp;; ajoute des edge loops à l'articulation (renvoi <a href="../../cours/blender/b03-modelisation.html">B3</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tout le squelette bouge quand je tire la cible IK.</div>
+                <div class="pi-cause"><b>Cause</b><em>Chain Length</em> de l'IK trop grande (0 = toute la chaîne).</div>
+                <div class="pi-fix"><b>Correction</b>Règle Chain Length au nombre de bones voulu (ex. 2 pour un avant-bras).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon export d'animation arrive cassé / à la mauvaise échelle dans le moteur.</div>
+                <div class="pi-cause"><b>Cause</b>Transforms non appliqués, échelle non figée, trop d'influences par vertex.</div>
+                <div class="pi-fix"><b>Correction</b>Applique l'échelle (<span class="kbd">Ctrl</span>+<span class="kbd">A</span>), limite à 4 influences, vérifie l'export (renvoi <a href="../../cours/blender/b11-rendu-export.html">B11</a>, <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon animation paraît mécanique, sans vie.</div>
+                <div class="pi-cause"><b>Cause</b>Interpolation linéaire, pas de travail des courbes (timing/spacing).</div>
+                <div class="pi-fix"><b>Correction</b>Dans le Graph Editor, ajoute des ease in/out et soigne le timing (renvoi <a href="../../cours/fondamentaux/f10-rigging-animation.html">F10</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Rigge un objet simple articulé (bras, lampe de bureau, porte) avec une armature propre.</li>
+                <li>Corrige les poids pour une déformation propre, ajoute une IK là où c'est pertinent.</li>
+                <li>Crée une courte animation (2-3 poses) et soigne les courbes dans le Graph Editor.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La déformation est propre (pas de pincement), les poids cohérents.</li>
+                  <li>L'IK ne pilote que la chaîne voulue.</li>
+                  <li>L'animation a un timing crédible (ease), exportable vers un moteur.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Armature</b> + <b>bones</b> parentés&nbsp;; lier le mesh via <em>Automatic Weights</em> puis corriger en <b>Weight Paint</b>.</li>
+                <li><b>FK</b> par défaut&nbsp;; ajoute une <b>IK</b> (avec Chain Length) pour les contacts (pied au sol).</li>
+                <li>Anime en <b>Pose Mode</b> (keyframes <span class="kbd">I</span>)&nbsp;; règle timing (Dope Sheet) et courbes (Graph Editor).</li>
+                <li>Pour le jeu&nbsp;: échelle appliquée, ≤ 4 influences/vertex, animations découpées et exportables.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Armature</b> — objet Blender contenant le squelette (les bones).</p>
+              <p><b>Automatic Weights</b> — calcul automatique des poids de skinning au parentage mesh→armature.</p>
+              <p><b>Pose Mode</b> — mode où l'on pose les bones et insère les keyframes d'animation.</p>
+              <p><b>Dope Sheet / Graph Editor</b> — éditeurs du timing des keyframes et des courbes d'interpolation.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f10-rigging-animation.html">F10 — Rigging &amp; animation</a>&nbsp;: toute la théorie (IK/FK, courbes, blendshapes).</li>
+              <li><a href="../../cours/blender/b11-rendu-export.html">B11 — Rendu &amp; export</a>&nbsp;: exporter armature + animations vers Unity/Unreal.</li>
+              <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques</a>&nbsp;: Mixamo pour des rigs/anims prêts à l'emploi.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

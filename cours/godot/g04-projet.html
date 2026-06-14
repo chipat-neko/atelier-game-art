@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G4 — Créer & configurer un projet Godot · Atelier Game Art</title>
+  <meta name="description" content="Bien démarrer un projet Godot : Project Manager, Project Settings (rendering), structure de res://, dossier .godot et organisation.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Créer un projet</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G4 — Créer &amp; configurer un projet</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g03-renderers.html">G3 — Renderers</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Créer un projet via le <b>Project Manager</b> et choisir son renderer.</li>
+                <li>Te repérer dans les <b>Project Settings</b> (notamment Rendering).</li>
+                <li>Comprendre la structure d'un projet&nbsp;: <code>res://</code>, le fichier <code>project.godot</code>, le dossier <code>.godot</code>.</li>
+                <li>Organiser proprement tes dossiers et versionner ton projet.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un projet bien rangé dès le départ évite le chaos plus tard. Godot stocke <b>tout</b> sous une racine virtuelle <code>res://</code>, et un seul fichier (<code>project.godot</code>) décrit le projet. Comprendre cette structure, c'est savoir ce qu'on versionne, ce qu'on partage, et où vivent les réglages — y compris le renderer (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le Project Manager</h3>
+            <p>Au lancement de Godot s'ouvre le <span class="term">Project Manager</span>&nbsp;: la liste de tes projets, avec <span class="menu-path">Create</span>, <span class="menu-path">Import</span> (ouvrir un projet existant via son <code>project.godot</code>) et l'onglet <span class="menu-path">Asset Library</span> (modèles de projets, renvoi <a href="../../cours/godot/g10-plugins.html">G10</a>). À la création, on choisit&nbsp;: le <b>nom</b>, un <b>dossier vide</b>, et le <b>renderer</b> (Forward+ par défaut).</p>
+
+            <h3>2. La structure d'un projet</h3>
+            <ul>
+              <li><code>project.godot</code>&nbsp;: le fichier qui <b>définit</b> le projet (réglages, autoloads…). Sa présence = «&nbsp;ce dossier est un projet Godot&nbsp;».</li>
+              <li><span class="term">res://</span>&nbsp;: la racine virtuelle qui pointe vers le dossier du projet. Tous tes chemins internes commencent par <code>res://</code>.</li>
+              <li><code>.godot/</code>&nbsp;: dossier de <b>cache</b> généré (imports, vignettes, données dérivées). On ne le versionne <b>pas</b> (il se régénère).</li>
+              <li>Tes dossiers&nbsp;: <code>scenes/</code>, <code>assets/</code> (ou <code>models/</code>, <code>textures/</code>), <code>materials/</code>, <code>scripts/</code>, etc.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Structure de dossiers d'un projet Godot sous res://">
+                <g class="svg-text" font-size="12" font-family="monospace">
+                  <text x="30" y="40" font-weight="700">res://  (= dossier du projet)</text>
+                  <text x="60" y="66">project.godot   <tspan class="svg-dim" font-size="10">← définit le projet (à versionner)</tspan></text>
+                  <text x="60" y="90">.godot/         <tspan class="svg-dim" font-size="10">← cache généré (NE PAS versionner)</tspan></text>
+                  <text x="60" y="114">scenes/         <tspan class="svg-dim" font-size="10">← .tscn</tspan></text>
+                  <text x="60" y="138">assets/models/  assets/textures/</text>
+                  <text x="60" y="162">materials/   scripts/   addons/  <tspan class="svg-dim" font-size="10">← plugins (G10)</tspan></text>
+                </g>
+                <rect x="20" y="20" width="600" height="160" rx="8" fill="none" stroke="#4f9bd9" stroke-opacity="0.5"/>
+              </svg>
+              <figcaption>Une arborescence claire&nbsp;: <code>project.godot</code> et tes dossiers se versionnent&nbsp;; <code>.godot/</code> (cache) s'ignore.</figcaption>
+            </figure>
+
+            <h3>3. Les Project Settings</h3>
+            <p><span class="menu-path">Project<span class="arrow">▸</span>Project Settings</span> centralise la configuration. Les sections utiles côté graphisme&nbsp;:</p>
+            <ul>
+              <li><b>Rendering</b>&nbsp;: le <em>Renderer</em> (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>), la qualité des ombres, l'anti-aliasing (MSAA, TAA, FXAA), les options de textures.</li>
+              <li><b>Display ▸ Window</b>&nbsp;: résolution de base, mode d'étirement (stretch) pour l'adaptation d'écran.</li>
+              <li><b>Application</b>&nbsp;: nom, icône, scène principale (lancée au démarrage).</li>
+              <li>Onglet <em>Advanced Settings</em> à activer pour voir toutes les options.</li>
+            </ul>
+
+            <h3>4. Organisation &amp; versioning</h3>
+            <p>Range par type ou par feature, avec des noms clairs (Godot tolère bien les deux). Renomme/déplace les fichiers <b>depuis le dock FileSystem</b> de Godot (pas dans l'explorateur de l'OS)&nbsp;: il met à jour les références automatiquement. Pour Git, un <code>.gitignore</code> doit au minimum ignorer <code>.godot/</code> (cache régénéré). Versionne <code>project.godot</code>, tes scènes, scripts et assets sources.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Project Manager ▸ <span class="menu-path">Create</span>. Nomme le projet, choisis un dossier vide, renderer <em>Forward+</em>, puis <em>Create &amp; Edit</em>.</li>
+              <li>Dans le FileSystem, crée les dossiers <code>scenes/</code>, <code>assets/</code>, <code>materials/</code>, <code>scripts/</code> (clic droit ▸ New Folder).</li>
+              <li>Ouvre <span class="menu-path">Project<span class="arrow">▸</span>Project Settings</span> ▸ section <em>Rendering</em>&nbsp;: repère le renderer et l'anti-aliasing. Active <em>Advanced Settings</em> pour voir l'étendue des options.</li>
+              <li>Définis la scène principale&nbsp;: crée une scène, sauvegarde-la dans <code>scenes/</code>, puis <span class="menu-path">Project Settings<span class="arrow">▸</span>Application<span class="arrow">▸</span>Run<span class="arrow">▸</span>Main Scene</span>.</li>
+              <li>Ajoute un <code>.gitignore</code> ignorant <code>.godot/</code> si tu utilises Git.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai déplacé des fichiers et tout est cassé (références introuvables).</div>
+                <div class="pi-cause"><b>Cause</b>Fichiers déplacés/renommés dans l'explorateur de l'OS, hors de Godot.</div>
+                <div class="pi-fix"><b>Correction</b>Renomme/déplace toujours depuis le dock FileSystem de Godot, qui met à jour les chemins.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon dépôt Git est énorme / plein de fichiers inutiles.</div>
+                <div class="pi-cause"><b>Cause</b>Le dossier de cache <code>.godot/</code> a été versionné.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute <code>.godot/</code> au <code>.gitignore</code>&nbsp;; il se régénère tout seul.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Lancer le jeu ouvre une scène vide / la mauvaise scène.</div>
+                <div class="pi-cause"><b>Cause</b>Aucune Main Scene définie, ou la mauvaise.</div>
+                <div class="pi-fix"><b>Correction</b>Définis la Main Scene dans Project Settings ▸ Application ▸ Run.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je ne trouve pas un réglage de rendu.</div>
+                <div class="pi-cause"><b>Cause</b>Les options avancées sont masquées par défaut.</div>
+                <div class="pi-fix"><b>Correction</b>Active <em>Advanced Settings</em> en haut à droite des Project Settings.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un projet propre avec une arborescence de dossiers claire.</li>
+                <li>Configure une Main Scene et lance le jeu (<span class="kbd">F5</span>) pour vérifier.</li>
+                <li>Mets en place un <code>.gitignore</code> ignorant <code>.godot/</code> et fais un premier commit (si tu utilises Git).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le projet a une structure de dossiers cohérente.</li>
+                  <li>Lancer le jeu ouvre la bonne scène.</li>
+                  <li>Tu sais ce qui se versionne et ce qui s'ignore (<code>.godot/</code>).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>Project Manager</b> crée/ouvre les projets&nbsp;; le renderer se choisit ici (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</li>
+                <li>Tout vit sous <code>res://</code>&nbsp;; <code>project.godot</code> définit le projet&nbsp;; <code>.godot/</code> est un cache à <b>ne pas versionner</b>.</li>
+                <li>Déplace/renomme <b>depuis le FileSystem de Godot</b> pour préserver les références.</li>
+                <li>Configure la <b>Main Scene</b> et explore les <b>Project Settings ▸ Rendering</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Project Manager</b> — fenêtre d'accueil de Godot pour créer/ouvrir/importer des projets.</p>
+              <p><b>project.godot</b> — fichier qui définit un projet Godot et ses réglages.</p>
+              <p><b>.godot/</b> — dossier de cache généré, à ignorer dans le versioning.</p>
+              <p><b>Main Scene</b> — scène lancée au démarrage du jeu.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/godot/g05-import-assets.html">G5 — Import d'assets</a>&nbsp;: remplir <code>res://</code>.</li>
+              <li><a href="../../cours/unity/u04-projet-graphique.html">U4</a> / <a href="../../cours/unreal/e03-projet.html">E3</a>&nbsp;: créer un projet côté Unity/Unreal.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

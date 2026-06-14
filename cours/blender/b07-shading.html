@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B7 — Shading & matériaux (nodes) · Atelier Game Art</title>
+  <meta name="description" content="Le Shader Editor de Blender : Principled BSDF, brancher ses maps PBR, l'espace Non-Color pour les données, les node groups, et EEVEE vs Cycles.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Shading &amp; matériaux</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B7 — Shading &amp; matériaux (nodes)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>, <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> (sRGB/linéaire) et <a href="../../cours/blender/b06-uv.html">B6 — UV</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser le <b>Shader Editor</b> et le nœud <b>Principled BSDF</b>.</li>
+                <li>Brancher tes maps PBR (Base Color, Metallic, Roughness, Normal) sur les bonnes entrées.</li>
+                <li>Régler l'espace colorimétrique <b>Non-Color</b> sur les maps de données — l'erreur n°1.</li>
+                <li>Distinguer <b>EEVEE</b> (temps réel) et <b>Cycles</b> (path tracer), et créer des <b>node groups</b> réutilisables.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le <b>Principled BSDF</b> de Blender est un shader <b>PBR</b> (renvoi <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>) compatible avec ce que comprennent Unity et Unreal&nbsp;: ses entrées (Base Color, Metallic, Roughness, Normal) correspondent aux maps standard. Bien le brancher dans Blender te donne un aperçu fidèle de ton matériau <em>avant</em> l'export — à condition de ne pas commettre l'erreur classique de l'espace colorimétrique, qui ruine normales et roughness.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le Shader Editor et le Principled BSDF</h3>
+            <p>Dans le Workspace <em>Shading</em>, le bas de l'écran affiche le <b>Shader Editor</b> (un éditeur de nœuds). Un nouveau matériau contient déjà un nœud <span class="term">Principled BSDF</span> relié à <em>Material Output</em>. Le Principled regroupe toutes les propriétés PBR en un seul nœud&nbsp;: Base Color, Metallic, Roughness, Specular, Normal, Emission, Alpha, etc. On <b>branche une texture</b> sur une entrée via un nœud <em>Image Texture</em>.</p>
+
+            <h3>2. Brancher ses maps PBR (et l'espace colorimétrique)</h3>
+            <p>Le branchement type (cohérent avec <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>)&nbsp;:</p>
+            <ul>
+              <li><b>Base Color</b> ← Image Texture de l'albedo, en <em>Color Space = sRGB</em> (c'est une couleur).</li>
+              <li><b>Metallic</b> ← Image Texture metallic, en <em>Non-Color</em>.</li>
+              <li><b>Roughness</b> ← Image Texture roughness, en <em>Non-Color</em>.</li>
+              <li><b>Normal</b> ← Image Texture normal (<em>Non-Color</em>) → nœud <em>Normal Map</em> → entrée Normal du Principled. Le nœud intermédiaire est <b>obligatoire</b> : il convertit le RGB en vecteur.</li>
+            </ul>
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>La règle qui sauve des heures</div>
+              <p>Les maps de <b>données</b> (normal, roughness, metallic, AO, height) doivent être en <b>Color Space = Non-Color</b> dans le nœud Image Texture. Seules les maps de <b>couleur</b> (Base Color, Emission) restent en <b>sRGB</b>. Oublier le Non-Color → Blender « décode » des nombres comme des couleurs → rendu plastique/faux (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Graphe de nœuds Blender : Image Texture vers Principled BSDF vers Material Output">
+                <defs><marker id="b7ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="14" y="24" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="24" y="42" font-weight="700">Image Texture</text><text x="24" y="58" class="svg-dim" font-size="10">Base Color · sRGB</text>
+                  <rect x="14" y="74" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="24" y="92" font-weight="700">Image Texture</text><text x="24" y="108" class="svg-dim" font-size="10">Roughness · Non-Color</text>
+                  <rect x="14" y="124" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="24" y="142" font-weight="700">Image Texture</text><text x="24" y="158" class="svg-dim" font-size="10">Normal · Non-Color</text>
+                  <rect x="190" y="124" width="110" height="40" rx="6" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8"/><text x="200" y="148" font-weight="700">Normal Map</text>
+
+                  <rect x="340" y="44" width="150" height="150" rx="8" fill="#e0a14b" fill-opacity="0.10" stroke="#e0a14b" stroke-width="1.6"/>
+                  <text x="415" y="64" text-anchor="middle" font-weight="800">Principled BSDF</text>
+                  <text x="352" y="92">Base Color</text><text x="352" y="120">Roughness</text><text x="352" y="148">Metallic</text><text x="352" y="176">Normal</text>
+
+                  <rect x="520" y="100" width="106" height="40" rx="6" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="530" y="124" font-weight="700">Material Output</text>
+                </g>
+                <g stroke="#e0a14b" stroke-width="1.7" fill="none" marker-end="url(#b7ar)">
+                  <path d="M164 44 C 260 44, 280 86, 338 86"/>
+                  <path d="M164 94 C 250 110, 270 116, 338 114"/>
+                  <path d="M164 144 L188 144"/>
+                  <path d="M300 144 C 320 160, 330 172, 338 172"/>
+                  <path d="M490 120 L518 120"/>
+                </g>
+              </svg>
+              <figcaption>Branchement PBR dans Blender&nbsp;: chaque map sur son entrée, la normal map passe par un nœud <em>Normal Map</em>, et les données sont en <em>Non-Color</em>.</figcaption>
+            </figure>
+
+            <h3>3. EEVEE vs Cycles</h3>
+            <p>Blender a deux moteurs de rendu (choisis dans <span class="menu-path">Render Properties<span class="arrow">▸</span>Render Engine</span>)&nbsp;:</p>
+            <ul>
+              <li><b>EEVEE</b> : moteur <b>temps réel</b> (rasterizer), rapide et interactif — proche de la façon dont un moteur de jeu calcule l'image. Idéal pour un aperçu fidèle de tes matériaux destinés au jeu.</li>
+              <li><b>Cycles</b> : moteur par <b>lancer de rayons</b> (path tracer), physiquement réaliste (reflets, GI, caustiques), mais lent et bruité (le bruit diminue avec les échantillons). Pour les rendus de présentation et le baking de qualité (renvoi <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>).</li>
+            </ul>
+            <p>Un même matériau Principled rend de façon cohérente dans les deux, mais certains effets ne s'affichent qu'en Cycles. Pour du game art, EEVEE est le compagnon naturel.</p>
+
+            <h3>4. Node groups réutilisables</h3>
+            <p>Quand un ensemble de nœuds se répète (un «&nbsp;détail tilé&nbsp;», un mélange de deux matériaux par masque), on le sélectionne et on fait <span class="kbd">Ctrl</span>+<span class="kbd">G</span> pour créer un <b>node group</b>&nbsp;: un nœud unique réutilisable avec ses entrées/sorties exposées. C'est l'équivalent des Material Functions d'Unreal (renvoi <a href="../../cours/unreal/e05-material-editor.html">E5</a>). L'add-on <em>Node Wrangler</em> (activé en <a href="../../cours/blender/b01-installation.html">B1</a>) accélère tout&nbsp;: <span class="kbd">Ctrl</span>+<span class="kbd">T</span> ajoute automatiquement les nœuds d'une texture.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sélectionne ton objet déplié (<a href="../../cours/blender/b06-uv.html">B6</a>), va dans le Workspace <em>Shading</em>, crée un matériau (<span class="menu-path">New</span>).</li>
+              <li>Avec Node Wrangler&nbsp;: sélectionne le Principled BSDF, <span class="kbd">Ctrl</span>+<span class="kbd">T</span> n'ajoute qu'une texture&nbsp;; sinon ajoute un <em>Image Texture</em> (<span class="kbd">Maj</span>+<span class="kbd">A</span> ▸ Texture) et charge ta Base Color → branche sur Base Color (laisse sRGB).</li>
+              <li>Ajoute la Roughness en Image Texture → passe son <em>Color Space</em> en <b>Non-Color</b> → branche sur Roughness.</li>
+              <li>Ajoute la Normal en Image Texture (<b>Non-Color</b>) → nœud <em>Normal Map</em> → entrée Normal.</li>
+              <li>Bascule en <em>Material Preview</em> ou <em>Rendered</em> (EEVEE) pour voir le résultat&nbsp;; ajuste.</li>
+              <li>Sélectionne le bloc «&nbsp;détail&nbsp;» réutilisable, <span class="kbd">Ctrl</span>+<span class="kbd">G</span> pour en faire un node group nommé.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma surface paraît « plastique », délavée ou éclaire bizarrement.</div>
+                <div class="pi-cause"><b>Cause</b>Roughness/normal laissées en sRGB au lieu de Non-Color.</div>
+                <div class="pi-fix"><b>Correction</b>Passe toutes les maps de données en <em>Color Space = Non-Color</em>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map n'a aucun effet de relief.</div>
+                <div class="pi-cause"><b>Cause</b>Texture branchée directement sur Normal sans le nœud <em>Normal Map</em>.</div>
+                <div class="pi-fix"><b>Correction</b>Insère un nœud <em>Normal Map</em> entre l'Image Texture et l'entrée Normal.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le rendu Cycles est très lent / très bruité.</div>
+                <div class="pi-cause"><b>Cause</b>Path tracer + GPU non activé + peu d'échantillons.</div>
+                <div class="pi-fix"><b>Correction</b>Active le GPU (<a href="../../cours/blender/b01-installation.html">B1</a>), monte les samples ou active le <em>Denoise</em>&nbsp;; ou passe en EEVEE pour le travail courant.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon matériau Blender ne ressemble pas à celui obtenu dans le moteur.</div>
+                <div class="pi-cause"><b>Cause</b>Différences de pipeline&nbsp;; les matériaux ne se transfèrent pas tels quels.</div>
+                <div class="pi-fix"><b>Correction</b>Exporte les <b>textures</b> et reconstruis le matériau dans le moteur (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>, <a href="../../cours/unity/u06-materiaux.html">U6</a>, <a href="../../cours/unreal/e05-material-editor.html">E5</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un matériau PBR complet (Base Color, Roughness, Metallic, Normal) sur ton objet déplié, espaces colorimétriques corrects.</li>
+                <li>Compare le rendu EEVEE et Cycles du même matériau.</li>
+                <li>Crée un node group « détail tilé » et réutilise-le sur un autre objet.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les maps de données sont en Non-Color, la normal passe par un nœud Normal Map.</li>
+                  <li>Le matériau réagit correctement à la lumière (pas d'aspect plastique).</li>
+                  <li>Tu sais expliquer la différence EEVEE/Cycles et quand utiliser chacun.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>Principled BSDF</b> est un shader PBR&nbsp;: branche tes maps sur ses entrées.</li>
+                <li>Maps de <b>données</b> en <b>Non-Color</b>&nbsp;; couleur en sRGB&nbsp;; normale via le nœud <b>Normal Map</b>.</li>
+                <li><b>EEVEE</b> temps réel (aperçu jeu) vs <b>Cycles</b> path tracer (réaliste, bake).</li>
+                <li>Les <b>node groups</b> factorisent&nbsp;; Node Wrangler accélère le travail.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Shader Editor</b> — éditeur de nœuds des matériaux dans Blender.</p>
+              <p><b>Principled BSDF</b> — shader PBR tout-en-un de Blender, compatible avec les moteurs.</p>
+              <p><b>Non-Color</b> — espace colorimétrique des maps de données (normal, roughness…), à ne pas décoder comme une couleur.</p>
+              <p><b>Node group</b> — ensemble de nœuds regroupé en un nœud réutilisable.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: la théorie des maps que tu branches ici.</li>
+              <li><a href="../../cours/blender/b08-texture-paint-bake.html">B8 — Texture Paint &amp; Baking</a>&nbsp;: peindre et cuire ces matériaux.</li>
+              <li><a href="../../cours/unreal/e05-material-editor.html">E5</a> / <a href="../../cours/unity/u06-materiaux.html">U6</a>&nbsp;: les équivalents dans les moteurs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E5 — Le Material Editor · Atelier Game Art</title>
+  <meta name="description" content="Le Material Editor d'Unreal Engine 5.7 : système de nœuds, Master Material + Material Instances, branchement des maps PBR et Material Functions.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Le Material Editor</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E5 — Le Material Editor</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>60 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>, <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a> et <a href="../../cours/unreal/e04-import-assets.html">E4 — Import d'assets</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Lire et construire un matériau dans le <b>Material Editor</b> à nœuds d'Unreal&nbsp;5.7.</li>
+                <li>Brancher correctement tes maps PBR (Base Color, ORM, Normal, Emissive) sur les bonnes entrées.</li>
+                <li>Concevoir un <b>Master Material</b> paramétré et en dériver des <b>Material Instances</b> — et expliquer <em>pourquoi</em> ça change tout côté performance et itération.</li>
+                <li>Factoriser des sous-graphes réutilisables avec les <b>Material Functions</b>.</li>
+                <li>Choisir le bon <b>Blend Mode</b> et <b>Shading Model</b>, et surveiller le coût d'un matériau.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Dans Unreal, le matériau n'est pas une simple fiche de réglages comme dans beaucoup de logiciels&nbsp;: c'est un <b>programme visuel</b> que tu assembles toi-même, nœud par nœud, et qui sera compilé en un vrai <span class="gloss">shader</span> GPU. Cela te donne une liberté énorme (effets sur mesure, animation de surface, masques procéduraux) mais aussi la responsabilité de comprendre ce que chaque branchement coûte.</p>
+            <p>Surtout, Unreal repose sur un duo qui structure <em>toute</em> une production&nbsp;: le <b>Master Material</b> (le shader, écrit une fois) et les <b>Material Instances</b> (des déclinaisons légères qui ne changent que des paramètres). Mal comprendre ce duo, c'est recompiler des shaders à chaque clic, exploser les temps de chargement et rendre un projet ingérable. Bien le comprendre, c'est itérer en temps réel sur des centaines d'objets. C'est la leçon qui sépare le bricolage de la production sérieuse.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le Material Editor, un éditeur de shaders à nœuds</h3>
+            <p>On ouvre le Material Editor en double-cliquant sur un asset <span class="term">Material</span> dans le <span class="gloss">Content Browser</span>. Au lieu d'écrire du <span class="gloss">HLSL</span> à la main, on relie des <b>nœuds</b> (des petites boîtes qui calculent quelque chose) jusqu'à un nœud final. Unreal traduit ensuite ce graphe en code shader compilé pour chaque plateforme. C'est l'équivalent du <a href="../../cours/unity/u06-materiaux.html">Shader Graph d'Unity</a>, avec sa propre logique.</p>
+            <p>Un point conceptuel essentiel (rappel de <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>)&nbsp;: ce graphe est évalué <b>par pixel</b>, des millions de fois par image. Chaque nœud ajouté est une instruction de plus exécutée pour chaque pixel à l'écran couvert par le matériau. «&nbsp;Ça marche&nbsp;» et «&nbsp;ça coûte cher&nbsp;» sont deux questions différentes qu'il faut se poser en même temps.</p>
+
+            <h3>2. Anatomie de la fenêtre</h3>
+            <ul>
+              <li><b>Le nœud Material (Result node)</b>, à droite&nbsp;: la sortie finale. Ses broches d'entrée correspondent aux canaux PBR — Base Color, Metallic, Specular, Roughness, Emissive Color, Normal, Ambient Occlusion, Opacity / Opacity Mask, World Position Offset… Selon le Blend Mode et le Shading Model choisis, certaines broches s'activent ou se grisent.</li>
+              <li><b>Le graphe</b>, au centre&nbsp;: l'espace où tu poses et relies tes nœuds (clic droit pour la palette, ou la fenêtre <span class="menu-path">Palette</span>).</li>
+              <li><b>La Viewport / Preview</b>, en haut à gauche&nbsp;: une sphère (ou un autre primitif) qui montre le matériau en direct.</li>
+              <li><b>Le panneau Details</b>, en bas à gauche&nbsp;: les propriétés du matériau (Blend Mode, Shading Model, Two Sided…) ou du nœud sélectionné.</li>
+              <li><b>La Stats / barre d'outils</b>&nbsp;: <span class="menu-path">Apply</span> (compile et applique), <span class="menu-path">Save</span>, et l'affichage du <b>nombre d'instructions</b> (Stats) — ton compteur de coût.</li>
+            </ul>
+
+            <h3>3. Les nœuds que tu utiliseras tout le temps</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Nœud</th><th>Rôle</th></tr></thead>
+                <tbody>
+                  <tr><td><code>TextureSample</code></td><td>Lit une texture à la coordonnée UV courante. Donne 5 sorties&nbsp;: RGB et chacun des canaux R, G, B, A séparément (essentiel pour les maps packées).</td></tr>
+                  <tr><td><code>Constant</code> / <code>Constant3Vector</code></td><td>Une valeur figée (un scalaire, une couleur RVB). Pour câbler «&nbsp;en dur&nbsp;».</td></tr>
+                  <tr><td><code>ScalarParameter</code> / <code>VectorParameter</code></td><td><b>Le cœur du système&nbsp;:</b> une valeur <em>exposée</em>, modifiable depuis une Material Instance sans toucher au graphe. Nomme-les clairement (« Roughness Multiplier », « Tint »).</td></tr>
+                  <tr><td><code>Multiply</code> / <code>Add</code> / <code>Lerp</code></td><td>Mathématiques de base. <code>Lerp</code> (Linear Interpolate) mélange deux entrées selon un facteur Alpha — l'outil n°1 du masquage.</td></tr>
+                  <tr><td><code>TexCoord</code></td><td>Les coordonnées UV. Multiplié par un scalaire, il fait tiler la texture (×4 = 4 répétitions).</td></tr>
+                  <tr><td><code>Panner</code></td><td>Fait défiler les UV dans le temps (eau, lave, tapis roulant).</td></tr>
+                  <tr><td><code>Fresnel</code></td><td>Renvoie une valeur forte sur les bords vus en rasant (renvoi <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>)&nbsp;: liserés, effets de bouclier, neige sur le dessus.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>4. Brancher ses maps PBR</h3>
+            <p>Le branchement type d'un matériau PBR opaque, en cohérence avec les espaces colorimétriques vus en <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> et l'import vu en <a href="../../cours/unreal/e04-import-assets.html">E4</a>&nbsp;:</p>
+            <ul>
+              <li><b>Base Color</b> ← un <code>TextureSample</code> de la base color (texture importée en sRGB).</li>
+              <li><b>ORM packé</b> ← un seul <code>TextureSample</code> (importé en compression <em>Masks</em>, sRGB <b>désactivé</b>) dont on prend&nbsp;: la sortie <b>R</b> → Ambient Occlusion, <b>G</b> → Roughness, <b>B</b> → Metallic. C'est la convention Unreal de l'<span class="gloss">ORM</span> (renvoi <a href="../../cours/logiciels/l02-substance.html">L2</a>).</li>
+              <li><b>Normal</b> ← un <code>TextureSample</code> de la normal map (compression <em>Normalmap</em>, convention DirectX/Y− côté Unreal — renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</li>
+              <li><b>Emissive Color</b> ← couleur d'émission × un scalaire d'intensité, si la surface brille.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 330" role="img" aria-label="Graphe de matériau Unreal : trois TextureSample reliés au nœud Material, avec un ScalarParameter Roughness multiplié">
+                <defs><marker id="e5ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#b48cff"/></marker></defs>
+                <!-- TextureSamples -->
+                <g class="svg-text" font-size="11.5">
+                  <rect x="14" y="20" width="150" height="52" rx="7" class="svg-surface" stroke="#313c4c"/>
+                  <text x="24" y="40" font-weight="700">TextureSample</text><text x="24" y="58" class="svg-dim">Base Color (sRGB)</text>
+                  <rect x="14" y="110" width="150" height="78" rx="7" class="svg-surface" stroke="#313c4c"/>
+                  <text x="24" y="130" font-weight="700">TextureSample</text><text x="24" y="147" class="svg-dim">ORM (Masks)</text>
+                  <text x="24" y="165" fill="#ff6b6b">R · AO</text><text x="78" y="165" fill="#5ad19a">G · Rough</text><text x="24" y="181" fill="#59b0ff">B · Metal</text>
+                  <rect x="14" y="226" width="150" height="52" rx="7" class="svg-surface" stroke="#313c4c"/>
+                  <text x="24" y="246" font-weight="700">TextureSample</text><text x="24" y="264" class="svg-dim">Normal (Normalmap)</text>
+                  <!-- ScalarParameter -->
+                  <rect x="200" y="120" width="150" height="46" rx="7" fill="#b48cff" fill-opacity="0.14" stroke="#b48cff"/>
+                  <text x="210" y="139" font-weight="700">ScalarParameter</text><text x="210" y="156" class="svg-dim">« Roughness Mult »</text>
+                  <rect x="250" y="178" width="60" height="34" rx="7" class="svg-surface" stroke="#313c4c"/>
+                  <text x="280" y="199" text-anchor="middle">×</text>
+                </g>
+                <!-- Result node -->
+                <g class="svg-text" font-size="11.5">
+                  <rect x="430" y="34" width="180" height="252" rx="9" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="1.6"/>
+                  <text x="520" y="54" text-anchor="middle" font-weight="800">Material</text>
+                  <text x="446" y="92">Base Color</text>
+                  <text x="446" y="126">Metallic</text>
+                  <text x="446" y="160">Roughness</text>
+                  <text x="446" y="194">Ambient Occlusion</text>
+                  <text x="446" y="228">Normal</text>
+                  <text x="446" y="262">Emissive</text>
+                </g>
+                <!-- liens -->
+                <g stroke="#b48cff" stroke-width="1.8" fill="none" marker-end="url(#e5ar)">
+                  <path d="M164 46 C 300 46, 320 86, 428 86"/>
+                  <path d="M164 158 L196 150" marker-end="url(#e5ar)"/>
+                  <path d="M310 195 C 360 188, 380 160, 428 154"/>
+                  <path d="M164 165 C 360 230, 380 190, 428 188"/>
+                  <path d="M164 252 C 320 252, 340 222, 428 222"/>
+                  <path d="M164 140 C 200 132, 210 130, 198 130"/>
+                </g>
+                <text x="350" y="312" text-anchor="middle" class="svg-dim" font-size="11">Le canal G de l'ORM passe par × (ScalarParameter) avant d'alimenter Roughness — un paramètre réglable par instance.</text>
+              </svg>
+              <figcaption>Branchement PBR type&nbsp;: la map <b>ORM</b> nourrit AO/Roughness/Metallic par ses canaux séparés, et un <b>ScalarParameter</b> rend la rugosité ajustable sans recompiler.</figcaption>
+            </figure>
+
+            <h3>5. Master Material + Material Instances — le concept clé</h3>
+            <p>C'est ici que tout se joue. Compiler un shader est <b>coûteux</b> (plusieurs secondes, et autant de variantes que de plateformes). Si chaque objet avait son propre matériau compilé, le projet deviendrait ingérable. La solution d'Unreal&nbsp;:</p>
+            <ul>
+              <li>On crée <b>un seul</b> <span class="term">Master Material</span>, riche, dans lequel tout ce qui doit varier est exposé via des <code>ScalarParameter</code> et <code>VectorParameter</code> (couleurs, textures via <code>TextureObjectParameter</code>, intensités…). Il est compilé <b>une fois</b>.</li>
+              <li>On en dérive autant de <span class="term">Material Instances</span> qu'on veut (clic droit sur le master ▸ <span class="menu-path">Create Material Instance</span>). Une instance ne contient <b>aucun shader</b>&nbsp;: juste un jeu de valeurs de paramètres. La changer ne recompile <b>rien</b> et se voit <b>instantanément</b>.</li>
+            </ul>
+            <p>Analogie&nbsp;: le Master Material est un <b>moule</b> (coûteux à fabriquer)&nbsp;; les Material Instances sont les <b>objets coulés</b> dans ce moule, qu'on peut teinter à volonté. On fabrique le moule une fois, on coule mille variantes pour rien.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 230" role="img" aria-label="Un Master Material compilé donne plusieurs Material Instances qui ne changent que les paramètres">
+                <defs><marker id="e5ar2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#b48cff"/></marker></defs>
+                <rect x="40" y="80" width="190" height="70" rx="10" fill="#b48cff" fill-opacity="0.16" stroke="#b48cff" stroke-width="1.8"/>
+                <text x="135" y="108" text-anchor="middle" class="svg-text" font-weight="800" font-size="14">Master Material</text>
+                <text x="135" y="130" text-anchor="middle" class="svg-dim" font-size="11">shader compilé 1 fois · paramètres exposés</text>
+                <g class="svg-text" font-size="12">
+                  <rect x="360" y="14" width="240" height="56" rx="9" class="svg-surface" stroke="#313c4c"/>
+                  <text x="372" y="36" font-weight="700">MI_MetalRouille</text><text x="372" y="54" class="svg-dim">Tint=brun · Roughness=0,8</text>
+                  <rect x="360" y="86" width="240" height="56" rx="9" class="svg-surface" stroke="#313c4c"/>
+                  <text x="372" y="108" font-weight="700">MI_MetalPoli</text><text x="372" y="126" class="svg-dim">Tint=gris · Roughness=0,15</text>
+                  <rect x="360" y="158" width="240" height="56" rx="9" class="svg-surface" stroke="#313c4c"/>
+                  <text x="372" y="180" font-weight="700">MI_Or</text><text x="372" y="198" class="svg-dim">Tint=or · Metallic=1</text>
+                </g>
+                <g stroke="#b48cff" stroke-width="1.8" fill="none" marker-end="url(#e5ar2)">
+                  <path d="M230 100 C 300 70, 320 50, 356 42"/>
+                  <path d="M230 114 C 300 114, 320 114, 356 114"/>
+                  <path d="M230 128 C 300 160, 320 178, 356 186"/>
+                </g>
+                <text x="135" y="180" text-anchor="middle" class="svg-dim" font-size="11">Changer une instance = 0 recompilation, effet immédiat.</text>
+              </svg>
+              <figcaption>Un Master Material, des dizaines d'instances&nbsp;: c'est la base d'un projet Unreal performant et facile à itérer.</figcaption>
+            </figure>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Material Instance Dynamic (MID)</div>
+              <p>Pour faire varier un paramètre <b>pendant le jeu</b> (un personnage qui rougit quand il est touché), on crée à l'exécution un <em>Material Instance Dynamic</em> via Blueprint/C++ et on appelle <code>Set Scalar/Vector Parameter Value</code>. Même principe&nbsp;: on touche un paramètre, jamais le shader.</p>
+            </div>
+
+            <h3>6. Material Functions&nbsp;: factoriser ses graphes</h3>
+            <p>Quand un bout de graphe se répète dans plusieurs matériaux (par exemple «&nbsp;ajouter un détail tilé par-dessus&nbsp;», ou «&nbsp;calculer un masque de mousse selon la normale&nbsp;»), on l'enferme dans une <span class="term">Material Function</span>&nbsp;: un sous-graphe réutilisable avec ses entrées (<code>FunctionInput</code>) et sa sortie. On l'appelle ensuite dans n'importe quel matériau comme un nœud unique. Avantage&nbsp;: on corrige à un seul endroit, tous les matériaux qui l'utilisent en profitent.</p>
+
+            <h3>7. Blend Mode, Shading Model et coût</h3>
+            <p>Dans les Details du matériau&nbsp;:</p>
+            <ul>
+              <li><b>Blend Mode</b>&nbsp;: <em>Opaque</em> (par défaut, le moins cher), <em>Masked</em> (découpe binaire via l'Opacity Mask — feuillage, grilles&nbsp;; renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> sur l'alpha), <em>Translucent</em> (vraie transparence, coûteuse, sujette à l'<span class="gloss">overdraw</span> et au tri).</li>
+              <li><b>Shading Model</b>&nbsp;: <em>Default Lit</em> (PBR standard), <em>Subsurface</em> (peau, cire, feuillage), <em>Unlit</em> (pas d'éclairage&nbsp;: VFX, hologrammes), <em>Two Sided Foliage</em>, etc.</li>
+              <li><b>Coût</b>&nbsp;: surveille le compteur d'instructions (Stats). Une texture lue = du temps&nbsp;; un nœud math = peu&nbsp;; un matériau Translucent plein écran = très cher. Le mode de vue <em>Shader Complexity</em> (renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>) colore la scène du vert (peu cher) au rouge (cher).</li>
+            </ul>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Construisons un Master Material métal paramétré, puis deux instances (un métal rouillé, un métal poli).</p>
+            <ol>
+              <li>Dans le Content Browser&nbsp;: <span class="menu-path">clic droit<span class="arrow">▸</span>Material</span>. Nomme-le <code>M_MetalMaster</code> (préfixe <code>M_</code> par convention, renvoi <a href="../../cours/unreal/e03-projet.html">E3</a>). Double-clique pour l'ouvrir.</li>
+              <li>Glisse tes textures dans le graphe (ou clic droit ▸ <span class="menu-path">Texture Sample</span> puis assigne la texture dans Details). Relie la base color au <b>Base Color</b>, et la normal map au <b>Normal</b> du nœud Material.</li>
+              <li>Pour l'ORM&nbsp;: ajoute un <span class="menu-path">Texture Sample</span> de la texture ORM, et relie <b>G</b> → Roughness, <b>B</b> → Metallic, <b>R</b> → Ambient Occlusion. Tu viens d'utiliser une seule lecture de texture pour trois canaux — c'est l'intérêt du packing.</li>
+              <li>Expose les variations&nbsp;: clic droit ▸ <span class="menu-path">ScalarParameter</span>, nomme-le « Roughness Mult », branche-le dans un nœud <span class="menu-path">Multiply</span> entre le canal G et l'entrée Roughness. Ajoute un <span class="menu-path">VectorParameter</span> « Tint » multiplié sur la Base Color.</li>
+              <li>Clique <span class="menu-path">Apply</span> puis <span class="menu-path">Save</span>. Regarde le compteur d'instructions&nbsp;: c'est le coût de ton master.</li>
+              <li>Dans le Content Browser&nbsp;: clic droit sur <code>M_MetalMaster</code> ▸ <span class="menu-path">Create Material Instance</span>. Nomme-la <code>MI_MetalRouille</code>. Ouvre-la&nbsp;: coche les paramètres et règle Tint en brun, Roughness Mult à 0,9.</li>
+              <li>Refais une instance <code>MI_MetalPoli</code> (Tint gris clair, Roughness Mult 0,15). Applique chaque instance sur un objet de la scène&nbsp;: deux apparences radicalement différentes, <b>zéro</b> recompilation entre les deux.</li>
+            </ol>
+            <p>Ce que tu viens de prouver&nbsp;: une fois le moule fait, décliner un matériau est instantané et gratuit. C'est exactement ainsi qu'on habille un environnement entier de centaines d'objets.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le moindre changement de couleur fige l'éditeur quelques secondes («&nbsp;Compiling Shaders…&nbsp;»).</div>
+                <div class="pi-cause"><b>Cause</b>Tu modifies le <b>Master Material</b> au lieu d'une instance&nbsp;: chaque édition recompile le shader (et toutes ses variantes).</div>
+                <div class="pi-fix"><b>Correction</b>Expose la valeur en Parameter, puis travaille dans une <b>Material Instance</b>&nbsp;: les changements sont instantanés.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le relief de ma normal map apparaît en creux au lieu d'en bosse (ou inversement).</div>
+                <div class="pi-cause"><b>Cause</b>Map bakée en convention OpenGL alors qu'Unreal attend DirectX (canal vert inversé), ou texture importée sans la compression <em>Normalmap</em>.</div>
+                <div class="pi-fix"><b>Correction</b>Réexporte/inverse le canal vert (Y−), et vérifie la compression <em>Normalmap</em> et sRGB désactivé à l'import (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>, <a href="../../cours/unreal/e04-import-assets.html">E4</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une partie du matériau reste grise / noire malgré mes textures.</div>
+                <div class="pi-cause"><b>Cause</b>Une entrée du nœud Material n'est pas connectée, ou tu confonds <em>Specular</em> et <em>Metallic</em>.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie chaque broche&nbsp;; en workflow Metallic/Roughness, laisse Specular à sa valeur par défaut et pilote Metallic (renvoi <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le framerate chute fortement quand l'objet remplit l'écran.</div>
+                <div class="pi-cause"><b>Cause</b>Matériau en Blend Mode <em>Translucent</em> ou graphe très lourd&nbsp;: l'overdraw et le nombre d'instructions explosent par pixel.</div>
+                <div class="pi-fix"><b>Correction</b>Passe en <em>Masked</em> si une découpe suffit, réduis les instructions, et vérifie le coût via le mode <em>Shader Complexity</em> (renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans un projet Unreal&nbsp;5.7 (renvoi <a href="../../cours/unreal/e03-projet.html">E3</a>), avec un mesh et son set de textures PBR (base color, ORM, normal)&nbsp;:</p>
+              <ol>
+                <li>Crée <code>M_Master_PBR</code> avec, au minimum&nbsp;: ORM correctement câblé (R/G/B), normal map, un <code>ScalarParameter</code> « Roughness Mult » et un <code>VectorParameter</code> « Tint ».</li>
+                <li>Dérive <b>trois</b> Material Instances visuellement distinctes sans jamais rouvrir le master.</li>
+                <li>Ajoute une <code>Material Function</code> simple (par ex. un détail tilé via <code>TexCoord</code> × scalaire) et utilise-la dans le master.</li>
+                <li>Note le nombre d'instructions affiché et identifie ce qui le fait monter.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les trois instances diffèrent à l'écran et aucune recompilation ne s'est déclenchée en les réglant.</li>
+                  <li>Le relief de la normal map est dans le bon sens.</li>
+                  <li>Tu peux expliquer à voix haute la différence Master Material / Material Instance et pourquoi elle existe.</li>
+                  <li>Tu sais où lire le coût (instructions / Shader Complexity).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le Material Editor est un <b>éditeur de shaders à nœuds</b>&nbsp;: chaque nœud coûte, par pixel.</li>
+                <li>Branche tes maps sur les bonnes entrées&nbsp;: Base Color (sRGB), <b>ORM</b> par canaux (R=AO, G=Roughness, B=Metallic), Normal (Normalmap/DirectX), Emissive.</li>
+                <li><b>Master Material</b> = un shader compilé une fois, avec ses <b>Parameters</b>. <b>Material Instances</b> = déclinaisons gratuites qui ne changent que des valeurs. <b>Ne modifie pas le master pour décliner.</b></li>
+                <li>Les <b>Material Functions</b> factorisent les sous-graphes réutilisables.</li>
+                <li>Choisis le Blend Mode et le Shading Model les plus économes possibles et surveille le compteur d'instructions.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Material Editor</b> — éditeur de shaders à nœuds d'Unreal, compilé en shader GPU.</p>
+              <p><b>Nœud Material (Result node)</b> — sortie finale du graphe, avec les broches PBR (Base Color, Roughness, Normal…).</p>
+              <p><b>Master Material</b> — matériau «&nbsp;moule&nbsp;» compilé une fois, exposant des Parameters.</p>
+              <p><b>Material Instance</b> — déclinaison d'un master qui ne modifie que des valeurs de paramètres, sans recompilation.</p>
+              <p><b>Material Instance Dynamic (MID)</b> — instance créée à l'exécution pour faire varier un paramètre en jeu.</p>
+              <p><b>Material Function</b> — sous-graphe réutilisable, appelé comme un nœud dans plusieurs matériaux.</p>
+              <p><b>ScalarParameter / VectorParameter</b> — valeurs exposées (nombre / couleur) pilotables par instance.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: la théorie des maps que tu branches ici.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux &amp; Shader Graph (Unity)</a>&nbsp;: l'équivalent Unity, pour comparer les logiques.</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage (Lumen)</a>&nbsp;: comment ces matériaux réagissent à la lumière temps réel.</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10 — Optimisation Unreal</a>&nbsp;: mesurer et réduire le coût de tes matériaux.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

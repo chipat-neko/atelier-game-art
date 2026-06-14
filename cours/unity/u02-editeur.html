@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U2 — Anatomie de l'éditeur Unity · Atelier Game Art</title>
+  <meta name="description" content="Les fenêtres de l'éditeur Unity (Scene, Game, Hierarchy, Inspector, Project, Console), la navigation et le modèle GameObject + Components.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Anatomie de l'éditeur Unity</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U2 — Anatomie de l'éditeur Unity</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unity/u01-installation.html">U1 — Installation</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Nommer les six fenêtres principales de l'éditeur (<b>Scene</b>, <b>Game</b>, <b>Hierarchy</b>, <b>Inspector</b>, <b>Project</b>, <b>Console</b>) et dire à quoi chacune sert vraiment.</li>
+                <li>Distinguer clairement la vue <b>Scene</b> (ton atelier d'édition) de la vue <b>Game</b> (ce que verra le joueur) — la confusion la plus fréquente des débutants.</li>
+                <li>Naviguer dans la Scene&nbsp;: <b>orbiter</b>, <b>panoramiquer</b>, <b>zoomer</b>, voler en <b>flythrough</b>, et recentrer un objet perdu avec <b>F</b> (Frame Selected).</li>
+                <li>Utiliser les <b>gizmos de transform</b> (W/E/R = déplacer / tourner / mettre à l'échelle) et comprendre la différence entre pivot <b>local</b> et <b>global</b>.</li>
+                <li>Expliquer le modèle fondateur d'Unity&nbsp;: un <b>GameObject</b> est un conteneur vide, ce sont les <b>Components</b> attachés qui lui donnent forme et comportement — la <b>composition</b> plutôt que l'héritage.</li>
+                <li>Comprendre le <b>Transform</b> (position/rotation/échelle + hiérarchie parent-enfant) et l'<b>héritage des transforms</b> quand on parente deux objets.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'éditeur Unity est ton poste de travail&nbsp;: tu vas y passer des centaines d'heures. Beaucoup de débutants le subissent comme une grille de fenêtres mystérieuses qu'on déplace au hasard&nbsp;; un professionnel, lui, sait exactement <b>où va l'information</b> et <b>quelle fenêtre interroger</b> pour répondre à chaque question. «&nbsp;Où est mon objet dans l'arbre&nbsp;?&nbsp;» → la Hierarchy. «&nbsp;Quelles sont ses propriétés&nbsp;?&nbsp;» → l'Inspector. «&nbsp;Ce fichier existe-t-il sur le disque&nbsp;?&nbsp;» → le Project. «&nbsp;Pourquoi ça plante&nbsp;?&nbsp;» → la Console. Maîtriser cette répartition, c'est gagner en vitesse et arrêter de chercher à tâtons.</p>
+            <p>Mais l'enjeu de cette leçon va plus loin que la disposition des panneaux. Unity repose sur un <b>modèle de données</b> précis — le couple <b>GameObject + Components</b> — qui structure absolument tout&nbsp;: un personnage, une lumière, une caméra, un déclencheur invisible, tout est un GameObject décoré de components. Si tu comprends ce modèle dès le départ, l'éditeur cesse d'être une boîte noire&nbsp;: chaque case de l'Inspector devient lisible, chaque tutoriel devient suivable, et tu sais <em>ajouter du comportement</em> à un objet au lieu de chercher un «&nbsp;bouton magique&nbsp;». C'est le socle conceptuel de toute la piste Unity&nbsp;; les leçons sur les <a href="../../cours/unity/u06-materiaux.html">matériaux</a>, l'<a href="../../cours/unity/u07-eclairage.html">éclairage</a> ou les <a href="../../cours/unity/u09-vfx.html">VFX</a> ne sont que des cas particuliers de «&nbsp;quel component j'attache à quel GameObject&nbsp;».</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les six fenêtres et leur rôle</h3>
+            <p>À l'ouverture d'un projet, Unity affiche une disposition par défaut. Chaque zone est une <b>fenêtre</b> (en réalité un onglet ancrable que tu peux déplacer). Voici les six qui comptent, et surtout <em>ce qu'elles répondent</em>.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Fenêtre</th><th>Répond à la question</th><th>Contenu</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Scene</b></td><td>«&nbsp;À quoi ressemble mon monde et comment je le manipule&nbsp;?&nbsp;»</td><td>Vue 3D <b>d'édition</b>, où tu places et déplaces les objets librement.</td></tr>
+                  <tr><td><b>Game</b></td><td>«&nbsp;Que verra réellement le joueur&nbsp;?&nbsp;»</td><td>Rendu vu par la <b>caméra du jeu</b>, en jouant.</td></tr>
+                  <tr><td><b>Hierarchy</b></td><td>«&nbsp;Quels objets composent la scène, et comment sont-ils imbriqués&nbsp;?&nbsp;»</td><td>Arbre textuel de tous les <b>GameObjects</b> de la scène ouverte.</td></tr>
+                  <tr><td><b>Inspector</b></td><td>«&nbsp;Quelles sont les propriétés de l'objet sélectionné&nbsp;?&nbsp;»</td><td>Liste des <b>components</b> de l'objet et de leurs réglages.</td></tr>
+                  <tr><td><b>Project</b></td><td>«&nbsp;Quels fichiers (assets) existent sur le disque&nbsp;?&nbsp;»</td><td>Le dossier <code>Assets/</code> du projet&nbsp;: modèles, textures, scripts, scènes…</td></tr>
+                  <tr><td><b>Console</b></td><td>«&nbsp;Que me dit Unity&nbsp;: erreurs, avertissements, messages&nbsp;?&nbsp;»</td><td>Journal des <b>logs</b>, warnings (jaunes) et erreurs (rouges).</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>Scene vs Game&nbsp;: la distinction capitale</h4>
+            <p>C'est <b>la</b> confusion à régler tout de suite. La vue <span class="term">Scene</span> est ton <b>atelier</b>&nbsp;: une caméra libre que tu déplaces à ta guise pour inspecter le monde sous tous les angles, sélectionner et bouger des objets. Elle affiche aussi des aides visuelles invisibles en jeu (icônes de lumières, contours de sélection, grilles, <em>gizmos</em>). La vue <span class="term">Game</span>, elle, montre <b>uniquement</b> ce que «&nbsp;filme&nbsp;» la caméra du jeu (le GameObject portant un component <b>Camera</b>), tel que le joueur le verra. Déplacer la vue Scene <b>ne déplace pas</b> la caméra du jeu&nbsp;: ce sont deux points de vue indépendants. Quand on appuie sur <b>Play</b>, la vue Game s'anime&nbsp;; la Scene reste un poste d'observation.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Une scène peut avoir plusieurs caméras</div>
+              <p>La vue Game affiche le rendu de la caméra active (celle dont le component Camera a la plus haute priorité, ou la seule présente). S'il n'y a <b>aucune</b> caméra dans la scène, la vue Game est vide et affiche «&nbsp;No Cameras Rendering&nbsp;». Ce n'est pas un bug&nbsp;: c'est juste qu'aucun œil ne regarde le monde. À l'inverse, la vue Scene n'a pas besoin de caméra de jeu pour fonctionner&nbsp;: elle possède sa propre caméra d'édition.</p>
+            </div>
+
+            <h4>Hierarchy et Project&nbsp;: scène vivante contre fichiers sur disque</h4>
+            <p>Autre distinction structurante. La <span class="term">Hierarchy</span> liste les objets <b>présents dans la scène actuellement ouverte</b> — une réalité <em>en mémoire</em>, momentanée. Le <span class="term">Project</span>, lui, reflète le <b>disque dur</b>&nbsp;: le contenu du dossier <code>Assets/</code> de ton projet (modèles importés, textures, matériaux, scripts, et les scènes elles-mêmes, qui sont des fichiers). Glisser un asset du Project vers la Hierarchy en crée une <b>instance</b> dans la scène&nbsp;; supprimer cette instance de la Hierarchy <b>n'efface pas</b> le fichier source du Project. Confondre les deux mène à des frayeurs inutiles («&nbsp;j'ai supprimé mon modèle&nbsp;!&nbsp;» — non, juste son instance dans la scène).</p>
+
+            <h4>L'Inspector&nbsp;: le contexte change tout</h4>
+            <p>L'<span class="term">Inspector</span> est <b>contextuel</b>&nbsp;: il affiche les propriétés de ce qui est <b>actuellement sélectionné</b>. Sélectionne un GameObject dans la Hierarchy → l'Inspector liste ses components. Sélectionne une texture dans le Project → l'Inspector montre les réglages d'import de cette texture. C'est la fenêtre que tu regarderas le plus, car c'est là qu'on règle <em>tout</em>. Le réflexe à prendre&nbsp;: «&nbsp;je veux modifier X, donc je sélectionne X et je lis l'Inspector&nbsp;».</p>
+
+            <h4>La Console&nbsp;: ne jamais la masquer</h4>
+            <p>La <span class="term">Console</span> reçoit trois types de messages&nbsp;: les <b>logs</b> (gris, informatifs), les <b>warnings</b> (jaunes, «&nbsp;ça marche mais attention&nbsp;») et les <b>erreurs</b> (rouges, «&nbsp;ça ne compile pas / ça plante&nbsp;»). Une erreur de compilation rouge <b>empêche d'entrer en Play</b>&nbsp;: tant qu'elle est là, le moteur refuse de lancer le jeu. Le débutant qui ignore la Console passe des minutes à se demander «&nbsp;pourquoi rien ne se passe&nbsp;» alors que la réponse y est écrite en rouge. Garde-la visible.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 380" role="img" aria-label="Carte de la disposition par défaut de l'éditeur Unity : Hierarchy à gauche, Scene et Game au centre, Inspector à droite, Project et Console en bas">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Disposition par défaut de l'éditeur Unity</text>
+                <text x="320" y="40" text-anchor="middle" class="svg-dim" font-size="10">chaque zone est un onglet ancrable, déplaçable et redimensionnable</text>
+
+                <!-- barre d'outils -->
+                <rect x="20" y="52" width="600" height="26" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <circle cx="300" cy="65" r="7" fill="#5ad19a"/><text x="300" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#0b0f14">▶</text>
+                <text x="320" y="69" class="svg-dim" font-size="9">⏸ ⏭  ← boutons Play / Pause / Step (lancent le jeu dans la vue Game)</text>
+                <text x="34" y="69" class="svg-dim" font-size="9">↖ ✥ ↻ ⤢  (Q W E R)</text>
+
+                <!-- Hierarchy (gauche) -->
+                <rect x="20" y="86" width="138" height="184" rx="6" fill="#59b0ff" fill-opacity="0.10" stroke="#59b0ff"/>
+                <text x="89" y="104" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Hierarchy</text>
+                <text x="89" y="120" text-anchor="middle" class="svg-dim" font-size="8.5">arbre des objets</text>
+                <text x="32" y="142" class="svg-text" font-size="9">▸ Main Camera</text>
+                <text x="32" y="158" class="svg-text" font-size="9">▸ Directional Light</text>
+                <text x="32" y="174" class="svg-text" font-size="9">▾ Player</text>
+                <text x="44" y="190" class="svg-dim" font-size="9">↳ Arme (enfant)</text>
+                <text x="32" y="206" class="svg-text" font-size="9">▸ Sol</text>
+
+                <!-- Scene / Game (centre) -->
+                <rect x="166" y="86" width="296" height="184" rx="6" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a"/>
+                <rect x="172" y="92" width="56" height="18" rx="4" fill="#5ad19a" fill-opacity="0.30" stroke="#5ad19a"/>
+                <text x="200" y="105" text-anchor="middle" class="svg-text" font-size="9.5" font-weight="700">Scene</text>
+                <rect x="232" y="92" width="56" height="18" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <text x="260" y="105" text-anchor="middle" class="svg-dim" font-size="9.5">Game</text>
+                <text x="314" y="106" class="svg-dim" font-size="8.5">← onglets superposés</text>
+                <!-- mini-scène -->
+                <line x1="180" y1="240" x2="450" y2="240" stroke="#313c4c" stroke-width="1"/>
+                <polygon points="300,150 340,210 260,210" fill="#5ad19a" fill-opacity="0.35" stroke="#5ad19a"/>
+                <circle cx="300" cy="150" r="4" fill="#f2b441"/>
+                <text x="314" y="124" class="svg-text" font-size="9" font-weight="700">vue d'ÉDITION 3D</text>
+                <text x="172" y="262" class="svg-dim" font-size="8.5">caméra libre · gizmos · icônes invisibles en jeu</text>
+
+                <!-- Inspector (droite) -->
+                <rect x="470" y="86" width="150" height="184" rx="6" fill="#c89bff" fill-opacity="0.10" stroke="#c89bff"/>
+                <text x="545" y="104" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Inspector</text>
+                <text x="545" y="120" text-anchor="middle" class="svg-dim" font-size="8.5">propriétés du sélectionné</text>
+                <rect x="480" y="130" width="130" height="22" rx="3" class="svg-surface" stroke="#313c4c"/>
+                <text x="488" y="145" class="svg-dim" font-size="8.5">Transform</text>
+                <rect x="480" y="156" width="130" height="22" rx="3" class="svg-surface" stroke="#313c4c"/>
+                <text x="488" y="171" class="svg-dim" font-size="8.5">Mesh Renderer</text>
+                <rect x="480" y="182" width="130" height="22" rx="3" class="svg-surface" stroke="#313c4c"/>
+                <text x="488" y="197" class="svg-dim" font-size="8.5">Collider</text>
+                <rect x="480" y="216" width="130" height="20" rx="4" fill="#c89bff" fill-opacity="0.25" stroke="#c89bff"/>
+                <text x="545" y="230" text-anchor="middle" class="svg-text" font-size="8.5">+ Add Component</text>
+
+                <!-- Project / Console (bas) -->
+                <rect x="20" y="278" width="380" height="86" rx="6" fill="#f2b441" fill-opacity="0.10" stroke="#f2b441"/>
+                <text x="210" y="296" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Project</text>
+                <text x="210" y="311" text-anchor="middle" class="svg-dim" font-size="8.5">les ASSETS sur le disque (dossier Assets/)</text>
+                <rect x="34" y="320" width="40" height="34" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <rect x="82" y="320" width="40" height="34" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <rect x="130" y="320" width="40" height="34" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <text x="54" y="340" text-anchor="middle" class="svg-dim" font-size="13">📁</text>
+                <text x="102" y="340" text-anchor="middle" class="svg-dim" font-size="13">🖼</text>
+                <text x="150" y="340" text-anchor="middle" class="svg-dim" font-size="13">📄</text>
+
+                <rect x="408" y="278" width="212" height="86" rx="6" fill="#ff6b6b" fill-opacity="0.08" stroke="#ff6b6b"/>
+                <text x="514" y="296" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Console</text>
+                <text x="514" y="311" text-anchor="middle" class="svg-dim" font-size="8.5">logs · warnings · erreurs</text>
+                <circle cx="420" cy="326" r="4" fill="#ff6b6b"/><text x="430" y="329" class="svg-dim" font-size="8.5">erreur (bloque le Play)</text>
+                <circle cx="420" cy="342" r="4" fill="#f2b441"/><text x="430" y="345" class="svg-dim" font-size="8.5">warning</text>
+                <circle cx="420" cy="358" r="4" fill="#8a93a3"/><text x="430" y="361" class="svg-dim" font-size="8.5">log informatif</text>
+              </svg>
+              <figcaption>La carte mentale à mémoriser&nbsp;: <b>Hierarchy</b> (arbre des objets) à gauche, <b>Scene/Game</b> au centre (édition vs rendu joueur), <b>Inspector</b> (propriétés) à droite, <b>Project</b> (disque) et <b>Console</b> (messages) en bas. Tu peux tout réorganiser&nbsp;; cette disposition n'est qu'un point de départ.</figcaption>
+            </figure>
+
+            <h3>2. Naviguer dans la vue Scene</h3>
+            <p>Savoir bouger la caméra d'édition rapidement est ce qui sépare un débutant lent d'un artiste fluide. Il y a deux familles de navigation.</p>
+            <h4>Navigation «&nbsp;à la main&nbsp;» (autour d'un point)</h4>
+            <ul>
+              <li><b>Orbiter</b> (tourner autour) — <code>Alt</code> + clic gauche maintenu, puis bouge la souris. La caméra pivote autour du point qu'elle regarde. C'est le geste de base pour examiner un objet sous tous les angles.</li>
+              <li><b>Panoramiquer</b> (translater latéralement, <em>pan</em>) — clic <b>molette</b> maintenu (ou <code>Alt</code> + clic du milieu). La vue glisse sans tourner, comme si tu poussais une feuille sur une table.</li>
+              <li><b>Zoomer</b> — molette de défilement (ou <code>Alt</code> + clic droit). On se rapproche ou s'éloigne du point visé.</li>
+            </ul>
+            <h4>Le mode «&nbsp;flythrough&nbsp;» (voler en première personne)</h4>
+            <p>Maintiens le <b>clic droit</b> dans la vue Scene&nbsp;: la caméra passe en mode <span class="term">flythrough</span> (survol libre). Tu te déplaces alors avec les touches <code>ZQSD</code> (clavier français AZERTY) ou <code>WASD</code> (clavier QWERTY), exactement comme dans un FPS, et <code>E</code>/<code>Q</code> pour monter/descendre. La <b>molette</b>, pendant ce temps, ajuste la <b>vitesse</b> de vol. C'est la façon la plus rapide de traverser une grande scène ou un niveau entier. On relâche le clic droit pour reprendre la navigation classique.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>La touche qui sauve&nbsp;: F (Frame Selected)</div>
+              <p>Sélectionne un objet (dans la Hierarchy ou la Scene), survole la vue Scene et appuie sur <b>F</b>&nbsp;: la caméra <b>recadre</b> instantanément sur cet objet, peu importe où tu t'étais égaré. C'est le remède universel à «&nbsp;j'ai perdu mon objet, l'écran est vide&nbsp;». Double-cliquer sur l'objet dans la Hierarchy fait la même chose. Retiens <b>F</b> avant tout le reste&nbsp;: tu l'utiliseras des centaines de fois par jour.</p>
+            </div>
+
+            <h3>3. Les outils de transform et leurs gizmos</h3>
+            <p>Un <span class="term">gizmo</span> est une poignée visuelle affichée dans la Scene pour manipuler un objet à la souris (les flèches colorées, l'anneau, le cube…). La barre d'outils en haut à gauche propose les outils de manipulation, chacun avec un raccourci&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Touche</th><th>Outil</th><th>Gizmo affiché</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Q</b></td><td>Hand (main)</td><td>—</td><td>Panoramique la vue (ne touche pas l'objet).</td></tr>
+                  <tr><td><b>W</b></td><td>Move (déplacer)</td><td>3 flèches X/Y/Z</td><td>Déplace l'objet le long d'un axe (position).</td></tr>
+                  <tr><td><b>E</b></td><td>Rotate (tourner)</td><td>3 anneaux</td><td>Fait pivoter l'objet (rotation).</td></tr>
+                  <tr><td><b>R</b></td><td>Scale (échelle)</td><td>3 poignées cubiques</td><td>Agrandit/rétrécit l'objet (scale).</td></tr>
+                  <tr><td><b>T</b></td><td>Rect</td><td>cadre 2D</td><td>Surtout pour l'UI et le 2D.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Les couleurs des axes sont une convention universelle qu'il faut graver&nbsp;: <b>X = rouge</b>, <b>Y = vert</b>, <b>Z = bleu</b> (moyen mnémotechnique anglais&nbsp;: <em>RGB = XYZ</em>). Tirer sur la flèche rouge déplace l'objet sur X, etc.</p>
+
+            <h4>Pivot local contre global, centre contre pivot</h4>
+            <p>Deux petits boutons en haut à gauche changent radicalement le comportement des gizmos&nbsp;:</p>
+            <ul>
+              <li><b>Global</b> vs <b>Local</b> — en <b>Global</b>, les flèches s'alignent sur les axes du monde (X toujours horizontal). En <b>Local</b>, elles s'alignent sur l'<b>orientation propre de l'objet</b>&nbsp;: si l'objet est tourné à 45°, ses flèches le sont aussi. Indispensable pour déplacer un objet «&nbsp;vers l'avant&nbsp;» selon <em>sa</em> direction, pas celle du monde.</li>
+              <li><b>Pivot</b> vs <b>Center</b> — détermine le point autour duquel s'opère la transformation&nbsp;: le <b>point de pivot réel</b> de l'objet (souvent défini en modélisation), ou le <b>centre géométrique</b> de la sélection. Crucial dès qu'on sélectionne plusieurs objets à la fois.</li>
+            </ul>
+
+            <h3>4. Le modèle GameObject + Components&nbsp;: le cœur d'Unity</h3>
+            <p>On arrive au concept le plus important de toute la piste. Dans Unity, <b>tout ce qui existe dans une scène est un <span class="term">GameObject</span></b>&nbsp;: un personnage, une lumière, une caméra, un mur, une zone de déclenchement invisible. Mais — et c'est contre-intuitif — un GameObject en lui-même est un <b>conteneur quasiment vide</b>. Il n'a ni forme, ni couleur, ni comportement propre. Il n'a qu'une chose garantie&nbsp;: un nom, et un component <b>Transform</b> (on y revient).</p>
+            <p>Ce sont les <span class="term">Components</span> (composants) <b>attachés</b> au GameObject qui lui donnent tout&nbsp;: son apparence, sa physique, son comportement. Un component est un module fonctionnel autonome qu'on «&nbsp;clipse&nbsp;» sur le conteneur. Les plus courants&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Component</th><th>Apporte au GameObject…</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Transform</b></td><td>Sa position, sa rotation, son échelle, et sa place dans la hiérarchie. <b>Toujours présent</b>, impossible à retirer.</td></tr>
+                  <tr><td><b>Mesh Filter</b></td><td>La <em>donnée</em> de maillage&nbsp;: <em>quelle forme</em> (le mesh) cet objet possède.</td></tr>
+                  <tr><td><b>Mesh Renderer</b></td><td>Le <em>rendu</em>&nbsp;: dessine le mesh à l'écran avec un ou plusieurs <b>matériaux</b>. Sans lui, l'objet est invisible.</td></tr>
+                  <tr><td><b>Collider</b></td><td>Une forme de collision pour la physique&nbsp;: l'objet devient «&nbsp;solide&nbsp;» ou détectable.</td></tr>
+                  <tr><td><b>Light</b></td><td>Transforme l'objet en source de lumière.</td></tr>
+                  <tr><td><b>Camera</b></td><td>Transforme l'objet en œil&nbsp;: ce qu'il «&nbsp;voit&nbsp;» s'affiche dans la vue Game.</td></tr>
+                  <tr><td><b>Script (MonoBehaviour)</b></td><td>Un comportement sur mesure que tu programmes en C# (déplacer, compter des points…).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>L'analogie la plus parlante est le <b>smartphone vierge</b>&nbsp;: l'appareil de base ne fait pas grand-chose. C'est en <b>installant des applications</b> (les components) qu'il sait prendre des photos, naviguer, jouer de la musique. Le GameObject est le téléphone&nbsp;; les components sont les apps. Une lumière n'est qu'un GameObject + un component Light&nbsp;; un cube visible n'est qu'un GameObject + Mesh Filter + Mesh Renderer.</p>
+
+            <h4>Composition plutôt qu'héritage&nbsp;: pourquoi ce choix&nbsp;?</h4>
+            <p>Ce modèle s'appelle la <span class="term">composition</span>. En programmation classique, on aurait pu imaginer une grande hiérarchie de classes (un <code>Ennemi</code> qui hérite de <code>Personnage</code> qui hérite d'<code>Objet</code>…). Le problème de cet <b>héritage</b>&nbsp;: il est rigide. Que faire d'un coffre qui doit aussi être une source de lumière <em>et</em> un déclencheur de piège&nbsp;? Avec l'héritage, on se retrouve coincé. Avec la composition, on <b>empile simplement les components voulus</b> sur le même GameObject&nbsp;: un Mesh Renderer (le coffre visible) + un Light (la lueur) + un Collider en mode trigger (le piège) + un script. On assemble des briques au lieu de subir un arbre figé. C'est souple, lisible, et c'est tout l'éditeur Unity qui en découle&nbsp;: l'Inspector n'est rien d'autre que <b>la pile de components</b> de l'objet sélectionné, qu'on enrichit avec le bouton <b>Add Component</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 400" role="img" aria-label="Vue éclatée d'un GameObject montrant ses components empilés : Transform toujours présent, Mesh Filter, Mesh Renderer, Collider et Script">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Un GameObject « éclaté » : le conteneur et ses components</text>
+
+                <!-- conteneur GameObject -->
+                <rect x="36" y="44" width="180" height="316" rx="10" fill="none" stroke="#59b0ff" stroke-width="2" stroke-dasharray="6 4"/>
+                <text x="126" y="64" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">GameObject « Player »</text>
+                <text x="126" y="80" text-anchor="middle" class="svg-dim" font-size="9">conteneur quasi vide</text>
+                <text x="126" y="350" text-anchor="middle" class="svg-dim" font-size="8.5">= juste un nom + des components</text>
+
+                <!-- pile de components dans le conteneur -->
+                <rect x="50" y="92" width="152" height="40" rx="6" fill="#5ad19a" fill-opacity="0.18" stroke="#5ad19a"/>
+                <text x="60" y="110" class="svg-text" font-size="10.5" font-weight="700">Transform</text>
+                <text x="60" y="125" class="svg-dim" font-size="8">position · rotation · échelle</text>
+
+                <rect x="50" y="138" width="152" height="40" rx="6" fill="#59b0ff" fill-opacity="0.16" stroke="#59b0ff"/>
+                <text x="60" y="156" class="svg-text" font-size="10.5" font-weight="700">Mesh Filter</text>
+                <text x="60" y="171" class="svg-dim" font-size="8">QUELLE forme (le mesh)</text>
+
+                <rect x="50" y="184" width="152" height="40" rx="6" fill="#c89bff" fill-opacity="0.16" stroke="#c89bff"/>
+                <text x="60" y="202" class="svg-text" font-size="10.5" font-weight="700">Mesh Renderer</text>
+                <text x="60" y="217" class="svg-dim" font-size="8">DESSINE (+ matériaux)</text>
+
+                <rect x="50" y="230" width="152" height="40" rx="6" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="60" y="248" class="svg-text" font-size="10.5" font-weight="700">Collider</text>
+                <text x="60" y="263" class="svg-dim" font-size="8">forme de collision (physique)</text>
+
+                <rect x="50" y="276" width="152" height="40" rx="6" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="60" y="294" class="svg-text" font-size="10.5" font-weight="700">Script (C#)</text>
+                <text x="60" y="309" class="svg-dim" font-size="8">comportement sur mesure</text>
+
+                <!-- flèches d'éclatement vers la droite -->
+                <defs>
+                  <marker id="ec" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#8a93a3"/></marker>
+                </defs>
+                <line x1="206" y1="112" x2="276" y2="112" stroke="#8a93a3" stroke-width="1.4" marker-end="url(#ec)"/>
+                <line x1="206" y1="204" x2="276" y2="204" stroke="#8a93a3" stroke-width="1.4" marker-end="url(#ec)"/>
+                <line x1="206" y1="296" x2="276" y2="296" stroke="#8a93a3" stroke-width="1.4" marker-end="url(#ec)"/>
+
+                <!-- ce que chaque component produit -->
+                <rect x="286" y="92" width="334" height="86" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="300" y="112" class="svg-text" font-size="10.5" font-weight="700">Transform → place l'objet dans le monde</text>
+                <text x="300" y="132" class="svg-dim" font-size="9">Position (0, 1, 0)  ·  Rotation (0, 90, 0)  ·  Scale (1, 1, 1)</text>
+                <text x="300" y="152" class="svg-dim" font-size="9">+ définit le lien parent ↔ enfant dans la Hierarchy</text>
+                <text x="300" y="170" class="svg-dim" font-size="9">SEUL component obligatoire, jamais supprimable</text>
+
+                <rect x="286" y="184" width="334" height="86" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="300" y="204" class="svg-text" font-size="10.5" font-weight="700">Mesh Filter + Mesh Renderer → l'objet est visible</text>
+                <text x="300" y="224" class="svg-dim" font-size="9">Mesh Filter porte la géométrie ; le Renderer la dessine</text>
+                <polygon points="560,222 590,256 530,256" fill="#5ad19a" fill-opacity="0.4" stroke="#5ad19a"/>
+                <text x="300" y="244" class="svg-dim" font-size="9">sans Renderer = présent mais INVISIBLE</text>
+                <text x="300" y="262" class="svg-dim" font-size="9">le matériau (couleur/texture) est porté par le Renderer</text>
+
+                <rect x="286" y="276" width="334" height="86" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="300" y="296" class="svg-text" font-size="10.5" font-weight="700">Collider + Script → l'objet réagit</text>
+                <text x="300" y="316" class="svg-dim" font-size="9">Collider : devient solide / détectable (physique)</text>
+                <text x="300" y="334" class="svg-dim" font-size="9">Script : tu codes le « quoi faire » (bouger, compter…)</text>
+                <rect x="300" y="342" width="306" height="14" rx="4" fill="#59b0ff" fill-opacity="0.18" stroke="#59b0ff"/>
+                <text x="453" y="352" text-anchor="middle" class="svg-dim" font-size="8.5">on EMPILE les briques → composition, pas héritage</text>
+              </svg>
+              <figcaption>Le même GameObject, vu de l'intérieur. Le conteneur (cadre bleu pointillé) ne porte qu'un <b>Transform</b> obligatoire&nbsp;; chaque autre brique (Mesh Filter, Renderer, Collider, Script) ajoute une capacité. C'est exactement ce que tu vois dans l'<b>Inspector</b> de l'objet&nbsp;: une pile de components.</figcaption>
+            </figure>
+
+            <h3>5. Le Transform et la hiérarchie parent-enfant</h3>
+            <p>Le <span class="term">Transform</span> mérite une attention spéciale, car c'est le seul component <b>obligatoire</b> et il porte deux informations distinctes.</p>
+            <p>D'abord, il définit la <b>position</b> (où, en X/Y/Z), la <b>rotation</b> (orientation) et l'<b>échelle</b> (scale, taille relative) de l'objet. Ces valeurs sont éditables directement dans l'Inspector ou via les gizmos W/E/R.</p>
+            <p>Ensuite, et c'est plus subtil, le Transform porte la <b>relation de parenté</b>. Dans la Hierarchy, tu peux glisser un objet <em>sur</em> un autre pour en faire son <b>enfant</b>. L'objet enfant hérite alors des transformations du parent&nbsp;: c'est l'<span class="term">héritage des transforms</span>. Si tu déplaces, tournes ou redimensionnes le parent, <b>tous ses enfants suivent</b>, comme s'ils étaient soudés. Les coordonnées de l'enfant deviennent <b>relatives</b> à son parent (on parle d'espace <em>local</em>).</p>
+            <p>L'exemple canonique&nbsp;: un personnage (parent) qui tient une arme (enfant). Quand le personnage marche, l'arme se déplace avec sa main sans qu'on ait à l'animer séparément. Autre usage très courant&nbsp;: regrouper des dizaines d'objets sous un GameObject vide servant de «&nbsp;dossier&nbsp;» pour ranger la scène (par exemple un parent <code>Décor</code> contenant tous les murs). Déplacer le parent déplace tout le groupe d'un bloc.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>L'échelle (scale) se multiplie le long de la hiérarchie</div>
+              <p>Comme l'enfant hérite de l'échelle du parent, mettre un parent à l'échelle 2 puis un enfant à l'échelle 2 donne un enfant <b>4 fois</b> plus grand que d'origine. Pire, une échelle <b>non uniforme</b> sur un parent tourné peut déformer les enfants de façon inattendue (cisaillement). Règle d'or&nbsp;: garde le <b>scale à (1, 1, 1)</b> autant que possible et règle la vraie taille des objets en amont, dans ton logiciel de modélisation. On reverra ce piège d'échelle à l'import dans <a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>.</p>
+            </div>
+
+            <h3>6. Prefabs et layout&nbsp;: deux notions à connaître</h3>
+            <p>Un <span class="term">Prefab</span> (préfabriqué) est un <b>modèle réutilisable</b> de GameObject — avec tous ses components et ses enfants — sauvegardé comme asset dans le Project. On le détaillera plus tard, mais retiens l'idée&nbsp;: tu configures un objet une fois (par exemple un ennemi complet), tu le transformes en Prefab, puis tu en déposes 50 copies (<b>instances</b>) dans ta scène. Si tu modifies le Prefab source, <b>toutes les instances</b> se mettent à jour d'un coup. C'est l'outil anti-répétition par excellence.</p>
+            <p>Enfin, la <b>disposition des fenêtres est entièrement personnalisable</b>&nbsp;: tu peux déplacer, ancrer, dédoubler ou flotter chaque onglet, puis sauvegarder ta disposition. Le menu <span class="menu-path">Window<span class="arrow">▸</span>Layouts</span> propose des présélections (Default, 2 by 3, Wide…) et permet d'enregistrer la tienne. Si tu «&nbsp;casses&nbsp;» ton interface, <span class="menu-path">Window<span class="arrow">▸</span>Layouts<span class="arrow">▸</span>Default</span> remet tout en place&nbsp;: aucune fenêtre n'est jamais perdue.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif concret&nbsp;: <b>créer un GameObject vide, le rendre visible en lui ajoutant un mesh, observer sa pile de components dans l'Inspector, puis parenter deux objets</b> pour voir l'héritage des transforms. Suis chaque étape en lisant <em>ce qui se passe</em>.</p>
+            <ol>
+              <li><b>Créer un GameObject vide.</b> Dans la Hierarchy, fais un clic droit puis <span class="menu-path">Create Empty</span> (ou menu <span class="menu-path">GameObject<span class="arrow">▸</span>Create Empty</span>). <em>Ce qui se passe&nbsp;:</em> un objet nommé «&nbsp;GameObject&nbsp;» apparaît dans l'arbre. Sélectionne-le et regarde l'Inspector&nbsp;: il ne contient <b>qu'un Transform</b>. Dans la Scene, il est invisible — c'est normal, rien ne le dessine encore.</li>
+              <li><b>Le renommer.</b> Double-clique son nom dans la Hierarchy et tape <code>MonConteneur</code>. <em>Ce qui se passe&nbsp;:</em> tu prends l'habitude de nommer tes objets — un arbre rempli de «&nbsp;GameObject (1)&nbsp;», «&nbsp;GameObject (2)&nbsp;» devient vite ingérable.</li>
+              <li><b>Ajouter une forme via une primitive.</b> Le plus simple pour voir quelque chose&nbsp;: clic droit dans la Hierarchy → <span class="menu-path">3D Object<span class="arrow">▸</span>Cube</span>. <em>Ce qui se passe&nbsp;:</em> Unity crée un nouveau GameObject «&nbsp;Cube&nbsp;» <b>déjà garni</b> des components Transform + <b>Mesh Filter</b> (la forme cube) + <b>Mesh Renderer</b> (le rendu, avec un matériau par défaut) + un <b>Box Collider</b>. Le cube est visible dans la Scene&nbsp;: voilà la différence entre un objet vide et un objet «&nbsp;équipé&nbsp;».</li>
+              <li><b>Lire l'Inspector du Cube.</b> Sélectionne le Cube et parcours sa pile de components du haut vers le bas. <em>Ce qui se passe&nbsp;:</em> tu retrouves exactement le schéma «&nbsp;éclaté&nbsp;» vu plus haut. Décoche la case à gauche de <b>Mesh Renderer</b>&nbsp;: le cube <b>disparaît</b> de la Scene alors qu'il est toujours là dans la Hierarchy. Tu viens de prouver que c'est le Renderer qui rend visible. Recoche-la.</li>
+              <li><b>Ajouter un component à la main.</b> Toujours sur le Cube, clique <span class="menu-path">Add Component</span> en bas de l'Inspector, tape «&nbsp;Light&nbsp;» et choisis <span class="menu-path">Rendering<span class="arrow">▸</span>Light</span>. <em>Ce qui se passe&nbsp;:</em> le cube devient <b>aussi</b> une source de lumière. Un seul GameObject, plusieurs capacités empilées&nbsp;: c'est la composition en action.</li>
+              <li><b>Recentrer si tu te perds.</b> Orbite (<code>Alt</code> + clic gauche) et zoome jusqu'à perdre le cube de vue. Puis, le Cube sélectionné, survole la Scene et appuie sur <b>F</b>. <em>Ce qui se passe&nbsp;:</em> la caméra recadre net sur le cube. Mémorise ce réflexe.</li>
+              <li><b>Déplacer avec le gizmo.</b> Appuie sur <b>W</b> (Move)&nbsp;: trois flèches X/Y/Z apparaissent. Tire la flèche <b>verte</b> (Y) vers le haut. <em>Ce qui se passe&nbsp;:</em> le cube monte&nbsp;; sa valeur <code>Position Y</code> dans l'Inspector augmente en temps réel. Essaie aussi <b>E</b> (Rotate) et <b>R</b> (Scale).</li>
+              <li><b>Parenter deux objets.</b> Crée une <span class="menu-path">3D Object<span class="arrow">▸</span>Sphere</span>. Dans la Hierarchy, <b>glisse la Sphere sur le Cube</b> et relâche. <em>Ce qui se passe&nbsp;:</em> la Sphere devient <b>enfant</b> du Cube (elle apparaît indentée sous lui, avec un chevron de repli). Sélectionne maintenant le Cube et déplace-le avec W&nbsp;: la Sphere <b>suit</b>. Tu observes l'héritage des transforms en direct.</li>
+              <li><b>Comparer Scene et Game.</b> Clique l'onglet <span class="menu-path">Game</span>. <em>Ce qui se passe&nbsp;:</em> tu vois la scène <b>du point de vue de la Main Camera</b>, sans gizmos ni icônes. Reviens sur <span class="menu-path">Scene</span>&nbsp;: tu retrouves ton atelier d'édition. Deux points de vue, un seul monde.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je bouge la caméra mais «&nbsp;le jeu&nbsp;» ne change pas, ou inversement&nbsp;: je règle un cadrage qui n'apparaît pas en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion entre la vue <b>Scene</b> (édition libre) et la vue <b>Game</b> (caméra du joueur)&nbsp;: ce sont deux points de vue indépendants.</div>
+                <div class="pi-fix"><b>Correction</b>Pour cadrer le jeu, déplace le <b>GameObject Camera</b>, pas la vue Scene. Vérifie le résultat dans l'onglet <b>Game</b>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet existe dans la Hierarchy mais reste invisible dans la Scene et en Game.</div>
+                <div class="pi-cause"><b>Cause</b>Aucun <b>Mesh Renderer</b> (objet vide), Renderer désactivé, ou aucun matériau&nbsp;; parfois l'objet est juste hors champ.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute Mesh Filter + Mesh Renderer (ou utilise une primitive), vérifie que la case du Renderer est cochée, et fais <b>F</b> pour recadrer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai «&nbsp;perdu&nbsp;» un objet&nbsp;: il est listé dans la Hierarchy mais introuvable à l'écran.</div>
+                <div class="pi-cause"><b>Cause</b>Il a été déplacé très loin (Transform à des coordonnées énormes) ou la caméra d'édition s'est égarée.</div>
+                <div class="pi-fix"><b>Correction</b>Sélectionne-le dans la Hierarchy, survole la Scene et appuie sur <b>F</b> (ou double-clic dans la Hierarchy)&nbsp;: la vue se recadre dessus.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes objets importés sont géants ou minuscules, et les enfants se déforment quand je bouge le parent.</div>
+                <div class="pi-cause"><b>Cause</b>Échelle (scale) non figée&nbsp;: valeurs différentes de (1,1,1) qui se <b>multiplient</b> le long de la hiérarchie, parfois aggravées par l'échelle d'import.</div>
+                <div class="pi-fix"><b>Correction</b>Garde le scale à (1,1,1), règle la taille en amont. Pour l'import, voir <a href="../../cours/unity/u05-import-assets.html">U5</a> (Scale Factor du FBX).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je modifie un objet posé dans la scène, mais les autres copies du même prefab ne changent pas (ou changent toutes alors que je voulais une seule).</div>
+                <div class="pi-cause"><b>Cause</b>Confusion entre éditer une <b>instance</b> (override local) et éditer le <b>Prefab source</b> (qui propage à toutes les instances).</div>
+                <div class="pi-fix"><b>Correction</b>Pour changer toutes les copies&nbsp;: ouvre le Prefab (Open Prefab) et édite la source. Pour une seule&nbsp;: modifie l'instance, l'override reste local.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'appuie sur Play et rien ne se lance, ou le jeu se comporte bizarrement sans message visible.</div>
+                <div class="pi-cause"><b>Cause</b>Une <b>erreur rouge</b> dans la Console (qui bloque le Play) que je n'ai pas regardée, ou la Console est masquée.</div>
+                <div class="pi-fix"><b>Correction</b>Ouvre la <b>Console</b> (<span class="menu-path">Window<span class="arrow">▸</span>General<span class="arrow">▸</span>Console</span>), lis le message rouge, corrige-le avant de relancer.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Recompose la chaîne complète «&nbsp;conteneur → objet équipé → hiérarchie&nbsp;» dans un projet neuf, puis prouve que tu as compris le modèle&nbsp;:</p>
+              <ol>
+                <li>Crée un <b>GameObject vide</b> nommé <code>Vaisseau</code> via <span class="menu-path">GameObject<span class="arrow">▸</span>Create Empty</span>, et constate dans l'Inspector qu'il ne porte <b>qu'un Transform</b>.</li>
+                <li>Crée deux primitives&nbsp;: un <b>Cube</b> (le corps) et une <b>Sphere</b> (le cockpit) via <span class="menu-path">3D Object</span>, puis <b>parente-les</b> au <code>Vaisseau</code> en les glissant dessus dans la Hierarchy.</li>
+                <li>Déplace, tourne et redimensionne le <code>Vaisseau</code> (parent) avec <b>W / E / R</b> et vérifie que les deux enfants suivent.</li>
+                <li>Sur le Cube, <b>désactive le Mesh Renderer</b> et observe qu'il disparaît, puis <b>réactive-le</b>. Ajoute-lui un component <b>Light</b> via <span class="menu-path">Add Component</span>.</li>
+                <li>Bascule entre les onglets <b>Scene</b> et <b>Game</b> et écris deux phrases expliquant la différence que tu observes.</li>
+                <li>Égare volontairement la vue, puis recentre sur le <code>Vaisseau</code> avec <b>F</b>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le <code>Vaisseau</code> apparaît dans la Hierarchy avec le Cube et la Sphere <b>indentés en dessous</b> (enfants).</li>
+                  <li>Déplacer le parent déplace les deux enfants <b>ensemble</b>&nbsp;; tu peux l'expliquer par l'<b>héritage des transforms</b>.</li>
+                  <li>Tu sais montrer que le <b>Mesh Renderer</b> est ce qui rend le Cube visible (en le désactivant/réactivant).</li>
+                  <li>Le Cube porte désormais au moins <b>trois components</b> (Transform, Mesh Renderer, Light), preuve de la <b>composition</b>.</li>
+                  <li>Ton explication distingue correctement la vue <b>Scene</b> (édition) de la vue <b>Game</b> (caméra du joueur).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Six fenêtres, six questions&nbsp;: <b>Scene</b> (édition 3D), <b>Game</b> (vue joueur), <b>Hierarchy</b> (arbre des objets), <b>Inspector</b> (propriétés du sélectionné), <b>Project</b> (fichiers sur disque), <b>Console</b> (logs/erreurs).</li>
+                <li>La <b>Scene</b> est ton atelier&nbsp;; la <b>Game</b> est l'œil de la caméra du jeu. Ne les confonds jamais.</li>
+                <li>Navigation&nbsp;: orbiter (<code>Alt</code>+clic gauche), pan (clic molette), zoom (molette), flythrough (clic droit + ZQSD/WASD), et surtout <b>F</b> pour recadrer un objet perdu.</li>
+                <li>Gizmos&nbsp;: <b>W</b>=déplacer, <b>E</b>=tourner, <b>R</b>=échelle&nbsp;; axes <b>X rouge, Y vert, Z bleu</b>&nbsp;; bascule <b>Global/Local</b> et <b>Pivot/Center</b>.</li>
+                <li>Un <b>GameObject</b> est un conteneur quasi vide&nbsp;; ce sont ses <b>Components</b> (Transform obligatoire, Mesh Filter/Renderer, Collider, Light, Camera, scripts) qui lui donnent forme et comportement&nbsp;: <b>composition, pas héritage</b>.</li>
+                <li>Le <b>Transform</b> porte position/rotation/échelle <em>et</em> la parenté&nbsp;: un enfant <b>hérite des transforms</b> de son parent (l'arme suit la main).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Vue Scene</b> — fenêtre d'édition 3D avec caméra libre, où l'on place et manipule les objets&nbsp;; affiche aussi des aides invisibles en jeu.</p>
+              <p><b>Vue Game</b> — rendu de la scène vu par la caméra du jeu, tel que le joueur le percevra une fois en Play.</p>
+              <p><b>Hierarchy</b> — arbre listant tous les GameObjects de la scène ouverte, avec leurs relations parent-enfant.</p>
+              <p><b>Inspector</b> — fenêtre contextuelle affichant les propriétés (la pile de components) de l'élément sélectionné.</p>
+              <p><b>Project</b> — fenêtre reflétant le dossier <code>Assets/</code> sur le disque&nbsp;: modèles, textures, scripts, scènes.</p>
+              <p><b>Console</b> — journal des messages d'Unity&nbsp;: logs (gris), warnings (jaunes) et erreurs (rouges, bloquantes).</p>
+              <p><b>GameObject</b> — conteneur de base de toute entité d'une scène&nbsp;; vide par lui-même, il n'a de sens que par les components attachés.</p>
+              <p><b>Component (composant)</b> — module fonctionnel clipsé sur un GameObject qui lui apporte une capacité (rendu, physique, lumière, comportement…).</p>
+              <p><b>Transform</b> — component obligatoire portant position, rotation, échelle et la relation parent-enfant d'un GameObject.</p>
+              <p><b>Composition</b> — modèle d'Unity consistant à empiler des components plutôt qu'à hériter d'une classe&nbsp;: souple et combinable.</p>
+              <p><b>Gizmo</b> — poignée visuelle dans la Scene (flèches, anneaux, cubes) servant à transformer un objet à la souris.</p>
+              <p><b>Prefab</b> — modèle réutilisable de GameObject sauvegardé comme asset&nbsp;; modifier la source met à jour toutes ses instances.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>&nbsp;: ce qui dessine vraiment ta vue Game (Built-in, URP, HDRP).</li>
+              <li><a href="../../cours/unity/u04-projet-graphique.html">U4 — Créer un projet graphique</a>&nbsp;: organiser scènes, GameObjects et assets dans un projet propre.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: le piège d'échelle à l'import et le Scale Factor du FBX.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux</a>&nbsp;: le matériau porté par le Mesh Renderer, qui colore et texture l'objet.</li>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>&nbsp;: ce que contient réellement la géométrie portée par le Mesh Filter.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: comment Unreal organise différemment ses Actors et Components.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

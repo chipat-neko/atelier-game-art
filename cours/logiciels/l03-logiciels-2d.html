@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L3 — Logiciels 2D (Krita, GIMP, Photoshop) · Atelier Game Art</title>
+  <meta name="description" content="Krita, GIMP et Photoshop pour la 2D de jeu : édition de textures, gestion de l'alpha, création de textures tileable (répétables).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>Logiciels 2D (Krita, GIMP, Photoshop)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L3 — Logiciels 2D (Krita, GIMP, Photoshop)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 1 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a> (alpha, profondeur, sRGB).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Choisir entre <b>Krita</b>, <b>GIMP</b> et <b>Photoshop</b> selon la tâche (concept, texture, interface, retouche de scan).</li>
+                <li>Travailler proprement avec des <b>calques</b>, des <b>masques de calque</b> et les <b>modes de fusion</b> (multiply, overlay, add).</li>
+                <li>Distinguer un <b>canal alpha</b> d'un <b>masque</b>, et exporter un <span class="term">PNG</span> avec transparence <em>sans liseré</em>.</li>
+                <li>Comprendre <em>pourquoi</em> une texture <b>tileable</b> (répétable) est indispensable et la fabriquer par la technique du <b>décalage</b> (offset) + tampon.</li>
+                <li>Éviter les pièges classiques&nbsp;: coutures visibles, motif répétitif évident, halo d'alpha, travail en CMJN, résolution non puissance de deux.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Même un artiste «&nbsp;3D&nbsp;» passe une part énorme de son temps dans des outils <b>2D</b>. Avant qu'un objet existe en volume, il est dessiné en <b>concept art</b>. Une fois modélisé, ses <span class="gloss">UV</span> reçoivent des <b>textures</b> qui sont, au fond, des images 2D. L'<b>interface</b> (UI) du jeu — barres de vie, icônes, menus — est de la 2D pure. Et quand on récupère une photo de pierre ou un scan pour s'en servir de texture, il faut la <b>retoucher</b> en 2D.</p>
+            <p>Le logiciel 2D est donc un <b>couteau suisse</b> du pipeline, en amont (concept) comme en aval (texture, UI, retouche). Mais surtout, il sert à résoudre un problème très concret du jeu vidéo&nbsp;: comment couvrir un mur de 50&nbsp;mètres, un sol de forêt entier ou une route infinie <b>sans fabriquer une image géante</b>&nbsp;? La réponse est la texture <b>répétable</b> (tileable), et savoir la créer proprement dans Krita, GIMP ou Photoshop est une compétence de base que tout studio attend. C'est l'objet central de cette leçon.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Trois outils, trois philosophies</h3>
+            <p>On confond souvent ces logiciels parce qu'ils «&nbsp;font des images&nbsp;». En réalité chacun a été pensé pour une intention différente, et choisir le bon t'évite de te battre contre l'outil.</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Logiciel</th><th>Prix</th><th>Pensé pour…</th><th>Où il excelle en jeu</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Krita</b> (5.2+)</td><td>Gratuit, libre</td><td>La <b>peinture</b> numérique&nbsp;: moteur de pinceaux excellent, stabilisation du trait, gestion du stylet.</td><td>Concept art, illustration, painting de textures à la main, sprites peints.</td></tr>
+                  <tr><td><b>GIMP</b> (3.0+)</td><td>Gratuit, libre</td><td>La <b>retouche</b> et l'édition d'images&nbsp;: outils de sélection, transformation, correction.</td><td>Nettoyer un scan, monter une texture, exports rapides, traitement par lots (script).</td></tr>
+                  <tr><td><b>Photoshop</b></td><td>Abonnement (Adobe)</td><td>Le <b>standard professionnel</b> polyvalent&nbsp;: retouche, photomontage, un peu de tout, énorme écosystème.</td><td>Tout, mais surtout la norme en studio&nbsp;: fichiers <span class="term">.psd</span> échangés, plugins, automatisation.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>La règle pratique&nbsp;: <b>Krita pour créer à la main</b> (un dessin, un painting), <b>GIMP pour éditer/retoucher</b> sans payer, <b>Photoshop quand le studio l'impose</b> ou pour profiter de son écosystème. La bonne nouvelle&nbsp;: les <em>concepts</em> que tu vas apprendre — calques, masques, modes de fusion, offset — sont <b>identiques partout</b>. Seuls les noms de menus changent un peu. Apprends le concept une fois, tu sais te servir des trois.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Et Photopea&nbsp;?</div>
+              <p>Photopea est un clone gratuit de Photoshop qui tourne dans le navigateur et ouvre les <span class="term">.psd</span>. Pratique en dépannage, mais hors-ligne et pour de gros fichiers de production, on reste sur un logiciel installé. Pour les textures procédurales avancées, on utilise plutôt <a href="../../cours/logiciels/l02-substance.html">Substance 3D</a> (L2).</p>
+            </div>
+
+            <h3>2. Le calque&nbsp;: l'unité de travail non destructive</h3>
+            <p>Un <span class="term">calque</span> (layer) est une «&nbsp;feuille transparente&nbsp;» empilée sur les autres. On peint sur l'une sans toucher aux autres&nbsp;; l'image finale est le résultat de toute la pile vue du dessus. L'intérêt n'est pas cosmétique&nbsp;: c'est ce qui rend le travail <b>non destructif</b>. Tu peux effacer, déplacer, atténuer ou supprimer un élément sans avoir abîmé ce qu'il y avait dessous.</p>
+            <p>En production, on sépare systématiquement&nbsp;: la couleur de base sur un calque, les salissures sur un autre, les rayures encore au-dessus, les ajustements de lumière tout en haut. Si l'art director dit «&nbsp;moins de rouille&nbsp;», on baisse l'<b>opacité</b> du calque rouille au lieu de tout repeindre. Un fichier à un seul calque «&nbsp;aplati&nbsp;» est un fichier qu'on ne peut plus corriger&nbsp;: à éviter tant que le travail n'est pas validé.</p>
+
+            <h3>3. Le masque de calque&nbsp;: cacher au lieu d'effacer</h3>
+            <p>Un <span class="term">masque de calque</span> (layer mask) est une image en <b>niveaux de gris</b> attachée à un calque, qui pilote sa visibilité&nbsp;: <b>blanc = visible</b>, <b>noir = caché</b>, gris = semi-transparent. Au lieu de <em>supprimer</em> des pixels à la gomme (destructif), on <em>peint en noir</em> sur le masque pour les masquer. Tu peux toujours repeindre en blanc pour les faire réapparaître&nbsp;: rien n'a été détruit.</p>
+            <p>C'est le mécanisme central du compositing 2D. Exemple typique de texture&nbsp;: tu poses un calque «&nbsp;peinture écaillée&nbsp;» sur ta tôle, puis tu peins le masque en noir là où la peinture tient encore, en blanc là où elle s'écaille. Tu sculptes la transition au pinceau, en douceur, sans jamais perdre l'image source.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Le raccourci universel <kbd>X</kbd> intervertit les couleurs de premier plan/arrière-plan. Sur un masque, ça permet d'alterner instantanément entre «&nbsp;cacher&nbsp;» (noir) et «&nbsp;révéler&nbsp;» (blanc) avec le même pinceau&nbsp;: on «&nbsp;gomme&nbsp;» et on «&nbsp;dégomme&nbsp;» sans changer d'outil.</p>
+            </div>
+
+            <h3>4. Les modes de fusion&nbsp;: comment deux calques se combinent</h3>
+            <p>Par défaut, un calque <b>recouvre</b> celui du dessous (mode <em>Normal</em>). Un <span class="term">mode de fusion</span> (blend mode) change la formule mathématique qui mélange le calque avec ce qu'il y a dessous. Ce ne sont pas des effets magiques&nbsp;: ce sont de simples opérations par pixel. En comprendre trois suffit pour 90&nbsp;% du travail de texture.</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Mode</th><th>Opération (par pixel, sur 0–1)</th><th>Effet</th><th>Usage typique</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Multiply</b> (Produit)</td><td>résultat = dessous × dessus</td><td>Assombrit toujours&nbsp;; le blanc devient invisible.</td><td>Ombres, salissures, occlusion peinte, teinter sans éclaircir.</td></tr>
+                  <tr><td><b>Add / Linear Dodge</b></td><td>résultat = dessous + dessus</td><td>Éclaircit toujours&nbsp;; le noir devient invisible.</td><td>Lumières, étincelles, reflets, effets émissifs.</td></tr>
+                  <tr><td><b>Overlay</b> (Incrustation)</td><td>multiply sous 0,5 / screen au-dessus</td><td>Augmente le contraste&nbsp;: assombrit les sombres, éclaircit les clairs.</td><td>Ajouter du grain, du détail, renforcer une matière sans tout repeindre.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>Pourquoi c'est si utile&nbsp;? Parce que ça permet de <b>séparer l'information</b>. Tu peins ta couleur sur un calque, puis tu peins <em>seulement les ombres</em> en gris sur un calque <b>Multiply</b> au-dessus&nbsp;: les ombres s'appliquent sur n'importe quelle couleur sans la remplacer. Change la couleur du dessous&nbsp;: les ombres suivent. C'est exactement la logique d'un shader, mais à la main.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Pile de calques : couleur de base, ombres en Multiply, lumières en Add, avec un masque, et le rendu fusionné final">
+                <text x="20" y="24" class="svg-text" font-weight="700" font-size="14">Pile de calques (lue du haut vers le bas)</text>
+                <!-- Calques empilés en perspective légère -->
+                <g>
+                  <!-- Add -->
+                  <rect x="40" y="44" width="300" height="40" rx="6" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                  <text x="56" y="69" class="svg-text" font-size="12.5" font-weight="700">Lumières</text>
+                  <rect x="232" y="52" width="98" height="24" rx="4" fill="#f2b441" fill-opacity="0.28" stroke="#f2b441"/>
+                  <text x="281" y="69" text-anchor="middle" class="svg-text" font-size="11">mode Add</text>
+                  <!-- Multiply -->
+                  <rect x="40" y="96" width="300" height="40" rx="6" fill="#c89bff" fill-opacity="0.16" stroke="#c89bff"/>
+                  <text x="56" y="121" class="svg-text" font-size="12.5" font-weight="700">Ombres / salissure</text>
+                  <rect x="232" y="104" width="98" height="24" rx="4" fill="#c89bff" fill-opacity="0.28" stroke="#c89bff"/>
+                  <text x="281" y="121" text-anchor="middle" class="svg-text" font-size="11">mode Multiply</text>
+                  <!-- Détail + masque -->
+                  <rect x="40" y="148" width="300" height="40" rx="6" fill="#59b0ff" fill-opacity="0.16" stroke="#59b0ff"/>
+                  <text x="56" y="173" class="svg-text" font-size="12.5" font-weight="700">Détail (rayures)</text>
+                  <!-- vignette masque -->
+                  <rect x="244" y="154" width="28" height="28" rx="3" fill="#000"/>
+                  <rect x="244" y="154" width="14" height="28" rx="3" fill="#fff"/>
+                  <text x="290" y="173" text-anchor="middle" class="svg-dim" font-size="10.5">+ masque</text>
+                  <!-- Base -->
+                  <rect x="40" y="200" width="300" height="40" rx="6" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                  <text x="56" y="225" class="svg-text" font-size="12.5" font-weight="700">Couleur de base (albedo)</text>
+                </g>
+                <!-- Flèche de fusion -->
+                <defs><marker id="m1" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#f2b441"/></marker></defs>
+                <line x1="350" y1="150" x2="430" y2="150" stroke="#f2b441" stroke-width="2.5" marker-end="url(#m1)"/>
+                <text x="390" y="142" text-anchor="middle" class="svg-dim" font-size="11">fusion</text>
+                <!-- Résultat -->
+                <rect x="440" y="70" width="170" height="160" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <rect x="452" y="82" width="146" height="136" rx="4" fill="#5ad19a" fill-opacity="0.30"/>
+                <rect x="452" y="170" width="146" height="48" rx="0" fill="#c89bff" fill-opacity="0.30"/>
+                <rect x="452" y="82" width="146" height="34" rx="0" fill="#f2b441" fill-opacity="0.30"/>
+                <text x="525" y="246" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Rendu final</text>
+              </svg>
+              <figcaption>Chaque calque ne porte qu'<b>une</b> information&nbsp;: la couleur, les ombres (Multiply), les lumières (Add), un détail masqué. La pile fusionnée donne l'image finale — et chaque couche reste modifiable.</figcaption>
+            </figure>
+
+            <h3>5. Ajustements&nbsp;: niveaux, courbes, sélection</h3>
+            <p>Deux outils pilotent la luminosité et le contraste sans repeindre&nbsp;:</p>
+            <ul>
+              <li><b>Niveaux</b> (Levels)&nbsp;: trois curseurs — point noir, gamma, point blanc — qui «&nbsp;étirent&nbsp;» l'histogramme. Parfait pour redonner du contraste à un scan terne&nbsp;: on rapproche les points noir et blanc des extrémités réellement utilisées.</li>
+              <li><b>Courbes</b> (Curves)&nbsp;: une courbe libre entrée→sortie, plus précise. On peut éclaircir les tons moyens tout en gardant les noirs, etc.</li>
+            </ul>
+            <p>La <b>sélection</b> définit la zone affectée par l'outil suivant. On sélectionne par forme (rectangle, lasso), par couleur (baguette magique), ou par plage. Astuce de production&nbsp;: une sélection peut se <b>convertir en masque</b> (et inversement) — sélection et masque sont la même idée «&nbsp;où / combien&nbsp;» exprimée de deux façons.</p>
+
+            <h3>6. Gérer l'alpha&nbsp;: canal vs masque, et l'exporter sans liseré</h3>
+            <p>Tu connais déjà le <span class="gloss">canal alpha</span> (F1)&nbsp;: un canal qui code l'<b>opacité</b> (0 transparent → 1 opaque). Deux confusions fréquentes&nbsp;:</p>
+            <ul>
+              <li><b>Masque de calque ≠ canal alpha du fichier.</b> Le masque agit <em>dans</em> ton document d'édition&nbsp;; le canal alpha est ce qui sera <em>écrit dans le PNG exporté</em> et lu par le moteur. À l'export, l'opacité visible (calques + masques aplatis) devient le canal alpha du fichier.</li>
+              <li><b>Transparence d'affichage ≠ couleur sous la transparence.</b> Là où l'alpha est à 0, il existe quand même des valeurs R, V, B «&nbsp;cachées&nbsp;». Beaucoup d'éditeurs y laissent du <b>noir</b>. C'est la cause n°1 des liserés.</li>
+            </ul>
+
+            <h4>Le liseré (halo) et son remède&nbsp;: l'edge padding</h4>
+            <p>Quand le GPU agrandit ou filtre une texture, il <b>mélange des pixels voisins</b> (filtrage bilinéaire, <span class="gloss">mipmap</span>). Au bord d'une découpe (feuillage, icône), il mélange ta couleur de bord avec la couleur cachée sous les pixels transparents. Si cette couleur cachée est noire, un fin <b>liseré sombre</b> apparaît tout autour&nbsp;: le <b>halo</b>.</p>
+            <p>La parade s'appelle <b>edge padding</b> (ou <em>dilate</em> / <em>defringe</em>)&nbsp;: on fait <b>déborder</b> la couleur des bords <em>sous</em> les zones transparentes, sur quelques pixels, pour qu'il n'y ait plus de noir à mélanger. L'alpha, lui, ne change pas&nbsp;: visuellement rien ne bouge, mais le filtrage ne va plus chercher du noir. Dans Krita&nbsp;: <span class="menu-path">Layer<span class="arrow">▸</span>Transform<span class="arrow">▸</span>Color to Alpha</span> à éviter pour ça&nbsp;; on préfère <span class="menu-path">Filter<span class="arrow">▸</span>Other</span> ou un script de dilatation. Dans GIMP&nbsp;: greffon <em>Dilate / Defringe</em>. Dans Photoshop&nbsp;: <span class="menu-path">Layer<span class="arrow">▸</span>Matting<span class="arrow">▸</span>Defringe</span>. (Renvoi&nbsp;: <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> traite le straight vs prémultiplié, l'autre cause de halo.)</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Toujours exporter en straight + edge padding</div>
+              <p>Pour le jeu, exporte en <span class="term">PNG</span> (ou TGA) avec alpha <b>straight</b> (non prémultiplié) et applique un <b>edge padding</b> de quelques pixels. C'est la combinaison qui élimine les halos dans Unity comme dans Unreal. Un PNG «&nbsp;qui rend bien dans l'éditeur 2D&nbsp;» peut révéler son liseré seulement une fois en jeu, à cause du mipmapping.</p>
+            </div>
+
+            <h3>7. La texture tileable (répétable)&nbsp;: pourquoi et comment</h3>
+            <p>Une texture <span class="term">tileable</span> (ou <em>seamless</em>, sans couture) est une image conçue pour être <b>répétée en damier</b> sans qu'on voie la jointure entre deux copies. Son bord droit raccorde parfaitement son bord gauche, et son bord haut raccorde son bord bas.</p>
+            <p><b>Pourquoi c'est vital&nbsp;:</b></p>
+            <ul>
+              <li><b>Mémoire.</b> Couvrir un mur de 50&nbsp;m avec une seule image nette demanderait une texture gigantesque (et impossible à charger). Une tuile de 1024×1024 répétée 40&nbsp;fois donne le même résultat pour un coût mémoire minuscule.</li>
+              <li><b>Réutilisation.</b> Une bonne tuile de briques sert sur des dizaines de bâtiments. C'est de l'économie d'échelle&nbsp;: on peint une fois, on couvre tout le jeu.</li>
+              <li><b>Densité de texels constante.</b> En répétant, on garde partout le même niveau de détail (voir <span class="gloss">texel density</span>), quelle que soit la taille de la surface.</li>
+            </ul>
+
+            <h4>Le problème de la couture, et la technique du décalage (offset)</h4>
+            <p>Une image normale a des bords qui ne raccordent pas&nbsp;: mise en damier, on voit une grille de coutures. L'astuce géniale pour les <b>révéler et les corriger</b> est l'<b>offset avec enroulement</b> (wrap-around)&nbsp;: on décale l'image d'une demi-largeur et d'une demi-hauteur, et ce qui sort d'un côté <b>réapparaît de l'autre</b>. Effet&nbsp;: les anciens bords (qui étaient cachés contre le cadre) se retrouvent <b>au centre</b> de l'image, formant une <b>croix de coutures</b> bien visible. On peut alors les effacer confortablement au <b>tampon de clonage</b> (clone) ou au <b>correcteur</b>, en plein milieu, là où c'est facile à peindre. Comme le décalage enroule, corriger le centre corrige <em>de fait</em> les futures jointures.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 270" role="img" aria-label="Technique de l'offset : image d'origine, image décalée avec enroulement révélant la croix de coutures au centre, puis image corrigée">
+                <!-- 1. Origine -->
+                <text x="100" y="22" text-anchor="middle" class="svg-text" font-size="12.5" font-weight="700">1. Image d'origine</text>
+                <g transform="translate(30,34)">
+                  <rect x="0" y="0" width="140" height="140" class="svg-surface" stroke="#313c4c"/>
+                  <!-- motif briques décalées -->
+                  <g stroke="#f2b441" stroke-width="1.5" fill="none" opacity="0.85">
+                    <path d="M0 35H140M0 70H140M0 105H140"/>
+                    <path d="M35 0V35M70 35V70M35 70V105M70 105V140M105 0V35M0 35V70M105 70V105"/>
+                  </g>
+                  <text x="70" y="158" text-anchor="middle" class="svg-dim" font-size="10.5">les bords ne raccordent pas</text>
+                </g>
+                <!-- flèche -->
+                <defs><marker id="ofar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#59b0ff"/></marker></defs>
+                <line x1="178" y1="100" x2="218" y2="100" stroke="#59b0ff" stroke-width="2" marker-end="url(#ofar)"/>
+                <text x="198" y="92" text-anchor="middle" class="svg-dim" font-size="9.5">offset 50%</text>
+                <!-- 2. Décalée -->
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-size="12.5" font-weight="700">2. Décalée (wrap) → croix</text>
+                <g transform="translate(250,34)">
+                  <rect x="0" y="0" width="140" height="140" class="svg-surface" stroke="#313c4c"/>
+                  <g stroke="#f2b441" stroke-width="1.5" fill="none" opacity="0.85">
+                    <path d="M0 18H140M0 53H140M0 123H140"/>
+                    <path d="M18 0V18M53 18V53M18 53V88M88 0V18M123 18V53M88 88V123M53 123V140"/>
+                  </g>
+                  <!-- croix de coutures centrale -->
+                  <line x1="70" y1="0" x2="70" y2="140" stroke="#ff6b6b" stroke-width="3"/>
+                  <line x1="0" y1="70" x2="140" y2="70" stroke="#ff6b6b" stroke-width="3"/>
+                  <text x="70" y="158" text-anchor="middle" class="svg-dim" font-size="10.5">coutures au centre, visibles</text>
+                </g>
+                <!-- flèche -->
+                <line x1="398" y1="100" x2="438" y2="100" stroke="#5ad19a" stroke-width="2" marker-end="url(#ofar)"/>
+                <text x="418" y="92" text-anchor="middle" class="svg-dim" font-size="9.5">clone</text>
+                <!-- 3. Corrigée -->
+                <text x="540" y="22" text-anchor="middle" class="svg-text" font-size="12.5" font-weight="700">3. Corrigée au tampon</text>
+                <g transform="translate(470,34)">
+                  <rect x="0" y="0" width="140" height="140" class="svg-surface" stroke="#313c4c"/>
+                  <g stroke="#5ad19a" stroke-width="1.5" fill="none" opacity="0.9">
+                    <path d="M0 18H140M0 53H140M0 88H140M0 123H140"/>
+                    <path d="M18 0V18M53 18V53M18 53V88M88 0V18M123 18V53M88 88V123M35 88V123M53 123V140M105 88V123M105 123V140"/>
+                  </g>
+                  <text x="70" y="158" text-anchor="middle" class="svg-dim" font-size="10.5">plus de couture : seamless</text>
+                </g>
+              </svg>
+              <figcaption>L'offset (décalage) avec enroulement amène les bords problématiques au centre, où on les efface au tampon de clonage. Comme le décalage «&nbsp;boucle&nbsp;», corriger le centre rend toute l'image répétable.</figcaption>
+            </figure>
+
+            <h4>Éviter le motif répétitif (la «&nbsp;répétition visible&nbsp;»)</h4>
+            <p>Une tuile sans couture n'est pas encore une bonne tuile. Si elle contient un élément <b>unique et reconnaissable</b> — une grosse tache claire, une brique cassée, une fleur — l'œil le repère et voit la grille se répéter à l'infini&nbsp;: c'est le <b>motif répétitif</b>, aussi laid qu'une couture. Remèdes&nbsp;:</p>
+            <ul>
+              <li><b>Aplanir les valeurs&nbsp;:</b> pas de zone beaucoup plus claire/sombre que le reste. Une tuile «&nbsp;plate&nbsp;» en luminosité se répète discrètement.</li>
+              <li><b>Casser les points d'accroche&nbsp;:</b> diluer ou supprimer les détails trop identifiables.</li>
+              <li><b>Variation dans le moteur&nbsp;:</b> on superpose souvent une seconde texture à grande échelle, ou on mélange plusieurs tuiles, pour briser la régularité (technique vue en éclairage/matériaux).</li>
+            </ul>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Tileable 4 directions vs trim sheet</div>
+              <p>Une tuile «&nbsp;<b>4 directions</b>&nbsp;» raccorde sur ses quatre bords (haut, bas, gauche, droite)&nbsp;: idéale pour les sols et grandes surfaces. Quand on n'a besoin de répéter que dans <b>un</b> sens (un mur de pierre qui se répète horizontalement mais a un haut et un bas distincts), on parle de tuile <b>horizontale</b>. Le <span class="term">trim sheet</span> est un cousin&nbsp;: une bande de détails (moulures, bordures, tuyaux) répétée le long des arêtes d'un décor pour l'habiller avec très peu de textures. On l'aborde plus en détail dans les leçons de modélisation/textures.</p>
+            </div>
+
+            <h3>8. Spécificités UI / concept&nbsp;: résolution, vectoriel, sprites</h3>
+            <p>Pour l'<b>interface</b> et le <b>concept</b>, quelques réflexes&nbsp;:</p>
+            <ul>
+              <li><b>Résolution.</b> On travaille les éléments d'UI à une taille suffisante pour la plus haute définition cible (4K), quitte à les réduire. Agrandir un petit raster donne du flou (rappel F1).</li>
+              <li><b>Vectoriel pour les icônes.</b> Une icône d'UI gagne à être dessinée en <b>vectoriel</b> (indépendant de la résolution), puis <b>rasterisée</b> (exportée en PNG) à chaque taille voulue. Krita et Photoshop gèrent des calques vectoriels&nbsp;; pour du pur vectoriel, on passe par Inkscape/Illustrator (renvoi&nbsp;: <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>, raster vs vectoriel).</li>
+              <li><b>Export de sprites.</b> On exporte chaque élément en PNG avec alpha, souvent regroupés dans un <span class="gloss">atlas</span> pour limiter le nombre de textures (et de draw calls) en jeu.</li>
+            </ul>
+
+            <h3>9. RVB, jamais CMJN&nbsp;; puissances de deux</h3>
+            <p>Deux réglages «&nbsp;document&nbsp;» qui causent des dégâts s'ils sont mal posés&nbsp;:</p>
+            <ul>
+              <li><b>Mode RVB obligatoire.</b> Le <b>CMJN</b> (cyan/magenta/jaune/noir) est le mode de l'<b>impression papier</b>&nbsp;: il décrit des encres, pas de la lumière d'écran. Un moteur de jeu travaille en <b>RVB</b> (F1). Travailler ou exporter en CMJN donne des couleurs ternes/décalées et des formats que le moteur n'accepte pas. Vérifie toujours que ton document est en RVB 8 bits/canal pour une texture couleur standard.</li>
+              <li><b>Dimensions en puissances de deux</b> (256, 512, 1024, 2048…). Le GPU calcule mieux les <span class="gloss">mipmap</span> et l'adressage sur ces tailles (F1). Une texture en 1000×1000 sera souvent rééchantillonnée ou refusée par la compression. Pour le <em>tiling</em>, c'est doublement important&nbsp;: une tuile carrée en puissance de deux se répète proprement.</li>
+            </ul>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif&nbsp;: prendre une photo de mur de <b>briques</b> et en faire une texture <b>tileable</b> exportée en PNG. Les menus ci-dessous sont donnés pour <b>GIMP</b> (gratuit) ; les équivalents Krita/Photoshop sont indiqués. La logique est identique partout.</p>
+            <ol>
+              <li><b>Préparer le document.</b> Ouvre ta photo, recadre-la en carré et redimensionne en <b>1024×1024</b> via <span class="menu-path">Image<span class="arrow">▸</span>Échelle et taille de l'image</span>. Vérifie le mode&nbsp;: <span class="menu-path">Image<span class="arrow">▸</span>Mode<span class="arrow">▸</span>RVB</span> (jamais CMJN). <em>Ce qui se passe&nbsp;:</em> tu fixes une base carrée, en puissance de deux, en RVB, prête à être répétée.</li>
+              <li><b>Aplanir les valeurs.</b> Avec <span class="menu-path">Couleurs<span class="arrow">▸</span>Niveaux</span> (ou Courbes), réduis les zones trop claires/sombres pour limiter le futur motif répétitif. <em>Ce qui se passe&nbsp;:</em> tu enlèves les «&nbsp;points d'accroche&nbsp;» que l'œil suivrait à la répétition.</li>
+              <li><b>Décaler (offset) avec enroulement.</b> <span class="menu-path">Calque<span class="arrow">▸</span>Transformer<span class="arrow">▸</span>Décalage</span> (raccourci <kbd>Maj</kbd>+<kbd>Ctrl</kbd>+<kbd>O</kbd>), coche <b>«&nbsp;Enroulement&nbsp;»</b>, mets X = 512 et Y = 512 (la moitié). <em>Équivalents&nbsp;:</em> Krita <span class="menu-path">Filter<span class="arrow">▸</span>Map<span class="arrow">▸</span>Wrap Around / Offset</span> ; Photoshop <span class="menu-path">Filtre<span class="arrow">▸</span>Autres<span class="arrow">▸</span>Translation</span> avec «&nbsp;Reboucler&nbsp;». <em>Ce qui se passe&nbsp;:</em> les anciens bords se retrouvent en <b>croix au centre</b>&nbsp;: les coutures sont maintenant visibles et accessibles.</li>
+              <li><b>Effacer les coutures au tampon.</b> Prends l'outil <b>Clonage</b> (<kbd>C</kbd>). Définis la source en <kbd>Ctrl</kbd>+clic sur une zone de brique «&nbsp;propre&nbsp;», puis peins par-dessus la croix centrale. <em>Ce qui se passe&nbsp;:</em> tu remplaces la jointure par du motif cohérent prélevé ailleurs&nbsp;; comme l'offset bouclait, tu répares les futures jointures en même temps.</li>
+              <li><b>Vérifier le tiling.</b> Utilise un aperçu en mosaïque&nbsp;: <span class="menu-path">Filtres<span class="arrow">▸</span>Carte<span class="arrow">▸</span>Petite planète / Mosaïque sans raccord</span> (ou simplement <span class="menu-path">Filtres<span class="arrow">▸</span>Rendu<span class="arrow">▸</span>Motif<span class="arrow">▸</span>Aperçu de mosaïque</span>). <em>Ce qui se passe&nbsp;:</em> tu vois la tuile répétée 3×3&nbsp;; s'il reste une couture ou une tache qui «&nbsp;saute aux yeux&nbsp;», retourne à l'offset/clone.</li>
+              <li><b>Exporter en PNG.</b> <span class="menu-path">Fichier<span class="arrow">▸</span>Exporter sous…</span>, extension <span class="term">.png</span>. Si la texture a de la transparence, applique d'abord un <b>edge padding</b> et exporte en alpha straight. <em>Ce qui se passe&nbsp;:</em> tu produis un fichier propre, en puissance de deux, prêt à importer dans Blender/Unity/Unreal avec un <em>wrap mode = Repeat</em>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une grille de lignes apparaît quand ma texture se répète sur le sol.</div>
+                <div class="pi-cause"><b>Cause</b>Les bords ne raccordent pas&nbsp;: la texture n'a jamais été rendue tileable (pas d'offset/clone).</div>
+                <div class="pi-fix"><b>Correction</b>Applique l'offset 50&nbsp;% avec enroulement, efface la croix de coutures au tampon, vérifie en aperçu mosaïque.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Pas de couture, mais on voit clairement le même «&nbsp;motif&nbsp;» se répéter à l'infini.</div>
+                <div class="pi-cause"><b>Cause</b>Un détail unique trop contrasté (tache claire, élément reconnaissable) sert de repère à l'œil.</div>
+                <div class="pi-fix"><b>Correction</b>Aplanis les valeurs (Niveaux/Courbes), dilue les détails saillants, ou casse la répétition côté moteur (mélange/variation).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un fin liseré sombre entoure mon icône / feuillage une fois en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Du noir caché sous les pixels transparents&nbsp;; le filtrage/mipmap le mélange aux bords.</div>
+                <div class="pi-fix"><b>Correction</b>Applique un <b>edge padding</b> (dilate/defringe) et exporte en alpha straight, pas prémultiplié.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes couleurs sont ternes/décalées en jeu, ou le moteur refuse le fichier.</div>
+                <div class="pi-cause"><b>Cause</b>Le document a été créé/exporté en <b>CMJN</b> (mode impression), pas en RVB.</div>
+                <div class="pi-fix"><b>Correction</b>Repasse en <span class="menu-path">Image<span class="arrow">▸</span>Mode<span class="arrow">▸</span>RVB</span> avant d'exporter. Réserve le CMJN au papier.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma texture en 1000×1000 est floue ou compressée bizarrement à l'import.</div>
+                <div class="pi-cause"><b>Cause</b>Dimensions non puissance de deux&nbsp;: rééchantillonnage forcé, mipmaps mal générés.</div>
+                <div class="pi-fix"><b>Correction</b>Exporte en 512, 1024, 2048… (puissances de deux), carré de préférence pour le tiling.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Impossible de corriger une retouche faite hier&nbsp;: tout est figé.</div>
+                <div class="pi-cause"><b>Cause</b>Image aplatie / gommée de façon destructive, sans calques ni masques.</div>
+                <div class="pi-fix"><b>Correction</b>Travaille en calques séparés et avec des masques&nbsp;; garde le fichier source (.kra/.xcf/.psd), n'aplatis qu'à l'export.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Avec <b>Krita</b> ou <b>GIMP</b> (gratuits), fabrique une texture de <b>pierre ou de briques</b> répétable.</p>
+              <ol>
+                <li>Pars d'une photo (ou peins une base). Recadre/redimensionne en <b>1024×1024</b>, document en <b>RVB</b>.</li>
+                <li>Aplanis les valeurs aux Niveaux pour limiter le futur motif répétitif.</li>
+                <li>Applique un <b>offset 50&nbsp;%</b> (512/512) avec <b>enroulement</b> pour faire apparaître la croix de coutures.</li>
+                <li>Efface les coutures au <b>tampon de clonage</b>, puis vérifie le rendu en <b>aperçu mosaïque 3×3</b>.</li>
+                <li>Exporte en <b>PNG</b> (puissance de deux). Bonus&nbsp;: crée une découpe avec alpha et applique un <b>edge padding</b> avant export.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>En aperçu mosaïque 3×3, <b>aucune couture</b> n'est visible le long des bords.</li>
+                  <li>Aucun <b>détail unique</b> ne «&nbsp;saute aux yeux&nbsp;» pour trahir la répétition.</li>
+                  <li>Le fichier est en <b>RVB</b>, en <b>puissance de deux</b>, exporté en PNG.</li>
+                  <li>(Bonus) La découpe alpha n'a <b>aucun liseré sombre</b> grâce à l'edge padding.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Krita</b> = peindre/concevoir, <b>GIMP</b> = retoucher/éditer (gratuit), <b>Photoshop</b> = standard studio. Les concepts (calques, masques, modes de fusion) sont les mêmes partout.</li>
+                <li>Travaille <b>non destructif</b>&nbsp;: calques séparés + masques (peindre en noir cache, en blanc révèle). On n'aplatit qu'à l'export.</li>
+                <li><b>Multiply</b> assombrit, <b>Add</b> éclaircit, <b>Overlay</b> contraste&nbsp;: ce sont de simples opérations par pixel pour séparer l'information.</li>
+                <li>Une texture <b>tileable</b> se fait par <b>offset 50&nbsp;% (wrap)</b> puis <b>tampon de clonage</b> sur la croix de coutures&nbsp;; on évite aussi le <b>motif répétitif</b>.</li>
+                <li>Pour l'alpha&nbsp;: exporte en <b>PNG straight + edge padding</b> pour supprimer les halos. Toujours <b>RVB</b>, jamais CMJN&nbsp;; dimensions en <b>puissances de deux</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Calque</b> — «&nbsp;feuille&nbsp;» empilée d'une image, qu'on édite sans toucher aux autres&nbsp;: la base du travail non destructif.</p>
+              <p><b>Masque de calque</b> — image en niveaux de gris attachée à un calque qui pilote sa visibilité (blanc = visible, noir = caché).</p>
+              <p><b>Mode de fusion</b> — formule mathématique combinant un calque avec ceux du dessous (Multiply assombrit, Add éclaircit, Overlay contraste).</p>
+              <p><b>Tileable</b> — texture conçue pour se répéter en damier sans couture visible (synonyme&nbsp;: seamless).</p>
+              <p><b>Offset (décalage)</b> — opération qui décale l'image avec enroulement pour amener les bords au centre et y corriger les coutures.</p>
+              <p><b>Edge padding</b> — débordement de la couleur des bords sous les zones transparentes pour éviter les liserés au filtrage/mipmap.</p>
+              <p><b>Trim sheet</b> — bande de détails (moulures, bordures) répétée le long des arêtes d'un décor pour l'habiller avec peu de textures.</p>
+              <p>Ces termes complètent le <a href="../../glossaire.html">glossaire global</a> (où figurent déjà alpha, sRGB, UV, atlas, texel density…).</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a>&nbsp;: alpha straight/prémultiplié, raster vs vectoriel, sRGB — les bases sous cette leçon.</li>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: comment les UV adressent une texture répétable et règlent la densité de texels.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance 3D</a>&nbsp;: générer des textures tileable de façon procédurale, sans cloner à la main.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: atlas, puissances de deux et compression des textures pour le GPU.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

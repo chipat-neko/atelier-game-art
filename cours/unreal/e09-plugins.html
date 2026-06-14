@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E9 — Plugins (Fab, Quixel Bridge) · Atelier Game Art</title>
+  <meta name="description" content="Les plugins d'Unreal Engine 5.7 : activer/désactiver, la marketplace Fab, Quixel Bridge et MetaHuman, et l'installation d'un plugin tiers.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Plugins (Fab, Quixel Bridge)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E9 — Plugins (Fab, Quixel Bridge)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unreal/e03-projet.html">E3 — Créer un projet</a>. Utile&nbsp;: <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques d'assets</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Activer et désactiver des plugins dans Unreal&nbsp;5.7.</li>
+                <li>Comprendre ce qu'est <b>Fab</b> et pourquoi on ne dit plus «&nbsp;Unreal Marketplace&nbsp;».</li>
+                <li>Utiliser <b>Quixel Bridge</b>, notamment pour <b>MetaHuman</b> et les Megascans.</li>
+                <li>Installer un <b>plugin tiers</b> et éviter les pièges de compatibilité et de licence.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Unreal est extensible&nbsp;: au-delà de son cœur, des <b>plugins</b> ajoutent des outils (modélisation in-editor, rendu cinéma, importateurs…). Et la quasi-totalité du contenu prêt à l'emploi — modèles, matériaux, personnages — passe aujourd'hui par <b>Fab</b>, la marketplace unifiée d'Epic. Savoir activer le bon plugin et importer proprement un asset (en lisant sa licence&nbsp;!) fait gagner un temps précieux et évite des erreurs juridiques. Attention au vocabulaire&nbsp;: beaucoup de tutoriels anciens parlent d'«&nbsp;Unreal Engine Marketplace&nbsp;» — ce nom n'existe plus.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les plugins&nbsp;: activer / désactiver</h3>
+            <p>On gère les plugins via <span class="menu-path">Edit<span class="arrow">▸</span>Plugins</span>. La fenêtre liste les plugins par catégorie, avec une case <em>Enabled</em>. Activer ou désactiver un plugin demande en général un <b>redémarrage</b> de l'éditeur. Unreal fournit déjà de nombreux plugins intégrés&nbsp;: <em>Modeling Tools</em> (modélisation/retopo dans l'éditeur), <em>Niagara</em> (renvoi <a href="../../cours/unreal/e08-niagara.html">E8</a>), <em>Quixel Bridge</em>, <em>Water</em>, <em>Movie Render Queue</em> (rendu haute qualité)… On distingue les plugins <b>du moteur</b> (disponibles partout) et ceux <b>du projet</b> (rangés dans le dossier <code>Plugins/</code> du projet).</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>N'active que ce dont tu as besoin</div>
+              <p>Chaque plugin actif consomme de la mémoire et peut introduire des bugs ou allonger les temps de compilation. Active à la demande, désactive ce que tu n'utilises pas.</p>
+            </div>
+
+            <h3>2. Fab&nbsp;: la marketplace unifiée d'Epic</h3>
+            <p><span class="term">Fab</span> (<code>fab.com</code>, lancée en octobre&nbsp;2024) est la marketplace unique d'Epic. Elle a <b>remplacé</b> à elle seule quatre anciennes plateformes&nbsp;: l'Unreal Engine Marketplace, le Sketchfab Store, Quixel.com et l'ArtStation Marketplace. Points clés&nbsp;:</p>
+            <ul>
+              <li>Elle sert <b>Unreal ET Unity</b> (et d'autres moteurs)&nbsp;: ce n'est plus un magasin «&nbsp;Unreal only&nbsp;».</li>
+              <li><b>Megascans</b> (la bibliothèque de scans) y est désormais hébergée. Depuis 2025, la majorité des Megascans est <b>payante</b>&nbsp;; certains assets restent gratuits — d'où l'importance de vérifier (renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>).</li>
+              <li>Intégration moteur&nbsp;: on récupère un asset via Fab puis on l'ajoute au projet (<em>Add to Project</em> / téléchargement).</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Sources de contenu et de plugins convergeant vers un projet Unreal">
+                <defs><marker id="e9ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#b48cff"/></marker></defs>
+                <g class="svg-text" font-size="12">
+                  <rect x="20" y="20" width="180" height="44" rx="9" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="110" y="40" text-anchor="middle" font-weight="700">Fab (marketplace)</text><text x="110" y="56" text-anchor="middle" class="svg-dim" font-size="10.5">modèles, matériaux, Megascans</text>
+                  <rect x="20" y="78" width="180" height="44" rx="9" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/><text x="110" y="98" text-anchor="middle" font-weight="700">Quixel Bridge</text><text x="110" y="114" text-anchor="middle" class="svg-dim" font-size="10.5">Megascans + MetaHuman</text>
+                  <rect x="20" y="136" width="180" height="44" rx="9" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/><text x="110" y="156" text-anchor="middle" font-weight="700">Plugin tiers</text><text x="110" y="172" text-anchor="middle" class="svg-dim" font-size="10.5">dossier Plugins/ (.uplugin)</text>
+                  <rect x="400" y="76" width="200" height="50" rx="10" fill="#b48cff" fill-opacity="0.16" stroke="#b48cff" stroke-width="1.8"/><text x="500" y="106" text-anchor="middle" font-weight="800" font-size="14">Projet Unreal 5.7</text>
+                </g>
+                <g stroke="#b48cff" stroke-width="1.8" fill="none" marker-end="url(#e9ar)">
+                  <path d="M200 42 C 320 50, 340 90, 398 96"/>
+                  <path d="M200 100 L398 100"/>
+                  <path d="M200 158 C 320 150, 340 112, 398 106"/>
+                </g>
+              </svg>
+              <figcaption>Trois portes d'entrée vers ton projet&nbsp;: Fab, Quixel Bridge (intégré) et les plugins tiers.</figcaption>
+            </figure>
+
+            <h3>3. Quixel Bridge et MetaHuman</h3>
+            <p><span class="term">Quixel Bridge</span> est intégré à Unreal (plugin)&nbsp;: il donne accès aux Megascans (désormais via Fab) et, surtout, sert de passerelle pour <span class="term">MetaHuman</span> — le système d'Epic pour créer et importer des <b>personnages humains photoréalistes</b> (visage, peau, cheveux, rig facial). On crée un MetaHuman (via le créateur en ligne / l'outil dédié) puis on l'importe dans le projet via Bridge. C'est la voie royale pour obtenir un humain crédible sans le sculpter de zéro — en gardant à l'esprit le coût (assets lourds) et les conditions d'utilisation.</p>
+
+            <h3>4. Installer un plugin tiers</h3>
+            <ol>
+              <li><b>Via Fab</b>&nbsp;: le plus simple — l'ajout au projet se fait automatiquement.</li>
+              <li><b>Manuellement</b>&nbsp;: on copie le dossier du plugin (contenant un fichier <code>.uplugin</code>) dans le dossier <code>Plugins/</code> du projet (ou du moteur). S'il contient du code C++, Unreal proposera de le <b>recompiler</b> au prochain lancement.</li>
+              <li>Puis on l'<b>active</b> dans <span class="menu-path">Edit<span class="arrow">▸</span>Plugins</span> et on redémarre.</li>
+            </ol>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Ouvre <span class="menu-path">Edit<span class="arrow">▸</span>Plugins</span>. Cherche «&nbsp;Modeling&nbsp;»&nbsp;: vérifie que <em>Modeling Tools Editor Mode</em> est activé (il ajoute un mode de modélisation dans la barre Modes). Redémarre si nécessaire.</li>
+              <li>Ouvre <span class="menu-path">Window<span class="arrow">▸</span>Quixel Bridge</span> (ou via la barre d'outils). Connecte-toi avec ton compte Epic. Parcours les Megascans&nbsp;: repère bien l'étiquette gratuit/payant avant de télécharger.</li>
+              <li>Télécharge un asset gratuit et clique <em>Add</em>&nbsp;: il apparaît dans ton <span class="gloss">Content Browser</span>, prêt à être placé.</li>
+              <li>Sur <code>fab.com</code> (dans le navigateur), repère un asset compatible Unreal et utilise <em>Add to Project</em>. Note la <b>licence</b> affichée avant tout usage (renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je cherche l'«&nbsp;Unreal Engine Marketplace&nbsp;» et je ne le trouve pas.</div>
+                <div class="pi-cause"><b>Cause</b>Il n'existe plus&nbsp;: Fab l'a remplacé (ainsi que Quixel.com, Sketchfab Store, ArtStation Marketplace).</div>
+                <div class="pi-fix"><b>Correction</b>Va sur <code>fab.com</code> (ou Quixel Bridge intégré). Parle de «&nbsp;Fab&nbsp;».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le plugin tiers que j'ai installé fait planter le projet ou n'apparaît pas.</div>
+                <div class="pi-cause"><b>Cause</b>Plugin incompatible avec UE&nbsp;5.7, ou code C++ non recompilé pour cette version.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie la version supportée par le plugin&nbsp;; laisse Unreal recompiler&nbsp;; désactive-le si conflit.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai utilisé un Megascan «&nbsp;gratuit&nbsp;» mais on me réclame une licence.</div>
+                <div class="pi-cause"><b>Cause</b>Depuis 2025, la majorité des Megascans sur Fab est payante&nbsp;; seuls certains restent gratuits.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie systématiquement le statut et la licence de chaque asset avant de l'intégrer (renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon projet est devenu lent / instable après avoir ajouté plusieurs plugins.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de plugins actifs, dont certains inutiles ou en conflit.</div>
+                <div class="pi-fix"><b>Correction</b>Désactive ceux que tu n'utilises pas&nbsp;; n'active que le nécessaire.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Active le plugin <em>Modeling Tools</em> et vérifie qu'un nouveau mode apparaît dans la barre Modes.</li>
+                <li>Via Quixel Bridge, importe un asset Megascan <b>gratuit</b> et place-le dans la scène.</li>
+                <li>Sur Fab, identifie un asset et lis sa licence&nbsp;: note s'il est utilisable en commercial et s'il exige une attribution.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu actives/désactives un plugin et comprends le redémarrage requis.</li>
+                  <li>Tu importes un asset depuis Bridge/Fab dans le Content Browser.</li>
+                  <li>Tu dis «&nbsp;Fab&nbsp;» (et non «&nbsp;Unreal Marketplace&nbsp;») et tu vérifies une licence avant usage.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les plugins se gèrent dans <b>Edit ▸ Plugins</b> (redémarrage souvent nécessaire)&nbsp;; n'active que le nécessaire.</li>
+                <li><b>Fab</b> a remplacé l'Unreal Marketplace, Quixel.com, le Sketchfab Store et l'ArtStation Marketplace&nbsp;; il sert Unreal <em>et</em> Unity.</li>
+                <li><b>Megascans</b> est sur Fab (majorité payante depuis 2025)&nbsp;; <b>Quixel Bridge</b> reste la passerelle, notamment pour <b>MetaHuman</b>.</li>
+                <li>Installe un plugin tiers via Fab ou via le dossier <code>Plugins/</code>&nbsp;; vérifie compatibilité UE&nbsp;5.7 et licence.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Plugin (Unreal)</b> — module activable ajoutant des fonctionnalités, géré dans Edit ▸ Plugins.</p>
+              <p><b>Fab</b> — marketplace unifiée d'Epic (depuis oct.&nbsp;2024), remplaçant plusieurs anciennes plateformes, pour Unreal et Unity.</p>
+              <p><b>Quixel Bridge</b> — passerelle intégrée vers les Megascans et MetaHuman.</p>
+              <p><b>MetaHuman</b> — système d'Epic pour créer/importer des personnages humains photoréalistes.</p>
+              <p><b>.uplugin</b> — fichier descripteur d'un plugin, placé dans le dossier Plugins/.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques d'assets &amp; scans</a>&nbsp;: Fab, Poly Haven et la lecture des licences en détail.</li>
+              <li><a href="../../cours/unity/u10-plugins-packages.html">U10 — Plugins &amp; packages (Unity)</a>&nbsp;: l'équivalent côté Unity (Package Manager, Asset Store).</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: comparer les écosystèmes d'assets.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U6 — Matériaux & Shader Graph · Atelier Game Art</title>
+  <meta name="description" content="Matériaux Unity (Standard, URP Lit, HDRP Lit) : brancher ses maps PBR, transparence, émission, et introduction à Shader Graph.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Matériaux & Shader Graph</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U6 — Matériaux & Shader Graph</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>, <a href="../../cours/unity/u05-import-assets.html">U5</a> et <a href="../../cours/unity/u03-render-pipelines.html">U3</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Créer un <b>matériau</b> Unity et choisir le <b>bon shader</b> selon ton pipeline (Standard en Built-in, <span class="term">URP/Lit</span> en URP, <span class="term">HDRP/Lit</span> en HDRP).</li>
+                <li>Brancher correctement les <b>maps PBR</b> sur un matériau URP Lit&nbsp;: Base Map, Metallic + Smoothness, Normal Map, Height, Occlusion, Emission.</li>
+                <li>Expliquer pourquoi Unity travaille en <b>Smoothness</b> (et pas Roughness), et d'où vient le canal de smoothness.</li>
+                <li>Configurer la <b>transparence</b> (Opaque vs Transparent, modes de blending, Alpha Clipping pour le feuillage) sans casser le tri.</li>
+                <li>Faire briller une surface avec l'<b>émission HDR</b> (néons, écrans) qui nourrit le bloom et la GI.</li>
+                <li>Comprendre l'esprit de <b>Shader Graph</b>&nbsp;: Master Stack, nœuds, Properties exposées, et construire un mélange de deux textures par un masque.</li>
+                <li>Reconnaître et corriger les pièges classiques&nbsp;: smoothness inversée, normal map en sRGB, matériau rose du mauvais pipeline.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Importer un modèle propre avec ses textures (vu en <a href="../../cours/unity/u05-import-assets.html">U5</a>) ne suffit pas&nbsp;: tant que ces textures ne sont pas <b>branchées dans un matériau</b>, l'objet reste gris, brillant n'importe comment, ou pire, d'un <b>rose criard</b>. Le matériau est la pièce qui relie le travail de l'artiste texture (Substance, Photoshop) au <span class="gloss">moteur de rendu</span> qui calcule l'image finale. C'est là que se joue 80&nbsp;% de la «&nbsp;qualité perçue&nbsp;» d'une scène&nbsp;: un asset moyen avec un matériau bien réglé bat un asset superbe mal branché.</p>
+            <p>En production, mal maîtriser les matériaux coûte cher et vite&nbsp;: un environment artist qui inverse smoothness et roughness livre des sols «&nbsp;mouillés&nbsp;» partout&nbsp;; un level designer qui oublie l'intensité d'émission se demande pourquoi ses néons ne «&nbsp;glow&nbsp;» pas&nbsp;; un débutant qui mélange un matériau Built-in dans un projet URP repeint toute sa scène en rose. Et au-delà des matériaux figés, <span class="gloss">Shader Graph</span> ouvre la porte aux <b>effets</b> — dissolve, contour de mana, eau, hologramme — sans écrire une ligne de <span class="term">HLSL</span>. Comprendre comment les maps se branchent <em>et</em> comment un graphe les manipule, c'est la base technique de toute la suite Unity&nbsp;: <a href="../../cours/unity/u07-eclairage.html">éclairage (U7)</a>, <a href="../../cours/unity/u08-post-processing.html">post-processing (U8)</a> et <a href="../../cours/unity/u09-vfx.html">VFX (U9)</a>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Rappel : tout part du pipeline choisi</div>
+              <p>Un matériau est <b>verrouillé à un pipeline de rendu</b> (<a href="../../cours/unity/u03-render-pipelines.html">vu en U3</a>). Un matériau écrit pour Built-in n'a aucun sens en URP, et inversement. Avant de créer le moindre matériau, sache si ton projet tourne en <b>Built-in</b>, <b>URP</b> (Universal Render Pipeline) ou <b>HDRP</b> (High Definition Render Pipeline). Cette leçon prend <b>URP</b> comme fil rouge, car c'est le choix le plus courant pour un projet polyvalent.</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Anatomie d'un matériau Unity : le shader d'abord, les valeurs ensuite</h3>
+            <p>Un <span class="term">matériau</span> (Material) Unity est un fichier <code>.mat</code>. Il contient deux choses&nbsp;: une <b>référence à un shader</b> (le programme GPU, vu en <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>) et la <b>liste des valeurs</b> que ce shader expose — couleurs, curseurs, et emplacements de textures. Changer de shader dans l'inspecteur d'un matériau, c'est changer la recette&nbsp;: les emplacements disponibles se réorganisent complètement.</p>
+            <p>Le shader le plus utilisé en URP s'appelle <b>Universal Render Pipeline/Lit</b> (souvent abrégé <b>URP/Lit</b>). «&nbsp;Lit&nbsp;» veut dire <em>éclairé</em>&nbsp;: ce shader réagit aux lumières de la scène selon le modèle <span class="gloss">PBR</span>. Son équivalent existe ailleurs&nbsp;: <b>Standard</b> en Built-in, <b>HDRP/Lit</b> en HDRP. Tous trois remplissent le même rôle (un matériau PBR opaque/transparent générique), mais ne sont <b>pas interchangeables</b> d'un pipeline à l'autre.</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Pipeline</th><th>Shader PBR standard</th><th>Où le trouver</th></tr></thead>
+                <tbody>
+                  <tr><td>Built-in (legacy)</td><td>Standard</td><td><span class="term">Standard</span> dans le menu Shader</td></tr>
+                  <tr><td>URP</td><td>Universal Render Pipeline/Lit</td><td><span class="term">Universal Render Pipeline ▸ Lit</span></td></tr>
+                  <tr><td>HDRP</td><td>HDRP/Lit</td><td><span class="term">HDRP ▸ Lit</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>2. Brancher les maps PBR sur URP Lit, slot par slot</h3>
+            <p>Le shader URP/Lit expose une série d'emplacements (slots). Chaque slot attend un <b>type d'information</b> précis. Brancher la bonne texture dans le bon slot, dans le bon <b>espace colorimétrique</b> (sRGB ou linéaire, vu en <a href="../../cours/unity/u05-import-assets.html">U5</a>), c'est tout l'enjeu. Détaillons-les.</p>
+
+            <h4>Base Map (albédo + alpha)</h4>
+            <p>La <span class="term">Base Map</span> (anciennement «&nbsp;Albedo&nbsp;») porte la <b>couleur diffuse</b> de la surface&nbsp;: sa teinte «&nbsp;de fond&nbsp;» sans aucune lumière ni ombre cuite dedans. C'est une texture <b>sRGB</b> (couleur perçue par l'œil). Le sélecteur de couleur à côté agit comme une <b>teinte multipliée</b>&nbsp;: laissé en blanc pur, il ne modifie rien&nbsp;; en rouge, il colore toute la surface. Le <b>canal alpha</b> de cette texture sert, selon le mode, à la transparence (voir plus bas) ou à rien.</p>
+
+            <h4>Metallic + Smoothness — le piège central</h4>
+            <p>Le slot <span class="term">Metallic Map</span> contrôle si la surface est un <b>métal</b> (canal à 1) ou un <b>diélectrique</b> non-métal comme le bois, la pierre, le plastique (canal à 0). C'est une donnée <b>linéaire</b> (pas sRGB), car ce n'est pas une couleur mais une valeur physique.</p>
+            <p>Vient ensuite le point que tout débutant se fait avoir&nbsp;: Unity ne travaille <b>pas</b> en <span class="gloss">Roughness</span> (rugosité) mais en <b>Smoothness</b> (lissé). Les deux sont l'inverse l'un de l'autre&nbsp;:</p>
+            <div class="codeblock" data-lang="Concept">
+<pre><code>Smoothness = 1 - Roughness
+
+  Roughness 0.0  (surface lisse, miroir)   ->  Smoothness 1.0
+  Roughness 0.9  (surface très rugueuse)   ->  Smoothness 0.1</code></pre>
+            </div>
+            <p>Si tu reçois de Substance une <b>roughness map</b> et que tu la branches telle quelle dans le canal smoothness d'Unity, <b>tout est inversé</b>&nbsp;: le métal mat devient un miroir, le verre poli devient terne. Deux solutions&nbsp;: exporter depuis Substance avec un preset «&nbsp;Unity URP Metallic&nbsp;» (qui inverse pour toi), ou <b>invertir</b> le canal toi-même. Unity lit la smoothness depuis une source que tu choisis dans le menu <span class="term">Source</span>&nbsp;: soit le <b>canal alpha de la Metallic Map</b> (par défaut), soit le <b>canal alpha de la Base Map (Albedo)</b>. C'est une astuce de packing&nbsp;: on glisse la smoothness «&nbsp;gratuitement&nbsp;» dans l'alpha d'une texture déjà présente, pour économiser une texture entière.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Smoothness vs Roughness</div>
+              <p>La question à se poser systématiquement&nbsp;: «&nbsp;ma texture représente-t-elle le <em>lisse</em> ou le <em>rugueux</em>&nbsp;?&nbsp;» Si une surface censée être mate ressort <b>brillante et mouillée</b> dans Unity, tu as quasi certainement branché une roughness sans l'inverser. C'est l'erreur n°1 du débutant URP.</p>
+            </div>
+
+            <h4>Normal Map (+ intensité)</h4>
+            <p>La <span class="gloss">Normal Map</span> simule du relief fin (rivets, grain, rayures) sans ajouter de géométrie&nbsp;: elle stocke, par pixel, une <b>direction de normale</b> qui trompe le calcul d'éclairage. C'est une texture <b>linéaire</b> impérativement marquée comme <b>Normal map</b> à l'import (vu en <a href="../../cours/unity/u05-import-assets.html">U5</a>) — sinon Unity la traite comme une couleur sRGB et le relief part de travers. Le curseur d'<b>intensité</b> à côté multiplie l'effet&nbsp;: 1 = tel que peint, &gt;1 = relief exagéré, &lt;1 = adouci.</p>
+
+            <h4>Height / Parallax</h4>
+            <p>La <span class="term">Height Map</span> (carte de hauteur) ajoute un effet de <b>parallaxe</b>&nbsp;: les zones «&nbsp;en creux&nbsp;» semblent se décaler quand la caméra bouge, donnant une vraie profondeur aux briques ou aux pavés. C'est plus coûteux qu'une normale et réservé aux surfaces qu'on regarde de près. Donnée linéaire, niveau de gris.</p>
+
+            <h4>Occlusion (AO)</h4>
+            <p>La carte d'<span class="gloss">Occlusion</span> ambiante (AO) assombrit les <b>recoins</b> que la lumière ambiante atteint mal&nbsp;: l'intérieur d'une fissure, le dessous d'un boulon. Elle n'affecte que la lumière indirecte/ambiante, jamais la lumière directe. Donnée linéaire, niveau de gris (1 = exposé, 0 = occlus).</p>
+
+            <h4>Emission (couleur + intensité HDR)</h4>
+            <p>L'<span class="term">émission</span> fait qu'une surface <b>émet de la lumière</b> au lieu de seulement la recevoir&nbsp;: l'écran d'un ordinateur, un néon, de la lave. On fournit une couleur (et/ou une emission map qui dit <em>où</em> ça brille) et surtout une <b>intensité HDR</b>. C'est ce facteur HDR (supérieur à 1) qui déclenche le <span class="gloss">bloom</span> en post-processing et, si activé, qui nourrit la <span class="gloss">GI</span> (illumination globale&nbsp;: l'émission éclaire les objets autour). Une émission à intensité 1 ne «&nbsp;glow&nbsp;» pas&nbsp;; il faut pousser à 3, 5, 10 pour un vrai effet lumineux.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 340" role="img" aria-label="Matériau URP Lit au centre avec ses slots Base, Metallic-Smoothness, Normal, Occlusion, Emission, chacun relié à une texture source et annoté de son espace colorimétrique">
+                <defs>
+                  <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#717c8c"/></marker>
+                </defs>
+                <!-- matériau central -->
+                <rect x="230" y="40" width="180" height="260" rx="12" fill="#59b0ff" fill-opacity="0.12" stroke="#59b0ff" stroke-width="2"/>
+                <text x="320" y="62" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Matériau</text>
+                <text x="320" y="78" text-anchor="middle" class="svg-dim" font-size="10.5">shader URP / Lit</text>
+                <!-- slots -->
+                <g font-size="11" font-weight="700">
+                  <rect x="246" y="92" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="111" text-anchor="middle" class="svg-text">Base Map</text>
+                  <rect x="246" y="128" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="147" text-anchor="middle" class="svg-text">Metallic + Smooth.</text>
+                  <rect x="246" y="164" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="183" text-anchor="middle" class="svg-text">Normal Map</text>
+                  <rect x="246" y="200" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="219" text-anchor="middle" class="svg-text">Occlusion</text>
+                  <rect x="246" y="236" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="255" text-anchor="middle" class="svg-text">Emission</text>
+                  <rect x="246" y="272" width="148" height="22" rx="6" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="320" y="287" text-anchor="middle" class="svg-text" font-size="10">→ Surface éclairée</text>
+                </g>
+                <!-- textures à gauche -->
+                <g font-size="10" font-weight="700">
+                  <rect x="20" y="92" width="44" height="30" rx="5" fill="#f2b441" fill-opacity="0.6"/><text x="42" y="112" text-anchor="middle" class="svg-text">RVB</text>
+                  <rect x="20" y="128" width="44" height="30" rx="5" fill="#9a9a9a"/><text x="42" y="148" text-anchor="middle" class="svg-text">gris</text>
+                  <rect x="20" y="164" width="44" height="30" rx="5" fill="#7f8cff" fill-opacity="0.75"/><text x="42" y="184" text-anchor="middle" class="svg-text">nrm</text>
+                  <rect x="20" y="200" width="44" height="30" rx="5" fill="#5a5a5a"/><text x="42" y="220" text-anchor="middle" class="svg-text">AO</text>
+                  <rect x="20" y="236" width="44" height="30" rx="5" fill="#f2b441" fill-opacity="0.8"/><text x="42" y="256" text-anchor="middle" class="svg-text">emit</text>
+                </g>
+                <!-- flèches textures -> slots -->
+                <line x1="64" y1="107" x2="244" y2="107" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
+                <line x1="64" y1="143" x2="244" y2="143" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
+                <line x1="64" y1="179" x2="244" y2="179" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
+                <line x1="64" y1="215" x2="244" y2="215" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
+                <line x1="64" y1="251" x2="244" y2="251" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
+                <!-- annotations espace colorimétrique à droite -->
+                <g font-size="10" class="svg-dim">
+                  <text x="420" y="111">sRGB · couleur diffuse</text>
+                  <text x="420" y="147">linéaire · 1=métal 0=non</text>
+                  <text x="420" y="183">linéaire · « Normal map »</text>
+                  <text x="420" y="219">linéaire · recoins sombres</text>
+                  <text x="420" y="255">HDR · &gt;1 = bloom + GI</text>
+                </g>
+                <text x="320" y="324" text-anchor="middle" class="svg-dim" font-size="10.5">Chaque slot attend un type de donnée précis, dans le bon espace colorimétrique.</text>
+              </svg>
+              <figcaption>Anatomie d'un matériau <b>URP/Lit</b>&nbsp;: à gauche les textures sources, au centre les slots du matériau, à droite l'espace colorimétrique attendu. Brancher une normale en sRGB ou une roughness non inversée dans le canal smoothness, et tout l'éclairage déraille.</figcaption>
+            </figure>
+
+            <h3>3. Metallic vs Specular : deux workflows pour le même but</h3>
+            <p>Unity propose deux façons de décrire la réflectivité d'une surface, choisies via le menu <span class="term">Workflow Mode</span> du matériau.</p>
+            <ul>
+              <li><b>Metallic workflow</b> (par défaut, recommandé)&nbsp;: tu donnes une base color + une valeur «&nbsp;est-ce du métal&nbsp;?&nbsp;» (0 ou 1). Le shader en déduit automatiquement la couleur des reflets. C'est le standard de l'industrie, compatible avec la plupart des bibliothèques d'assets et avec <a href="../../cours/logiciels/l02-substance.html">Substance (L2)</a>.</li>
+              <li><b>Specular workflow</b>&nbsp;: tu fournis directement une <b>specular map</b> (la couleur des reflets) en plus de la base color. Plus de contrôle pour des cas exotiques (certains tissus, peintures spéciales), mais plus de textures à gérer et un risque d'incohérence physique. À réserver à des besoins précis.</li>
+            </ul>
+            <p>Dans 95&nbsp;% des cas, reste en <b>metallic</b>&nbsp;: c'est plus léger, plus interopérable, et plus difficile à casser physiquement.</p>
+
+            <h3>4. Transparence : Surface Type, Blending et Alpha Clipping</h3>
+            <p>Par défaut un matériau est <b>Opaque</b>&nbsp;: il bouche complètement ce qui est derrière, et le moteur peut le trier efficacement par profondeur. Dès qu'on veut du verre, de la fumée ou du feuillage troué, il faut basculer le menu <span class="term">Surface Type</span> sur <b>Transparent</b> — ou activer l'Alpha Clipping. Ces deux voies sont très différentes.</p>
+
+            <h4>Surface Type : Transparent et modes de blending</h4>
+            <p>En mode <b>Transparent</b>, le shader <b>mélange</b> sa couleur avec ce qui est déjà dessiné derrière, selon l'alpha. Le menu <span class="term">Blending Mode</span> dicte la formule&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Mode</th><th>Effet</th><th>Usage typique</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Alpha</b></td><td>Mélange classique selon l'alpha (0 = invisible, 1 = opaque)</td><td>Verre, vitres, eau, voiles</td></tr>
+                  <tr><td><b>Premultiply</b></td><td>Comme Alpha mais gère mieux les bords avec reflets</td><td>Verre avec spéculaire fort, bulles</td></tr>
+                  <tr><td><b>Additive</b></td><td>Ajoute la couleur (jamais plus sombre, fait «&nbsp;glow&nbsp;»)</td><td>Feu, magie, hologrammes, lasers</td></tr>
+                  <tr><td><b>Multiply</b></td><td>Multiplie (assombrit ce qui est derrière)</td><td>Salissure, ombre portée fake, teinte</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Le mode Transparent a un coût&nbsp;: pour mélanger correctement, ces objets sont rendus <b>après</b> les opaques, triés <b>de l'arrière vers l'avant</b>, et n'écrivent généralement pas dans le tampon de profondeur. C'est la source des bugs de <b>tri</b> (un objet transparent qui passe «&nbsp;devant&nbsp;» un autre selon l'angle de caméra). On y revient dans les pièges.</p>
+
+            <h4>Alpha Clipping (cutout) : le découpage net</h4>
+            <p>L'<span class="term">Alpha Clipping</span> (ou cutout) est une troisième voie, idéale pour le <b>feuillage</b>, les grillages, les cheveux en cartes. Au lieu de mélanger, le shader <b>jette purement</b> les pixels dont l'alpha est sous un <b>seuil</b> (Threshold)&nbsp;: un pixel est soit 100&nbsp;% présent, soit 100&nbsp;% absent. Avantage décisif&nbsp;: le matériau reste <b>opaque</b> du point de vue du tri (pas de bug d'ordre, écriture de profondeur normale), tout en ayant des trous. C'est pour ça qu'une feuille d'arbre se fait en alpha clip, jamais en transparent. On retrouvera ce réglage côté Blender en <a href="../../cours/logiciels/l01-blender.html">L1</a>.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Règle de tri mental&nbsp;: <b>du feuillage, du grillage, des bords nets et binaires → Alpha Clipping</b> (opaque, pas de bug d'ordre). <b>Du verre, de la fumée, des dégradés progressifs → Transparent</b> (et accepte de gérer le tri). N'utilise Transparent que quand tu as vraiment besoin d'un <em>dégradé</em> d'opacité.</p>
+            </div>
+
+            <h3>5. Émission : faire vivre une scène la nuit</h3>
+            <p>L'émission mérite sa propre section car c'est l'outil n°1 pour le <b>sci-fi, le cyberpunk, l'horreur</b>&nbsp;: néons, écrans, panneaux d'alerte, lave. Le mécanisme&nbsp;: tu coches <b>Emission</b> dans le matériau, tu choisis une couleur, tu fixes une <b>intensité</b> en EV (exposition) ou en multiplicateur, et tu peux fournir une <b>emission map</b> pour ne faire briller que certaines zones (les lettres d'une enseigne, pas tout le panneau).</p>
+            <p>Le couplage avec le post-processing est essentiel&nbsp;: c'est le <b>bloom</b> (vu en <a href="../../cours/unity/u08-post-processing.html">U8</a>) qui transforme une surface émissive en halo lumineux. Sans bloom dans la scène, ton néon sera juste «&nbsp;une couleur vive&nbsp;» sans débordement. Et si l'objet est marqué <b>Contribute GI / Baked</b>, son émission peut <b>éclairer réellement</b> les murs autour lors du calcul d'illumination globale&nbsp;: un néon rouge teinte la ruelle en rouge. C'est cette combinaison émission HDR + bloom + GI qui donne les ambiances «&nbsp;Blade Runner&nbsp;».</p>
+
+            <h3>6. Shader Graph : fabriquer ses propres shaders, sans code</h3>
+            <p><span class="gloss">Shader Graph</span> est l'éditeur <b>nodal</b> de shaders d'Unity (pour URP et HDRP). Plutôt que d'écrire du <span class="term">HLSL</span>, tu relies des <b>nœuds</b> (des boîtes qui font une opération) jusqu'à un point de sortie. Sous le capot, le graphe est <b>compilé en HLSL</b> exactement comme un shader écrit à la main&nbsp;: ce n'est pas «&nbsp;moins puissant&nbsp;», c'est une autre interface (rappel <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>).</p>
+
+            <h4>Le Master Stack : la sortie du graphe</h4>
+            <p>Tout graphe se termine sur le <span class="term">Master Stack</span>, un bloc à deux étages qui correspond aux deux shaders du GPU&nbsp;:</p>
+            <ul>
+              <li><b>Vertex</b> — ce qui modifie la <em>géométrie</em>&nbsp;: déplacer des sommets (vagues d'eau, drapeau au vent). Souvent laissé tel quel.</li>
+              <li><b>Fragment</b> — ce qui calcule la <em>couleur de chaque pixel</em>&nbsp;: Base Color, Metallic, Smoothness, Normal, Emission… Ce sont les mêmes notions que les slots du matériau Lit, mais ici tu décides ce qui y arrive via des nœuds.</li>
+            </ul>
+
+            <h4>Les nœuds essentiels</h4>
+            <p>Quelques nœuds reviennent dans presque tous les graphes&nbsp;:</p>
+            <ul>
+              <li><b>Sample Texture 2D</b> — lit une texture à l'UV courante (l'équivalent visuel de l'opération <code>sample</code> du shader). Sortie RGBA.</li>
+              <li><b>UV</b> — fournit les coordonnées de texture du pixel courant&nbsp;; on les triture pour faire défiler, zoomer, déformer une texture.</li>
+              <li><b>Time</b> — donne le temps écoulé&nbsp;: la clé de toute animation (défilement, pulsation, scintillement).</li>
+              <li><b>Multiply</b> / <b>Add</b> — les opérations math de base&nbsp;: teinter (multiply), éclaircir (add), combiner.</li>
+              <li><b>Lerp</b> (interpolation linéaire) — <em>mélange</em> deux entrées A et B selon un facteur T (le masque)&nbsp;: T=0 donne A, T=1 donne B, entre les deux un fondu. C'est le nœud-roi pour mélanger deux textures.</li>
+              <li><b>Fresnel</b> — détecte les bords de l'objet vus en rasance&nbsp;: parfait pour des contours lumineux, un effet de bouclier, un rim light.</li>
+            </ul>
+
+            <h4>Exposer des Properties</h4>
+            <p>Pour qu'un graphe soit <b>réutilisable</b>, on expose des <span class="term">Properties</span> dans le panneau Blackboard&nbsp;: ce sont les réglages qui apparaîtront dans l'inspecteur de chaque matériau utilisant ce graphe (une couleur, une vitesse, une texture). Ainsi, un seul graphe «&nbsp;dissolve&nbsp;» sert à dix matériaux différents, chacun avec sa propre couleur de bord et sa propre texture de bruit — exactement la logique «&nbsp;un shader, plusieurs matériaux&nbsp;» de <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 260" role="img" aria-label="Petit graphe Shader Graph : deux nœuds Sample Texture 2D entrent dans un nœud Lerp dont le facteur T vient d'un masque, et la sortie va vers Base Color du Master Stack Fragment">
+                <defs>
+                  <marker id="sg" markerWidth="10" markerHeight="10" refX="6.5" refY="3" orient="auto"><path d="M0 0 L7 3 L0 6 z" fill="#c89bff"/></marker>
+                </defs>
+                <!-- Sample A -->
+                <rect x="16" y="24" width="150" height="48" rx="8" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/>
+                <text x="91" y="44" text-anchor="middle" class="svg-text" font-weight="700" font-size="11.5">Sample Texture 2D</text>
+                <text x="91" y="61" text-anchor="middle" class="svg-dim" font-size="10">texture « propre »</text>
+                <!-- Sample B -->
+                <rect x="16" y="108" width="150" height="48" rx="8" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/>
+                <text x="91" y="128" text-anchor="middle" class="svg-text" font-weight="700" font-size="11.5">Sample Texture 2D</text>
+                <text x="91" y="145" text-anchor="middle" class="svg-dim" font-size="10">texture « rouillée »</text>
+                <!-- Masque -->
+                <rect x="16" y="192" width="150" height="48" rx="8" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="91" y="212" text-anchor="middle" class="svg-text" font-weight="700" font-size="11.5">Masque (gris)</text>
+                <text x="91" y="229" text-anchor="middle" class="svg-dim" font-size="10">0 = propre · 1 = rouille</text>
+                <!-- Lerp -->
+                <rect x="270" y="92" width="130" height="80" rx="9" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a" stroke-width="2"/>
+                <text x="335" y="122" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Lerp</text>
+                <text x="335" y="140" text-anchor="middle" class="svg-dim" font-size="9.5">A · B · T</text>
+                <text x="335" y="156" text-anchor="middle" class="svg-dim" font-size="9.5">mélange selon T</text>
+                <!-- Entrées Lerp -->
+                <text x="258" y="106" text-anchor="end" class="svg-dim" font-size="10">A</text>
+                <text x="258" y="136" text-anchor="end" class="svg-dim" font-size="10">B</text>
+                <text x="258" y="166" text-anchor="end" class="svg-dim" font-size="10">T</text>
+                <!-- Master Stack -->
+                <rect x="476" y="84" width="150" height="96" rx="9" class="svg-surface" stroke="#313c4c" stroke-width="2"/>
+                <text x="551" y="106" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Fragment</text>
+                <text x="551" y="122" text-anchor="middle" class="svg-dim" font-size="9.5">(Master Stack)</text>
+                <rect x="492" y="132" width="118" height="30" rx="6" fill="#f2b441" fill-opacity="0.18" stroke="#f2b441"/>
+                <text x="551" y="151" text-anchor="middle" class="svg-text" font-weight="700" font-size="11">Base Color</text>
+                <!-- flèches -->
+                <path d="M166 48 C 210 48, 220 100, 268 102" fill="none" stroke="#c89bff" stroke-width="1.6" marker-end="url(#sg)"/>
+                <path d="M166 132 L 268 132" fill="none" stroke="#c89bff" stroke-width="1.6" marker-end="url(#sg)"/>
+                <path d="M166 216 C 210 216, 230 165, 268 162" fill="none" stroke="#c89bff" stroke-width="1.6" marker-end="url(#sg)"/>
+                <path d="M400 147 L 490 147" fill="none" stroke="#c89bff" stroke-width="1.8" marker-end="url(#sg)"/>
+                <text x="438" y="138" text-anchor="middle" class="svg-dim" font-size="10">couleur finale</text>
+              </svg>
+              <figcaption>Un mini graphe&nbsp;: deux textures (propre / rouillée) entrent dans un <b>Lerp</b>, mélangées selon un <b>masque</b> (T)&nbsp;; la sortie alimente <b>Base Color</b> du Master Stack. Là où le masque est noir → texture propre, blanc → rouille, gris → fondu. Exposer le masque en Property rend l'effet réglable par matériau.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On fabrique d'abord un <b>matériau métal rouillé</b> avec ses quatre maps, puis un <b>mini Shader Graph</b> qui mélange deux textures par un masque. Le projet est supposé en <b>URP</b>.</p>
+
+            <h4>Partie A — Matériau métal rouillé (4 maps)</h4>
+            <ol>
+              <li>Dans la fenêtre Project, fais <span class="menu-path">clic droit<span class="arrow">▸</span>Create<span class="arrow">▸</span>Material</span>. Un fichier <code>.mat</code> apparaît&nbsp;; renomme-le <code>M_MetalRouille</code>. <b>Ce qui se passe</b>&nbsp;: Unity crée un matériau utilisant par défaut le shader URP/Lit (puisque le projet est URP).</li>
+              <li>Sélectionne-le et regarde l'inspecteur. Vérifie en haut que <span class="menu-path">Shader</span> indique bien <span class="menu-path">Universal Render Pipeline<span class="arrow">▸</span>Lit</span>. Si ce n'était pas le cas (matériau rose), c'est ici qu'on corrige.</li>
+              <li>Glisse ta texture base color dans <span class="menu-path">Surface Inputs<span class="arrow">▸</span>Base Map</span>. <b>Ce qui se passe</b>&nbsp;: la surface prend ses couleurs (métal gris + plaques de rouille brune). Laisse la teinte à côté en blanc pour ne rien altérer.</li>
+              <li>Active <span class="menu-path">Metallic Map</span> et branche ta metallic map&nbsp;; règle la <span class="menu-path">Source</span> de smoothness sur <span class="menu-path">Metallic Alpha</span> si ta smoothness est packée dans son alpha. <b>Point critique</b>&nbsp;: si Substance t'a donné une <em>roughness</em>, inverse-la avant import, sinon le métal poli et la rouille mate seront échangés.</li>
+              <li>Branche la <span class="menu-path">Normal Map</span> (rivets, grain de rouille). Si Unity affiche un avertissement «&nbsp;This texture is not marked as a normal map&nbsp;», clique <span class="menu-path">Fix Now</span>&nbsp;: cela force le bon import linéaire (rappel <a href="../../cours/unity/u05-import-assets.html">U5</a>). Ajuste l'intensité autour de 1.</li>
+              <li>Branche l'<span class="menu-path">Occlusion Map</span> pour assombrir les creux entre les plaques. <b>Ce qui se passe</b>&nbsp;: les recoins gagnent en profondeur sous la lumière ambiante, sans toucher la lumière directe.</li>
+              <li>Si une partie doit luire (LED d'un boîtier sur le métal), coche <span class="menu-path">Emission</span>, choisis une couleur et pousse l'<span class="menu-path">Intensity</span> à 3–5 (HDR). <b>Ce qui se passe</b>&nbsp;: rien ne «&nbsp;glow&nbsp;» encore tant que le bloom n'est pas actif — pense à l'activer en <a href="../../cours/unity/u08-post-processing.html">U8</a>.</li>
+              <li>Glisse le matériau sur ton objet dans la scène. Tourne autour&nbsp;: le métal doit accrocher des reflets nets, la rouille rester mate. Si <b>tout</b> est miroir, ta smoothness est inversée — reviens à l'étape 4.</li>
+            </ol>
+
+            <h4>Partie B — Mini Shader Graph « mélange par masque »</h4>
+            <ol>
+              <li>Crée le graphe&nbsp;: <span class="menu-path">clic droit<span class="arrow">▸</span>Create<span class="arrow">▸</span>Shader Graph<span class="arrow">▸</span>URP<span class="arrow">▸</span>Lit Shader Graph</span>. Renomme-le <code>SG_Blend</code> et double-clique pour ouvrir l'éditeur. <b>Ce qui se passe</b>&nbsp;: une fenêtre nodale s'ouvre avec le Master Stack à droite.</li>
+              <li>Dans le Blackboard, ajoute trois <b>Properties</b> (bouton +)&nbsp;: deux <span class="menu-path">Texture2D</span> (<code>TexPropre</code>, <code>TexRouille</code>) et une <span class="menu-path">Texture2D</span> <code>Masque</code>. <b>Pourquoi</b>&nbsp;: ces réglages apparaîtront dans l'inspecteur du futur matériau, rendant le graphe réutilisable.</li>
+              <li>Tire chaque Property dans le graphe, puis ajoute deux nœuds <span class="menu-path">Add Node<span class="arrow">▸</span>Input<span class="arrow">▸</span>Texture<span class="arrow">▸</span>Sample Texture 2D</span> et connecte chaque Texture2D à un Sample. Ajoute un troisième Sample pour le masque.</li>
+              <li>Ajoute un nœud <span class="menu-path">Add Node<span class="arrow">▸</span>Math<span class="arrow">▸</span>Interpolation<span class="arrow">▸</span>Lerp</span>. Relie la sortie <b>RGBA</b> de TexPropre à l'entrée <b>A</b>, TexRouille à <b>B</b>, et le canal <b>R</b> du masque à <b>T</b>. <b>Ce qui se passe</b>&nbsp;: là où le masque est noir (0), on voit TexPropre&nbsp;; blanc (1), TexRouille&nbsp;; gris, un fondu.</li>
+              <li>Relie la sortie du Lerp à <span class="menu-path">Fragment<span class="arrow">▸</span>Base Color</span> du Master Stack. Clique <span class="menu-path">Save Asset</span> en haut à gauche. <b>Ce qui se passe</b>&nbsp;: le graphe est compilé en HLSL.</li>
+              <li>Reviens au Project, <span class="menu-path">clic droit sur SG_Blend<span class="arrow">▸</span>Create<span class="arrow">▸</span>Material</span>. Dans l'inspecteur du nouveau matériau apparaissent <b>tes trois Properties</b>&nbsp;: assigne les textures et peins/ajuste le masque. Tu viens de fabriquer un shader d'usure réglable par matériau.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Toutes mes surfaces censées être mates (béton, bois, rouille) ressortent brillantes et «&nbsp;mouillées&nbsp;».</div>
+                <div class="pi-cause"><b>Cause</b>Une <b>roughness map</b> a été branchée dans le canal <b>smoothness</b> sans inversion. Comme Smoothness = 1 − Roughness, tout l'éclairage spéculaire est retourné.</div>
+                <div class="pi-fix"><b>Correction</b>Exporte depuis Substance avec un preset «&nbsp;Unity URP Metallic&nbsp;» (qui inverse la roughness en smoothness), ou inverse le canal manuellement. Vérifie aussi la <span class="term">Source</span> de smoothness (Metallic Alpha vs Albedo Alpha).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map donne un relief étrange, comme «&nbsp;gravé à l'envers&nbsp;» ou délavé, avec des couleurs bizarres sur la surface.</div>
+                <div class="pi-cause"><b>Cause</b>La texture est importée en <b>sRGB</b> au lieu de linéaire, et/ou n'est pas marquée comme <b>Normal map</b>&nbsp;: Unity la traite comme une couleur, faussant les directions.</div>
+                <div class="pi-fix"><b>Correction</b>Dans l'import de la texture (<a href="../../cours/unity/u05-import-assets.html">U5</a>), règle le Texture Type sur <span class="term">Normal map</span> (ce qui désactive sRGB). Le bouton <span class="menu-path">Fix Now</span> du matériau le fait aussi.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes vitres ou particules transparentes clignotent, passent l'une devant l'autre selon l'angle, ou disparaissent.</div>
+                <div class="pi-cause"><b>Cause</b>Problème d'<b>ordre de rendu</b> du Surface Type Transparent&nbsp;: les transparents sont triés par distance et n'écrivent pas la profondeur, ce qui crée des erreurs de tri sur les objets imbriqués.</div>
+                <div class="pi-fix"><b>Correction</b>Quand c'est possible, remplace par de l'<b>Alpha Clipping</b> (opaque, pas de bug d'ordre) pour les bords nets&nbsp;; sinon sépare/simplifie la géométrie transparente et ajuste la Render Queue. Voir aussi <a href="../../cours/unity/u11-optimisation.html">U11</a>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon néon a la bonne couleur mais ne «&nbsp;glow&nbsp;» pas, ne déborde pas&nbsp;: il a l'air d'un sticker coloré.</div>
+                <div class="pi-cause"><b>Cause</b>Émission cochée mais <b>intensité à 1</b> (ou pas de bloom dans la scène). Sans valeur HDR &gt;1, aucune surcharge lumineuse à faire déborder.</div>
+                <div class="pi-fix"><b>Correction</b>Monte l'<b>Intensity</b> d'émission (3, 5, 10) et active le <b>Bloom</b> dans le Volume de post-processing (<a href="../../cours/unity/u08-post-processing.html">U8</a>). Pour éclairer les murs, coche Contribute GI.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un objet (ou tout l'objet importé) apparaît d'un <b>rose/magenta</b> uni, sans texture.</div>
+                <div class="pi-cause"><b>Cause</b>Le matériau utilise un shader d'un <b>autre pipeline</b> (un shader Built-in/Standard dans un projet URP, ou inversement). URP ne sait pas dessiner ce shader → couleur d'erreur.</div>
+                <div class="pi-fix"><b>Correction</b>Change le shader du matériau pour <span class="term">Universal Render Pipeline ▸ Lit</span>, ou utilise <span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert Selected/All Built-in Materials to URP</span>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon feuillage en Surface Type Transparent rame et a des bords sales/fantômes autour des feuilles.</div>
+                <div class="pi-cause"><b>Cause</b>Le feuillage utilise du <b>blending transparent</b> (coûteux, overdraw, halos d'alpha) là où il faudrait un découpage net.</div>
+                <div class="pi-fix"><b>Correction</b>Passe en <b>Alpha Clipping</b> avec un Threshold bien réglé&nbsp;: pixels présents/absents nets, tri opaque, performances rétablies. Réserve Transparent aux vrais dégradés (eau, verre).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans un projet <b>URP</b> (au besoin crée-en un, voir <a href="../../cours/unity/u04-projet-graphique.html">U4</a>), tu vas fabriquer un matériau PBR complet puis un petit shader de mélange.</p>
+              <ol>
+                <li>Crée un matériau URP/Lit pour un <b>caisson métallique partiellement rouillé</b> et branche ses <b>4 maps</b>&nbsp;: base color, metallic+smoothness (bonne orientation&nbsp;!), normal (marquée Normal map), occlusion. Pose-le sur un cube/objet.</li>
+                <li>Ajoute une <b>émission</b> sur une petite zone (un voyant) avec une emission map ou une couleur, intensité HDR à 4, et vérifie le rendu avec le Bloom activé.</li>
+                <li>Crée une variante en <b>Alpha Clipping</b>&nbsp;: une grille/grillage troué, et montre qu'elle ne souffre d'aucun bug de tri quand tu en empiles deux.</li>
+                <li>Construis le <b>SG_Blend</b> de la démo (deux Sample Texture 2D → Lerp via un masque → Base Color) avec les trois Properties exposées, puis crée un matériau dessus et ajuste le masque.</li>
+                <li>Bonus&nbsp;: ajoute un nœud <b>Time</b> + <b>Multiply</b> sur l'UV d'une des textures pour la faire défiler lentement (un effet de coulure animée).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le métal accroche des reflets nets et la rouille reste mate&nbsp;: la smoothness est dans le bon sens (pas tout miroir, pas tout terne).</li>
+                  <li>La normal map crée du relief correct (avertissement «&nbsp;Fix Now&nbsp;» traité), sans couleurs parasites.</li>
+                  <li>L'émission produit un vrai halo (intensité HDR + bloom), pas une simple couleur plate.</li>
+                  <li>Le grillage en Alpha Clipping a des bords nets et ne clignote pas quand deux exemplaires se superposent.</li>
+                  <li>Le matériau SG_Blend expose ses Properties dans l'inspecteur, et le masque mélange visiblement les deux textures (noir/blanc/gris).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un matériau est <b>lié à un pipeline</b>&nbsp;: Standard (Built-in), URP/Lit (URP), HDRP/Lit (HDRP). Un matériau du mauvais pipeline devient <b>rose</b>.</li>
+                <li>Sur URP/Lit&nbsp;: <b>Base Map</b> (sRGB), <b>Metallic + Smoothness</b> (linéaire), <b>Normal</b> (linéaire, marquée Normal map), <b>Height</b>, <b>Occlusion</b>, <b>Emission</b> (HDR).</li>
+                <li><b>Smoothness = 1 − Roughness</b>&nbsp;: branche une roughness sans l'inverser et tout l'éclairage spéculaire est retourné. La source de smoothness vient de l'alpha de la Metallic ou de l'Albedo.</li>
+                <li><b>Transparence</b>&nbsp;: Opaque par défaut&nbsp;; Transparent (Alpha/Premultiply/Additive/Multiply) pour les dégradés mais attention au tri&nbsp;; <b>Alpha Clipping</b> pour le feuillage (net, opaque, sans bug d'ordre).</li>
+                <li><b>Émission</b>&nbsp;: il faut une <b>intensité HDR &gt;1</b> ET le <b>bloom</b> actif pour un vrai glow&nbsp;; Contribute GI pour éclairer autour.</li>
+                <li><b>Shader Graph</b>&nbsp;: nodal, compilé en HLSL&nbsp;; le <b>Master Stack</b> (Vertex/Fragment) est la sortie&nbsp;; les <b>Properties</b> exposées rendent un graphe réutilisable&nbsp;; <b>Lerp</b> mélange deux entrées via un masque.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>URP/Lit (HDRP/Lit, Standard)</b> — shader PBR généraliste d'un pipeline donné&nbsp;; «&nbsp;Lit&nbsp;» signifie qu'il réagit aux lumières de la scène.</p>
+              <p><b>Base Map</b> — texture de couleur diffuse (albédo) d'une surface, en espace sRGB&nbsp;; son alpha peut servir à la transparence.</p>
+              <p><b>Smoothness</b> — mesure du lissé d'une surface dans Unity, égale à 1 − Roughness&nbsp;; 1 = miroir, 0 = mat.</p>
+              <p><b>Metallic Map</b> — carte indiquant si une surface est métallique (1) ou non-métal/diélectrique (0), en données linéaires.</p>
+              <p><b>Workflow Metallic / Specular</b> — deux façons de décrire la réflectivité&nbsp;: metallic (recommandé) déduit les reflets, specular les fournit directement.</p>
+              <p><b>Surface Type</b> — réglage Opaque ou Transparent d'un matériau, déterminant comment il se mélange avec l'arrière-plan.</p>
+              <p><b>Blending Mode</b> — formule de mélange d'un matériau transparent&nbsp;: Alpha, Premultiply, Additive, Multiply.</p>
+              <p><b>Alpha Clipping (cutout)</b> — découpage binaire des pixels selon un seuil d'alpha&nbsp;; reste opaque pour le tri (idéal feuillage, grillage).</p>
+              <p><b>Émission</b> — propriété faisant qu'une surface émet de la lumière&nbsp;; son intensité HDR nourrit le bloom et, si activée, la GI.</p>
+              <p><b>Shader Graph</b> — éditeur nodal de shaders d'Unity (URP/HDRP), compilé en HLSL sous le capot.</p>
+              <p><b>Master Stack</b> — bloc de sortie d'un Shader Graph, à deux étages Vertex et Fragment.</p>
+              <p><b>Lerp / Property</b> — Lerp interpole deux entrées selon un facteur (masque)&nbsp;; une Property est un réglage exposé pour rendre un graphe réutilisable.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: ce que metallic, roughness et normal signifient physiquement.</li>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a>&nbsp;: la hiérarchie texture/matériau/shader et le pipeline GPU.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: régler sRGB vs linéaire et le type Normal map à l'import.</li>
+              <li><a href="../../cours/unity/u08-post-processing.html">U8 — Post-processing</a>&nbsp;: activer le bloom pour faire vivre l'émission HDR.</li>
+              <li><a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor (Unreal)</a>&nbsp;: le même travail dans l'éditeur nodal d'Unreal, pour comparer.</li>
+              <li><a href="../../cours/unity/u11-optimisation.html">U11 — Optimisation</a>&nbsp;: maîtriser le coût des transparences et des shaders.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

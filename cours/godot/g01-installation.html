@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G1 — Installation & configuration de Godot · Atelier Game Art</title>
+  <meta name="description" content="Installer Godot 4.x : téléchargement officiel, version standard vs .NET (C#), éditeur portable, et la licence MIT gratuite sans royalties.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Installation &amp; configuration</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G1 — Installation &amp; configuration de Godot</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun. Point de départ de la piste Godot, le moteur libre et gratuit.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Télécharger Godot 4.x depuis la source officielle et comprendre pourquoi il n'y a <b>rien à installer</b>.</li>
+                <li>Choisir entre la version <b>standard</b> et la version <b>.NET</b> (C#).</li>
+                <li>Comprendre la licence <b>MIT</b> et ce qu'elle change (gratuit, sans royalties, sans abonnement).</li>
+                <li>Lancer l'éditeur et créer un premier projet de test.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Godot est le troisième moteur majeur, et le plus <b>léger d'accès</b>&nbsp;: il est entièrement <b>libre et open source</b> sous licence MIT — aucune redevance, aucun abonnement, aucun seuil de revenus (contrairement à <a href="../../cours/unity/u01-installation.html">Unity</a> et <a href="../../cours/unreal/e01-installation.html">Unreal</a>). L'éditeur pèse quelques dizaines de Mo et ne nécessite <b>aucune installation</b>. C'est un excellent moteur pour apprendre, prototyper, et faire des jeux 2D/3D stylisés. Bien démarrer t'évite la seule vraie question de départ&nbsp;: standard ou .NET&nbsp;?</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un éditeur portable, rien à installer</h3>
+            <p>On télécharge Godot <b>uniquement</b> depuis <span class="term">godotengine.org</span> ▸ <span class="menu-path">Download</span>. On reçoit un simple fichier exécutable (dans une archive .zip)&nbsp;: on le décompresse où l'on veut et on le lance — <b>pas d'installateur</b>, pas de droits administrateur, pas de service en arrière-plan. C'est «&nbsp;portable&nbsp;» par nature&nbsp;: on peut le mettre sur une clé USB, faire coexister plusieurs versions, et le supprimer en effaçant le fichier. Cette légèreté est une philosophie du projet.</p>
+
+            <h3>2. Standard vs .NET (C#)</h3>
+            <p>Godot propose deux éditions du même moteur&nbsp;:</p>
+            <ul>
+              <li><b>Version standard</b>&nbsp;: scripting en <b>GDScript</b> (langage maison, proche de Python, très intégré à l'éditeur). C'est la version recommandée pour débuter et pour ce cours orienté graphisme&nbsp;: plus simple, plus légère.</li>
+              <li><b>Version .NET (Mono)</b>&nbsp;: ajoute le support du <b>C#</b> (en plus de GDScript). À choisir si tu veux coder en C# (par exemple parce que tu viens d'Unity). Elle nécessite le SDK .NET installé.</li>
+            </ul>
+            <p>Le <b>moteur graphique est identique</b> dans les deux&nbsp;: ce choix ne concerne que le langage de script. Comme cette piste se concentre sur le graphisme et les assets, la version standard suffit largement.</p>
+
+            <h3>3. La licence MIT&nbsp;: ce que ça change</h3>
+            <p>Godot est publié sous licence <span class="term">MIT</span>&nbsp;: tu peux l'utiliser, le modifier et vendre tes jeux <b>sans rien devoir</b> à personne — pas de royalties (≠ <a href="../../cours/unreal/e01-installation.html">Unreal</a>, 5&nbsp;% au-delà d'1&nbsp;M$), pas de licence par siège ni de seuil de revenus (≠ <a href="../../cours/unity/u01-installation.html">Unity Personal</a>). Le moteur est porté par une fondation à but non lucratif et des dons. Pour un indépendant ou un débutant, c'est un argument fort (on y revient en <a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1</a>/<a href="../../cours/comparaison/c03-choisir-moteur.html">C3</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Comparaison des modèles de licence Unity, Unreal et Godot">
+                <g class="svg-text" font-size="11.5">
+                  <rect x="20" y="40" width="190" height="100" rx="9" fill="#818cf8" fill-opacity="0.12" stroke="#818cf8"/>
+                  <text x="115" y="64" text-anchor="middle" font-weight="800">Unity</text>
+                  <text x="115" y="88" text-anchor="middle" class="svg-dim">Personal gratuit</text>
+                  <text x="115" y="106" text-anchor="middle" class="svg-dim">&lt; 200 000 $/an</text>
+                  <rect x="225" y="40" width="190" height="100" rx="9" fill="#c084fc" fill-opacity="0.12" stroke="#c084fc"/>
+                  <text x="320" y="64" text-anchor="middle" font-weight="800">Unreal</text>
+                  <text x="320" y="88" text-anchor="middle" class="svg-dim">gratuit, puis 5 %</text>
+                  <text x="320" y="106" text-anchor="middle" class="svg-dim">au-delà d'1 M$/jeu</text>
+                  <rect x="430" y="40" width="190" height="100" rx="9" fill="#4f9bd9" fill-opacity="0.16" stroke="#4f9bd9" stroke-width="1.8"/>
+                  <text x="525" y="64" text-anchor="middle" font-weight="800">Godot</text>
+                  <text x="525" y="88" text-anchor="middle" class="svg-dim">MIT — 100 % libre</text>
+                  <text x="525" y="106" text-anchor="middle" class="svg-dim">0 royaltie, 0 seuil</text>
+                  <text x="525" y="124" text-anchor="middle" fill="#4ade80" font-weight="700">gratuit pour toujours</text>
+                </g>
+              </svg>
+              <figcaption>Trois modèles économiques&nbsp;: Godot se distingue par une licence MIT sans aucune contrepartie financière.</figcaption>
+            </figure>
+
+            <h3>4. Versions de Godot</h3>
+            <p>Ce cours se base sur la série <b>Godot 4.x</b> (4.4, 4.5…), qui a introduit le nouveau moteur de rendu Vulkan, le SDFGI, etc. (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>, <a href="../../cours/godot/g07-eclairage.html">G7</a>). Évite la branche 3.x (ancienne, OpenGL) pour un nouveau projet. Comme toujours, affiche la version dans tes notes pour rester datable&nbsp;; les principes restent valables d'une 4.x à l'autre.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Va sur <b>godotengine.org</b> ▸ <span class="menu-path">Download</span>. Choisis ton OS, puis la version <b>standard</b> (ou <b>.NET</b> si tu veux coder en C#). Télécharge le .zip.</li>
+              <li>Décompresse-le dans un dossier de ton choix. Double-clique l'exécutable&nbsp;: l'éditeur démarre directement sur le <b>Project Manager</b> (renvoi <a href="../../cours/godot/g04-projet.html">G4</a>).</li>
+              <li>Clique <span class="menu-path">Create / Import</span> ▸ crée un projet de test (choisis un dossier vide, renderer <em>Forward+</em> par défaut — renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</li>
+              <li>L'éditeur s'ouvre. Va dans <span class="menu-path">Editor<span class="arrow">▸</span>Editor Settings</span> pour régler le thème, l'échelle de l'interface et, si besoin, la langue.</li>
+              <li>(Version .NET) Installe le <b>SDK .NET</b> si Godot le demande, et vérifie dans Editor Settings la configuration de la build C#.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je cherche l'« installateur » de Godot et je ne le trouve pas.</div>
+                <div class="pi-cause"><b>Cause</b>Godot ne s'installe pas&nbsp;: c'est un exécutable portable.</div>
+                <div class="pi-fix"><b>Correction</b>Décompresse le .zip et lance l'exécutable directement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je veux coder en C# mais ça ne marche pas.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as pris la version standard (GDScript only), pas la version .NET&nbsp;; ou le SDK .NET manque.</div>
+                <div class="pi-fix"><b>Correction</b>Télécharge la version <em>.NET</em> et installe le SDK .NET requis.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des tutoriels parlent de menus que je ne trouve pas.</div>
+                <div class="pi-cause"><b>Cause</b>Le tutoriel vise Godot 3.x&nbsp;; l'interface et le rendu ont beaucoup changé en 4.x.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie la version visée&nbsp;; suis du contenu Godot 4.x.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon projet 3D rame ou ne s'affiche pas correctement.</div>
+                <div class="pi-cause"><b>Cause</b>Renderer mal choisi pour ton matériel (Forward+ exige Vulkan).</div>
+                <div class="pi-fix"><b>Correction</b>Sur matériel ancien/web, choisis le renderer <em>Compatibility</em> (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Télécharge Godot 4.x (standard) depuis godotengine.org et lance-le sans l'installer.</li>
+                <li>Crée un projet de test « Hello3D » en renderer Forward+.</li>
+                <li>Dans Editor Settings, règle l'échelle de l'interface et le thème à ton goût.</li>
+                <li>Note la version exacte que tu utilises (menu <span class="menu-path">Help<span class="arrow">▸</span>About</span>).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Godot 4.x démarre depuis l'exécutable portable, sans installation.</li>
+                  <li>Tu sais expliquer la différence standard / .NET et la portée de la licence MIT.</li>
+                  <li>Un projet de test s'ouvre dans l'éditeur.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Godot se télécharge sur <b>godotengine.org</b> et se lance <b>sans installation</b> (portable).</li>
+                <li><b>Standard</b> (GDScript) suffit pour le graphisme&nbsp;; <b>.NET</b> ajoute le C# (SDK requis).</li>
+                <li>Licence <b>MIT</b>&nbsp;: libre, gratuit, <b>aucune royaltie ni seuil</b> — un atout majeur.</li>
+                <li>Base-toi sur la série <b>4.x</b> (évite 3.x).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Licence MIT</b> — licence libre très permissive&nbsp;: usage, modification et vente sans contrepartie ni royalties.</p>
+              <p><b>GDScript</b> — langage de script intégré de Godot, proche de Python, optimisé pour le moteur.</p>
+              <p><b>Version .NET (Mono)</b> — édition de Godot ajoutant le support du C#.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/godot/g02-editeur.html">G2 — Anatomie de l'éditeur Godot</a>&nbsp;: le modèle Scene + Node.</li>
+              <li><a href="../../cours/godot/g03-renderers.html">G3 — Renderers</a>&nbsp;: Forward+ / Mobile / Compatibility.</li>
+              <li><a href="../../cours/comparaison/c03-choisir-moteur.html">C3 — Choisir son moteur</a>&nbsp;: où Godot se positionne.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

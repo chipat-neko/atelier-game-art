@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U4 — Créer & configurer un projet graphique · Atelier Game Art</title>
+  <meta name="description" content="Bien démarrer un projet Unity côté graphisme : templates, color space linéaire, réglages de qualité et organisation des dossiers.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Créer & configurer un projet graphique</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U4 — Créer & configurer un projet graphique</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Choisir le bon <b>template</b> de projet (3D, Universal 3D, HD 3D) selon ta cible graphique.</li>
+                <li>Régler le <b>Color Space</b> sur <b>Linear</b> et expliquer <em>pourquoi</em> c'est obligatoire pour un rendu PBR correct.</li>
+                <li>Comprendre les <b>Quality Settings</b> (anti-aliasing, ombres, LOD Bias, qualité des textures) et les accorder à ta plateforme.</li>
+                <li>Repérer le <b>Render Pipeline Asset</b> dans les Graphics Settings et savoir à quoi il sert.</li>
+                <li>Poser une <b>arborescence de dossiers</b> propre dans <code>Assets/</code> et appliquer des conventions de nommage qui ne casseront pas tes références.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un projet Unity, c'est comme un atelier&nbsp;: si tu poses tes outils n'importe où et que tu travailles sous une lumière mal réglée le premier jour, tu paieras cette négligence pendant des mois. La plupart des bugs visuels «&nbsp;mystérieux&nbsp;» d'un débutant — un rendu qui paraît <b>délavé</b>, des couleurs «&nbsp;fausses&nbsp;», un projet impossible à retrouver dans un fouillis de fichiers — ne viennent pas d'un manque de talent, mais d'un <b>projet mal configuré au départ</b>.</p>
+            <p>Trois décisions prises dans les cinq premières minutes conditionnent toute la suite&nbsp;: le <b>template</b> (qui détermine ton pipeline de rendu et donc tes shaders, voir <a href="../../cours/unity/u03-render-pipelines.html">U3</a>), le <b>Color Space</b> (qui détermine si tes calculs de lumière sont physiquement justes), et l'<b>organisation des dossiers</b> (qui détermine si ton projet reste navigable à 10, 100 ou 1000 fichiers). Ce sont des choix <b>structurants</b>&nbsp;: les corriger après coup va de «&nbsp;pénible&nbsp;» à «&nbsp;douloureux&nbsp;».</p>
+            <p>Dans un studio, c'est si critique qu'on ne laisse jamais un artiste créer un projet «&nbsp;à la main&nbsp;»&nbsp;: on lui fournit un <b>template d'entreprise</b> déjà configuré (color space, qualité, arborescence, conventions de nommage). Cette leçon t'apprend à fabriquer toi-même ce socle sain, pour que tout ton travail graphique repose sur des fondations correctes.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les templates&nbsp;: quel point de départ pour le graphisme&nbsp;?</h3>
+            <p>Quand tu crées un projet depuis le <span class="term">Unity Hub</span> (l'application qui gère tes versions d'Unity et tes projets), Unity te propose des <span class="term">templates</span>&nbsp;: des projets pré-configurés avec un pipeline de rendu, des réglages et quelques exemples déjà en place. Le template n'est pas qu'un décor&nbsp;: il <b>installe et active un pipeline de rendu</b> précis, ce qui détermine quels shaders tu pourras utiliser et quelles fonctionnalités d'éclairage tu auras.</p>
+            <p>Trois templates nous intéressent côté graphisme (rappel de <a href="../../cours/unity/u03-render-pipelines.html">U3</a>)&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Template</th><th>Pipeline</th><th>Pour qui&nbsp;?</th></tr></thead>
+                <tbody>
+                  <tr><td><b>3D</b> (Built-in)</td><td>Built-in Render Pipeline (l'ancien, «&nbsp;BiRP&nbsp;»)</td><td>Tutoriels anciens, prototypes très simples. <b>Déconseillé</b> pour un nouveau projet graphique&nbsp;: en fin de vie.</td></tr>
+                  <tr><td><b>Universal 3D</b></td><td><span class="gloss">URP</span> (Universal Render Pipeline)</td><td><b>Le choix par défaut.</b> Équilibre qualité/performance, tourne du mobile au PC. Le plus polyvalent pour apprendre.</td></tr>
+                  <tr><td><b>HD 3D</b></td><td><span class="gloss">HDRP</span> (High Definition Render Pipeline)</td><td>Rendu haut de gamme PC/console (cinématiques, archviz). Gourmand, plus complexe&nbsp;: à réserver aux cibles puissantes.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Pour ce cours&nbsp;: Universal 3D (URP)</div>
+              <p>Sauf indication contraire, on travaillera en <b>URP</b>. C'est le pipeline le plus enseigné, le plus documenté, et celui qui te permet de comprendre les <a href="../../cours/unity/u06-materiaux.html">matériaux</a>, l'<a href="../../cours/unity/u07-eclairage.html">éclairage</a> et le <a href="../../cours/unity/u08-post-processing.html">post-processing</a> sans noyer ta machine. Tu pourras explorer HDRP plus tard, une fois les bases acquises.</p>
+            </div>
+            <p>Pourquoi ne pas «&nbsp;changer de pipeline plus tard&nbsp;»&nbsp;? Parce que les <b>shaders ne sont pas compatibles d'un pipeline à l'autre</b>. Un matériau écrit pour le Built-in ne s'affiche pas en URP (il apparaît en magenta vif, la couleur «&nbsp;shader manquant&nbsp;» d'Unity), et vice-versa. Migrer un projet déjà rempli d'assets vers un autre pipeline est une opération lourde&nbsp;: mieux vaut choisir juste au départ.</p>
+
+            <h3>2. Le Color Space&nbsp;: pourquoi Linear est non négociable</h3>
+            <p>C'est le réglage le plus important de toute la leçon, et celui qu'on oublie le plus souvent. Le <span class="term">Color Space</span> détermine l'<b>espace dans lequel Unity effectue ses calculs de lumière</b>. Deux options&nbsp;: <b>Gamma</b> ou <b>Linear</b> (linéaire).</p>
+
+            <h4>Le problème&nbsp;: lumière et perception ne vivent pas dans le même espace</h4>
+            <p>Reprenons l'idée fondatrice de <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>. La lumière, dans la réalité, s'additionne de façon <b>linéaire</b>&nbsp;: deux ampoules identiques éclairent exactement deux fois plus qu'une seule. Mais l'œil humain, lui, perçoit la luminosité de façon <b>non linéaire</b>&nbsp;: il est bien plus sensible dans les tons sombres que dans les tons clairs. Pour exploiter cette sensibilité, les images couleur (comme tes <span class="gloss">textures</span> de Base Color) sont stockées en <span class="gloss">sRGB</span>&nbsp;: une courbe «&nbsp;gamma&nbsp;» qui réserve plus de nuances aux sombres.</p>
+            <p>Le piège est là&nbsp;: une texture sRGB contient des valeurs <b>déjà déformées par la courbe gamma</b>. Si le moteur additionne directement deux lumières sur ces valeurs déformées, le résultat est <b>physiquement faux</b>. Additionner des nombres «&nbsp;gamma&nbsp;» ne donne pas le bon total, comme additionner des températures en Fahrenheit en croyant manipuler des Celsius.</p>
+
+            <h4>La solution&nbsp;: tout calculer en linéaire</h4>
+            <p>En <b>Linear Color Space</b>, Unity met en place un pipeline correct&nbsp;:</p>
+            <ol>
+              <li>À la lecture, chaque texture sRGB est <b>reconvertie en linéaire</b> (on «&nbsp;défait&nbsp;» la courbe gamma) avant tout calcul.</li>
+              <li>Tous les calculs d'éclairage, de mélange et de PBR se font en <b>linéaire</b> — là où l'addition de lumière a un sens physique.</li>
+              <li>À l'affichage final, le résultat est <b>reconverti en sRGB</b> pour ton écran (étape appelée «&nbsp;encodage gamma de sortie&nbsp;»).</li>
+            </ol>
+            <p>En <b>Gamma Color Space</b>, ce pipeline est court-circuité&nbsp;: Unity calcule directement sur les valeurs déformées. Résultat&nbsp;: les dégradés de lumière sont faux, les reflets PBR sont mous, et l'image entière paraît <b>délavée, plate, «&nbsp;lavée&nbsp;»</b>, surtout dans les zones de transition ombre/lumière. Le <a href="../../cours/fondamentaux/f07-pbr.html">PBR</a> suppose des calculs en linéaire&nbsp;: en Gamma, il ne <em>peut pas</em> être correct.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>URP et HDRP imposent Linear</div>
+              <p>Bonne nouvelle&nbsp;: si tu pars d'un template <b>Universal 3D</b> ou <b>HD 3D</b>, Unity règle déjà le Color Space sur <b>Linear</b> pour toi — ces pipelines <b>refusent</b> de fonctionner correctement en Gamma. Le piège ne concerne vraiment que les vieux projets Built-in ou les projets convertis. Mais on <b>vérifie toujours</b>&nbsp;: dix secondes de contrôle évitent des heures de doute.</p>
+            </div>
+
+            <h3>3. Les Quality Settings&nbsp;: doser l'image pour la cible</h3>
+            <p>Les <span class="term">Quality Settings</span> (<span class="menu-path">Project Settings<span class="arrow">▸</span>Quality</span>) regroupent les réglages qui arbitrent en permanence entre <b>beauté</b> et <b>performance</b>. Unity les organise en <b>niveaux de qualité</b> (par exemple <em>Performant</em>, <em>Balanced</em>, <em>High Fidelity</em> en URP)&nbsp;: tu peux en avoir plusieurs et basculer de l'un à l'autre selon la machine qui fait tourner le jeu.</p>
+            <p>Le <em>pourquoi</em> est essentiel&nbsp;: ces réglages n'ont <b>pas de «&nbsp;bonne&nbsp;» valeur universelle</b>. La valeur correcte dépend de ta <b>cible</b> (mobile bas de gamme, PC de joueur, console). Les principaux leviers&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Réglage</th><th>Ce qu'il fait</th><th>Compromis</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Anti-Aliasing</b> (anticrénelage)</td><td>Lisse les bords «&nbsp;en escalier&nbsp;» des polygones (MSAA 2×/4×/8×).</td><td>Plus élevé = bords plus nets, mais coûte de la mémoire et du GPU.</td></tr>
+                  <tr><td><b>Shadows</b> (ombres)</td><td>Résolution et distance des ombres temps réel.</td><td>Ombres haute résolution = très joli, mais c'est l'un des postes les plus lourds.</td></tr>
+                  <tr><td><b>LOD Bias</b></td><td>Biaise la distance à laquelle un objet bascule sur un <span class="gloss">LOD</span> moins détaillé (voir <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</td><td>Bias élevé = on garde les modèles détaillés plus loin (plus beau, plus lourd)&nbsp;; bas = on simplifie tôt (plus rapide).</td></tr>
+                  <tr><td><b>Texture Quality</b></td><td>Permet de charger les textures à pleine résolution ou à moitié/quart.</td><td>Réduire = gros gain de mémoire sur appareils limités, au prix de la netteté.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>«&nbsp;Tout à fond&nbsp;» n'est pas un objectif</div>
+              <p>Le réflexe débutant est de pousser tous les curseurs au maximum «&nbsp;pour que ce soit beau&nbsp;». Sur un mobile, ce projet ne tournera tout simplement pas (chutes de framerate, surchauffe, crash mémoire). La qualité se <b>budgète</b> en fonction de la cible la plus faible que tu vises&nbsp;: c'est un arbitrage d'ingénieur, pas un curseur d'esthète.</p>
+            </div>
+
+            <h3>4. Les Graphics Settings et le Render Pipeline Asset</h3>
+            <p>Dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Graphics</span>, tu trouves le <span class="term">Render Pipeline Asset</span> actif&nbsp;: un fichier (<code>.asset</code>) qui <b>configure le pipeline lui-même</b>. C'est lui qui dit à Unity «&nbsp;j'utilise URP, avec telles options globales d'éclairage, d'ombres et de qualité&nbsp;».</p>
+            <p>Quand tu crées un projet URP, Unity génère automatiquement un ou plusieurs de ces assets (souvent un par niveau de qualité). Tu n'as <b>rien à faire</b> au début&nbsp;: il faut juste savoir que ce fichier existe, qu'il pilote ton rendu, et qu'on y reviendra dans <a href="../../cours/unity/u07-eclairage.html">U7 (éclairage)</a> et <a href="../../cours/unity/u11-optimisation.html">U11 (optimisation)</a>. Retiens simplement le lien&nbsp;: <b>template → pipeline installé → Render Pipeline Asset → réglages de rendu</b>. Tout se tient.</p>
+
+            <h3>5. L'organisation des dossiers&nbsp;: la propreté qui sauve des heures</h3>
+            <p>Tout ce que tu importes ou crées vit sous un dossier unique&nbsp;: <code>Assets/</code>. Unity ne t'impose <b>aucune</b> structure interne&nbsp;: c'est à la fois une liberté et un piège. Sans discipline, <code>Assets/</code> devient en quelques semaines un dépotoir de centaines de fichiers à la racine, impossible à naviguer.</p>
+            <p>Une arborescence claire range les assets <b>par type et par rôle</b>. Une convention répandue et solide&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Dossier</th><th>Contenu</th></tr></thead>
+                <tbody>
+                  <tr><td><code>Art/Models/</code></td><td>Les meshes importés (<span class="term">FBX</span>, glTF…).</td></tr>
+                  <tr><td><code>Art/Textures/</code></td><td>Les images sources des matériaux (Base Color, Normal, etc.).</td></tr>
+                  <tr><td><code>Materials/</code></td><td>Les matériaux Unity (<code>.mat</code>) qui branchent ces textures.</td></tr>
+                  <tr><td><code>Prefabs/</code></td><td>Les objets réutilisables assemblés (un lampadaire complet, un ennemi…).</td></tr>
+                  <tr><td><code>Scenes/</code></td><td>Les scènes (<code>.unity</code>)&nbsp;: niveaux, salle de test…</td></tr>
+                  <tr><td><code>Scripts/</code></td><td>Le code C# (si tu en as).</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>Conventions de nommage</h4>
+            <p>Au-delà des dossiers, nommer ses fichiers de façon <b>cohérente</b> est ce qui distingue un projet d'amateur d'un projet pro. Quelques règles éprouvées&nbsp;:</p>
+            <ul>
+              <li><b>Pas d'espaces ni d'accents</b> dans les noms de fichiers (préfère <code>caisseBois_BaseColor</code> à «&nbsp;caisse bois (final).png&nbsp;»)&nbsp;: certains outils et systèmes de build gèrent mal espaces et caractères spéciaux.</li>
+              <li><b>Un préfixe ou suffixe parlant</b>&nbsp;: <code>T_</code> pour texture, <code>M_</code> pour material, <code>SM_</code> pour static mesh… ou un suffixe de map (<code>_BaseColor</code>, <code>_Normal</code>). L'important, c'est la <b>constance</b>.</li>
+              <li><b>Jamais «&nbsp;final&nbsp;», «&nbsp;final2&nbsp;», «&nbsp;vraiFinal&nbsp;»</b>&nbsp;: le versionnage est le rôle de Git, pas du nom de fichier.</li>
+            </ul>
+
+            <h4>Les dossiers spéciaux (à connaître, pas à utiliser tout de suite)</h4>
+            <p>Unity réserve quelques noms de dossiers à un comportement particulier&nbsp;:</p>
+            <ul>
+              <li><code>Resources/</code>&nbsp;: tout ce qui s'y trouve est <b>inclus dans le build</b> et chargeable par code à l'exécution. Pratique, mais souvent <b>surutilisé</b>&nbsp;: il alourdit le build et complique l'optimisation. À manier avec parcimonie.</li>
+              <li><code>StreamingAssets/</code>&nbsp;: copié <b>tel quel</b> dans le build, accessible par chemin de fichier (utile pour des vidéos, des données externes).</li>
+            </ul>
+            <p>Pour l'instant, sache simplement qu'ils <b>existent</b> et qu'on ne les crée pas «&nbsp;pour faire joli&nbsp;».</p>
+
+            <h4>Versionner&nbsp;: la mention .gitignore</h4>
+            <p>Dès que ton projet compte, mets-le sous <b>contrôle de version</b> avec Git. Mais attention&nbsp;: Unity génère des dossiers qu'il ne faut <b>jamais</b> versionner (<code>Library/</code>, <code>Temp/</code>, <code>obj/</code>…) car ils sont régénérés automatiquement et pèsent des gigaoctets. On les exclut via un fichier <code>.gitignore</code> (Unity en fournit un officiel). On versionne <code>Assets/</code>, <code>ProjectSettings/</code> et <code>Packages/</code> — le reste se reconstruit seul.</p>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Les fichiers .meta sont sacrés</div>
+              <p>Pour chaque asset, Unity crée un fichier <code>.meta</code> caché qui contient son <span class="gloss">GUID</span> (identifiant unique) et ses réglages d'import. C'est <b>ce GUID</b>, et non le chemin du fichier, qui relie tes assets entre eux (un matériau «&nbsp;connaît&nbsp;» sa texture par GUID). Si tu déplaces ou renommes un asset <b>hors d'Unity</b> (dans l'explorateur Windows), tu sépares le fichier de son <code>.meta</code> → Unity régénère un nouveau GUID et <b>toutes les références cassent</b>. Règle d'or&nbsp;: <b>renomme et déplace toujours depuis la fenêtre Project d'Unity</b>, qui déplace fichier et <code>.meta</code> ensemble.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 360" role="img" aria-label="Arborescence de dossiers recommandée sous Assets : Art contenant Models et Textures, puis Materials, Prefabs, Scenes et Scripts">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Une arborescence Assets/ saine</text>
+                <!-- Assets racine -->
+                <rect x="40" y="46" width="150" height="40" rx="8" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+                <text x="115" y="71" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Assets/</text>
+                <!-- ligne verticale de branche -->
+                <line x1="70" y1="86" x2="70" y2="330" stroke="#313c4c" stroke-width="2"/>
+                <!-- Art -->
+                <line x1="70" y1="118" x2="120" y2="118" stroke="#313c4c" stroke-width="2"/>
+                <rect x="120" y="100" width="150" height="36" rx="7" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+                <text x="195" y="123" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Art/</text>
+                <!-- sous-branche Art -->
+                <line x1="150" y1="136" x2="150" y2="220" stroke="#313c4c" stroke-width="2"/>
+                <line x1="150" y1="162" x2="200" y2="162" stroke="#313c4c" stroke-width="2"/>
+                <rect x="200" y="146" width="180" height="32" rx="6" class="svg-surface" stroke="#59b0ff" stroke-width="1.5"/>
+                <text x="290" y="167" text-anchor="middle" class="svg-text" font-size="12">Models/ &nbsp;<tspan class="svg-dim" font-size="10">.fbx</tspan></text>
+                <line x1="150" y1="204" x2="200" y2="204" stroke="#313c4c" stroke-width="2"/>
+                <rect x="200" y="188" width="180" height="32" rx="6" class="svg-surface" stroke="#59b0ff" stroke-width="1.5"/>
+                <text x="290" y="209" text-anchor="middle" class="svg-text" font-size="12">Textures/ &nbsp;<tspan class="svg-dim" font-size="10">.png</tspan></text>
+                <!-- Materials -->
+                <line x1="70" y1="248" x2="120" y2="248" stroke="#313c4c" stroke-width="2"/>
+                <rect x="120" y="232" width="180" height="32" rx="6" class="svg-surface" stroke="#5ad19a" stroke-width="1.5"/>
+                <text x="210" y="253" text-anchor="middle" class="svg-text" font-size="12">Materials/ &nbsp;<tspan class="svg-dim" font-size="10">.mat</tspan></text>
+                <!-- Prefabs -->
+                <line x1="70" y1="284" x2="120" y2="284" stroke="#313c4c" stroke-width="2"/>
+                <rect x="120" y="268" width="180" height="32" rx="6" class="svg-surface" stroke="#c89bff" stroke-width="1.5"/>
+                <text x="210" y="289" text-anchor="middle" class="svg-text" font-size="12">Prefabs/ &nbsp;<tspan class="svg-dim" font-size="10">.prefab</tspan></text>
+                <!-- Scenes -->
+                <line x1="70" y1="320" x2="120" y2="320" stroke="#313c4c" stroke-width="2"/>
+                <rect x="120" y="304" width="180" height="32" rx="6" class="svg-surface" stroke="#f2b441" stroke-width="1.5"/>
+                <text x="210" y="325" text-anchor="middle" class="svg-text" font-size="12">Scenes/ &nbsp;<tspan class="svg-dim" font-size="10">.unity</tspan></text>
+                <!-- Scripts (colonne droite) -->
+                <line x1="300" y1="320" x2="420" y2="320" stroke="#313c4c" stroke-width="2" stroke-dasharray="3 3"/>
+                <rect x="420" y="304" width="180" height="32" rx="6" class="svg-surface" stroke="#ff6b6b" stroke-width="1.5"/>
+                <text x="510" y="325" text-anchor="middle" class="svg-text" font-size="12">Scripts/ &nbsp;<tspan class="svg-dim" font-size="10">.cs</tspan></text>
+                <!-- légende -->
+                <text x="420" y="120" class="svg-dim" font-size="11">Range par type ET par rôle.</text>
+                <text x="420" y="140" class="svg-dim" font-size="11">Chaque chose à sa place :</text>
+                <text x="420" y="160" class="svg-dim" font-size="11">on retrouve tout en 2 s,</text>
+                <text x="420" y="180" class="svg-dim" font-size="11">même à 1000 fichiers.</text>
+              </svg>
+              <figcaption>Une structure lisible&nbsp;: <code>Art/</code> regroupe les sources (modèles, textures), puis les <code>Materials/</code>, <code>Prefabs/</code>, <code>Scenes/</code> et <code>Scripts/</code> à la racine. La cohérence prime sur les noms exacts.</figcaption>
+            </figure>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Comparaison de la même scène en Gamma color space, délavée, et en Linear color space, contrastée et correcte">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Même scène : Gamma (faux) vs Linear (correct)</text>
+                <!-- cadre Gamma -->
+                <rect x="40" y="46" width="250" height="180" rx="10" class="svg-surface" stroke="#ff6b6b" stroke-width="2"/>
+                <text x="165" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#ff6b6b">Gamma — délavé</text>
+                <!-- sphère délavée : faible contraste -->
+                <defs>
+                  <radialGradient id="gam" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#dcdce0"/><stop offset="0.6" stop-color="#b9bcc4"/><stop offset="1" stop-color="#9aa0ab"/></radialGradient>
+                  <radialGradient id="lin" cx="0.38" cy="0.32" r="0.85"><stop offset="0" stop-color="#ffffff"/><stop offset="0.18" stop-color="#cfd6e0"/><stop offset="0.6" stop-color="#4a5566"/><stop offset="1" stop-color="#10161f"/></radialGradient>
+                </defs>
+                <circle cx="165" cy="150" r="55" fill="url(#gam)"/>
+                <line x1="60" y1="208" x2="270" y2="208" stroke="#9aa0ab" stroke-width="2"/>
+                <text x="165" y="222" text-anchor="middle" class="svg-dim" font-size="10">transitions molles, ombres « grises », reflet plat</text>
+                <!-- cadre Linear -->
+                <rect x="350" y="46" width="250" height="180" rx="10" class="svg-surface" stroke="#5ad19a" stroke-width="2"/>
+                <text x="475" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#5ad19a">Linear — correct</text>
+                <circle cx="475" cy="150" r="55" fill="url(#lin)"/>
+                <!-- point spéculaire net -->
+                <circle cx="455" cy="128" r="9" fill="#ffffff"/>
+                <line x1="370" y1="208" x2="580" y2="208" stroke="#313c4c" stroke-width="2"/>
+                <text x="475" y="222" text-anchor="middle" class="svg-dim" font-size="10">vrai contraste, ombres profondes, reflet net</text>
+                <!-- bas : explication du flux -->
+                <text x="320" y="256" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">En Linear : sRGB → décodé en linéaire → calculs lumière → ré-encodé sRGB pour l'écran</text>
+                <text x="320" y="278" text-anchor="middle" class="svg-dim" font-size="11">En Gamma, l'étape de décodage est sautée : les additions de lumière sont fausses.</text>
+              </svg>
+              <figcaption>Schématique&nbsp;: en Gamma, les calculs de lumière opèrent sur des valeurs déformées → image lavée, contraste écrasé. En Linear, le pipeline décode puis ré-encode correctement → contraste et reflets justes, comme l'exige le PBR.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Créons un projet propre de A à Z, vérifions le Color Space, puis posons l'arborescence. On suppose qu'<a href="../../cours/unity/u01-installation.html">Unity et le Hub sont installés</a>.</p>
+            <ol>
+              <li>Ouvre l'<b>Unity Hub</b>, onglet <span class="menu-path">Projects<span class="arrow">▸</span>New project</span>. Une fenêtre de templates s'ouvre&nbsp;: chaque vignette correspond à un pipeline pré-configuré.</li>
+              <li>Sélectionne le template <b>Universal 3D</b> (URP). Effet concret&nbsp;: Unity installera le package URP, créera les Render Pipeline Assets et réglera le projet en <b>Linear</b>.</li>
+              <li>Donne un <b>Project name</b> sans espace ni accent (ex. <code>AtelierGameArt_URP</code>) et un emplacement court (évite les chemins de plus de 200 caractères, source de bugs sous Windows). Clique <span class="menu-path">Create project</span>. Unity importe les packages&nbsp;: c'est normal que ça prenne une minute ou deux.</li>
+              <li>Une fois l'éditeur ouvert, <b>vérifie le Color Space</b> (même s'il devrait déjà être bon). Va dans <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Player<span class="arrow">▸</span>Other Settings<span class="arrow">▸</span>Color Space</span>. Confirme que c'est <b>Linear</b>. Si c'était <b>Gamma</b>, change-le maintenant&nbsp;: Unity te préviendra qu'il doit <b>recompiler les shaders</b> (l'opération peut être longue sur un gros projet — d'où l'intérêt de la faire au début, quand le projet est vide).</li>
+              <li>Inspecte les <b>Quality Settings</b>&nbsp;: <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Quality</span>. Observe les niveaux fournis par URP (Performant, Balanced, High Fidelity) et repère les réglages d'anti-aliasing et d'ombres. Ne change rien pour l'instant&nbsp;: tu sais désormais où ils sont et ce qu'ils coûtent.</li>
+              <li>Jette un œil aux <b>Graphics Settings</b>&nbsp;: <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Graphics</span>. Tu y vois le <b>Render Pipeline Asset</b> URP actif. C'est lui qui pilote ton rendu&nbsp;; on y reviendra en U7 et U11.</li>
+              <li>Pose l'arborescence dans la fenêtre <b>Project</b> (en bas). Clic droit dans <code>Assets</code> &gt; <span class="menu-path">Create<span class="arrow">▸</span>Folder</span>, et crée&nbsp;: <code>Art</code>, <code>Materials</code>, <code>Prefabs</code>, <code>Scenes</code>, <code>Scripts</code>. Puis, dans <code>Art</code>, crée <code>Models</code> et <code>Textures</code>. Crée tes dossiers <b>depuis Unity</b> (jamais depuis l'explorateur)&nbsp;: ainsi les <code>.meta</code> sont générés correctement.</li>
+              <li>Déplace la scène d'exemple dans <code>Scenes/</code> en la <b>glissant</b> dans la fenêtre Project (jamais dans l'explorateur Windows). Tu viens de poser un projet sain, prêt à recevoir tes <a href="../../cours/unity/u05-import-assets.html">premiers assets importés</a>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Toute la scène paraît <b>délavée</b>, plate, les ombres sont grisâtres et les couleurs «&nbsp;sonnent faux&nbsp;» malgré de bonnes textures.</div>
+                <div class="pi-cause"><b>Cause</b> — Le projet est en <b>Gamma Color Space</b>&nbsp;: les calculs de lumière s'effectuent sur des valeurs déformées par la courbe gamma, ce qui rend le PBR incorrect.</div>
+                <div class="pi-fix"><b>Correction</b> — Passe en <b>Linear</b> (<span class="menu-path">Player<span class="arrow">▸</span>Other Settings<span class="arrow">▸</span>Color Space</span>) et laisse Unity recompiler les shaders. Le contraste et les reflets reviennent.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Au bout de quelques semaines, impossible de retrouver quoi que ce soit&nbsp;: des centaines de fichiers s'entassent à la racine d'<code>Assets/</code>.</div>
+                <div class="pi-cause"><b>Cause</b> — Aucune arborescence posée au départ. Tout a été importé «&nbsp;en vrac&nbsp;» à la racine.</div>
+                <div class="pi-fix"><b>Correction</b> — Crée la structure <code>Art/{Models,Textures}</code>, <code>Materials</code>, <code>Prefabs</code>, <code>Scenes</code>, <code>Scripts</code> <b>dès la création</b> du projet, et range au fur et à mesure.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Après avoir réorganisé tes fichiers, des matériaux apparaissent en <b>magenta</b> et des objets ont perdu leurs textures.</div>
+                <div class="pi-cause"><b>Cause</b> — Des assets ont été <b>renommés ou déplacés hors d'Unity</b> (dans l'explorateur), séparant le fichier de son <code>.meta</code>&nbsp;: le GUID a changé, les références sont cassées.</div>
+                <div class="pi-fix"><b>Correction</b> — Renomme et déplace <b>uniquement</b> depuis la fenêtre Project d'Unity. Si le mal est fait, restaure les <code>.meta</code> d'origine ou rebranche les références à la main.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Le jeu est superbe sur ton PC mais <b>rame, surchauffe ou plante</b> sur mobile ou sur une machine modeste.</div>
+                <div class="pi-cause"><b>Cause</b> — Quality Settings trop élevés pour la cible (anti-aliasing 8×, ombres haute résolution, textures pleine résolution) — un budget pensé pour le haut de gamme.</div>
+                <div class="pi-fix"><b>Correction</b> — Crée/ajuste un niveau de qualité <b>adapté à la cible la plus faible</b>&nbsp;: baisse l'AA, la résolution d'ombres, la Texture Quality, le LOD Bias. Teste sur l'appareil réel.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Le dépôt Git pèse plusieurs gigaoctets et chaque commit est interminable&nbsp;; des conflits apparaissent sur des fichiers que tu n'as jamais touchés.</div>
+                <div class="pi-cause"><b>Cause</b> — Les dossiers <b>générés</b> (<code>Library/</code>, <code>Temp/</code>, <code>obj/</code>) ont été versionnés faute de <code>.gitignore</code> adapté.</div>
+                <div class="pi-fix"><b>Correction</b> — Ajoute le <code>.gitignore</code> officiel Unity dès l'init du dépôt. Ne versionne que <code>Assets/</code>, <code>ProjectSettings/</code> et <code>Packages/</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Tes matériaux et effets ne s'affichent pas et apparaissent en magenta après avoir suivi un tutoriel.</div>
+                <div class="pi-cause"><b>Cause</b> — <b>Mauvais template / pipeline</b>&nbsp;: un asset Built-in glissé dans un projet URP (ou l'inverse). Les shaders ne sont pas compatibles entre pipelines.</div>
+                <div class="pi-fix"><b>Correction</b> — Vérifie que tes assets ciblent le <b>bon pipeline</b>. Au besoin, convertis les matériaux (<span class="menu-path">Edit<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Materials<span class="arrow">▸</span>Convert…</span>) ou choisis le bon template dès le départ.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Crée de zéro un projet <b>Unity URP</b> prêt pour le graphisme et documente tes choix&nbsp;:</p>
+              <ol>
+                <li>Depuis l'Unity Hub, crée un nouveau projet avec le template <b>Universal 3D</b>, nommé sans espace ni accent.</li>
+                <li>Ouvre <span class="menu-path">Project Settings<span class="arrow">▸</span>Player<span class="arrow">▸</span>Other Settings</span> et <b>vérifie que Color Space = Linear</b>. Note la valeur trouvée.</li>
+                <li>Pose l'arborescence complète&nbsp;: <code>Art/Models</code>, <code>Art/Textures</code>, <code>Materials</code>, <code>Prefabs</code>, <code>Scenes</code>, <code>Scripts</code> — entièrement <b>depuis la fenêtre Project</b>.</li>
+                <li>Déplace la scène d'exemple dans <code>Scenes/</code> par glisser-déposer dans Unity, puis sauvegarde.</li>
+                <li>Ouvre les <b>Quality Settings</b> et écris, pour le niveau actif, la valeur de l'anti-aliasing et de la résolution d'ombres.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le projet est en <b>URP</b> et le <b>Color Space est Linear</b> (vérifié, pas supposé).</li>
+                  <li>L'arborescence existe en entier et a été créée <b>depuis Unity</b> (chaque dossier possède son <code>.meta</code>).</li>
+                  <li>La scène est rangée dans <code>Scenes/</code> sans aucune référence cassée (pas de magenta).</li>
+                  <li>Aucun nom de fichier ne contient d'espace ni d'accent.</li>
+                  <li>Tu peux nommer le réglage d'anti-aliasing et de résolution d'ombres du niveau de qualité actif.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Template</b> = pipeline installé. Pour le graphisme, pars sur <b>Universal 3D (URP)</b>&nbsp;; changer de pipeline plus tard est lourd.</li>
+                <li><b>Color Space = Linear</b> est <b>obligatoire</b> pour un rendu PBR correct&nbsp;: les calculs de lumière doivent se faire en linéaire. Gamma = image délavée et fausse. URP/HDRP imposent Linear, mais on vérifie toujours.</li>
+                <li><b>Quality Settings</b> = arbitrage beauté/performance selon la <b>cible</b> (AA, ombres, LOD Bias, Texture Quality). «&nbsp;Tout à fond&nbsp;» n'est pas un objectif.</li>
+                <li>Le <b>Render Pipeline Asset</b> (Graphics Settings) configure ton pipeline&nbsp;: bon à connaître, on l'exploitera plus tard.</li>
+                <li>Range <code>Assets/</code> <b>par type et rôle</b>, nomme sans espace/accent, et <b>déplace/renomme toujours depuis Unity</b> pour préserver les <code>.meta</code> et les GUID.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Template (modèle de projet)</b> — Projet pré-configuré proposé par l'Unity Hub&nbsp;; il installe et active un pipeline de rendu précis (3D Built-in, Universal 3D/URP, HD 3D/HDRP).</p>
+              <p><b>Color Space</b> — Espace dans lequel Unity effectue ses calculs de lumière. <b>Linear</b> (correct pour le PBR) décode les textures sRGB avant calcul&nbsp;; <b>Gamma</b> calcule sur des valeurs déformées et délave l'image.</p>
+              <p><b>Quality Settings</b> — Ensemble de niveaux de qualité réglant anti-aliasing, ombres, LOD Bias et Texture Quality&nbsp;: l'arbitrage permanent entre beauté et performance selon la plateforme.</p>
+              <p><b>Anti-aliasing (anticrénelage)</b> — Technique qui lisse les bords «&nbsp;en escalier&nbsp;» des polygones (MSAA 2×/4×/8×), au prix de mémoire et de calcul GPU.</p>
+              <p><b>LOD Bias</b> — Facteur qui décale la distance à laquelle un objet bascule sur un niveau de détail (LOD) inférieur&nbsp;; élevé = plus détaillé plus loin (plus lourd).</p>
+              <p><b>Render Pipeline Asset</b> — Fichier <code>.asset</code> qui configure le pipeline de rendu actif (options globales d'éclairage, d'ombres, de qualité)&nbsp;; visible dans les Graphics Settings.</p>
+              <p><b>Fichier .meta</b> — Fichier caché qu'Unity associe à chaque asset&nbsp;; il stocke le GUID et les réglages d'import. Le déplacer/renommer hors d'Unity casse les références.</p>
+              <p><b>GUID</b> — Identifiant unique d'un asset, utilisé par Unity pour relier les assets entre eux indépendamment de leur chemin de fichier.</p>
+              <p><b>Dossiers spéciaux (Resources, StreamingAssets)</b> — Noms de dossiers à comportement particulier&nbsp;: <code>Resources/</code> est chargeable par code et inclus au build&nbsp;; <code>StreamingAssets/</code> est copié tel quel et accessible par chemin.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a> pour les termes transverses (sRGB, URP, HDRP, LOD, texture…).</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>&nbsp;: comprendre en détail Built-in, URP et HDRP avant de choisir un template.</li>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a>&nbsp;: le socle sRGB vs linéaire qui explique <em>pourquoi</em> Linear est obligatoire.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: ce que les calculs en linéaire permettent de rendre correctement.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: LOD, budgets et le sens des Quality Settings.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: la suite logique, une fois ton projet sain prêt à recevoir des modèles et textures.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B1 — Installation & configuration de Blender · Atelier Game Art</title>
+  <meta name="description" content="Installer Blender 4.x proprement : versions LTS, téléchargement officiel, préférences, GPU de rendu, unités et activation des add-ons.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Installation &amp; configuration</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B1 — Installation &amp; configuration de Blender</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>Aucun. Cette piste approfondit <a href="../../cours/logiciels/l01-blender.html">L1 — Blender (aperçu)</a> ; idéale avant ou en parallèle des pistes moteurs.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Télécharger et installer <b>Blender 4.x</b> depuis la source officielle, et choisir entre version <b>LTS</b> et version courante.</li>
+                <li>Comprendre l'installateur vs la version <b>portable</b>, et où vivent tes préférences.</li>
+                <li>Régler les <b>Preferences</b> essentielles&nbsp;: GPU de rendu, thème, et système d'<b>unités</b>.</li>
+                <li>Activer un <b>add-on</b> intégré et installer un add-on tiers (.zip).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Blender est gratuit, open source et complet&nbsp;: c'est l'outil DCC (<span class="gloss">DCC</span>) qui sert de point de départ à la quasi-totalité de tes assets avant Unity ou Unreal. Mais une installation mal configurée — mauvaise version, GPU non activé pour le rendu, unités farfelues — te fait perdre du temps et provoque des surprises à l'export (échelle, lenteur de rendu). Cette première leçon pose des bases <b>saines</b> pour tout le reste de la piste.</p>
+            <p>Contrairement à Unity (Hub) ou Unreal (Launcher), Blender s'installe en <b>un seul logiciel autonome</b> : pas de gestionnaire de versions obligatoire, pas de compte. C'est plus simple, mais cela t'oblige à gérer toi-même tes versions.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Où télécharger, et quelle version</h3>
+            <p>On télécharge <b>uniquement</b> depuis le site officiel <span class="term">blender.org</span> (les versions trouvées ailleurs peuvent être modifiées). Blender suit deux canaux&nbsp;:</p>
+            <ul>
+              <li><b>LTS (Long Term Support)</b> — ex. <b>Blender 4.5 LTS</b> : corrigée pendant ~2 ans. À privilégier pour un projet sérieux et pour ce cours (stabilité).</li>
+              <li><b>Version courante</b> — la dernière en date : nouvelles fonctions, mais davantage de risques de bugs/changements. Pour expérimenter.</li>
+            </ul>
+            <p>On affiche toujours le numéro de version pour rester datable : ce cours se base sur <b>Blender 4.x</b>. Les principes restent valables d'une version à l'autre&nbsp;; seuls quelques menus bougent.</p>
+
+            <h3>2. Installateur, portable et préférences</h3>
+            <p>Sur Windows, deux options&nbsp;: l'<b>Installer (.msi)</b> classique, ou la version <b>Portable (.zip)</b> qu'on décompresse où l'on veut (idéale pour faire coexister plusieurs versions sans conflit). Détail crucial&nbsp;: par défaut, Blender range tes <b>préférences et add-ons</b> dans ton dossier utilisateur (et non dans le dossier du programme). Une version portable peut être rendue «&nbsp;vraiment portable&nbsp;» en cochant l'option qui garde la config à côté de l'exécutable — utile sur clé USB.</p>
+
+            <h3>3. Les Preferences à régler en premier</h3>
+            <p>On ouvre <span class="menu-path">Edit<span class="arrow">▸</span>Preferences</span>. Les réglages qui comptent dès le départ&nbsp;:</p>
+            <ul>
+              <li><b>System ▸ Cycles Render Devices</b> : choisis ton API GPU (CUDA/OptiX pour NVIDIA, HIP pour AMD, Metal pour Mac) et <b>coche ta carte graphique</b>. Sans ça, le moteur de rendu <span class="gloss">Cycles</span> calcule sur le processeur — beaucoup plus lent (renvoi <a href="../../cours/blender/b07-shading.html">B7</a>).</li>
+              <li><b>Interface ▸ Display</b> : échelle de l'UI (Resolution Scale) pour le confort sur écran HiDPI.</li>
+              <li><b>Themes</b> : clair/sombre selon ta préférence.</li>
+              <li><b>Save &amp; Load</b> : active <em>Auto Save</em> (sauvegardes temporaires) — il te sauvera la mise un jour.</li>
+            </ul>
+
+            <h3>4. Les unités&nbsp;: à régler tôt pour l'export</h3>
+            <p>Dans <span class="menu-path">Scene Properties<span class="arrow">▸</span>Units</span>, le <b>Unit System</b> est <em>Metric</em> par défaut, avec <b>1 unité Blender = 1 mètre</b>. Garde ce réglage&nbsp;: il est cohérent avec Unity (1 unité = 1 m) et te facilitera l'export vers les moteurs (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a> et <a href="../../cours/blender/b11-rendu-export.html">B11</a>). Modéliser à la bonne échelle dès le départ évite le fameux facteur ×100 dans Unreal.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Parcours d'installation de Blender en cinq étapes">
+                <defs><marker id="b1ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+                <g class="svg-text" font-size="11.5">
+                  <rect x="14" y="74" width="108" height="52" rx="8" class="svg-surface" stroke="#313c4c"/><text x="68" y="96" text-anchor="middle" font-weight="700">blender.org</text><text x="68" y="113" text-anchor="middle" class="svg-dim">officiel</text>
+                  <rect x="148" y="74" width="108" height="52" rx="8" class="svg-surface" stroke="#313c4c"/><text x="202" y="96" text-anchor="middle" font-weight="700">Version LTS</text><text x="202" y="113" text-anchor="middle" class="svg-dim">4.x stable</text>
+                  <rect x="282" y="74" width="108" height="52" rx="8" class="svg-surface" stroke="#313c4c"/><text x="336" y="96" text-anchor="middle" font-weight="700">Installer</text><text x="336" y="113" text-anchor="middle" class="svg-dim">ou portable</text>
+                  <rect x="416" y="74" width="108" height="52" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="470" y="96" text-anchor="middle" font-weight="700">Preferences</text><text x="470" y="113" text-anchor="middle" class="svg-dim">GPU, UI</text>
+                  <rect x="544" y="74" width="84" height="52" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="586" y="96" text-anchor="middle" font-weight="700">Unités</text><text x="586" y="113" text-anchor="middle" class="svg-dim">1 u = 1 m</text>
+                </g>
+                <g stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b1ar)">
+                  <line x1="122" y1="100" x2="146" y2="100"/><line x1="256" y1="100" x2="280" y2="100"/><line x1="390" y1="100" x2="414" y2="100"/><line x1="524" y1="100" x2="542" y2="100"/>
+                </g>
+              </svg>
+              <figcaption>Cinq étapes pour partir sur des bases saines&nbsp;: source officielle → LTS → installation → préférences (GPU) → unités métriques.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Va sur <b>blender.org</b> ▸ <span class="menu-path">Download</span>. Choisis la version <b>LTS</b> 4.x pour ton OS. Préfère l'<em>Installer</em> si c'est ta seule version, le <em>Portable</em> si tu veux plusieurs versions côte à côte.</li>
+              <li>Installe puis lance Blender. Ferme le <em>Splash Screen</em> (clic dans le vide) — la scène de départ contient un cube, une caméra et une lumière.</li>
+              <li>Ouvre <span class="menu-path">Edit<span class="arrow">▸</span>Preferences<span class="arrow">▸</span>System</span>. Sous <em>Cycles Render Devices</em>, sélectionne ton API GPU et <b>coche ta carte</b>. Ferme (Blender enregistre automatiquement).</li>
+              <li>Va dans <span class="menu-path">Scene Properties<span class="arrow">▸</span>Units</span> et vérifie <em>Unit System = Metric</em>. (Pour des objets petits, tu peux passer la <em>Length</em> en centimètres pour l'affichage, sans changer l'échelle interne.)</li>
+              <li>Active un add-on intégré&nbsp;: <span class="menu-path">Edit<span class="arrow">▸</span>Preferences<span class="arrow">▸</span>Add-ons</span>, cherche «&nbsp;Node Wrangler&nbsp;» et coche-le (il accélère énormément le travail de nœuds, renvoi <a href="../../cours/blender/b07-shading.html">B7</a>).</li>
+              <li>Pour un add-on <b>tiers</b> téléchargé en .zip&nbsp;: même fenêtre ▸ bouton <span class="menu-path">Install…</span> ▸ sélectionne le .zip ▸ coche-le dans la liste.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon rendu Cycles est extrêmement lent.</div>
+                <div class="pi-cause"><b>Cause</b>Le GPU n'est pas activé&nbsp;: Cycles calcule sur le CPU.</div>
+                <div class="pi-fix"><b>Correction</b>Preferences ▸ System ▸ coche ta carte (OptiX/CUDA/HIP/Metal), puis dans Render Properties choisis <em>Device = GPU Compute</em>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes objets arrivent 100× trop grands/petits dans Unreal.</div>
+                <div class="pi-cause"><b>Cause</b>Modélisation à une échelle incohérente, ou unités mal comprises.</div>
+                <div class="pi-fix"><b>Correction</b>Garde Metric (1 u = 1 m), modélise à taille réelle, applique les transforms avant export (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai perdu mes add-ons / préférences après mise à jour.</div>
+                <div class="pi-cause"><b>Cause</b>Chaque version majeure a son propre dossier de config&nbsp;; rien n'est repris automatiquement.</div>
+                <div class="pi-fix"><b>Correction</b>À la première ouverture d'une nouvelle version, accepte «&nbsp;Load Previous Settings&nbsp;», ou réinstalle tes add-ons.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un add-on téléchargé n'apparaît pas après Install.</div>
+                <div class="pi-cause"><b>Cause</b>Installé mais pas <b>coché</b>, ou incompatible avec la version de Blender.</div>
+                <div class="pi-fix"><b>Correction</b>Coche la case dans la liste&nbsp;; vérifie que l'add-on supporte Blender 4.x.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Installe Blender 4.x LTS depuis blender.org.</li>
+                <li>Active le GPU dans les Preferences et vérifie que le rendu Cycles propose <em>GPU Compute</em>.</li>
+                <li>Confirme les unités Metric (1 u = 1 m) et active les add-ons <em>Node Wrangler</em> et <em>LoopTools</em>.</li>
+                <li>Sauvegarde un fichier de démarrage personnalisé via <span class="menu-path">File<span class="arrow">▸</span>Defaults<span class="arrow">▸</span>Save Startup File</span>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Blender LTS 4.x est installé depuis la source officielle.</li>
+                  <li>Le GPU est sélectionné et le rendu peut tourner dessus.</li>
+                  <li>Tu sais activer un add-on intégré et installer un .zip tiers.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Télécharge depuis <b>blender.org</b>, privilégie la <b>LTS 4.x</b> pour la stabilité.</li>
+                <li><b>Active ton GPU</b> dans les Preferences, sinon le rendu rame.</li>
+                <li>Garde les unités <b>Metric (1 u = 1 m)</b> pour un export sain vers les moteurs.</li>
+                <li>Les add-ons s'activent (intégrés) ou s'installent (.zip) dans Preferences ▸ Add-ons — et doivent être <b>cochés</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>LTS</b> — version de Blender à support long (~2 ans), recommandée pour la production.</p>
+              <p><b>Version portable</b> — Blender décompressé d'un .zip, exécutable sans installation, pratique pour plusieurs versions.</p>
+              <p><b>Render Device</b> — matériel utilisé pour le rendu (CPU ou GPU) ; activer le GPU accélère fortement Cycles.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b02-interface.html">B2 — Interface &amp; navigation</a>&nbsp;: prendre en main l'éditeur.</li>
+              <li><a href="../../cours/logiciels/l01-blender.html">L1 — Blender (aperçu)</a>&nbsp;: la vue d'ensemble du rôle de Blender dans le pipeline.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transférer des assets</a>&nbsp;: pourquoi les unités comptent dès l'installation.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

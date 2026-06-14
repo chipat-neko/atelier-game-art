@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B11 — Rendu & export vers les moteurs · Atelier Game Art</title>
+  <meta name="description" content="Réglages de rendu EEVEE/Cycles, éclairage et caméra dans Blender, puis export FBX/glTF propre (échelle, axes, apply transform) vers Unity et Unreal.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Rendu &amp; export</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B11 — Rendu &amp; export vers les moteurs</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b07-shading.html">B7 — Shading</a> et <a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transférer des assets</a> (échelle/axes).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Régler un rendu de présentation simple (EEVEE/Cycles), avec éclairage et caméra.</li>
+                <li>Préparer un asset pour l'export&nbsp;: <b>appliquer les transforms</b>, vérifier l'échelle et l'origine.</li>
+                <li>Exporter proprement en <b>FBX</b> et <b>glTF</b> vers Unity et Unreal (axes, échelle, modifiers).</li>
+                <li>Éviter les pièges classiques d'import dans les moteurs.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>C'est la dernière étape&nbsp;: faire <b>sortir</b> ton travail de Blender — soit en image (rendu de portfolio), soit en asset pour un moteur. L'export est l'endroit où se concentrent les bugs d'échelle et d'orientation vus en <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>. Bien le maîtriser, c'est obtenir un asset qui arrive du premier coup à la bonne taille, bien orienté, avec ses normales et (si besoin) son squelette.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un rendu de présentation rapide</h3>
+            <p>Pour montrer un asset (portfolio, validation), un rendu propre suffit&nbsp;:</p>
+            <ul>
+              <li><b>Caméra</b>&nbsp;: ajoute-la (<span class="menu-path">Add<span class="arrow">▸</span>Camera</span>), cadre via <span class="kbd">Ctrl</span>+<span class="kbd">Alt</span>+<span class="kbd">Numpad 0</span> (aligne la caméra sur la vue).</li>
+              <li><b>Éclairage</b>&nbsp;: un éclairage trois points, ou plus simple, une <b>HDRI</b> en World (renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>) qui éclaire et fournit des reflets réalistes — branchée dans le <em>World</em> via un <em>Environment Texture</em>.</li>
+              <li><b>Moteur</b>&nbsp;: <b>EEVEE</b> pour un rendu rapide et proche du jeu&nbsp;; <b>Cycles</b> pour le réalisme (active le <em>Denoise</em>).</li>
+              <li><b>Sortie</b>&nbsp;: <span class="menu-path">Output Properties</span> (résolution, format PNG), puis <span class="menu-path">Render<span class="arrow">▸</span>Render Image</span> (<span class="kbd">F12</span>).</li>
+            </ul>
+
+            <h3>2. Préparer l'asset avant export (l'étape cruciale)</h3>
+            <p>Avant tout export vers un moteur, on «&nbsp;assainit&nbsp;» l'objet&nbsp;:</p>
+            <ul>
+              <li><b>Apply Transforms</b>&nbsp;: <span class="kbd">Ctrl</span>+<span class="kbd">A</span> ▸ <em>All Transforms</em> (échelle ramenée à 1, rotation à 0). Indispensable pour éviter le facteur ×100 et les rotations imprévues (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</li>
+              <li><b>Origine</b>&nbsp;: place l'origine là où l'objet doit pivoter (base d'un perso, gond d'une porte) via <span class="menu-path">Object<span class="arrow">▸</span>Set Origin</span>.</li>
+              <li><b>Échelle réelle</b>&nbsp;: l'objet doit faire sa vraie taille en mètres (unités vues en <a href="../../cours/blender/b01-installation.html">B1</a>).</li>
+              <li><b>Normales</b> recalculées, doublons fusionnés (renvoi <a href="../../cours/blender/b03-modelisation.html">B3</a>).</li>
+              <li>Nom propre des objets/matériaux (ils arrivent tels quels dans le moteur).</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 190" role="img" aria-label="Checklist d'export propre de Blender vers les moteurs">
+                <defs><marker id="b11ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="20" y="60" width="150" height="64" rx="8" fill="#e0a14b" fill-opacity="0.12" stroke="#e0a14b"/>
+                  <text x="95" y="82" text-anchor="middle" font-weight="700">Préparer</text>
+                  <text x="95" y="100" text-anchor="middle" class="svg-dim" font-size="10">Apply Transforms</text>
+                  <text x="95" y="114" text-anchor="middle" class="svg-dim" font-size="10">origine · échelle · normales</text>
+
+                  <rect x="245" y="60" width="150" height="64" rx="8" fill="#38bdf8" fill-opacity="0.12" stroke="#38bdf8"/>
+                  <text x="320" y="82" text-anchor="middle" font-weight="700">Exporter</text>
+                  <text x="320" y="100" text-anchor="middle" class="svg-dim" font-size="10">FBX / glTF</text>
+                  <text x="320" y="114" text-anchor="middle" class="svg-dim" font-size="10">axes · Apply Modifiers</text>
+
+                  <rect x="470" y="36" width="150" height="52" rx="8" fill="#818cf8" fill-opacity="0.12" stroke="#818cf8"/>
+                  <text x="545" y="58" text-anchor="middle" font-weight="700">Unity</text><text x="545" y="76" text-anchor="middle" class="svg-dim" font-size="10">1 u = 1 m · Y-up</text>
+                  <rect x="470" y="98" width="150" height="52" rx="8" fill="#c084fc" fill-opacity="0.12" stroke="#c084fc"/>
+                  <text x="545" y="120" text-anchor="middle" font-weight="700">Unreal</text><text x="545" y="138" text-anchor="middle" class="svg-dim" font-size="10">1 uu = 1 cm · Z-up</text>
+                </g>
+                <g stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b11ar)">
+                  <line x1="170" y1="92" x2="243" y2="92"/>
+                  <path d="M395 84 L468 62" /><path d="M395 100 L468 122"/>
+                </g>
+              </svg>
+              <figcaption>Le bon réflexe&nbsp;: préparer (transforms/échelle/origine) → exporter (axes, modifiers) → vérifier dans chaque moteur (renvoi C2).</figcaption>
+            </figure>
+
+            <h3>3. Exporter en FBX</h3>
+            <p><span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>FBX (.fbx)</span>. Réglages clés&nbsp;:</p>
+            <ul>
+              <li><em>Limit to: Selected Objects</em> (n'exporte que ce qu'il faut).</li>
+              <li><em>Transform</em>&nbsp;: pour Unreal, beaucoup règlent <em>Apply Scalings = FBX All</em> et utilisent les presets axes&nbsp;; Unity gère bien le FBX standard. L'essentiel&nbsp;: après <b>Apply Transforms</b> côté Blender, vérifier l'orientation/échelle à l'import (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</li>
+              <li><em>Geometry ▸ Apply Modifiers</em> coché si tu veux exporter la pile appliquée (renvoi <a href="../../cours/blender/b04-modifiers.html">B4</a>).</li>
+              <li>Pour un personnage&nbsp;: inclure <em>Armature</em> + <em>Bake Animation</em> (les actions), désactiver <em>Add Leaf Bones</em> selon le moteur.</li>
+            </ul>
+
+            <h3>4. Exporter en glTF (recommandé pour le statique/PBR)</h3>
+            <p><span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>glTF 2.0 (.glb/.gltf)</span>. Le <span class="gloss">glTF</span> (renvoi <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>) gère nativement le PBR et les unités, et provoque moins de surprises d'échelle/axes que le FBX. Le <b>GLB</b> empaquette mesh + textures + matériaux dans un seul fichier — pratique pour partager. Excellent choix pour les props statiques et l'échange.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Les matériaux ne suivent pas vraiment</div>
+              <p>Même en glTF, le matériau importé dans le moteur est une approximation. La bonne pratique reste&nbsp;: exporter le <b>mesh + UV</b> et les <b>textures</b>, puis <b>reconstruire le matériau</b> dans Unity (<a href="../../cours/unity/u06-materiaux.html">U6</a>) ou Unreal (<a href="../../cours/unreal/e05-material-editor.html">E5</a>) — en respectant ORM/smoothness et la convention de normal map (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</p>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Prends ton asset texturé (la caisse du mini-projet, par ex.). Vérifie l'échelle (taille réelle), <span class="kbd">Ctrl</span>+<span class="kbd">A</span> ▸ <em>All Transforms</em>, origine à la base.</li>
+              <li>Rendu portfolio (optionnel)&nbsp;: ajoute une HDRI dans le World, place une caméra, <span class="kbd">F12</span> pour rendre une image PNG.</li>
+              <li>Sélectionne l'objet, <span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>glTF 2.0</span>, coche <em>Selected Objects</em>, exporte en .glb.</li>
+              <li>Importe le .glb dans Unity (<a href="../../cours/unity/u05-import-assets.html">U5</a>) ET dans Unreal (<a href="../../cours/unreal/e04-import-assets.html">E4</a>). Vérifie échelle et orientation des deux côtés.</li>
+              <li>Reconstruis le matériau dans chaque moteur avec tes textures exportées séparément.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'objet arrive 100× trop grand/petit ou couché dans le moteur.</div>
+                <div class="pi-cause"><b>Cause</b>Transforms non appliqués, unités/axes non gérés à l'export.</div>
+                <div class="pi-fix"><b>Correction</b>Apply Transforms côté Blender, vérifie le scale à l'import&nbsp;; le glTF limite ces soucis (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes modifiers ne sont pas dans l'export (objet « brut »).</div>
+                <div class="pi-cause"><b>Cause</b><em>Apply Modifiers</em> décoché à l'export FBX/glTF.</div>
+                <div class="pi-fix"><b>Correction</b>Coche <em>Apply Modifiers</em> (ou applique la pile avant export).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon rendu Cycles est plein de bruit.</div>
+                <div class="pi-cause"><b>Cause</b>Trop peu d'échantillons / pas de débruitage.</div>
+                <div class="pi-fix"><b>Correction</b>Active le <em>Denoise</em> et monte les samples&nbsp;; ou utilise EEVEE pour un rendu rapide.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon animation n'est pas exportée.</div>
+                <div class="pi-cause"><b>Cause</b>Armature/Bake Animation non inclus, ou actions non sélectionnées.</div>
+                <div class="pi-fix"><b>Correction</b>À l'export FBX/glTF, inclure l'armature et cocher <em>Bake Animation</em> (renvoi <a href="../../cours/blender/b10-rigging-animation.html">B10</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Fais un rendu de présentation propre d'un de tes assets (HDRI + caméra), exporté en PNG.</li>
+                <li>Exporte ce même asset en glTF et FBX, et importe-le dans Unity ET Unreal sans souci d'échelle/orientation.</li>
+                <li>Reconstruis son matériau dans un des deux moteurs à partir des textures.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le rendu présente clairement l'asset (cadrage, lumière correcte).</li>
+                  <li>L'asset arrive à la bonne taille et bien orienté dans les deux moteurs.</li>
+                  <li>Tu sais quoi exporter (mesh+UV+textures) et quoi reconstruire (matériau).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Rendu portfolio&nbsp;: HDRI + caméra, <b>EEVEE</b> (rapide) ou <b>Cycles</b> (réaliste, Denoise).</li>
+                <li>Avant export&nbsp;: <b>Apply Transforms</b>, échelle réelle, origine bien placée, normales OK.</li>
+                <li><b>glTF</b> pour le statique/PBR (moins de pièges)&nbsp;; <b>FBX</b> pour l'animé&nbsp;; coche <em>Apply Modifiers</em>.</li>
+                <li>Les <b>matériaux se reconstruisent</b> dans le moteur&nbsp;; surveille échelle/axes (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a>).</li>
+              </ul>
+            </div>
+
+            <div class="miniprojet">
+              <h4><span class="ico">🎓</span>Mini-projet de fin de Piste Blender <span class="mp-tag">capstone</span></h4>
+              <p>Tu as parcouru Blender de bout en bout&nbsp;: relie tout sur un <b>asset complet</b>, de la boîte vide jusqu'au moteur. Objectif&nbsp;: produire un prop de jeu (caisse, lanterne, tonneau, petite arme) et le faire vivre dans Unity <em>et</em> Unreal.</p>
+              <ol>
+                <li><b>Modélisation</b> (<a href="../../cours/blender/b03-modelisation.html">B3</a>, <a href="../../cours/blender/b04-modifiers.html">B4</a>)&nbsp;: un low-poly propre (quads, modifiers non destructifs, arêtes biseautées), à l'échelle réelle (<a href="../../cours/blender/b01-installation.html">B1</a>).</li>
+                <li><b>Détail</b> (<a href="../../cours/blender/b05-sculpt-retopo.html">B5</a>)&nbsp;: si pertinent, sculpte un high-poly et retopologise.</li>
+                <li><b>UV</b> (<a href="../../cours/blender/b06-uv.html">B6</a>)&nbsp;: dépliage sans étirement (vérifié au damier), densité homogène.</li>
+                <li><b>Baking</b> (<a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>)&nbsp;: cuis au moins une normal map et une AO du high vers le low.</li>
+                <li><b>Shading</b> (<a href="../../cours/blender/b07-shading.html">B7</a>)&nbsp;: matériau PBR (Principled BSDF), maps de données en Non-Color.</li>
+                <li><b>Export</b> (cette leçon)&nbsp;: Apply Transforms, export glTF/FBX, import dans Unity (<a href="../../cours/unity/u05-import-assets.html">U5</a>) ET Unreal (<a href="../../cours/unreal/e04-import-assets.html">E4</a>), matériau reconstruit dans chaque moteur.</li>
+                <li><b>Bonus</b>&nbsp;: un scatter Geometry Nodes (<a href="../../cours/blender/b09-geometry-nodes.html">B9</a>) ou une petite animation riggée (<a href="../../cours/blender/b10-rigging-animation.html">B10</a>).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'asset arrive à la bonne taille et bien orienté dans les deux moteurs.</li>
+                  <li>Les maps PBR sont correctes (espaces colorimétriques, normal map propre).</li>
+                  <li>Tu peux refaire toute la chaîne Blender → moteur sans aide.</li>
+                </ul>
+              </div>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Apply Transforms</b> — figer position/rotation/échelle d'un objet (échelle 1) avant export.</p>
+              <p><b>HDRI (World)</b> — image d'environnement servant d'éclairage et de reflets pour un rendu.</p>
+              <p><b>Apply Modifiers (export)</b> — option qui applique la pile de modifiers à la copie exportée.</p>
+              <p><b>GLB</b> — variante binaire de glTF empaquetant mesh, matériaux et textures dans un fichier.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transférer des assets entre moteurs</a>&nbsp;: échelle, axes et pièges en détail.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import Unity</a> et <a href="../../cours/unreal/e04-import-assets.html">E4 — Import Unreal</a>&nbsp;: l'autre bout du tuyau.</li>
+              <li><a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3 — Formats de fichiers</a>&nbsp;: FBX vs glTF vs OBJ.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

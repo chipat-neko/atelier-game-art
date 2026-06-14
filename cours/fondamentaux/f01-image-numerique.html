@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F1 — L'image numérique · Atelier Game Art</title>
+  <meta name="description" content="Pixel, raster vs vectoriel, résolution, profondeur de couleur, canal alpha, sRGB vs linéaire et gamma : les bases pour comprendre toute texture de jeu.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>L'image numérique</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F1 — L'image numérique</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs none"><b>Prérequis</b>Aucun. C'est la toute première brique : tout le reste du cours s'appuie dessus.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est concrètement un <b>pixel</b> et ce que contient un fichier image.</li>
+                <li>Choisir entre une image <b>raster</b> et une image <b>vectorielle</b> selon le besoin.</li>
+                <li>Raisonner sur la <b>résolution</b> et la <b>profondeur de couleur</b> (8/16/32&nbsp;bits) sans confusion.</li>
+                <li>Dire à quoi sert le <b>canal alpha</b> et comment il se comporte.</li>
+                <li>Distinguer <b>sRGB</b> et <b>espace linéaire</b>, comprendre le <b>gamma</b>, et expliquer <em>pourquoi</em> un moteur fait ses calculs d'éclairage en linéaire.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tout ce que tu vas produire dans ce cours — textures, normal maps, lightmaps, rendus — finit par être une <b>image</b>, c'est-à-dire un tableau de nombres. Si tu ne comprends pas comment ces nombres sont stockés et interprétés, tu vas rencontrer des bugs visuels qui semblent inexplicables&nbsp;: une texture qui «&nbsp;délave&nbsp;» au lieu de s'assombrir, des couleurs qui changent entre Photoshop et le moteur, des dégradés qui font des «&nbsp;marches&nbsp;», une normal map qui éclaire à l'envers.</p>
+            <p>Ces problèmes ne sont pas de la malchance&nbsp;: ce sont des conséquences directes de la <b>profondeur de couleur</b>, du <b>canal alpha</b> et surtout de la distinction <b>sRGB / linéaire</b>. Maîtriser cette leçon, c'est s'épargner des heures de débogage plus tard, dans Blender, Substance, Unity comme dans Unreal.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un pixel, c'est quoi exactement&nbsp;?</h3>
+            <p>Un <span class="term">pixel</span> (de l'anglais <em>picture element</em>) est la plus petite cellule d'une image matricielle. Ce n'est pas un petit carré physique&nbsp;: c'est un <b>échantillon</b>, une mesure de couleur prise à un endroit. Une image <span class="gloss">raster</span> est une grille rectangulaire de ces échantillons.</p>
+            <p>Chaque pixel stocke généralement <b>trois nombres</b> — la quantité de <b>R</b>ouge, de <b>V</b>ert et de <b>B</b>leu — éventuellement un quatrième&nbsp;: l'<span class="gloss">alpha</span>. C'est le modèle <b>RVB</b> (RGB en anglais). En mélangeant ces trois primaires lumineuses à différentes intensités, on reconstitue (presque) toutes les couleurs perceptibles. Un pixel «&nbsp;blanc&nbsp;» n'est donc pas une couleur&nbsp;: c'est R, V et B tous à fond en même temps.</p>
+            <p>Une image n'est donc rien d'autre qu'un grand tableau de nombres. Une texture de 1024×1024 en RVB, c'est 1&nbsp;048&nbsp;576 pixels × 3 valeurs = plus de 3 millions de nombres. Garder ça en tête aide à comprendre le poids des textures en mémoire (voir <a href="f12-optimisation.html">F12 — Optimisation</a>).</p>
+
+            <h3>2. Raster vs vectoriel&nbsp;: deux façons de décrire une image</h3>
+            <p>Il existe deux grandes familles d'images, qui ne stockent pas du tout la même chose.</p>
+            <ul>
+              <li><b>Raster (matriciel)</b> — on stocke la couleur de chaque pixel. PNG, JPG, TGA, EXR. C'est figé à une résolution donnée&nbsp;: si tu agrandis, le logiciel doit «&nbsp;inventer&nbsp;» les pixels manquants → flou ou escaliers.</li>
+              <li><b>Vectoriel</b> — on stocke des <b>formes mathématiques</b> (points, courbes de Bézier, remplissages). SVG, AI. C'est <b>indépendant de la résolution</b>&nbsp;: la forme est recalculée à n'importe quelle taille, toujours nette.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 230" role="img" aria-label="Comparaison d'une courbe stockée en pixels (escaliers) et en vectoriel (lisse)">
+                <text x="160" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Raster — grille de pixels</text>
+                <text x="480" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Vectoriel — formule de courbe</text>
+                <!-- Grille raster -->
+                <g transform="translate(40,45)">
+                  <rect x="0" y="0" width="240" height="150" class="svg-surface" stroke="#313c4c"/>
+                  <!-- pixels en escalier approximant une diagonale -->
+                  <g fill="#f2b441" fill-opacity="0.85">
+                    <rect x="0" y="120" width="30" height="30"/><rect x="30" y="120" width="30" height="30"/>
+                    <rect x="60" y="90" width="30" height="30"/><rect x="90" y="90" width="30" height="30"/>
+                    <rect x="120" y="60" width="30" height="30"/><rect x="150" y="60" width="30" height="30"/>
+                    <rect x="180" y="30" width="30" height="30"/><rect x="210" y="30" width="30" height="30"/>
+                  </g>
+                  <g stroke="#313c4c" stroke-width="1">
+                    <path d="M30 0V150M60 0V150M90 0V150M120 0V150M150 0V150M180 0V150M210 0V150"/>
+                    <path d="M0 30H240M0 60H240M0 90H240M0 120H240"/>
+                  </g>
+                </g>
+                <!-- Vectoriel -->
+                <g transform="translate(360,45)">
+                  <rect x="0" y="0" width="240" height="150" class="svg-surface" stroke="#313c4c"/>
+                  <path d="M0 150 Q120 150 240 0" fill="none" stroke="#59b0ff" stroke-width="5"/>
+                  <circle cx="0" cy="150" r="5" fill="#59b0ff"/>
+                  <circle cx="240" cy="0" r="5" fill="#59b0ff"/>
+                  <circle cx="120" cy="150" r="5" fill="none" stroke="#59b0ff" stroke-width="2"/>
+                  <text x="120" y="142" text-anchor="middle" class="svg-dim" font-size="11">point de contrôle</text>
+                </g>
+              </svg>
+              <figcaption>La même diagonale&nbsp;: à gauche, des pixels qui forment un escalier (l'<b>aliasing</b>) ; à droite, une courbe décrite par quelques points, nette à toute échelle.</figcaption>
+            </figure>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>En jeu vidéo</div>
+              <p>Les <b>textures</b> appliquées sur les modèles 3D sont presque toujours <b>raster</b> (le GPU échantillonne des pixels). Le vectoriel sert surtout à la <b>2D</b>&nbsp;: icônes d'interface, logos, parfois des sprites. Beaucoup de pipelines dessinent en vectoriel… puis <b>rasterisent</b> (exportent en PNG) pour le moteur.</p>
+            </div>
+
+            <h3>3. Résolution&nbsp;: ne pas confondre trois choses</h3>
+            <p>Le mot «&nbsp;résolution&nbsp;» recouvre trois notions différentes qu'on mélange souvent&nbsp;:</p>
+            <ul>
+              <li><b>Dimensions en pixels</b> (ex. 2048×2048)&nbsp;: la seule qui compte vraiment pour une texture de jeu. On parle de texture «&nbsp;2K&nbsp;», «&nbsp;4K&nbsp;»…</li>
+              <li><b>DPI / PPI</b> (points par pouce)&nbsp;: une métadonnée d'<b>impression</b>. Elle n'a <b>aucun effet</b> sur l'affichage à l'écran ou dans un moteur. Régler une texture à 300&nbsp;DPI ne change rien en jeu.</li>
+              <li><b>Densité de texels</b> (<span class="gloss">texel density</span>)&nbsp;: combien de pixels de texture couvrent une surface réelle du modèle (px/cm). C'est <em>ça</em>, la vraie «&nbsp;netteté&nbsp;» perçue en jeu. On y revient en <a href="f06-uv-mapping.html">F6 — UV mapping</a>.</li>
+            </ul>
+            <p>Pour les GPU, on privilégie des dimensions en <b>puissances de deux</b> (256, 512, 1024, 2048…). Raison technique&nbsp;: le calcul des <span class="gloss">mipmap</span> et l'adressage mémoire sont plus efficaces sur ces tailles. Ce n'est plus une obligation stricte sur le matériel récent, mais ça reste une excellente habitude.</p>
+
+            <h3>4. Profondeur de couleur (bit depth)&nbsp;: la précision de chaque valeur</h3>
+            <p>La <span class="term">profondeur de couleur</span> indique avec quelle <b>précision</b> on stocke la valeur de chaque canal (R, V, B). C'est le nombre de «&nbsp;crans&nbsp;» disponibles entre le noir et le maximum.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Par canal</th><th>Crans possibles</th><th>Type</th><th>Usage typique</th></tr></thead>
+                <tbody>
+                  <tr><td><b>8 bits</b></td><td>256 (0–255)</td><td>Entier</td><td>Textures couleur standard (PNG, JPG, TGA). Suffisant pour l'albedo.</td></tr>
+                  <tr><td><b>16 bits</b></td><td>65 536</td><td>Entier ou flottant</td><td>Height maps, displacement, normal maps de qualité&nbsp;: on a besoin de finesse pour éviter les marches.</td></tr>
+                  <tr><td><b>32 bits</b></td><td>≈ illimité</td><td>Flottant (float)</td><td>HDR, EXR, données d'éclairage&nbsp;: valeurs au-delà de 1.0 (un soleil très lumineux).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Pourquoi ça compte&nbsp;? Avec seulement 256 crans par canal, un <b>dégradé lent</b> (un ciel, une ombre douce) peut révéler des paliers visibles&nbsp;: c'est le <b>banding</b>. Passer en 16&nbsp;bits multiplie la finesse par 256 et fait disparaître le problème — au prix d'un fichier plus lourd.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Un dégradé en 8 bits faible montre des marches (banding), en 16 bits il est lisse">
+                <text x="20" y="28" class="svg-text" font-weight="700" font-size="14">Faible profondeur → banding (marches)</text>
+                <g transform="translate(20,40)">
+                  <rect x="0" y="0" width="80" height="40" fill="#1a1a1a"/><rect x="80" y="0" width="80" height="40" fill="#3a3a3a"/>
+                  <rect x="160" y="0" width="80" height="40" fill="#5a5a5a"/><rect x="240" y="0" width="80" height="40" fill="#7a7a7a"/>
+                  <rect x="320" y="0" width="80" height="40" fill="#9a9a9a"/><rect x="400" y="0" width="80" height="40" fill="#bababa"/>
+                  <rect x="480" y="0" width="120" height="40" fill="#dadada"/>
+                </g>
+                <text x="20" y="108" class="svg-text" font-weight="700" font-size="14">Haute profondeur → dégradé continu</text>
+                <defs><linearGradient id="smooth" x1="0" x2="1"><stop offset="0" stop-color="#1a1a1a"/><stop offset="1" stop-color="#dadada"/></linearGradient></defs>
+                <rect x="20" y="120" width="580" height="40" fill="url(#smooth)"/>
+              </svg>
+              <figcaption>Le même dégradé&nbsp;: en haut, trop peu de valeurs disponibles → des bandes franches&nbsp;; en bas, assez de valeurs → transition douce.</figcaption>
+            </figure>
+
+            <h3>5. Le canal alpha&nbsp;: transparence et masques</h3>
+            <p>Le <span class="term">canal alpha</span> est un quatrième canal (en plus de R, V, B) qui encode l'<b>opacité</b>&nbsp;: 0 = totalement transparent, valeur maximale = totalement opaque. On parle alors d'image <b>RGBA</b>.</p>
+            <p>Point crucial pour la suite&nbsp;: en jeu, l'alpha ne sert pas <em>que</em> à la transparence visuelle. C'est très souvent un <b>masque générique</b>&nbsp;: «&nbsp;où appliquer tel effet&nbsp;», «&nbsp;où le métal est-il rouillé&nbsp;», «&nbsp;quelle partie du feuillage garder&nbsp;». Un canal = une information en niveaux de gris&nbsp;; on s'en sert pour tout ce qui se code en «&nbsp;plus ou moins&nbsp;».</p>
+            <p>Il existe deux façons de combiner couleur et alpha, et les confondre crée des liserés sombres autour des objets découpés&nbsp;:</p>
+            <ul>
+              <li><b>Straight (non prémultiplié)</b>&nbsp;: R, V, B gardent leur vraie couleur, l'alpha est rangé à part. C'est ce qu'attendent la plupart des moteurs.</li>
+              <li><b>Premultiplied (prémultiplié)</b>&nbsp;: les canaux couleur ont déjà été multipliés par l'alpha.</li>
+            </ul>
+
+            <h3>6. Espaces colorimétriques&nbsp;: sRGB vs linéaire (le cœur de la leçon)</h3>
+            <p>On arrive au concept qui cause le plus de bugs visuels chez les débutants — et qui, une fois compris, change tout. Accroche-toi&nbsp;: c'est la notion la plus rentable de cette leçon.</p>
+
+            <h4>La perception humaine n'est pas linéaire</h4>
+            <p>Notre œil est bien plus sensible aux variations dans les <b>tons sombres</b> que dans les tons clairs. Pour ne pas «&nbsp;gaspiller&nbsp;» des valeurs là où on ne voit pas la différence, les images de couleur sont stockées avec un <b>encodage non linéaire</b> qui donne plus de précision aux zones sombres. Cet encodage standard, c'est l'<span class="term">sRGB</span>, et la courbe qu'il applique est liée au <span class="gloss">gamma</span>.</p>
+            <p>Concrètement&nbsp;: une valeur stockée de «&nbsp;0,5&nbsp;» dans un fichier sRGB ne correspond <b>pas</b> à la moitié de la lumière. Elle correspond à environ <b>21&nbsp;%</b> de la lumière. La courbe sRGB «&nbsp;tord&nbsp;» les valeurs&nbsp;: c'est volontaire et utile pour le stockage, mais c'est un piège pour les calculs.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Courbe gamma sRGB comparée à la droite linéaire">
+                <g transform="translate(60,20)">
+                  <line x1="0" y1="220" x2="520" y2="220" class="svg-stroke" stroke-width="1.5"/>
+                  <line x1="0" y1="220" x2="0" y2="0" class="svg-stroke" stroke-width="1.5"/>
+                  <text x="260" y="262" text-anchor="middle" class="svg-dim" font-size="12">Valeur stockée dans le fichier (0 → 1)</text>
+                  <text x="-200" y="-42" transform="rotate(-90)" text-anchor="middle" class="svg-dim" font-size="12">Lumière réelle émise (0 → 1)</text>
+                  <!-- droite linéaire -->
+                  <line x1="0" y1="220" x2="520" y2="0" stroke="#59b0ff" stroke-width="2.5" stroke-dasharray="6 5"/>
+                  <text x="450" y="35" class="svg-text" fill="#59b0ff" font-size="12" font-weight="700">linéaire (y = x)</text>
+                  <!-- courbe sRGB (approx gamma 2.2) : y = x^2.2, traçons quelques points -->
+                  <path d="M0 220 C 130 212, 250 180, 340 130 S 470 35, 520 0" fill="none" stroke="#f2b441" stroke-width="3"/>
+                  <text x="120" y="205" class="svg-text" fill="#f2b441" font-size="12" font-weight="700">sRGB (gamma ≈ 2,2)</text>
+                  <!-- repère 0,5 -->
+                  <line x1="260" y1="220" x2="260" y2="172" stroke="#717c8c" stroke-dasharray="3 3"/>
+                  <line x1="260" y1="172" x2="0" y2="172" stroke="#717c8c" stroke-dasharray="3 3"/>
+                  <circle cx="260" cy="172" r="4" fill="#f2b441"/>
+                  <text x="266" y="166" class="svg-dim" font-size="11">stocké 0,5 → ≈ 0,21 de lumière</text>
+                </g>
+              </svg>
+              <figcaption>La courbe orange (sRGB) écrase les valeurs vers le bas&nbsp;: une valeur «&nbsp;moyenne&nbsp;» stockée correspond en réalité à une lumière bien plus faible. Les calculs d'éclairage, eux, ont besoin de la droite bleue (linéaire).</figcaption>
+            </figure>
+
+            <h4>Pourquoi le moteur calcule en linéaire</h4>
+            <p>Les mathématiques de la lumière sont <b>physiques</b>&nbsp;: deux ampoules éclairent deux fois plus qu'une seule. Additionner et multiplier des intensités lumineuses n'a de sens que si les nombres sont <b>proportionnels à la lumière réelle</b> — c'est-à-dire en <span class="gloss">espace linéaire</span>.</p>
+            <p>Si un moteur additionnait directement des valeurs sRGB (déformées par la courbe gamma), tous les calculs seraient faux&nbsp;: les zones où deux lumières se chevauchent deviendraient trop claires, les dégradés d'ombre seraient incorrects, le mélange de deux couleurs donnerait une teinte fausse. C'est exactement ce qui se passait dans les vieux jeux «&nbsp;gamma-incorrects&nbsp;»&nbsp;: des halos délavés et des transitions sales.</p>
+            <p>Le pipeline correct est donc&nbsp;:</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Pipeline colorimétrique : décoder sRGB en linéaire, calculer la lumière, ré-encoder en sRGB pour l'écran">
+                <defs>
+                  <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#f2b441"/></marker>
+                </defs>
+                <g font-size="12.5" class="svg-text">
+                  <rect x="20" y="20" width="150" height="56" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="95" y="44" text-anchor="middle" font-weight="700">Texture albedo</text>
+                  <text x="95" y="62" text-anchor="middle" class="svg-dim" font-size="11">stockée en sRGB</text>
+
+                  <rect x="245" y="20" width="150" height="56" rx="8" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/>
+                  <text x="320" y="44" text-anchor="middle" font-weight="700">Décodage</text>
+                  <text x="320" y="62" text-anchor="middle" class="svg-dim" font-size="11">sRGB → linéaire</text>
+
+                  <rect x="470" y="20" width="150" height="56" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/>
+                  <text x="545" y="44" text-anchor="middle" font-weight="700">Calculs lumière</text>
+                  <text x="545" y="62" text-anchor="middle" class="svg-dim" font-size="11">en linéaire (corrects)</text>
+
+                  <rect x="245" y="150" width="150" height="56" rx="8" fill="#c89bff" fill-opacity="0.14" stroke="#c89bff"/>
+                  <text x="320" y="174" text-anchor="middle" font-weight="700">Ré-encodage</text>
+                  <text x="320" y="192" text-anchor="middle" class="svg-dim" font-size="11">linéaire → sRGB</text>
+
+                  <rect x="470" y="150" width="150" height="56" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="545" y="174" text-anchor="middle" font-weight="700">Écran</text>
+                  <text x="545" y="192" text-anchor="middle" class="svg-dim" font-size="11">affichage final</text>
+
+                  <line x1="170" y1="48" x2="241" y2="48" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                  <line x1="395" y1="48" x2="466" y2="48" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                  <path d="M545 76 L545 120 L320 120 L320 146" fill="none" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                  <line x1="395" y1="178" x2="466" y2="178" stroke="#f2b441" stroke-width="2" marker-end="url(#ar)"/>
+                </g>
+              </svg>
+              <figcaption>Le moteur <b>décode</b> les textures couleur en linéaire, fait toute sa physique de lumière en linéaire, puis <b>ré-encode</b> en sRGB juste avant l'affichage. Tu n'as «&nbsp;qu'à&nbsp;» bien étiqueter tes textures.</figcaption>
+            </figure>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>La règle d'or sRGB / linéaire</div>
+              <p>Les textures qui représentent une <b>couleur vue par l'œil</b> (albedo / base color, emissive) sont en <b>sRGB</b> → coche «&nbsp;sRGB&nbsp;» à l'import.<br>
+              Les textures qui représentent des <b>données</b> (normal, roughness, metallic, height, AO, masques) sont des <b>nombres bruts</b>, pas des couleurs → elles doivent rester en <b>linéaire</b> → <b>décoche</b> «&nbsp;sRGB&nbsp;». Se tromper ici donne un rendu «&nbsp;plastique&nbsp;» ou délavé.</p>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Vérifions concrètement la différence sRGB / linéaire dans <b>Blender</b> (la même logique existe dans Photoshop, Krita, Substance). On va observer un mélange de couleurs «&nbsp;mal&nbsp;» puis «&nbsp;bien&nbsp;» calculé.</p>
+            <ol>
+              <li>Ouvre Blender. Dans l'en-tête de la fenêtre, passe l'éditeur du haut en <span class="menu-path">Compositing</span> (menu déroulant des éditeurs, en haut à gauche), puis coche <span class="menu-path">Use Nodes</span>.</li>
+              <li>Ajoute deux nœuds couleur&nbsp;: <span class="menu-path">Add<span class="arrow">▸</span>Input<span class="arrow">▸</span>RGB</span>. Règle l'un en rouge pur, l'autre en vert pur.</li>
+              <li>Mélange-les avec <span class="menu-path">Add<span class="arrow">▸</span>Color<span class="arrow">▸</span>Mix Color</span>, facteur 0,5. Branche la sortie vers le nœud <span class="menu-path">Composite</span> et active l'aperçu (<span class="menu-path">Add<span class="arrow">▸</span>Output<span class="arrow">▸</span>Viewer</span>).</li>
+              <li>Observe&nbsp;: parce que Blender travaille en linéaire en interne, le mélange donne un jaune-vert <b>cohérent</b>. Maintenant, va dans <span class="menu-path">Render Properties<span class="arrow">▸</span>Color Management</span> et change <span class="menu-path">View Transform</span> de <b>AgX/Filmic</b> à <b>Standard</b>, puis à <b>Raw</b>.</li>
+              <li>En passant en <b>Raw</b>, Blender <em>arrête</em> de ré-encoder en sRGB pour l'affichage&nbsp;: l'image paraît soudain trop sombre. C'est la preuve visuelle que l'étape «&nbsp;ré-encodage&nbsp;» du schéma ci-dessus existe bel et bien&nbsp;: sans elle, le linéaire affiché brut est terne.</li>
+            </ol>
+            <p>Ce que tu viens d'observer&nbsp;: l'image «&nbsp;belle&nbsp;» est le résultat d'un calcul en linéaire <b>puis</b> d'un ré-encodage. Quand tu importeras des textures dans Unity ou Unreal, tu refais ce choix à chaque fois via la case «&nbsp;sRGB&nbsp;».</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map / roughness donne un rendu «&nbsp;plastique&nbsp;», délavé ou faux.</div>
+                <div class="pi-cause"><b>Cause</b>La texture de données a été importée comme du sRGB&nbsp;: le moteur a «&nbsp;décodé&nbsp;» des nombres qui n'étaient pas des couleurs.</div>
+                <div class="pi-fix"><b>Correction</b>Dans les réglages d'import, <b>décoche sRGB</b> (Unity) / règle le compression/usage en «&nbsp;données linéaires&nbsp;» (Unreal&nbsp;: <em>sRGB</em> décoché sur la texture).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon dégradé de ciel fait des bandes (banding).</div>
+                <div class="pi-cause"><b>Cause</b>8&nbsp;bits par canal = trop peu de crans pour une transition lente.</div>
+                <div class="pi-fix"><b>Correction</b>Travaille/exporte la source en 16&nbsp;bits, ou ajoute un léger <b>dithering</b> (bruit imperceptible qui casse les paliers).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un liseré sombre entoure mon feuillage/sprite découpé.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion straight / premultiplied, et zones transparentes laissées en noir.</div>
+                <div class="pi-fix"><b>Correction</b>Garde l'alpha en straight, et «&nbsp;déborde&nbsp;» la couleur sous les zones transparentes (<em>edge padding / dilate</em>) pour qu'aucun noir ne suinte.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai mis ma texture à 300&nbsp;DPI mais elle n'est pas plus nette en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Le DPI est une métadonnée d'impression&nbsp;; le moteur ne regarde que les dimensions en pixels.</div>
+                <div class="pi-fix"><b>Correction</b>Augmente les <b>dimensions en pixels</b> (1K→2K) et la <b>densité de texels</b>, pas le DPI.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Avec un éditeur d'image gratuit (Krita ou GIMP, voir <a href="../logiciels/l03-logiciels-2d.html">L3</a>)&nbsp;:</p>
+              <ol>
+                <li>Crée une image 512×512. Remplis-la d'un dégradé linéaire du noir au blanc.</li>
+                <li>Convertis l'image en <b>8 bits par canal</b> et observe l'apparition (ou non) de banding sur un dégradé sombre.</li>
+                <li>Refais l'exercice en 16&nbsp;bits, compare.</li>
+                <li>Exporte deux fois la même image colorée&nbsp;: une fois en PNG (sRGB) et une fois sans gestion de couleur, et note la différence d'aspect.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais reproduire un banding et l'expliquer par la profondeur de couleur.</li>
+                  <li>Tu peux dire, pour une texture donnée (albedo, normal, roughness), si elle doit être sRGB ou linéaire — et justifier pourquoi.</li>
+                  <li>Tu n'utilises plus jamais le DPI pour juger de la netteté en jeu.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une image raster = une grille de pixels, chacun stockant R, V, B (+ alpha) sous forme de nombres.</li>
+                <li><b>Raster</b> dépend de la résolution&nbsp;; <b>vectoriel</b> non. Les textures de jeu sont raster.</li>
+                <li>La <b>profondeur</b> (8/16/32 bits) = la précision&nbsp;: plus de bits = pas de banding et valeurs HDR possibles.</li>
+                <li>L'<b>alpha</b> sert à la transparence <em>et</em> aux masques de données.</li>
+                <li><b>sRGB</b> = couleurs vues par l'œil (encodage non linéaire)&nbsp;; <b>linéaire</b> = données et calculs de lumière. Le moteur décode → calcule en linéaire → ré-encode. Étiquette bien tes textures.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Pixel</b> — plus petit échantillon de couleur d'une image matricielle.</p>
+              <p><b>Raster</b> — image définie pixel par pixel (PNG, JPG, TGA).</p>
+              <p><b>Profondeur de couleur</b> — nombre de crans de précision par canal (8/16/32 bits).</p>
+              <p><b>Canal alpha</b> — canal d'opacité/masque ajouté au R, V, B.</p>
+              <p><b>sRGB</b> — espace colorimétrique standard des écrans, encodage non linéaire.</p>
+              <p><b>Espace linéaire</b> — valeurs proportionnelles à la lumière réelle, requises pour les calculs d'éclairage.</p>
+              <p><b>Gamma</b> — la courbe qui relie valeur stockée et lumière émise.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="f03-formats-fichiers.html">F3 — Formats de fichiers</a>&nbsp;: quel format garde 16&nbsp;bits, lequel gère l'alpha, lequel stocke du HDR.</li>
+              <li><a href="f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: c'est là que la règle sRGB/linéaire devient vitale, map par map.</li>
+              <li><a href="f12-optimisation.html">F12 — Optimisation</a>&nbsp;: comment ces images sont compressées pour le GPU sans tout casser.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

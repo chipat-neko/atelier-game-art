@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E3 — Créer & configurer un projet · Atelier Game Art</title>
+  <meta name="description" content="Créer un projet Unreal : templates (Blank, Third Person…), réglages de Scalability/qualité et structure du dossier Content.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Créer & configurer un projet</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E3 — Créer & configurer un projet</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unreal/e02-editeur.html">E2 — Éditeur</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Naviguer dans le <b>Project Browser</b> (navigateur de projets) et comprendre ses <b>catégories</b> (Games, Film/Video, Architecture…) et ses <b>templates</b> (Blank, First Person, Third Person, Top Down…).</li>
+                <li>Choisir entre un projet <b>Blueprint</b> et un projet <b>C++</b>, et expliquer <b>pourquoi</b> un parcours graphique commence presque toujours en Blueprint.</li>
+                <li>Régler en connaissance de cause les <b>options du projet</b>&nbsp;: <span class="term">Target Platform</span> (Desktop / Mobile), <span class="term">Quality Preset</span> (Maximum / Scalable), <b>Raytracing</b> et <b>Starter Content</b>, et comprendre comment ces choix arment ou désarment <b>Lumen</b> par défaut.</li>
+                <li>Organiser le dossier <code>Content/</code> avec une <b>arborescence</b> cohérente et appliquer les <b>conventions de nommage</b> Unreal (<span class="term">SM_</span>, <span class="term">M_</span>, <span class="term">MI_</span>, <span class="term">T_</span>, <span class="term">BP_</span>…).</li>
+                <li>Utiliser les <b>Engine Scalability Settings</b> (Low → Cinematic) pour <b>tester sur du matériel modeste</b> sans toucher au contenu, et distinguer ce réglage d'éditeur d'un vrai réglage de projet.</li>
+                <li>Éviter les pièges classiques&nbsp;: Starter Content encombrant, nommage anarchique, déplacement d'assets <b>hors</b> d'Unreal qui casse les références, et Scalability Low qui «&nbsp;abîme&nbsp;» le rendu par méprise.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un projet Unreal, ce n'est pas un fichier&nbsp;: c'est une <b>structure vivante</b> de dossiers, de références croisées et de réglages qui vont te suivre des semaines, parfois des années. Les décisions prises dans les trente premières secondes — le template choisi, la qualité par défaut, le Starter Content coché ou non — ne sont pas anodines&nbsp;: elles déterminent quelles fonctionnalités sont actives, quelle tête a ta scène au premier lancement, et combien de ménage tu devras faire ensuite. Repartir de zéro parce qu'on a mal démarré coûte cher&nbsp;; bien démarrer ne coûte que de la lucidité.</p>
+            <p>Dans un vrai pipeline de production, la <b>discipline d'organisation</b> est ce qui sépare une équipe qui avance d'une équipe qui se noie. Quand vingt artistes importent des centaines d'assets dans un même dossier <code>Content/</code>, sans conventions de nommage ni arborescence, on arrive vite à l'enfer&nbsp;: impossible de retrouver un matériau, des doublons partout, des références qui se cassent dès qu'on range. À l'inverse, un projet où chaque asset porte un préfixe parlant (<span class="term">SM_Caisse</span>, <span class="term">M_Bois</span>, <span class="term">T_Bois_BaseColor</span>) et vit dans un dossier prévisible se navigue les yeux fermés. C'est cette hygiène que tu installes ici, dès le premier projet — et que tu réinvestiras à l'import (<a href="../../cours/unreal/e04-import-assets.html">E4</a>), dans le Material Editor (<a href="../../cours/unreal/e05-material-editor.html">E5</a>) et à l'optimisation (<a href="../../cours/unreal/e10-optimisation.html">E10</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>Le Project Browser&nbsp;: la porte d'entrée de tout projet</h3>
+            <p>Quand tu lances le moteur depuis le launcher, Unreal n'ouvre pas directement une scène&nbsp;: il affiche d'abord le <span class="term">Project Browser</span> (le navigateur de projets), une fenêtre qui te propose soit d'<b>ouvrir un projet récent</b>, soit d'en <b>créer un nouveau</b>. C'est l'équivalent de l'écran «&nbsp;Nouveau document&nbsp;» d'un logiciel, mais avec des conséquences bien plus profondes&nbsp;: ce que tu choisis ici fabrique un dossier de projet pré-configuré.</p>
+            <p>Le navigateur s'organise en deux niveaux. D'abord des <b>catégories</b> (à gauche), qui répondent à la question «&nbsp;à quoi sert ce projet&nbsp;?&nbsp;»&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Catégorie</th><th>Usage visé</th><th>Ce qu'elle change</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>Games</b> (Jeux)</td><td>Jeux et expériences interactives</td><td>Templates orientés gameplay (personnage, caméra, contrôleur)</td></tr>
+                  <tr><td><b>Film / Video &amp; Live Events</b></td><td>Cinématiques, virtual production, plateaux LED</td><td>Templates orientés caméra et séquençage</td></tr>
+                  <tr><td><b>Architecture, Engineering &amp; Construction</b></td><td>Visualisation archi (archviz), maquettes</td><td>Réglages tournés vers le réalisme et la visite</td></tr>
+                  <tr><td><b>Automotive, Product Design &amp; Manufacturing</b></td><td>Design produit, configurateurs</td><td>Présentation soignée d'objets isolés</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Pour un parcours game art, la catégorie <b>Games</b> est ton point de départ par défaut. Les autres catégories ne sont pas verrouillées&nbsp;: elles préchargent simplement des <b>templates</b> et des réglages plus adaptés à leur domaine. Rien ne t'empêche de partir d'un template de jeu pour faire de l'archviz, mais autant prendre le chemin balisé.</p>
+
+            <h4>Les templates&nbsp;: un projet pré-monté, pas une cage</h4>
+            <p>Un <span class="term">template</span> (modèle de projet) est un <b>projet de départ déjà assemblé</b>&nbsp;: un niveau d'exemple, parfois un personnage jouable, une caméra et la logique minimale pour bouger. Il te fait gagner les heures de plomberie de base. Les principaux templates de la catégorie Games&nbsp;:</p>
+            <ul>
+              <li><b>Blank</b> (Vierge)&nbsp;: un projet quasi vide, une scène avec un sol et une lumière. Aucun personnage, aucune logique. Idéal quand tu veux <b>tout maîtriser</b> ou faire de la pure mise en scène d'assets.</li>
+              <li><b>First Person</b> (Vue à la première personne)&nbsp;: une caméra «&nbsp;dans les yeux&nbsp;» du personnage, des bras visibles, parfois une arme de test. Base des FPS et des expériences immersives.</li>
+              <li><b>Third Person</b> (Vue à la troisième personne)&nbsp;: un personnage visible de dos, une caméra qui le suit, des contrôles de marche/course/saut déjà câblés. C'est le template <b>le plus pédagogique</b>&nbsp;: tu as immédiatement quelque chose à l'écran à manipuler.</li>
+              <li><b>Top Down</b> (Vue de dessus)&nbsp;: caméra en plongée, déplacement au clic. Base des jeux type action-RPG ou stratégie.</li>
+            </ul>
+            <p>Le point essentiel à comprendre&nbsp;: un template n'est <b>pas un carcan</b>. Tu peux toujours ajouter ou retirer ce qu'il contient. Mais choisir le bon template t'évite de bâtir (ou de supprimer) de la logique inutile. Pour ce cours, on prendra <b>Third Person</b>&nbsp;: il offre un personnage à observer, une caméra qui suit, et un terrain de jeu concret pour poser des assets et tester l'éclairage.</p>
+
+            <h3>Blueprint ou C++&nbsp;: deux façons de programmer le jeu</h3>
+            <p>Le navigateur te demande de choisir entre un projet <b>Blueprint</b> et un projet <b>C++</b>. C'est un choix sur la <b>manière d'écrire la logique</b> de ton jeu, pas sur le rendu graphique.</p>
+            <p>Le <span class="term">Blueprint</span> est le système de <b>programmation visuelle</b> d'Unreal&nbsp;: tu construis la logique en reliant des <b>nœuds</b> (des boîtes) par des fils, comme un schéma électrique. «&nbsp;Quand le joueur appuie sur Espace → faire sauter le personnage&nbsp;» devient une chaîne de nœuds, sans écrire une ligne de texte. C'est accessible, immédiat à tester, et parfaitement suffisant pour énormément de jeux.</p>
+            <p>Le <b>C++</b> est le langage de programmation textuel «&nbsp;classique&nbsp;» dans lequel Unreal lui-même est écrit. Un projet C++ exige un compilateur (Visual Studio sur Windows) et des connaissances de développeur. Il offre plus de performance brute et l'accès à des fonctionnalités bas niveau, mais c'est un autre métier.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le choix n'est pas définitif</div>
+              <p>Bonne nouvelle&nbsp;: un projet créé en <b>Blueprint</b> peut, plus tard, recevoir du code <b>C++</b> (Unreal convertit le projet au moment où tu ajoutes ta première classe C++). L'inverse est moins confortable. Pour un parcours <b>game art</b>, on démarre donc <b>en Blueprint</b>&nbsp;: c'est plus simple, plus rapide à itérer, et tu garderas la porte ouverte vers le C++ le jour où tu en auras besoin.</p>
+            </div>
+
+            <h3>Les options du projet&nbsp;: ce que coche ou décoche le débutant</h3>
+            <p>Sous le choix du template, le navigateur expose un panneau d'options. Ce sont elles qui déterminent l'état réel de ton projet au premier lancement. Décortiquons-les, car c'est ici que se jouent des heures de confort ou de galère.</p>
+
+            <h4>Target Platform&nbsp;: Desktop ou Mobile</h4>
+            <p>La <span class="term">Target Platform</span> (plateforme cible) indique à Unreal pour <b>quel type de matériel</b> tu construis. Deux choix usuels&nbsp;:</p>
+            <ul>
+              <li><b>Desktop</b> (ordinateur/console)&nbsp;: cible des machines puissantes. Le projet active par défaut le rendu haut de gamme.</li>
+              <li><b>Mobile</b> (smartphone/tablette)&nbsp;: cible du matériel contraint. Unreal restreint d'emblée certaines fonctionnalités coûteuses pour rester jouable sur ces puces.</li>
+            </ul>
+            <p>Pourquoi c'est important&nbsp;: ce choix <b>pré-règle</b> le pipeline de rendu et certaines fonctionnalités. Choisir Mobile alors qu'on vise le PC bride inutilement la qualité&nbsp;; choisir Desktop pour un jeu mobile prépare une scène qui ne tournera jamais sur téléphone. Pour ce cours sur PC, on reste sur <b>Desktop</b>.</p>
+
+            <h4>Quality Preset&nbsp;: Maximum ou Scalable — le réglage qui change tout</h4>
+            <p>C'est l'option la plus lourde de conséquences, et la plus mal comprise. Le <span class="term">Quality Preset</span> (préréglage de qualité) ne change pas «&nbsp;la beauté&nbsp;» de façon cosmétique&nbsp;: il <b>active ou désactive des systèmes de rendu entiers par défaut</b>.</p>
+            <ul>
+              <li><b>Maximum</b>&nbsp;: vise le rendu de la plus haute qualité. En particulier, il active <span class="term">Lumen</span> — le système d'<b>éclairage global et de réflexions en temps réel</b> d'Unreal (l'illumination indirecte, c'est-à-dire la lumière qui rebondit sur les surfaces et colore les ombres). C'est ce qui donne aux scènes UE5 leur réalisme «&nbsp;qui éclaire tout seul&nbsp;».</li>
+              <li><b>Scalable</b> (extensible/évolutif)&nbsp;: vise un rendu qui s'adapte à du matériel modeste. Il <b>désactive</b> par défaut les fonctionnalités les plus coûteuses (dont Lumen) au profit d'un éclairage plus léger, pour garantir un bon nombre d'images par seconde même sur des machines faibles.</li>
+            </ul>
+            <p><b>Voilà le piège conceptuel&nbsp;:</b> beaucoup de débutants créent un projet en Scalable, s'étonnent que leur scène soit «&nbsp;plate&nbsp;», sans la belle lumière indirecte des tutoriels, et croient avoir mal fait. En réalité, c'est le preset qui a éteint Lumen. À l'inverse, choisir Maximum sur une petite carte graphique peut rendre l'éditeur poussif. La règle&nbsp;: pour <b>apprendre le rendu moderne</b> d'Unreal sur une machine correcte, on choisit <b>Maximum</b> (Lumen actif). Si ta machine peine, tu ne touches <b>pas</b> au preset du projet&nbsp;: tu baisses la <b>Scalability</b> de l'éditeur (voir plus bas), ce qui est réversible et n'altère pas le contenu.</p>
+
+            <h4>Raytracing&nbsp;: une option distincte, souvent inutile en UE5</h4>
+            <p>Le <b>Raytracing</b> (lancer de rayons) est une technique de calcul d'éclairage qui suit le trajet des rayons lumineux pour des reflets et des ombres très exacts. Une case dédiée peut l'activer à la création. En pratique, sous UE5, <b>Lumen couvre déjà</b> l'essentiel des besoins d'éclairage indirect et de réflexions en temps réel sans exiger le matériel raytracing hardware le plus lourd. Pour un débutant, on <b>laisse le Raytracing décoché</b>&nbsp;: on s'appuie sur Lumen, plus simple et bien suffisant.</p>
+
+            <h4>Starter Content&nbsp;: pratique pour apprendre, à manier avec parcimonie</h4>
+            <p>Le <span class="term">Starter Content</span> (contenu de démarrage) est un petit lot d'assets fournis par Epic&nbsp;: matériaux, textures, formes de base, quelques props. Cochée, l'option copie ce lot dans ton projet.</p>
+            <ul>
+              <li><b>Avantage</b>&nbsp;: tu as immédiatement de la matière pour t'exercer (poser un cube texturé, tester une lumière sur un matériau) sans rien importer.</li>
+              <li><b>Inconvénient</b>&nbsp;: ces assets <b>pèsent</b> dans le projet et, surtout, on les oublie. Le jour où tu emballes ton jeu, du contenu de démo inutilisé peut traîner et gonfler le build si tu n'as pas fait le ménage.</li>
+            </ul>
+            <p>Pour <b>apprendre</b>, on coche le Starter Content&nbsp;: c'est un terrain de jeu commode. Pour un <b>vrai projet de production</b>, beaucoup d'équipes le décochent et n'importent que ce dont elles ont besoin. La discipline&nbsp;: si tu le coches, sache exactement où il vit (un dossier <code>StarterContent</code>) pour pouvoir le supprimer proprement plus tard.</p>
+
+            <h3>La structure du dossier Content&nbsp;: où vivent réellement tes assets</h3>
+            <p>Sur ton disque, un projet Unreal est un dossier qui contient notamment&nbsp;: un fichier <code>.uproject</code> (la «&nbsp;carte d'identité&nbsp;» du projet, qu'on double-clique pour l'ouvrir), un dossier <code>Config/</code> (les réglages), et surtout le dossier <code>Content/</code>. C'est dans <code>Content/</code> que vivent <b>tous tes assets</b> visibles dans le moteur&nbsp;: meshes, matériaux, textures, Blueprints, niveaux. Dans l'éditeur, ce dossier est exploré via le <span class="term">Content Browser</span> (navigateur de contenu), le panneau en bas de l'écran (revu en <a href="../../cours/unreal/e02-editeur.html">E2</a>).</p>
+            <p>Comment organiser <code>Content/</code>&nbsp;? Deux grandes écoles s'affrontent, et le «&nbsp;débat&nbsp;» est réel&nbsp;:</p>
+            <ul>
+              <li><b>Par type</b>&nbsp;: un dossier <code>Meshes/</code>, un dossier <code>Materials/</code>, un dossier <code>Textures/</code>, etc. Simple à comprendre, mais à grande échelle on se retrouve à chercher «&nbsp;tous les fichiers d'un même objet&nbsp;» éparpillés dans cinq dossiers différents.</li>
+              <li><b>Par feature</b> (par fonctionnalité/élément)&nbsp;: un dossier <code>Personnage/</code>, un dossier <code>Environnement/Foret/</code>, etc., chacun contenant <em>tout</em> ce qui concerne cet élément. Plus scalable sur les gros projets, mais demande une convention disciplinée.</li>
+            </ul>
+            <p>Aucune des deux n'est «&nbsp;la bonne&nbsp;» dans l'absolu&nbsp;: la vérité est qu'il faut <b>en choisir une et s'y tenir</b> dans tout le projet. Pour débuter, une organisation hybride et lisible suffit&nbsp;: un dossier par grande famille d'éléments, et à l'intérieur, des sous-dossiers par type quand le volume le justifie.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce</div>
+              <p>Range tes assets dans <b>tes propres dossiers</b> sous <code>Content/</code> (ex.&nbsp;<code>Content/MonJeu/…</code>) plutôt qu'en vrac à la racine. Ainsi, le contenu importé (Fab, Starter Content, plugins) ne se mélange pas au tien, et tu sais d'un coup d'œil ce qui est «&nbsp;à toi&nbsp;».</p>
+            </div>
+
+            <h4>Les conventions de nommage Unreal&nbsp;: le préfixe qui parle</h4>
+            <p>La communauté Unreal s'est dotée d'une <b>convention de préfixes</b> très répandue. Chaque asset porte un préfixe en majuscules qui dit <b>ce qu'il est</b>, suivi d'un nom descriptif. L'intérêt&nbsp;: dans le Content Browser, une recherche «&nbsp;<code>SM_</code>&nbsp;» te liste instantanément tous les meshes&nbsp;; un nom comme <span class="term">MI_Bois_Sombre</span> dit, sans l'ouvrir, qu'on a affaire à une instance de matériau de bois sombre.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Préfixe</th><th>Type d'asset</th><th>Exemple</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="term">SM_</span></td><td>Static Mesh (maillage statique, objet non animé)</td><td><code>SM_Caisse</code></td></tr>
+                  <tr><td><span class="term">SK_</span></td><td>Skeletal Mesh (maillage animé avec squelette)</td><td><code>SK_Heros</code></td></tr>
+                  <tr><td><span class="term">M_</span></td><td>Material (matériau «&nbsp;maître&nbsp;»)</td><td><code>M_Bois</code></td></tr>
+                  <tr><td><span class="term">MI_</span></td><td>Material Instance (instance dérivée d'un matériau)</td><td><code>MI_Bois_Sombre</code></td></tr>
+                  <tr><td><span class="term">T_</span></td><td>Texture</td><td><code>T_Bois_BaseColor</code></td></tr>
+                  <tr><td><span class="term">BP_</span></td><td>Blueprint</td><td><code>BP_Porte</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Un <b>Material Instance</b> (instance de matériau) est une copie légère d'un matériau «&nbsp;maître&nbsp;» dont on ne change que quelques paramètres (couleur, rugosité)&nbsp;; on y reviendra en <a href="../../cours/unreal/e05-material-editor.html">E5</a>. Le mécanisme important ici, c'est que ces préfixes ne sont <b>pas une fantaisie</b>&nbsp;: ils rendent ton projet <b>recherchable et auto-documenté</b>. Un projet bien préfixé se trie, se filtre et se comprend instantanément&nbsp;; un projet aux noms anarchiques (<code>truc01</code>, <code>final_v2_vraiment</code>) devient illisible dès qu'il grossit.</p>
+
+            <h4>Les dossiers spéciaux&nbsp;: Developers et Engine</h4>
+            <p>Deux dossiers méritent un mot&nbsp;:</p>
+            <ul>
+              <li><b>Developers</b>&nbsp;: un dossier «&nbsp;bac à sable&nbsp;» <b>personnel</b>, un sous-dossier par utilisateur. On y bricole, on teste, sans polluer le contenu partagé de l'équipe. Il est masqué par défaut (un réglage du Content Browser l'affiche). En solo, tu peux l'ignorer.</li>
+              <li><b>Engine</b>&nbsp;: le contenu interne du moteur lui-même (matériaux système, formes de base). Il est <b>caché par défaut</b> car tu n'es pas censé le modifier&nbsp;; on peut l'afficher pour curiosité, mais on n'y touche pas.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Schéma du Project Browser d'Unreal : à gauche les catégories, au centre les templates, à droite le panneau d'options avec Target Platform, Quality Preset, Raytracing et Starter Content">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Le Project Browser&nbsp;: catégorie → template → options</text>
+
+                <!-- colonne catégories -->
+                <rect x="16" y="44" width="120" height="232" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="76" y="62" text-anchor="middle" class="svg-dim" font-size="10" font-weight="700">CATÉGORIES</text>
+                <rect x="26" y="72" width="100" height="26" rx="5" fill="#59b0ff" fill-opacity="0.16" stroke="#59b0ff"/>
+                <text x="76" y="89" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Games</text>
+                <text x="76" y="118" text-anchor="middle" class="svg-dim" font-size="9.5">Film / Video</text>
+                <text x="76" y="140" text-anchor="middle" class="svg-dim" font-size="9.5">Architecture</text>
+                <text x="76" y="162" text-anchor="middle" class="svg-dim" font-size="9.5">Automotive</text>
+
+                <!-- colonne templates -->
+                <rect x="148" y="44" width="180" height="232" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="238" y="62" text-anchor="middle" class="svg-dim" font-size="10" font-weight="700">TEMPLATES</text>
+                <rect x="158" y="72" width="160" height="24" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="238" y="88" text-anchor="middle" class="svg-text" font-size="10.5">Blank (Vierge)</text>
+                <rect x="158" y="102" width="160" height="24" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="238" y="118" text-anchor="middle" class="svg-text" font-size="10.5">First Person</text>
+                <rect x="158" y="132" width="160" height="24" rx="5" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                <text x="238" y="148" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Third Person ◄ choix</text>
+                <rect x="158" y="162" width="160" height="24" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="238" y="178" text-anchor="middle" class="svg-text" font-size="10.5">Top Down</text>
+                <rect x="158" y="200" width="76" height="22" rx="5" class="svg-surface" stroke="#c89bff"/>
+                <text x="196" y="215" text-anchor="middle" class="svg-text" font-size="9.5" font-weight="700">Blueprint</text>
+                <rect x="242" y="200" width="76" height="22" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="280" y="215" text-anchor="middle" class="svg-dim" font-size="9.5">C++</text>
+                <text x="238" y="244" text-anchor="middle" class="svg-dim" font-size="9">on démarre en Blueprint</text>
+
+                <!-- colonne options -->
+                <rect x="340" y="44" width="284" height="232" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="482" y="62" text-anchor="middle" class="svg-dim" font-size="10" font-weight="700">PROJECT DEFAULTS (options)</text>
+
+                <text x="352" y="86" class="svg-text" font-size="10.5">Target Platform</text>
+                <rect x="500" y="74" width="56" height="20" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                <text x="528" y="88" text-anchor="middle" class="svg-text" font-size="9.5" font-weight="700">Desktop</text>
+                <rect x="560" y="74" width="52" height="20" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <text x="586" y="88" text-anchor="middle" class="svg-dim" font-size="9.5">Mobile</text>
+
+                <text x="352" y="118" class="svg-text" font-size="10.5">Quality Preset</text>
+                <rect x="500" y="106" width="60" height="20" rx="4" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="530" y="120" text-anchor="middle" class="svg-text" font-size="9.5" font-weight="700">Maximum</text>
+                <rect x="564" y="106" width="48" height="20" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <text x="588" y="120" text-anchor="middle" class="svg-dim" font-size="9">Scalable</text>
+                <text x="482" y="140" text-anchor="middle" class="svg-dim" font-size="9">Maximum ⇒ Lumen activé par défaut</text>
+
+                <text x="352" y="168" class="svg-text" font-size="10.5">Raytracing</text>
+                <rect x="500" y="156" width="112" height="20" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <text x="556" y="170" text-anchor="middle" class="svg-dim" font-size="9.5">décoché (Lumen suffit)</text>
+
+                <text x="352" y="200" class="svg-text" font-size="10.5">Starter Content</text>
+                <rect x="500" y="188" width="112" height="20" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                <text x="556" y="202" text-anchor="middle" class="svg-text" font-size="9.5" font-weight="700">coché (apprentissage)</text>
+
+                <text x="352" y="232" class="svg-text" font-size="10.5">Nom du projet</text>
+                <rect x="450" y="220" width="162" height="20" rx="4" class="svg-surface" stroke="#313c4c"/>
+                <text x="531" y="234" text-anchor="middle" class="svg-dim" font-size="9.5">MonProjet_TPP</text>
+
+                <rect x="500" y="250" width="112" height="22" rx="5" fill="#59b0ff" fill-opacity="0.18" stroke="#59b0ff"/>
+                <text x="556" y="265" text-anchor="middle" class="svg-text" font-size="10.5" font-weight="700">Create ▸</text>
+
+                <!-- flèches de flux -->
+                <line x1="136" y1="85" x2="146" y2="85" stroke="#8a93a3" stroke-width="1.4"/>
+                <line x1="328" y1="144" x2="338" y2="144" stroke="#8a93a3" stroke-width="1.4"/>
+              </svg>
+              <figcaption>Anatomie du Project Browser. On lit de gauche à droite&nbsp;: <b>catégorie</b> (Games) → <b>template</b> (Third Person, en Blueprint) → <b>options</b>. Les choix en couleur sont ceux recommandés pour apprendre&nbsp;: Desktop, <b>Maximum</b> (qui arme Lumen), Raytracing décoché, Starter Content coché.</figcaption>
+            </figure>
+
+            <h3>La Scalability&nbsp;: tester «&nbsp;light&nbsp;» sans abîmer le projet</h3>
+            <p>Voici une distinction capitale, et source de nombreux malentendus. Le <span class="term">Quality Preset</span> vu plus haut est un réglage <b>du projet</b>, fixé à la création. La <span class="term">Scalability</span> (extensibilité), elle, est un réglage <b>de l'éditeur sur ta machine</b> que tu peux changer à tout moment&nbsp;: c'est un curseur de qualité de l'<b>aperçu</b>, qui n'altère <b>pas</b> le contenu de ton projet ni ce que verront les autres.</p>
+            <p>On la règle via <span class="menu-path">Settings<span class="arrow">▸</span>Engine Scalability Settings</span>. On y trouve des niveaux globaux — <b>Low, Medium, High, Epic, Cinematic</b> — et le détail par poste de rendu&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Poste</th><th>Ce qu'il contrôle</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><b>View Distance</b></td><td>Distance d'affichage des objets (au-delà, ils disparaissent)</td></tr>
+                  <tr><td><b>Shadows</b></td><td>Qualité et portée des ombres</td></tr>
+                  <tr><td><b>Global Illumination</b> / Lumen</td><td>Éclairage indirect (la lumière qui rebondit)</td></tr>
+                  <tr><td><b>Reflections</b></td><td>Qualité des reflets</td></tr>
+                  <tr><td><b>Post Processing</b></td><td>Effets d'image (flou, bloom, exposition…)</td></tr>
+                  <tr><td><b>Textures</b></td><td>Résolution des textures affichées</td></tr>
+                  <tr><td><b>Effects</b></td><td>Effets divers (particules, etc.)</td></tr>
+                  <tr><td><b>Foliage</b></td><td>Densité de la végétation</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p><b>À quoi ça sert concrètement&nbsp;?</b> Imagine que ton éditeur rame parce que ta carte graphique est modeste. Plutôt que d'appauvrir ton projet, tu baisses la Scalability sur <b>Medium</b> ou <b>Low</b>&nbsp;: l'aperçu devient plus fluide, ton travail (placement, modélisation, logique) avance sans à-coups, et le <b>contenu reste intact</b>. Le jour où tu fais un rendu final ou une capture, tu remontes sur <b>Epic</b> ou <b>Cinematic</b>. C'est exactement le bon outil pour <b>développer sur du matériel modeste</b> sans sacrifier la qualité du projet. Le détail de l'optimisation pour de vrai (côté contenu et build) est traité en <a href="../../cours/unreal/e10-optimisation.html">E10</a>.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>«&nbsp;Mon rendu s'est dégradé tout seul&nbsp;!&nbsp;»</div>
+              <p>Erreur très fréquente&nbsp;: on met la Scalability sur <b>Low</b> pour gagner du framerate, puis on s'alarme que les ombres sont moches et que la lumière indirecte a disparu — et on croit avoir cassé la scène. Non&nbsp;: tu as juste baissé la <b>qualité d'aperçu</b>. Remets la Scalability sur <b>Epic</b> et tout revient. Ce réglage est un <b>verre grossissant</b>, pas un coup de gomme.</p>
+            </div>
+
+            <h3>Project Settings côté rendu&nbsp;: un aperçu</h3>
+            <p>Au-delà de la création, les vrais réglages durables du projet vivent dans <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings</span>, et notamment la section <b>Rendering</b> (rendu). C'est là que se règlent, à l'échelle du projet, des choses comme le mode d'éclairage global (Lumen ou non), les réflexions ou l'anti-aliasing. Tu n'as pas besoin d'y toucher pour démarrer&nbsp;: le Quality Preset «&nbsp;Maximum&nbsp;» configure déjà des défauts sains. On y reviendra quand on travaillera l'éclairage en <a href="../../cours/unreal/e06-eclairage.html">E6</a>. Retiens simplement la hiérarchie&nbsp;: <b>Project Settings = réglages du projet (partagés)</b>, <b>Scalability = réglage d'aperçu (ta machine)</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 280" role="img" aria-label="Arborescence recommandée du dossier Content avec sous-dossiers par élément et conventions de nommage par préfixe">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Arborescence Content + conventions de nommage</text>
+
+                <!-- racine -->
+                <rect x="20" y="44" width="150" height="26" rx="6" fill="#59b0ff" fill-opacity="0.16" stroke="#59b0ff"/>
+                <text x="34" y="61" class="svg-text" font-size="11" font-weight="700">📁 Content/</text>
+
+                <!-- niveau 1 : MonJeu -->
+                <rect x="56" y="84" width="150" height="24" rx="5" class="svg-surface" stroke="#c89bff"/>
+                <text x="68" y="100" class="svg-text" font-size="10.5" font-weight="700">📁 MonJeu/</text>
+                <line x1="40" y1="70" x2="40" y2="96" stroke="#313c4c" stroke-width="1.3"/>
+                <line x1="40" y1="96" x2="56" y2="96" stroke="#313c4c" stroke-width="1.3"/>
+
+                <!-- sous-dossiers feature -->
+                <rect x="92" y="120" width="160" height="22" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="104" y="135" class="svg-text" font-size="10">📁 Personnage/</text>
+                <rect x="92" y="148" width="160" height="22" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="104" y="163" class="svg-text" font-size="10">📁 Environnement/</text>
+                <rect x="92" y="176" width="160" height="22" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="104" y="191" class="svg-text" font-size="10">📁 Materiaux/</text>
+                <rect x="92" y="204" width="160" height="22" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="104" y="219" class="svg-text" font-size="10">📁 Niveaux/</text>
+                <line x1="76" y1="108" x2="76" y2="215" stroke="#313c4c" stroke-width="1.3"/>
+                <line x1="76" y1="131" x2="92" y2="131" stroke="#313c4c" stroke-width="1.3"/>
+                <line x1="76" y1="159" x2="92" y2="159" stroke="#313c4c" stroke-width="1.3"/>
+                <line x1="76" y1="187" x2="92" y2="187" stroke="#313c4c" stroke-width="1.3"/>
+                <line x1="76" y1="215" x2="92" y2="215" stroke="#313c4c" stroke-width="1.3"/>
+
+                <!-- panneau nommage -->
+                <rect x="300" y="84" width="320" height="180" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="460" y="104" text-anchor="middle" class="svg-dim" font-size="10" font-weight="700">PRÉFIXES (assets dans ces dossiers)</text>
+
+                <rect x="316" y="116" width="58" height="22" rx="4" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                <text x="345" y="131" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">SM_</text>
+                <text x="384" y="131" class="svg-dim" font-size="10">Static Mesh → SM_Caisse</text>
+
+                <rect x="316" y="144" width="58" height="22" rx="4" fill="#59b0ff" fill-opacity="0.16" stroke="#59b0ff"/>
+                <text x="345" y="159" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">M_</text>
+                <text x="384" y="159" class="svg-dim" font-size="10">Material → M_Bois</text>
+
+                <rect x="316" y="172" width="58" height="22" rx="4" fill="#c89bff" fill-opacity="0.16" stroke="#c89bff"/>
+                <text x="345" y="187" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">MI_</text>
+                <text x="384" y="187" class="svg-dim" font-size="10">Material Instance → MI_Bois_Sombre</text>
+
+                <rect x="316" y="200" width="58" height="22" rx="4" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="345" y="215" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">T_</text>
+                <text x="384" y="215" class="svg-dim" font-size="10">Texture → T_Bois_BaseColor</text>
+
+                <rect x="316" y="228" width="58" height="22" rx="4" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441"/>
+                <text x="345" y="243" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">BP_</text>
+                <text x="384" y="243" class="svg-dim" font-size="10">Blueprint → BP_Porte</text>
+
+                <text x="320" y="274" text-anchor="middle" class="svg-dim" font-size="9.5">Un préfixe = un type. La recherche « SM_ » liste tous les meshes ; un nom dit ce qu'il est sans l'ouvrir.</text>
+              </svg>
+              <figcaption>Une arborescence lisible (gauche)&nbsp;: tout ton contenu sous <code>Content/MonJeu/</code>, organisé par élément, et des assets <b>préfixés</b> (droite) selon leur type. C'est cette double discipline — <b>ranger</b> et <b>nommer</b> — qui garde un projet navigable quand il grossit.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On crée un projet <b>Third Person Blueprint</b> en qualité <b>Maximum</b>, on pose une arborescence propre dans le Content Browser, on applique les conventions de nommage, et on règle la Scalability. À chaque étape, on dit <b>ce qui se passe</b>.</p>
+            <ol>
+              <li><b>Ouvrir le Project Browser.</b> Lance Unreal&nbsp;5.7 depuis le launcher (ou, s'il est déjà ouvert, fais <span class="menu-path">File<span class="arrow">▸</span>New Project</span>). <em>Ce qui se passe&nbsp;:</em> le navigateur de projets s'affiche avec les catégories à gauche.</li>
+              <li><b>Choisir la catégorie.</b> Sélectionne <span class="menu-path">Games (Jeux)</span>. <em>Ce qui se passe&nbsp;:</em> la zone centrale affiche les templates orientés gameplay (Blank, First Person, Third Person, Top Down…).</li>
+              <li><b>Choisir le template.</b> Clique sur <span class="menu-path">Third Person</span>. <em>Ce qui se passe&nbsp;:</em> Unreal sélectionne un projet de départ avec un personnage jouable, une caméra qui le suit et les contrôles de déplacement déjà câblés — tu auras donc tout de suite quelque chose à manipuler.</li>
+              <li><b>Choisir Blueprint plutôt que C++.</b> Dans le bloc de droite, garde l'onglet <span class="menu-path">Blueprint</span> (et non C++). <em>Ce qui se passe&nbsp;:</em> le projet n'exigera pas de compilateur et toute la logique sera éditable visuellement&nbsp;; tu pourras ajouter du C++ plus tard si besoin.</li>
+              <li><b>Régler Target Platform.</b> Mets <span class="menu-path">Target Platform<span class="arrow">▸</span>Desktop</span>. <em>Ce qui se passe&nbsp;:</em> Unreal pré-règle le pipeline de rendu pour une machine puissante (PC/console), sans bridage mobile.</li>
+              <li><b>Régler Quality Preset sur Maximum.</b> Choisis <span class="menu-path">Quality Preset<span class="arrow">▸</span>Maximum</span>. <em>Ce qui se passe&nbsp;:</em> c'est le réglage clé&nbsp;: il active <b>Lumen</b> (éclairage global et réflexions temps réel) par défaut, ce qui donnera à ta scène la lumière indirecte réaliste d'UE5. Avec «&nbsp;Scalable&nbsp;», Lumen serait désactivé et la scène paraîtrait plate.</li>
+              <li><b>Laisser le Raytracing décoché.</b> Ne coche pas l'option Raytracing. <em>Ce qui se passe&nbsp;:</em> on s'appuie sur Lumen, plus simple et suffisant&nbsp;; tu évites une charge GPU inutile.</li>
+              <li><b>Cocher Starter Content.</b> Active <span class="menu-path">Starter Content</span>. <em>Ce qui se passe&nbsp;:</em> un petit lot d'assets (matériaux, props) est copié dans le projet, pratique pour s'exercer. Note mentalement qu'il vit dans un dossier <code>StarterContent</code> à nettoyer plus tard pour un vrai projet.</li>
+              <li><b>Nommer et créer.</b> Choisis un dossier de destination, donne un nom <b>sans espaces ni accents</b> (ex.&nbsp;<code>MonProjet_TPP</code>) puis clique <span class="menu-path">Create (Créer)</span>. <em>Ce qui se passe&nbsp;:</em> Unreal génère le dossier de projet (avec le <code>.uproject</code>, <code>Config/</code>, <code>Content/</code>) puis ouvre l'éditeur sur le niveau d'exemple, personnage compris.</li>
+              <li><b>Poser l'arborescence.</b> Dans le <span class="menu-path">Content Browser</span> (en bas), fais un clic droit dans la zone des dossiers → <span class="menu-path">New Folder</span> et crée <code>MonJeu</code>, puis à l'intérieur <code>Personnage</code>, <code>Environnement</code>, <code>Materiaux</code>, <code>Niveaux</code>. <em>Ce qui se passe&nbsp;:</em> tu prépares des emplacements clairs pour ranger ton futur contenu, séparés du Starter Content.</li>
+              <li><b>Appliquer le nommage.</b> Quand tu créeras ou importeras des assets, préfixe-les&nbsp;: un mesh devient <code>SM_…</code>, un matériau <code>M_…</code>, une texture <code>T_…</code>, un Blueprint <code>BP_…</code>. Pour renommer un asset existant, fais un clic droit dessus → <span class="menu-path">Rename</span>. <em>Ce qui se passe&nbsp;:</em> tes assets deviennent recherchables et auto-documentés.</li>
+              <li><b>Régler la Scalability si ta machine peine.</b> Va dans <span class="menu-path">Settings<span class="arrow">▸</span>Engine Scalability Settings</span> et choisis un niveau global (<b>Medium</b> par exemple) si l'éditeur rame, ou laisse <b>Epic</b> sinon. <em>Ce qui se passe&nbsp;:</em> tu ajustes la <b>fluidité de l'aperçu</b> sur ta machine&nbsp;; ton contenu n'est pas modifié. Tu remonteras à Epic/Cinematic pour les rendus finaux.</li>
+            </ol>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Déplacer un asset&nbsp;: toujours <em>dans</em> Unreal</div>
+              <p>Pour ranger ou renommer un asset, utilise <b>Move</b> ou <b>Rename</b> <em>dans le Content Browser</em> (clic droit ou glisser-déposer). Unreal met alors à jour toutes les références et pose au besoin un <b>Redirector</b> (un panneau indicateur invisible qui dit «&nbsp;ce contenu a déménagé là&nbsp;»), afin que rien ne casse. Ne déplace <b>jamais</b> les fichiers depuis l'Explorateur Windows&nbsp;: Unreal perdrait la trace et tes matériaux deviendraient roses, tes meshes introuvables.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma scène est «&nbsp;plate&nbsp;», sans la belle lumière indirecte des tutoriels, alors que je n'ai rien fait de mal.</div>
+                <div class="pi-cause"><b>Cause</b>Projet créé en <b>Quality Preset «&nbsp;Scalable&nbsp;»</b>, qui désactive Lumen par défaut.</div>
+                <div class="pi-fix"><b>Correction</b>Crée le projet en <b>Maximum</b> (Lumen actif), ou active l'éclairage global Lumen dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Rendering</span>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon projet est lourd et plein d'assets que je n'utilise pas&nbsp;; mon build final est gonflé.</div>
+                <div class="pi-cause"><b>Cause</b><b>Starter Content</b> coché puis oublié&nbsp;: le contenu de démo traîne sans servir.</div>
+                <div class="pi-fix"><b>Correction</b>En production, décoche-le à la création, ou supprime proprement le dossier <code>StarterContent</code> une fois que tu n'en as plus besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Impossible de retrouver mes assets&nbsp;; des noms comme <code>truc01</code>, <code>final_v2</code> partout.</div>
+                <div class="pi-cause"><b>Cause</b>Nommage <b>anarchique</b>, sans préfixes ni convention.</div>
+                <div class="pi-fix"><b>Correction</b>Applique les préfixes (<code>SM_</code>, <code>M_</code>, <code>MI_</code>, <code>T_</code>, <code>BP_</code>) dès la création et range par élément. La recherche redevient instantanée.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Après avoir rangé mes fichiers, mes matériaux sont roses et des meshes manquent.</div>
+                <div class="pi-cause"><b>Cause</b>Assets <b>déplacés depuis l'Explorateur Windows</b>, hors d'Unreal&nbsp;: les références sont cassées.</div>
+                <div class="pi-fix"><b>Correction</b>Annule, puis range toujours via <b>Move/Rename dans le Content Browser</b>, qui conserve les références (Redirectors).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon rendu s'est «&nbsp;dégradé tout seul&nbsp;»&nbsp;: ombres moches, lumière indirecte disparue.</div>
+                <div class="pi-cause"><b>Cause</b><b>Scalability réglée sur Low/Medium</b>&nbsp;: c'est l'aperçu qui est allégé, pas la scène.</div>
+                <div class="pi-fix"><b>Correction</b>Remonte la Scalability sur <b>Epic</b>/<b>Cinematic</b> via <span class="menu-path">Settings<span class="arrow">▸</span>Engine Scalability Settings</span>&nbsp;; le rendu revient.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai un personnage et des contrôles dont je ne veux pas, ou au contraire rien à manipuler.</div>
+                <div class="pi-cause"><b>Cause</b><b>Mauvais template</b> au départ (Third Person quand on voulait du vide, ou Blank quand on voulait jouer tout de suite).</div>
+                <div class="pi-fix"><b>Correction</b>Recrée le projet avec le bon template, ou supprime/ajoute la logique. Choisir le template selon l'objectif évite ce ménage.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Crée un projet propre de bout en bout, configure-le correctement, et installe une hygiène d'organisation que tu garderas pour tout le cours.</p>
+              <ol>
+                <li><b>Crée</b> un projet <b>Games → Third Person → Blueprint</b>, en <b>Target Platform Desktop</b>, <b>Quality Preset Maximum</b>, Raytracing décoché, Starter Content coché. Nomme-le <code>MonProjet_TPP</code> (sans espaces ni accents).</li>
+                <li><b>Vérifie Lumen</b>&nbsp;: lance le jeu (bouton Play), observe la lumière indirecte. Note en une phrase pourquoi elle est présente (lien avec le preset Maximum).</li>
+                <li><b>Pose l'arborescence</b> dans le Content Browser&nbsp;: <code>Content/MonJeu/</code> avec <code>Personnage</code>, <code>Environnement</code>, <code>Materiaux</code>, <code>Niveaux</code>.</li>
+                <li><b>Renomme</b> au moins deux assets du Starter Content selon les conventions (par <span class="menu-path">Rename</span> dans le Content Browser, jamais via l'Explorateur), par exemple un mesh en <code>SM_…</code> et un matériau en <code>M_…</code>.</li>
+                <li><b>Joue avec la Scalability</b>&nbsp;: passe successivement de <b>Cinematic</b> à <b>Low</b> et reviens. Observe ce qui change (ombres, lumière indirecte) et confirme que le contenu, lui, n'a pas bougé.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le projet s'ouvre en <b>Third Person Blueprint</b>, qualité <b>Maximum</b>, et tu observes la <b>lumière indirecte de Lumen</b> en jeu.</li>
+                  <li>L'arborescence <code>Content/MonJeu/…</code> existe et tes assets renommés portent les <b>bons préfixes</b> (<code>SM_</code>, <code>M_</code>…).</li>
+                  <li>Tes renommages ont été faits <b>dans le Content Browser</b> (aucun matériau rose, aucun mesh manquant ensuite).</li>
+                  <li>Tu sais expliquer la différence entre <b>Quality Preset</b> (réglage du projet) et <b>Scalability</b> (aperçu sur ta machine), et pourquoi baisser la Scalability ne «&nbsp;casse&nbsp;» rien.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>Project Browser</b> se lit en trois temps&nbsp;: <b>catégorie</b> (Games) → <b>template</b> (Third Person) → <b>options</b>. Le template est un point de départ, pas une cage.</li>
+                <li>On démarre en <b>Blueprint</b> (programmation visuelle, pas de compilateur)&nbsp;; on pourra ajouter du <b>C++</b> plus tard si nécessaire.</li>
+                <li><b>Quality Preset Maximum</b> active <b>Lumen</b> (éclairage global temps réel) par défaut&nbsp;; <b>Scalable</b> le désactive. C'est ce choix, pas une erreur, qui explique une scène «&nbsp;plate&nbsp;».</li>
+                <li>On reste en <b>Desktop</b>, on laisse le <b>Raytracing décoché</b> (Lumen suffit), et on coche le <b>Starter Content</b> pour apprendre (à nettoyer en production).</li>
+                <li>Organise <code>Content/</code> dans <b>tes</b> dossiers (par type ou par feature&nbsp;: choisis-en un) et <b>préfixe</b> tes assets (<code>SM_</code>, <code>M_</code>, <code>MI_</code>, <code>T_</code>, <code>BP_</code>).</li>
+                <li>Range et renomme <b>toujours dans le Content Browser</b> (Move/Rename) pour préserver les références via les <b>Redirectors</b>&nbsp;; jamais depuis l'Explorateur Windows.</li>
+                <li>La <b>Scalability</b> (Low → Cinematic) règle la <b>qualité d'aperçu</b> sur ta machine, sans toucher au contenu&nbsp;: parfaite pour développer sur du matériel modeste.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Project Browser</b> — navigateur de projets affiché au lancement&nbsp;; il sert à ouvrir un projet récent ou à en créer un via catégorie, template et options.</p>
+              <p><b>Template</b> — projet de départ pré-assemblé (Blank, First Person, Third Person, Top Down…) qui fournit niveau, personnage et logique de base.</p>
+              <p><b>Blueprint</b> — système de programmation visuelle d'Unreal&nbsp;: on relie des nœuds par des fils plutôt que d'écrire du code.</p>
+              <p><b>Quality Preset</b> — préréglage de qualité choisi à la création&nbsp;; «&nbsp;Maximum&nbsp;» active Lumen par défaut, «&nbsp;Scalable&nbsp;» le désactive pour viser du matériel modeste.</p>
+              <p><b>Lumen</b> — système d'éclairage global et de réflexions en temps réel d'Unreal&nbsp;: la lumière indirecte qui rebondit sur les surfaces.</p>
+              <p><b>Starter Content</b> — petit lot d'assets et matériaux fourni par Epic, copié dans le projet si l'option est cochée&nbsp;; pratique pour apprendre, à nettoyer en production.</p>
+              <p><b>Content Browser</b> — panneau de l'éditeur qui explore le dossier <code>Content/</code> où vivent tous les assets du projet.</p>
+              <p><b>Conventions de nommage (préfixes)</b> — préfixes standard indiquant le type d'un asset&nbsp;: <code>SM_</code> (Static Mesh), <code>M_</code> (Material), <code>MI_</code> (Material Instance), <code>T_</code> (Texture), <code>BP_</code> (Blueprint).</p>
+              <p><b>Scalability</b> — réglage d'éditeur (Low → Cinematic) qui ajuste la qualité d'aperçu sur ta machine sans modifier le contenu du projet.</p>
+              <p><b>Redirector</b> — référence-relais créée par Unreal quand on déplace/renomme un asset dans le Content Browser, pour que les liens ne se cassent pas.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unreal/e02-editeur.html">E2 — L'éditeur Unreal</a>&nbsp;: maîtriser le Content Browser et les panneaux que tu viens de remplir.</li>
+              <li><a href="../../cours/unreal/e04-import-assets.html">E4 — Importer des assets</a>&nbsp;: appliquer concrètement l'arborescence et les conventions de nommage à l'import.</li>
+              <li><a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor</a>&nbsp;: créer des matériaux (<code>M_</code>) et leurs instances (<code>MI_</code>).</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage</a>&nbsp;: comprendre Lumen en profondeur et les Project Settings de rendu.</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10 — Optimisation</a>&nbsp;: la suite logique de la Scalability, côté contenu et build.</li>
+              <li><a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5 — Le pipeline d'asset</a>&nbsp;: où s'insère l'organisation d'un projet dans la chaîne de production.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">C1 — Unity vs Unreal</a>&nbsp;: comparer la création de projet et l'organisation côté Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

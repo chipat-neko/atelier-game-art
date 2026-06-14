@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U7 — Éclairage · Atelier Game Art</title>
+  <meta name="description" content="L'éclairage dans Unity : types de lumières, temps réel vs baked, Global Illumination, lightmapping (UV2), Light Probes, Reflection Probes et skybox.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Éclairage</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U7 — Éclairage</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>55 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>, <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a> (UV2) et <a href="../../cours/unity/u06-materiaux.html">U6</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Choisir le <b>type de lumière</b> adapté (Directional, Point, Spot, Area) et régler intensité, couleur/température et ombres en connaissance de cause.</li>
+                <li>Expliquer la différence entre <b>Realtime</b>, <b>Baked</b> et <b>Mixed</b> (le <em>Light Mode</em>) et <em>pourquoi</em> le baked est gratuit à l'exécution mais figé.</li>
+                <li>Décrire ce qu'est la <b>Global Illumination</b> (lumière indirecte, rebonds, couleurs qui bavent) et pourquoi elle change tout le rendu.</li>
+                <li>Préparer une scène pour le <b>lightmapping</b>&nbsp;: marquer les objets <b>Static</b>, fournir un <b>UV2</b> non chevauchant, régler la résolution de lightmap.</li>
+                <li>Utiliser les <b>Light Probes</b> pour éclairer les objets dynamiques et les <b>Reflection Probes</b> pour des reflets PBR locaux corrects.</li>
+                <li>Configurer la <b>skybox</b> comme source d'ambiance et de reflets, et comprendre l'<b>exposition</b> en HDRP.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un asset parfaitement modélisé, déplié et texturé (tout ce que tu as appris dans les fondamentaux) peut paraître <b>plat et faux</b> à l'écran si l'éclairage est mauvais. À l'inverse, un asset modeste mais bien éclairé respire la production. L'éclairage est ce qui transforme une collection de maillages en une <b>scène crédible</b>&nbsp;: il donne le volume, l'ambiance, l'heure de la journée, l'émotion. C'est l'un des leviers artistiques les plus puissants du jeu vidéo.</p>
+            <p>Mais en temps réel, la lumière est aussi l'un des postes les plus <b>coûteux en performance</b>. Calculer comment chaque rayon rebondit dans une pièce, soixante fois par seconde, sur le matériel d'un joueur, est tout simplement impossible en force brute. Tout le métier consiste donc à <b>tricher intelligemment</b>&nbsp;: pré-calculer ce qui ne bouge pas, calculer en direct seulement ce qui bouge, et raccorder les deux sans que la jointure se voie.</p>
+            <p>C'est précisément ce que cette leçon démonte. Comprendre <em>pourquoi</em> Unity distingue réel et précuit, <em>pourquoi</em> un objet doit être marqué <span class="term">Static</span> pour recevoir une <span class="gloss">lightmap</span>, et <em>pourquoi</em> un personnage qui se déplace a besoin de <b>Light Probes</b>, c'est la frontière entre une scène qui rame avec des taches noires et une scène fluide et cohérente. C'est exactement la connaissance qui sépare un débutant qui pose une lumière au hasard d'un éclairagiste de production.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les types de lumières&nbsp;: quatre formes pour quatre usages</h3>
+            <p>Une <span class="term">lumière</span> dans Unity est un composant (<span class="menu-path">Light</span>) que l'on ajoute à un GameObject. Sa <b>forme</b> détermine comment les rayons quittent la source — et donc son coût et son rendu. Il en existe quatre.</p>
+            <ul>
+              <li>La <span class="term">Directional Light</span> (lumière directionnelle) simule une source <b>infiniment lointaine</b>, comme le <b>soleil</b>. Ses rayons sont tous <b>parallèles</b> et sa position dans la scène n'a aucune importance&nbsp;: seule compte son <b>orientation</b>. Une scène extérieure n'en a généralement qu'<b>une</b>. C'est la lumière la moins coûteuse car il n'y a pas d'atténuation avec la distance à calculer.</li>
+              <li>La <span class="term">Point Light</span> (lumière ponctuelle) émet dans <b>toutes les directions</b> depuis un point, comme une ampoule nue. Son intensité <b>décroît avec la distance</b> (atténuation) jusqu'à un <b>Range</b> (rayon de portée) au-delà duquel elle n'éclaire plus rien. Au-delà du Range, le calcul s'arrête&nbsp;: ce paramètre est donc autant artistique que performant.</li>
+              <li>La <span class="term">Spot Light</span> (projecteur) émet dans un <b>cône</b> orienté, comme une lampe torche ou un spot de scène. On règle l'angle d'ouverture (<span class="menu-path">Spot Angle</span>) et la portée. Idéale pour diriger le regard ou simuler un lampadaire.</li>
+              <li>La <span class="term">Area Light</span> (lumière surfacique) émet depuis une <b>surface</b> (un rectangle ou un disque), ce qui produit des ombres <b>douces et réalistes</b> par nature, comme un panneau lumineux de studio. Son coût est tel qu'elle n'existe en pratique <b>qu'en baked</b>&nbsp;: elle ne fonctionne que si on précalcule son influence (voir plus loin).</li>
+            </ul>
+
+            <h4>Intensité, couleur et température</h4>
+            <p>Chaque lumière a une <span class="term">Intensity</span> (intensité) et une couleur. La couleur peut se régler à la main, mais l'outil professionnel est la <span class="term">température de couleur</span>, exprimée en <b>kelvins (K)</b>&nbsp;: une bougie tourne autour de 1900&nbsp;K (très chaud, orangé), une ampoule domestique vers 2700&nbsp;K, la lumière du jour vers 5500–6500&nbsp;K (neutre), et un ciel d'ombre bleuté monte au-delà de 8000&nbsp;K. Raisonner en kelvins plutôt qu'en «&nbsp;teinte au hasard&nbsp;» donne des ambiances <b>physiquement cohérentes</b> et facilite l'harmonie entre plusieurs sources.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Unités physiques</div>
+              <p>En <span class="gloss">HDRP</span> (le pipeline haut de gamme, voir <a href="../../cours/unity/u03-render-pipelines.html">U3</a>), les intensités sont exprimées en <b>unités physiques réelles</b>&nbsp;: lux pour le soleil, lumens ou candelas pour les ampoules. Cela permet de reproduire un éclairage de référence mesuré dans la réalité. En URP et Built-in, l'intensité reste une valeur relative plus libre.</p>
+            </div>
+
+            <h4>Les ombres&nbsp;: dures, douces, et le compromis du bias</h4>
+            <p>Une lumière peut projeter des <span class="term">ombres</span> (<span class="menu-path">Shadow Type</span>). <b>Hard Shadows</b> donne un bord net&nbsp;; <b>Soft Shadows</b> adoucit le contour, plus réaliste mais plus coûteux. La netteté dépend de la <b>résolution de la shadow map</b> (la texture intermédiaire où l'ombre est calculée)&nbsp;: trop basse, l'ombre devient crénelée&nbsp;; trop haute, elle coûte de la mémoire et du temps.</p>
+            <p>Le réglage piégeux est le <span class="term">bias</span> (biais). Comme l'ombre est calculée dans une texture de résolution finie, des erreurs d'arrondi font qu'une surface peut s'auto-ombrer par erreur&nbsp;: c'est le <b>shadow acne</b> (un moutonnement de points sombres). On corrige en décalant légèrement l'ombre avec le <b>Bias</b>. Mais si on pousse trop, l'ombre se <b>détache</b> de l'objet qui la projette&nbsp;: c'est le <b>peter-panning</b> (l'objet semble flotter, comme Peter Pan séparé de son ombre). Le bon réglage est le plus petit bias qui supprime l'acne sans créer de détachement visible.</p>
+
+            <h3>2. Light Mode&nbsp;: temps réel, précuit, ou mixte</h3>
+            <p>Voici le cœur conceptuel de la leçon. Chaque lumière a un <span class="term">Mode</span> (<span class="menu-path">Realtime</span>, <span class="menu-path">Mixed</span> ou <span class="menu-path">Baked</span>) qui décide <b>quand</b> son influence est calculée. Ce choix gouverne à la fois le réalisme, la flexibilité et le coût.</p>
+
+            <h4>Realtime&nbsp;: calculé chaque image</h4>
+            <p>Une lumière <span class="term">Realtime</span> (temps réel) est recalculée <b>à chaque frame</b>. Elle peut bouger, changer de couleur, s'éteindre&nbsp;; ses ombres suivent les objets qui se déplacent. C'est la seule option pour une lumière <b>dynamique</b> (le phare d'une voiture, une explosion, un cycle jour/nuit). Mais elle ne calcule, par défaut, que la lumière <b>directe</b>&nbsp;: les rayons qui partent de la source et frappent une surface, point. Et elle est <b>coûteuse</b>&nbsp;: chaque lumière temps réel avec ombres ajoute des passes de rendu.</p>
+
+            <h4>Baked&nbsp;: précalculé une fois, gravé dans des lightmaps</h4>
+            <p>Une lumière <span class="term">Baked</span> (précuite) est calculée <b>une seule fois</b>, dans l'éditeur, avant le jeu. Le résultat — y compris les rebonds indirects et les ombres — est <b>gravé dans des textures</b> appelées <span class="term">lightmaps</span> (cartes de lumière), plaquées sur les surfaces. À l'exécution, le moteur ne calcule plus rien&nbsp;: il <b>lit l'image</b>. Le coût en jeu est donc quasi <b>nul</b>, ce qui permet un éclairage très riche même sur mobile.</p>
+            <p>La contrepartie est radicale&nbsp;: c'est <b>figé</b>. La lumière ne peut plus bouger ni changer, et — point crucial — elle ne peut éclairer que des objets <b>qui ne bougent pas non plus</b>. C'est pourquoi un objet recevant une lightmap doit être marqué <span class="term">Static</span> (statique). Un personnage qui marche ne peut pas «&nbsp;recevoir&nbsp;» une lightmap&nbsp;: l'image gravée correspondrait à une position figée.</p>
+
+            <h4>Mixed&nbsp;: le meilleur des deux mondes</h4>
+            <p>Le mode <span class="term">Mixed</span> (mixte) tente de combiner les deux. Typiquement, le <b>soleil</b> en Mixed&nbsp;: la part <b>indirecte</b> (les rebonds, l'ambiance diffuse) est <b>baked</b> dans les lightmaps des objets statiques (gratuit), tandis que la part <b>directe</b> peut continuer à projeter des <b>ombres temps réel</b> sur les objets dynamiques. Ainsi, ton décor profite d'une GI riche et gratuite, et ton personnage qui passe devant projette quand même une vraie ombre mouvante. C'est la configuration la plus courante en production console/PC.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Comparaison des trois Light Modes Realtime, Mixed et Baked sur deux axes : coût à l'exécution et dynamisme">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Realtime · Mixed · Baked : coût contre dynamisme</text>
+
+                <!-- axes -->
+                <line x1="80" y1="250" x2="600" y2="250" stroke="#313c4c" stroke-width="2"/>
+                <line x1="80" y1="250" x2="80" y2="60" stroke="#313c4c" stroke-width="2"/>
+                <text x="600" y="272" text-anchor="end" class="svg-dim" font-size="11">dynamisme (peut bouger / changer) →</text>
+                <text x="74" y="56" text-anchor="end" class="svg-dim" font-size="11" transform="rotate(-90 74 56)">coût à l'exécution →</text>
+
+                <!-- Baked : haut dynamisme nul, cout nul -->
+                <g transform="translate(150,210)">
+                  <rect x="-60" y="-26" width="120" height="52" rx="9" fill="#5ad19a" fill-opacity="0.85" stroke="#313c4c"/>
+                  <text x="0" y="-4" text-anchor="middle" font-size="13" font-weight="700" fill="#0d1f17">Baked</text>
+                  <text x="0" y="14" text-anchor="middle" font-size="10" fill="#0d1f17">gratuit · figé · static</text>
+                </g>
+
+                <!-- Mixed : milieu -->
+                <g transform="translate(360,150)">
+                  <rect x="-62" y="-26" width="124" height="52" rx="9" fill="#f2b441" fill-opacity="0.9" stroke="#313c4c"/>
+                  <text x="0" y="-4" text-anchor="middle" font-size="13" font-weight="700" fill="#2a1e00">Mixed</text>
+                  <text x="0" y="14" text-anchor="middle" font-size="10" fill="#2a1e00">indirect baked + ombre réelle</text>
+                </g>
+
+                <!-- Realtime : haut cout, haut dynamisme -->
+                <g transform="translate(540,95)">
+                  <rect x="-62" y="-26" width="124" height="52" rx="9" fill="#f2b441" fill-opacity="0.9" stroke="#313c4c"/>
+                  <text x="0" y="-4" text-anchor="middle" font-size="13" font-weight="700" fill="#2a1100">Realtime</text>
+                  <text x="0" y="14" text-anchor="middle" font-size="10" fill="#2a1100">dynamique · coûteux</text>
+                </g>
+
+                <!-- fleche de tendance -->
+                <path d="M150 200 Q330 120 530 100" fill="none" stroke="#59b0ff" stroke-width="2" stroke-dasharray="5 5"/>
+                <text x="300" y="120" class="svg-dim" fill="#59b0ff" font-size="10.5">plus c'est dynamique, plus ça coûte</text>
+              </svg>
+              <figcaption>Le <b>Baked</b> est gratuit en jeu mais totalement figé&nbsp;; le <b>Realtime</b> est libre mais coûteux&nbsp;; le <b>Mixed</b> occupe le juste milieu en baked l'indirect et en gardant des ombres réelles sur les objets mobiles.</figcaption>
+            </figure>
+
+            <h3>3. La Global Illumination&nbsp;: la lumière qui rebondit</h3>
+            <p>Dans la vraie vie, un rayon de soleil ne s'arrête pas à la première surface&nbsp;: il <b>rebondit</b>. Le sol rouge sous un mur blanc le teinte légèrement de rose&nbsp;; un coin d'ombre n'est jamais totalement noir parce que la lumière y parvient par ricochets. Cet ensemble de rebonds s'appelle la <span class="term">Global Illumination</span> (GI, illumination globale) ou <b>lumière indirecte</b>.</p>
+            <p>Pourquoi est-ce si important&nbsp;? Parce que sans GI, une scène n'a que de la lumière <b>directe</b>&nbsp;: les zones non frappées par une lampe sont noires, plates, mortes — un look «&nbsp;rendu OpenGL des années 2000&nbsp;». Avec la GI, les couleurs <b>bavent</b> d'une surface à l'autre, les ombres se remplissent de lumière douce, et la scène devient <b>habitée</b>. C'est le facteur numéro un du réalisme d'un environnement.</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Le test du tapis rouge</div>
+              <p>Pour vérifier que ta GI fonctionne, pose un objet blanc à côté d'une grande surface très saturée (un mur rouge, une moquette verte). Après le bake, le côté de l'objet face au mur doit prendre une légère <b>teinte colorée</b>. Si tout reste blanc neutre, ta GI n'est pas calculée — tu n'as que de la lumière directe.</p>
+            </div>
+            <p>Calculer ces rebonds en temps réel est extrêmement coûteux. Historiquement, Unity utilisait un système nommé <b>Enlighten</b> pour une GI temps réel précalculée&nbsp;; il est aujourd'hui déprécié. Le système de référence est désormais le <span class="term">Progressive Lightmapper</span>, qui <b>cuit</b> la GI dans les lightmaps via du <span class="gloss">path tracing</span> (lancer de rayons progressif). Il existe en deux versions&nbsp;: <b>CPU</b> (compatible partout, lent) et <b>GPU</b> (beaucoup plus rapide, exige une carte graphique adaptée). En 2026, sous Unity&nbsp;6.3&nbsp;LTS, le GPU lightmapper est l'outil de bake recommandé&nbsp;; en HDRP, un lightmapper basé sur le path tracing pousse encore la qualité.</p>
+
+            <h3>4. Le lightmapping&nbsp;: cuire la lumière dans des textures</h3>
+            <p>Le <span class="term">lightmapping</span> est le processus qui produit les lightmaps. Tout se pilote depuis <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Lighting</span>. Mais pour qu'un objet reçoive une lightmap propre, deux conditions sont indispensables, et leur oubli est la source d'erreurs la plus fréquente.</p>
+
+            <h4>Condition 1&nbsp;: l'objet doit être Static</h4>
+            <p>Seuls les objets marqués <span class="term">Static</span> (case en haut à droite de l'<span class="menu-path">Inspector</span>, plus finement <span class="menu-path">Contribute GI</span> dans les Static Flags) sont inclus dans le bake. C'est logique&nbsp;: la lumière est gravée pour une position donnée&nbsp;; si l'objet bougeait, l'image serait fausse. Un mur, un sol, un rocher décoratif&nbsp;: Static. Une porte qui s'ouvre, un ennemi, le joueur&nbsp;: jamais Static.</p>
+
+            <h4>Condition 2&nbsp;: un second jeu d'UV (UV2) non chevauchant</h4>
+            <p>Une lightmap est une texture plaquée sur l'objet&nbsp;; elle a donc besoin de coordonnées <span class="gloss">UV</span> pour savoir quelle partie de la texture va sur quelle face. Or les UV de texturing classiques (UV1) <b>se chevauchent souvent volontairement</b>&nbsp;: on superpose deux côtés identiques d'un objet pour réutiliser la même portion de texture et gagner de la place (vu en <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>). C'est parfait pour la couleur, mais <b>catastrophique pour la lumière</b>&nbsp;: si deux faces partagent le même pixel de lightmap, l'ombre de l'une se retrouve plaquée sur l'autre.</p>
+            <p>La lightmap exige donc un <span class="term">UV2</span> (ou <em>Lightmap UVs</em>)&nbsp;: un dépliage <b>sans aucun chevauchement</b>, où chaque triangle occupe son propre espace. Tu as deux options&nbsp;: laisser Unity le <b>générer automatiquement</b> à l'import (case <span class="menu-path">Generate Lightmap UVs</span> dans les <span class="menu-path">Model Import Settings</span>), ce qui suffit pour la plupart des props&nbsp;; ou le <b>créer à la main</b> dans Blender pour un contrôle total sur les assets importants (sols, grands murs).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 270" role="img" aria-label="Comparaison entre UV1 de texturing qui se chevauchent et UV2 de lightmap entièrement séparés sans chevauchement">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">UV1 (texture) chevauche · UV2 (lightmap) séparé</text>
+
+                <!-- UV1 a gauche : ilots empiles -->
+                <g transform="translate(40,50)">
+                  <rect x="0" y="0" width="230" height="180" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="115" y="-12" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">UV1 — texturing</text>
+                  <!-- deux ilots superposes -->
+                  <rect x="40" y="40" width="90" height="90" rx="4" fill="#59b0ff" fill-opacity="0.55" stroke="#59b0ff"/>
+                  <rect x="55" y="55" width="90" height="90" rx="4" fill="#f2b441" fill-opacity="0.55" stroke="#f2b441"/>
+                  <text x="115" y="165" text-anchor="middle" class="svg-dim" font-size="10.5">îlots qui se recouvrent (gain de place)</text>
+                  <text x="150" y="95" class="svg-text" font-size="11" font-weight="700" fill="#ff6b6b">chevauchement</text>
+                </g>
+
+                <!-- fleche -->
+                <defs>
+                  <marker id="arrU" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#f2b441"/></marker>
+                </defs>
+                <line x1="282" y1="140" x2="328" y2="140" stroke="#f2b441" stroke-width="2.5" marker-end="url(#arrU)"/>
+
+                <!-- UV2 a droite : ilots separes -->
+                <g transform="translate(345,50)">
+                  <rect x="0" y="0" width="255" height="180" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <text x="127" y="-12" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">UV2 — lightmap</text>
+                  <rect x="20" y="22" width="70" height="70" rx="4" fill="#5ad19a" fill-opacity="0.6" stroke="#5ad19a"/>
+                  <rect x="110" y="22" width="60" height="55" rx="4" fill="#c89bff" fill-opacity="0.6" stroke="#c89bff"/>
+                  <rect x="190" y="22" width="45" height="80" rx="4" fill="#59b0ff" fill-opacity="0.6" stroke="#59b0ff"/>
+                  <rect x="20" y="105" width="85" height="55" rx="4" fill="#f2b441" fill-opacity="0.6" stroke="#f2b441"/>
+                  <rect x="120" y="100" width="115" height="60" rx="4" fill="#f2b441" fill-opacity="0.5" stroke="#f2b441"/>
+                  <text x="127" y="172" text-anchor="middle" class="svg-dim" font-size="10.5">aucun îlot ne touche un autre</text>
+                </g>
+              </svg>
+              <figcaption>Pour la couleur, on <b>empile</b> les îlots UV afin d'économiser de la place. Pour la lumière, c'est interdit&nbsp;: chaque face doit avoir <b>son propre espace</b> dans l'UV2, sinon l'ombre d'une face contamine sa voisine.</figcaption>
+            </figure>
+
+            <h4>Lightmap Resolution&nbsp;: le curseur le plus dangereux</h4>
+            <p>La <span class="term">Lightmap Resolution</span> (résolution de lightmap, en <em>texels par unité</em>) fixe la finesse de la lumière cuite. Plus elle est haute, plus les ombres sont précises — mais le <b>temps de bake et la mémoire explosent de façon quadratique</b>. Doubler la résolution, c'est quadrupler le nombre de texels. Une valeur trop ambitieuse sur une grande scène peut faire passer un bake de quelques minutes à plusieurs <b>heures</b>. La bonne pratique&nbsp;: une résolution modeste partout, et seulement <b>localement plus haute</b> (via le <em>Scale In Lightmap</em> de l'objet) là où des ombres nettes comptent vraiment.</p>
+
+            <h3>5. Light Probes&nbsp;: éclairer ce qui bouge</h3>
+            <p>Problème&nbsp;: les objets dynamiques (le joueur, les ennemis, une caisse qu'on déplace) ne sont pas Static, donc <b>ne reçoivent aucune lightmap</b>. Sans rien faire, ils ignorent toute la belle GI de la scène et apparaissent <b>plats et trop sombres</b>, comme posés sur la scène plutôt qu'<em>intégrés</em>. C'est un défaut très visible&nbsp;: un personnage qui traverse une cave éclairée par une torche orange devrait s'orangé, pas rester gris.</p>
+            <p>La solution s'appelle les <span class="term">Light Probes</span> (sondes de lumière). Ce sont des points qu'on sème dans le volume de la scène (via un <span class="menu-path">Light Probe Group</span>)&nbsp;; chacun <b>échantillonne et stocke la GI</b> à son emplacement pendant le bake. À l'exécution, un objet dynamique trouve les probes qui l'entourent, <b>interpole</b> entre elles, et reçoit ainsi une teinte d'éclairage cohérente avec l'endroit où il se trouve. C'est léger et donne l'illusion que l'objet baigne dans la même lumière indirecte que le décor.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Où placer les probes</div>
+              <p>Densifie les probes là où l'éclairage <b>change vite</b> (passages d'une zone claire à sombre, entrées de pièces, bordures d'ombres) et espace-les dans les grandes zones uniformes. Place-en toujours là où des objets dynamiques <b>circulent réellement</b>&nbsp;: inutile d'en mettre dans un mur plein.</p>
+            </div>
+
+            <h3>6. Reflection Probes&nbsp;: des reflets justes en PBR</h3>
+            <p>Le <span class="gloss">PBR</span> (vu en <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>) fait que les surfaces métalliques ou lisses <b>reflètent leur environnement</b>. Mais que reflètent-elles, concrètement&nbsp;? Par défaut, seulement la skybox — ce qui donne des reflets <b>faux</b> en intérieur&nbsp;: une boule chromée dans une cave refléterait le ciel au lieu des murs de la cave.</p>
+            <p>La <span class="term">Reflection Probe</span> (sonde de réflexion) résout cela&nbsp;: placée dans la scène, elle <b>capture une vue panoramique à 360°</b> (une <em>cubemap</em>) de l'environnement autour d'elle. Les matériaux réfléchissants situés dans sa zone d'influence lisent cette capture au lieu de la skybox&nbsp;: le métal reflète enfin <b>les vrais murs</b> qui l'entourent. Comme la GI, une probe peut être <b>baked</b> (capturée une fois, gratuite) ou <b>realtime</b> (mise à jour en direct, coûteuse, réservée aux miroirs animés). On en pose typiquement une par pièce ou par zone visuellement distincte.</p>
+
+            <h3>7. Skybox et environnement&nbsp;: l'ambiance globale</h3>
+            <p>La <span class="term">skybox</span> est l'image de fond qui entoure toute la scène (ciel, horizon). Mais elle est bien plus qu'un décor&nbsp;: réglée dans <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Lighting<span class="arrow">▸</span>Environment</span>, elle sert de <b>source de lumière ambiante</b> (l'<em>Ambient</em>, la lumière diffuse générale du ciel) <b>et</b> de source de <b>reflets par défaut</b> pour les surfaces PBR. Une skybox peut être <b>procédurale</b> (un ciel calculé selon l'angle du soleil) ou une <span class="gloss">HDRI</span> (une photo panoramique haute dynamique d'un lieu réel, qui apporte d'un coup une lumière et des reflets crédibles).</p>
+            <p>Enfin, un mot sur l'<span class="term">exposition</span>. Comme une vraie caméra, le rendu HDRP travaille en plage dynamique étendue et doit décider de la quantité de lumière «&nbsp;qui entre dans le capteur&nbsp;». L'<b>Exposure</b> (via le composant de post-traitement, voir <a href="../../cours/unity/u08-post-processing.html">U8</a>) règle ce niveau&nbsp;: trop haute, l'image est cramée (blanche)&nbsp;; trop basse, elle est bouchée (noire). En HDRP, une exposition mal réglée donne l'impression que «&nbsp;les lumières ne marchent pas&nbsp;» alors que c'est le capteur qui sature — un piège classique du débutant en pipeline physique.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On éclaire une petite scène d'intérieur dans <b>Unity&nbsp;6.3&nbsp;LTS</b> en <span class="gloss">URP</span>, avec exactement les quatre briques de cette leçon&nbsp;: un soleil en Mixed, un objet statique en lightmap, un personnage dynamique en light probe, et une surface réfléchissante en reflection probe.</p>
+            <ol>
+              <li>Crée la scène&nbsp;: un sol et quelques murs (le décor), un coffre métallique brillant posé au sol, et un personnage (une capsule fera l'affaire) au milieu. Sélectionne le décor et le coffre, puis coche <span class="menu-path">Static</span> en haut à droite de l'<span class="menu-path">Inspector</span>. <em>Ce que ça fait&nbsp;:</em> tu déclares ces objets comme candidats au bake de GI. Laisse la capsule <b>non-Static</b> (c'est ton objet dynamique).</li>
+              <li>Ajoute la lumière du soleil&nbsp;: <span class="menu-path">GameObject<span class="arrow">▸</span>Light<span class="arrow">▸</span>Directional Light</span>. Dans son <span class="menu-path">Inspector</span>, passe le <span class="menu-path">Mode</span> sur <span class="menu-path">Mixed</span> et règle la <span class="menu-path">Color Temperature</span> vers 5500&nbsp;K. <em>Ce que ça fait&nbsp;:</em> l'indirect partira en lightmap, mais le soleil pourra encore projeter une ombre réelle sur la capsule.</li>
+              <li>Vérifie l'UV2 du décor et du coffre. Sélectionne le mesh dans le <span class="menu-path">Project</span>, ouvre <span class="menu-path">Model Import Settings</span> et coche <span class="menu-path">Generate Lightmap UVs</span> puis <span class="menu-path">Apply</span>. <em>Ce que ça fait&nbsp;:</em> Unity calcule un dépliage non chevauchant dédié à la lumière (renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>). Sans cela, attends-toi à des taches d'ombre.</li>
+              <li>Ouvre <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Lighting</span>. Crée un <em>Lighting Settings asset</em>, choisis le <span class="menu-path">Progressive GPU</span> comme lightmapper, fixe une <span class="menu-path">Lightmap Resolution</span> raisonnable (par ex. 20–40 texels/unité pour commencer). <em>Ce que ça fait&nbsp;:</em> tu configures le moteur de cuisson et la finesse de la lumière.</li>
+              <li>Dans l'onglet <span class="menu-path">Environment</span> de cette même fenêtre, assigne une <span class="menu-path">Skybox Material</span> (procédurale ou HDRI). <em>Ce que ça fait&nbsp;:</em> tu fixes la lumière ambiante et les reflets par défaut de toute la scène.</li>
+              <li>Sème des Light Probes&nbsp;: <span class="menu-path">GameObject<span class="arrow">▸</span>Light<span class="arrow">▸</span>Light Probe Group</span>, puis dispose les sondes en grille dans le volume où la capsule circulera, plus dense près des transitions d'ombre. <em>Ce que ça fait&nbsp;:</em> elles captureront la GI pour nourrir ton objet dynamique.</li>
+              <li>Pose une Reflection Probe&nbsp;: <span class="menu-path">GameObject<span class="arrow">▸</span>Light<span class="arrow">▸</span>Reflection Probe</span>, centre-la dans la pièce et ajuste sa boîte d'influence pour englober le coffre. <em>Ce que ça fait&nbsp;:</em> le coffre métallique reflétera les murs réels au lieu du ciel.</li>
+              <li>Lance le bake&nbsp;: bouton <span class="menu-path">Generate Lighting</span> (en bas de la fenêtre Lighting). <em>Ce que ça fait&nbsp;:</em> le Progressive Lightmapper lance le path tracing, remplit les lightmaps des objets statiques, échantillonne les Light Probes et capture les Reflection Probes. Patiente jusqu'à 100&nbsp;%.</li>
+              <li>Entre en <span class="menu-path">Play</span> et déplace la capsule. Observe&nbsp;: le décor a des ombres douces gratuites, le coffre reflète les murs, et la capsule <b>change de teinte</b> en passant d'une zone claire à une zone d'ombre — preuve que les probes fonctionnent.</li>
+            </ol>
+            <p>Ce que tu as vraiment fait&nbsp;: tu as réparti le coût intelligemment. Le décor coûte presque rien (lightmaps), le personnage reste dynamique sans rester sombre (probes), et les reflets sont locaux et crédibles (reflection probe) — exactement l'architecture d'éclairage d'une vraie scène de production.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Scène type annotée : un mur statique en lightmap, un personnage dynamique éclairé par light probes, un coffre réfléchissant servi par une reflection probe, sous un soleil mixed et une skybox">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Qui reçoit quoi dans une scène type</text>
+
+                <!-- soleil + skybox -->
+                <g transform="translate(70,60)">
+                  <circle cx="0" cy="0" r="16" fill="#f2b441"/>
+                  <g stroke="#f2b441" stroke-width="2">
+                    <line x1="0" y1="-24" x2="0" y2="-32"/><line x1="0" y1="24" x2="0" y2="32"/>
+                    <line x1="-24" y1="0" x2="-32" y2="0"/><line x1="24" y1="0" x2="32" y2="0"/>
+                    <line x1="-17" y1="-17" x2="-23" y2="-23"/><line x1="17" y1="17" x2="23" y2="23"/>
+                  </g>
+                  <text x="0" y="52" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Directional (Mixed)</text>
+                  <text x="0" y="66" text-anchor="middle" class="svg-dim" font-size="9.5">+ skybox = ambiance</text>
+                </g>
+
+                <!-- sol -->
+                <rect x="40" y="250" width="560" height="14" rx="3" class="svg-surface" stroke="#313c4c"/>
+
+                <!-- mur statique avec lightmap -->
+                <g transform="translate(150,150)">
+                  <rect x="0" y="0" width="90" height="100" rx="4" fill="#5ad19a" fill-opacity="0.45" stroke="#5ad19a" stroke-width="2"/>
+                  <!-- degrade lightmap -->
+                  <rect x="6" y="6" width="78" height="40" rx="2" fill="#5ad19a" fill-opacity="0.35"/>
+                  <text x="45" y="120" text-anchor="middle" class="svg-text" fill="#5ad19a" font-size="11" font-weight="700">Mur STATIC</text>
+                  <text x="45" y="134" text-anchor="middle" class="svg-dim" font-size="9.5">→ lightmap (UV2)</text>
+                </g>
+
+                <!-- personnage dynamique + probes -->
+                <g transform="translate(330,170)">
+                  <!-- probes autour -->
+                  <g fill="#c89bff">
+                    <circle cx="-30" cy="-10" r="4"/><circle cx="30" cy="-10" r="4"/>
+                    <circle cx="-30" cy="60" r="4"/><circle cx="30" cy="60" r="4"/>
+                    <circle cx="0" cy="-20" r="4"/><circle cx="0" cy="70" r="4"/>
+                  </g>
+                  <g stroke="#c89bff" stroke-width="0.8" stroke-dasharray="3 3" fill="none">
+                    <path d="M-30 -10 L30 -10 L30 60 L-30 60 Z"/>
+                  </g>
+                  <!-- capsule -->
+                  <rect x="-12" y="0" width="24" height="60" rx="12" fill="#59b0ff" fill-opacity="0.85" stroke="#313c4c"/>
+                  <text x="0" y="92" text-anchor="middle" class="svg-text" fill="#59b0ff" font-size="11" font-weight="700">Perso DYNAMIQUE</text>
+                  <text x="0" y="106" text-anchor="middle" class="svg-dim" font-size="9.5">→ Light Probes (violet)</text>
+                </g>
+
+                <!-- coffre reflechissant + reflection probe -->
+                <g transform="translate(490,200)">
+                  <rect x="-26" y="0" width="52" height="40" rx="4" fill="#313c4c" stroke="#59b0ff" stroke-width="2"/>
+                  <!-- reflets -->
+                  <line x1="-18" y1="8" x2="-4" y2="32" stroke="#f2b441" stroke-width="2"/>
+                  <line x1="2" y1="6" x2="16" y2="30" stroke="#5ad19a" stroke-width="2"/>
+                  <!-- icone probe -->
+                  <circle cx="0" cy="-26" r="13" fill="none" stroke="#f2b441" stroke-width="2"/>
+                  <path d="M-13 -26 H13 M0 -39 V-13" stroke="#f2b441" stroke-width="1"/>
+                  <text x="0" y="62" text-anchor="middle" class="svg-text" fill="#f2b441" font-size="11" font-weight="700">Coffre BRILLANT</text>
+                  <text x="0" y="76" text-anchor="middle" class="svg-dim" font-size="9.5">→ Reflection Probe</text>
+                </g>
+              </svg>
+              <figcaption>La même scène répartit l'éclairage&nbsp;: le <b>mur statique</b> lit sa <b>lightmap</b>, le <b>personnage dynamique</b> s'éclaire via les <b>Light Probes</b> (violet) qui l'entourent, et le <b>coffre réfléchissant</b> reflète les murs grâce à la <b>Reflection Probe</b>, le tout sous un soleil Mixed et une skybox d'ambiance.</figcaption>
+            </figure>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet reste noir/plat après le bake, sans aucune ombre douce.</div>
+                <div class="pi-cause"><b>Cause</b>L'objet n'est pas marqué <b>Static</b> (ou Contribute GI désactivé)&nbsp;: il est ignoré par le lightmapper.</div>
+                <div class="pi-fix"><b>Correction</b>Coche <b>Static</b> dans l'Inspector (ou <b>Contribute GI</b>), puis relance <b>Generate Lighting</b>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des taches d'ombre sales, des fuites de lumière entre deux faces.</div>
+                <div class="pi-cause"><b>Cause</b>UV2 chevauchant&nbsp;: deux faces partagent le même pixel de lightmap, l'ombre de l'une contamine l'autre.</div>
+                <div class="pi-fix"><b>Correction</b>Active <b>Generate Lightmap UVs</b> à l'import, ou crée un UV2 propre dans Blender (aucun chevauchement).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon personnage est trop sombre, comme «&nbsp;posé&nbsp;» sur la scène.</div>
+                <div class="pi-cause"><b>Cause</b>Objet dynamique sans <b>Light Probes</b>&nbsp;: il ne reçoit ni lightmap ni GI échantillonnée.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute un <b>Light Probe Group</b> couvrant les zones de circulation, puis re-bake.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le framerate s'effondre dès que j'ajoute des lumières.</div>
+                <div class="pi-cause"><b>Cause</b>Tout est en <b>Realtime</b> avec ombres&nbsp;: chaque lumière recalcule directe + ombres chaque frame.</div>
+                <div class="pi-fix"><b>Correction</b>Passe le décor en <b>Baked</b>/<b>Mixed</b>&nbsp;; réserve le Realtime aux sources qui doivent vraiment bouger.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le bake prend des heures, voire ne se termine jamais.</div>
+                <div class="pi-cause"><b>Cause</b>Lightmap Resolution trop élevée&nbsp;: le nombre de texels croît de façon quadratique.</div>
+                <div class="pi-fix"><b>Correction</b>Baisse la résolution globale, n'augmente le <b>Scale In Lightmap</b> que localement&nbsp;; préfère le <b>GPU lightmapper</b>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet métallique reflète le ciel alors qu'il est en intérieur.</div>
+                <div class="pi-cause"><b>Cause</b>Aucune <b>Reflection Probe</b>&nbsp;: le PBR retombe sur la skybox par défaut pour les reflets.</div>
+                <div class="pi-fix"><b>Correction</b>Place une <b>Reflection Probe</b> dans la pièce, englobant l'objet, et re-bake les probes.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans Unity&nbsp;6.3&nbsp;LTS (URP), recrée une mini-scène d'intérieur&nbsp;:</p>
+              <ol>
+                <li>Construis une pièce simple (sol + 4 murs), un objet métallique brillant et une capsule «&nbsp;personnage&nbsp;» au centre.</li>
+                <li>Marque le décor et l'objet brillant en <b>Static</b>&nbsp;; laisse la capsule dynamique. Vérifie que <b>Generate Lightmap UVs</b> est coché sur les meshes statiques.</li>
+                <li>Ajoute une <b>Directional Light</b> en mode <b>Mixed</b>, température réglée en kelvins, et assigne une <b>skybox</b> dans l'onglet Environment.</li>
+                <li>Pose un <b>Light Probe Group</b> couvrant le sol et une <b>Reflection Probe</b> centrée dans la pièce. Lance <b>Generate Lighting</b>.</li>
+                <li>Une fois cuit, déplace la capsule en Play d'une zone claire vers un coin d'ombre, et observe le changement de teinte.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le décor montre des <b>ombres douces et de la GI</b> (une teinte de couleur bave d'un mur vers les objets voisins) sans aucune tache d'ombre.</li>
+                  <li>La capsule <b>change visiblement d'éclairage</b> en se déplaçant&nbsp;: les Light Probes fonctionnent.</li>
+                  <li>L'objet métallique reflète <b>les murs de la pièce</b>, pas le ciel&nbsp;: la Reflection Probe fonctionne.</li>
+                  <li>Tu peux expliquer pourquoi chaque objet est (ou non) Static et quel système l'éclaire.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Quatre formes de lumière&nbsp;: <b>Directional</b> (soleil), <b>Point</b>, <b>Spot</b>, <b>Area</b> (baked seulement). Raisonne la couleur en <b>kelvins</b>.</li>
+                <li><b>Light Mode</b>&nbsp;: <b>Realtime</b> (dynamique, coûteux), <b>Baked</b> (gratuit en jeu mais figé, objets <b>Static</b>), <b>Mixed</b> (indirect baked + ombres réelles).</li>
+                <li>La <b>Global Illumination</b> (rebonds, couleurs qui bavent) fait le réalisme&nbsp;; on la cuit avec le <b>Progressive Lightmapper</b> (GPU recommandé).</li>
+                <li>Une lightmap exige un <b>UV2</b> non chevauchant&nbsp;; attention à la <b>Lightmap Resolution</b> (coût quadratique).</li>
+                <li>Les objets dynamiques s'éclairent via les <b>Light Probes</b>&nbsp;; les reflets locaux corrects viennent des <b>Reflection Probes</b>&nbsp;; la <b>skybox</b> donne l'ambiance et les reflets par défaut.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Directional / Point / Spot / Area Light</b> — les quatre formes d'émission&nbsp;: parallèle (soleil), omnidirectionnelle, en cône, et surfacique (baked).</p>
+              <p><b>Température de couleur</b> — teinte d'une lumière exprimée en kelvins (chaud orangé bas, neutre vers 5500&nbsp;K, froid bleuté haut).</p>
+              <p><b>Light Mode (Realtime / Baked / Mixed)</b> — décide quand l'influence d'une lumière est calculée&nbsp;: chaque frame, une fois pour toutes, ou un mélange des deux.</p>
+              <p><b>Lightmap</b> — texture où la lumière (directe + indirecte) est gravée pour les objets statiques&nbsp;; gratuite à l'exécution mais figée.</p>
+              <p><b>Global Illumination (GI)</b> — lumière indirecte issue des rebonds&nbsp;; remplit les ombres et fait baver les couleurs.</p>
+              <p><b>Progressive Lightmapper</b> — moteur de cuisson de la GI par path tracing (versions CPU et GPU)&nbsp;; remplace l'ancien Enlighten.</p>
+              <p><b>Static</b> — marquage d'un objet qui ne bouge pas&nbsp;; condition pour recevoir une lightmap.</p>
+              <p><b>UV2 (Lightmap UVs)</b> — second jeu d'UV sans chevauchement dédié à la lumière, distinct des UV de texturing.</p>
+              <p><b>Light Probe</b> — point qui échantillonne la GI pour éclairer les objets dynamiques par interpolation.</p>
+              <p><b>Reflection Probe</b> — capture cubemap de l'environnement local pour des reflets PBR corrects.</p>
+              <p><b>Skybox</b> — image d'environnement servant de fond, de lumière ambiante et de reflets par défaut.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render Pipelines</a>&nbsp;: ce que Built-in, URP et HDRP changent pour l'éclairage et les unités physiques.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux</a>&nbsp;: comment le métallique et la rugosité réagissent aux reflets des probes.</li>
+              <li><a href="../../cours/unity/u08-post-processing.html">U8 — Post-processing</a>&nbsp;: exposition, tonemapping et bloom qui finalisent le rendu lumineux.</li>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: pourquoi l'UV2 doit être non chevauchant pour le lightmapping.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: pourquoi les surfaces réfléchissent leur environnement.</li>
+              <li><a href="../../cours/unity/u11-optimisation.html">U11 — Optimisation</a>&nbsp;: budgéter les lumières temps réel et les lightmaps pour tenir le framerate.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E6 — Éclairage (Lumen) · Atelier Game Art</title>
+  <meta name="description" content="L'éclairage dans Unreal Engine 5.7 : Lumen (GI et réflexions temps réel), types de lumières, Virtual Shadow Maps, Lightmass, exposition et Post Process Volume.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Éclairage (Lumen)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E6 — Éclairage (Lumen)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>55 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a> (HDR, sRGB/linéaire) et <a href="../../cours/unreal/e05-material-editor.html">E5 — Le Material Editor</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Distinguer les types de lumières d'Unreal et l'effet de leur <b>Mobility</b> (Static / Stationary / Movable).</li>
+                <li>Expliquer ce que fait <b>Lumen</b> (GI et réflexions temps réel) et <em>pourquoi</em> il rend le baking souvent inutile.</li>
+                <li>Comprendre les <b>Virtual Shadow Maps</b> et quand le baking via <b>Lightmass</b> reste pertinent.</li>
+                <li>Maîtriser l'<b>exposition automatique</b> et la régler manuellement pour juger correctement tes valeurs.</li>
+                <li>Composer un ciel crédible (Sky Atmosphere + SkyLight) et piloter l'image via un <b>Post Process Volume</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'éclairage est ce qui transforme une collection d'assets corrects en une <b>image</b>. Deux scènes avec les mêmes modèles et les mêmes matériaux peuvent être magnifiques ou plates selon la seule lumière. Unreal&nbsp;5 a révolutionné cette étape avec <span class="gloss">Lumen</span>&nbsp;: l'illumination globale, autrefois précalculée pendant des heures, est désormais <b>temps réel</b>. Cela change la façon de travailler — on éclaire en voyant le résultat instantanément, on peut bouger le soleil — mais cela a un coût qu'il faut comprendre et maîtriser, surtout si on vise autre chose qu'un PC haut de gamme.</p>
+            <p>Comprendre l'éclairage, c'est aussi cesser de se faire piéger par l'<b>exposition automatique</b> qui ré-équilibre l'image en permanence et fausse le jugement des valeurs (rappel <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> sur le HDR).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les lumières et leur Mobility</h3>
+            <p>Unreal propose quatre types de sources&nbsp;: <b>Directional Light</b> (le soleil&nbsp;: rayons parallèles, éclaire toute la scène), <b>Point Light</b> (ampoule omnidirectionnelle), <b>Spot Light</b> (cône) et <b>Rect Light</b> (panneau rectangulaire, idéal pour fenêtres et softbox). Leur intensité s'exprime en <b>unités physiques</b> (lumens, lux, candelas), et on règle leur couleur ou leur <b>température</b> en kelvins.</p>
+            <p>Mais le réglage le plus structurant est la <span class="term">Mobility</span>, dans les Details de la lumière&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Mobility</th><th>Peut bouger&nbsp;?</th><th>Comment elle éclaire</th><th>Coût</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Static</b></td><td>Non</td><td>Tout est précalculé (baked) dans des lightmaps&nbsp;: lumière directe + indirecte + ombres figées.</td><td>Quasi nul à l'exécution.</td></tr>
+                  <tr><td><b>Stationary</b></td><td>Couleur/intensité oui, position non</td><td>Hybride&nbsp;: indirect baked, direct + ombres dynamiques (nombre limité par zone).</td><td>Modéré.</td></tr>
+                  <tr><td><b>Movable</b></td><td>Oui, totalement</td><td>Tout est calculé en temps réel (compatible Lumen).</td><td>Le plus élevé&nbsp;; à compter.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>2. Lumen&nbsp;: l'illumination globale en temps réel</h3>
+            <p>L'<span class="gloss">illumination globale</span> (GI), c'est la lumière <b>indirecte</b>&nbsp;: les rayons rebondissent sur les surfaces, et un mur rouge éclairé teinte de rouge le sol voisin. Sans GI, une scène est plate&nbsp;; les zones non frappées directement seraient noires. Historiquement, calculer ces rebonds était si coûteux qu'on les <b>précalculait</b> (baking, plusieurs minutes à plusieurs heures) dans des textures — au prix de l'impossibilité de bouger quoi que ce soit ensuite.</p>
+            <p><span class="term">Lumen</span> (activé par défaut en UE&nbsp;5) calcule cette GI et les <b>réflexions</b> <em>en temps réel</em>, image par image. Conséquences concrètes&nbsp;:</p>
+            <ul>
+              <li>On peut déplacer le soleil, ouvrir une porte, casser un mur&nbsp;: la lumière indirecte se met à jour toute seule.</li>
+              <li>Plus besoin de baker l'éclairage dans la majorité des cas&nbsp;: on éclaire en WYSIWYG.</li>
+              <li>Les réflexions sur les surfaces lisses ne dépendent plus uniquement de <span class="gloss">Reflection Probes</span> placées à la main.</li>
+            </ul>
+            <p>Sous le capot, Lumen utilise un <b>Software Ray Tracing</b> (par défaut, traçant contre une représentation simplifiée de la scène) ou un <b>Hardware Ray Tracing</b> (si le GPU le permet&nbsp;: plus précis, plus cher). Il s'appuie sur un cache de surface qui peut introduire un léger délai/bruit lors de changements brusques — le prix du temps réel.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Lumen : un rayon direct frappe le sol, rebondit et teinte les surfaces voisines en temps réel">
+                <!-- sol et murs -->
+                <path d="M70 200 L520 200" stroke="#313c4c" stroke-width="2"/>
+                <rect x="110" y="120" width="20" height="80" fill="#ff6b6b" fill-opacity="0.5" stroke="#ff6b6b"/>
+                <text x="120" y="114" text-anchor="middle" class="svg-dim" font-size="11">mur rouge</text>
+                <!-- soleil -->
+                <circle cx="430" cy="40" r="16" fill="#f2b441"/>
+                <text x="430" y="26" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">soleil</text>
+                <!-- rayon direct -->
+                <line x1="430" y1="56" x2="300" y2="200" stroke="#f2b441" stroke-width="2.4"/>
+                <text x="378" y="130" class="svg-text" fill="#f2b441" font-size="11">direct</text>
+                <!-- rebond indirect vers le mur et le sol -->
+                <path d="M300 200 Q 210 175 132 165" fill="none" stroke="#f2b441" stroke-width="2" stroke-dasharray="5 4"/>
+                <path d="M300 200 Q 230 215 160 205" fill="none" stroke="#f2b441" stroke-width="2" stroke-dasharray="5 4"/>
+                <text x="210" y="150" class="svg-text" fill="#f2b441" font-size="11">indirect (rebond)</text>
+                <!-- zone teintée -->
+                <ellipse cx="160" cy="200" rx="55" ry="9" fill="#ff6b6b" fill-opacity="0.25"/>
+                <text x="160" y="228" text-anchor="middle" class="svg-dim" font-size="11">le sol prend une teinte rouge — calculé en temps réel</text>
+              </svg>
+              <figcaption>Lumen calcule les rebonds chaque image&nbsp;: la lumière «&nbsp;bave&nbsp;» la couleur des surfaces sans aucun précalcul, et tout reste dynamique.</figcaption>
+            </figure>
+
+            <h3>3. Virtual Shadow Maps (VSM)</h3>
+            <p>Les ombres temps réel d'UE&nbsp;5 reposent sur les <span class="term">Virtual Shadow Maps</span>&nbsp;: des cartes d'ombre à très haute résolution, virtualisées (seules les parties utiles sont calculées), pensées pour rester nettes même sur la géométrie ultra-dense de <a href="../../cours/unreal/e07-nanite.html">Nanite</a>. Elles remplacent les anciennes <em>Cascaded Shadow Maps</em> et donnent des ombres cohérentes du gros plan jusqu'à l'horizon — mais c'est un poste de coût GPU à surveiller (renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>).</p>
+
+            <h3>4. Quand baker encore&nbsp;? Lightmass</h3>
+            <p>Lumen est superbe mais coûteux. Pour des cibles modestes (mobile, VR à budget serré, machines anciennes) ou des scènes 100&nbsp;% statiques où l'on veut une performance garantie, le <b>baking</b> via <span class="term">Lightmass</span> reste pertinent&nbsp;: on précalcule la GI et les ombres dans des <span class="gloss">lightmaps</span>, ce qui ne coûte presque rien à l'affichage. Cela impose deux contraintes (rappel <a href="../../cours/unity/u07-eclairage.html">U7</a> côté Unity, même logique)&nbsp;: les objets doivent être en Mobility <b>Static</b>, et posséder un second jeu d'UV non chevauchants pour stocker l'éclairage (renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>). On lance le calcul via <span class="menu-path">Build<span class="arrow">▸</span>Build Lighting</span>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Lumen ou baked&nbsp;: comment trancher</div>
+              <p>PC/console récents, scène évolutive, prototype rapide → <b>Lumen</b>. Mobile/VR contraints, scène figée, besoin d'un framerate verrouillé → <b>baked (Lightmass)</b>. Ce n'est pas l'un contre l'autre dans l'absolu&nbsp;: c'est un choix dicté par la <b>plateforme cible</b>.</p>
+            </div>
+
+            <h3>5. L'exposition&nbsp;: le piège du débutant</h3>
+            <p>Le rendu d'Unreal travaille en <b>HDR</b> (valeurs lumineuses pouvant dépasser 1.0, renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>) puis ramène l'image à l'écran via un <b>tonemapping</b>. Entre les deux, l'<span class="term">Auto Exposure</span> (Eye Adaptation) simule l'œil humain qui s'adapte&nbsp;: en passant d'une pièce sombre à l'extérieur, l'image s'assombrit le temps de «&nbsp;s'habituer&nbsp;».</p>
+            <p>C'est réaliste, mais cela <b>fausse le jugement</b>&nbsp;: ta scène te paraît bien exposée alors que tu as en réalité mis dix fois trop ou trop peu de lumière, car l'auto-exposition compense. Pour travailler sereinement, fixe l'exposition en manuel le temps de poser ta lumière (dans un Post Process Volume, <span class="menu-path">Exposure<span class="arrow">▸</span>Metering Mode = Manual</span>), puis réactive l'auto si le gameplay l'exige.</p>
+
+            <h3>6. Le ciel et l'ambiance</h3>
+            <p>Une scène extérieure crédible combine généralement&nbsp;: une <b>Directional Light</b> (le soleil), une <b>Sky Atmosphere</b> (ciel physique avec diffusion atmosphérique, qui se colore selon l'angle du soleil), un <b>SkyLight</b> (capture l'environnement — ou une <span class="gloss">HDRI</span>, renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a> — pour fournir la lumière ambiante et les reflets), et éventuellement des <b>Volumetric Clouds</b> et un <b>Exponential Height Fog</b>. Sans SkyLight, les zones d'ombre sont anormalement noires car aucune lumière ambiante ne les remplit.</p>
+
+            <h3>7. Le Post Process Volume</h3>
+            <p>Le <span class="term">Post Process Volume</span> est le panneau de contrôle de l'image finale&nbsp;: exposition, réglages Lumen (qualité de la GI et des réflexions), bloom, color grading, ambient occlusion d'écran… On peut le rendre <b>global</b> (cocher <em>Infinite Extent / Unbound</em>) ou <b>local</b> (une boîte qui ne change l'ambiance que lorsque la caméra entre dedans — idéal pour un intérieur). C'est l'équivalent fonctionnel du <a href="../../cours/unity/u08-post-processing.html">framework Volume d'Unity</a>.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Montons un éclairage extérieur en plein Lumen, puis fixons l'exposition.</p>
+            <ol>
+              <li>Dans une scène vide&nbsp;: ouvre le panneau <span class="menu-path">Place Actors</span> (ou la catégorie Lights/Visual Effects) et place une <span class="menu-path">Directional Light</span>. Oriente-la avec la rotation (ou <span class="kbd">Ctrl</span>+<span class="kbd">L</span> + déplacement de souris pour «&nbsp;peindre&nbsp;» l'angle du soleil).</li>
+              <li>Ajoute une <span class="menu-path">Sky Atmosphere</span>&nbsp;: le ciel apparaît et se colore selon l'angle de la Directional Light (couche-la vers l'horizon → coucher de soleil orangé).</li>
+              <li>Ajoute un <span class="menu-path">SkyLight</span> et règle-le en <em>Real Time Capture</em>&nbsp;: les ombres se remplissent d'une ambiance bleutée venue du ciel. Constate la différence en le désactivant un instant (ombres anormalement noires).</li>
+              <li>Vérifie que Lumen est actif&nbsp;: <span class="menu-path">Project Settings<span class="arrow">▸</span>Rendering</span>, Dynamic Global Illumination et Reflections sur <em>Lumen</em>. Bouge le soleil et observe la lumière indirecte se mettre à jour en direct.</li>
+              <li>Place un <span class="menu-path">Post Process Volume</span>. Dans ses Details, coche <em>Infinite Extent (Unbound)</em>. Déplie <span class="menu-path">Exposure</span>, passe <em>Metering Mode</em> en <em>Manual</em> et règle l'<em>Exposure Compensation</em> jusqu'à une image bien lisible.</li>
+              <li>Toujours dans le volume, joue avec <span class="menu-path">Color Grading</span> (contraste, saturation) et un léger <em>Bloom</em>. Tu pilotes maintenant l'image finale.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma scène s'éclaircit/s'assombrit toute seule quand je bouge la caméra, je n'arrive pas à juger ma lumière.</div>
+                <div class="pi-cause"><b>Cause</b>L'Auto Exposure (Eye Adaptation) compense en permanence.</div>
+                <div class="pi-fix"><b>Correction</b>Fixe l'exposition en <em>Manual</em> dans un Post Process Volume le temps de poser l'éclairage.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Les zones d'ombre sont d'un noir total, irréaliste.</div>
+                <div class="pi-cause"><b>Cause</b>Aucune lumière ambiante&nbsp;: pas de SkyLight (ou Lumen mal configuré).</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute un SkyLight (Real Time Capture ou HDRI) pour remplir les ombres&nbsp;; vérifie que la GI Lumen est active.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le framerate s'effondre dans une scène pourtant simple.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de lumières <em>Movable</em> projetant des ombres, et/ou Lumen + VSM à pleine qualité sur une cible modeste.</div>
+                <div class="pi-fix"><b>Correction</b>Réduis le nombre de Movable, baisse la qualité Lumen/Reflections via la Scalability (renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>), ou bake les lumières statiques.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai lancé un Build Lighting mais rien n'a changé (ou erreur d'UV).</div>
+                <div class="pi-cause"><b>Cause</b>Les objets ne sont pas en Mobility <em>Static</em>, ou ils n'ont pas de second jeu d'UV pour la lightmap (chevauchements).</div>
+                <div class="pi-fix"><b>Correction</b>Passe les objets concernés en Static et génère/corrige leurs UV de lightmap (renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>). Ou reste en Lumen et oublie le bake.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans un projet Unreal&nbsp;5.7&nbsp;:</p>
+              <ol>
+                <li>Compose une scène extérieure&nbsp;: Directional Light + Sky Atmosphere + SkyLight, le tout en Lumen.</li>
+                <li>Fixe l'exposition en manuel via un Post Process Volume unbound, puis pose une ambiance «&nbsp;coucher de soleil&nbsp;» (soleil rasant, couleurs chaudes, ombres longues).</li>
+                <li>Ajoute un objet à matériau réfléchissant (renvoi <a href="../../cours/unreal/e05-material-editor.html">E5</a>) et observe les réflexions Lumen évoluer quand tu déplaces le soleil.</li>
+                <li>Bonus&nbsp;: bascule la même scène en éclairage baked (objets Static + Build Lighting) et compare aspect <em>et</em> framerate.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'ambiance est lisible et l'exposition ne «&nbsp;respire&nbsp;» plus en bougeant.</li>
+                  <li>Tu sais expliquer pourquoi un SkyLight est nécessaire et ce que Lumen apporte.</li>
+                  <li>Tu peux nommer un cas où le baking serait préférable à Lumen.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>La <b>Mobility</b> (Static/Stationary/Movable) décide si une lumière est bakée, hybride ou 100&nbsp;% temps réel.</li>
+                <li><b>Lumen</b> calcule GI + réflexions en temps réel&nbsp;: plus besoin de baker dans la plupart des cas, mais c'est un coût GPU à mesurer.</li>
+                <li>Les <b>Virtual Shadow Maps</b> donnent des ombres nettes et cohérentes (notamment avec Nanite).</li>
+                <li>Le <b>baking (Lightmass)</b> reste pertinent sur cibles modestes / scènes statiques (objets Static + UV de lightmap).</li>
+                <li>Fixe l'<b>exposition</b> en manuel pour juger tes valeurs&nbsp;; un <b>SkyLight</b> remplit les ombres&nbsp;; le <b>Post Process Volume</b> pilote l'image finale.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Lumen</b> — système d'illumination globale et de réflexions temps réel d'Unreal&nbsp;5.</p>
+              <p><b>Mobility</b> — réglage Static/Stationary/Movable qui détermine si une lumière est précalculée ou dynamique.</p>
+              <p><b>Virtual Shadow Maps (VSM)</b> — ombres haute résolution virtualisées, cohérentes avec Nanite.</p>
+              <p><b>Lightmass</b> — système de baking d'éclairage d'Unreal (lightmaps pour objets statiques).</p>
+              <p><b>Auto Exposure (Eye Adaptation)</b> — adaptation automatique de l'exposition simulant l'œil&nbsp;; à fixer pour juger ses valeurs.</p>
+              <p><b>Post Process Volume</b> — volume contrôlant exposition, grading, bloom et réglages Lumen, global ou local.</p>
+              <p><b>Sky Atmosphere / SkyLight</b> — ciel physique et lumière ambiante/reflets de l'environnement.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage Unity</a>&nbsp;: la logique baked/probes côté Unity, pour comparer.</li>
+              <li><a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a>&nbsp;: pourquoi les VSM et Nanite vont de pair.</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10 — Optimisation Unreal</a>&nbsp;: mesurer et alléger le coût de Lumen et des ombres.</li>
+              <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques d'assets</a>&nbsp;: trouver une HDRI pour ton SkyLight.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

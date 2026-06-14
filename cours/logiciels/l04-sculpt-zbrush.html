@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L4 — Sculpt avancé / ZBrush (panorama) · Atelier Game Art</title>
+  <meta name="description" content="Le sculpt haute résolution : principe, quand c'est utile, ZBrush en panorama et l'alternative gratuite (le mode sculpt de Blender).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>Sculpt avancé / ZBrush (panorama)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L4 — Sculpt avancé / ZBrush (panorama)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 1 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a> et <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a> (place du high-poly).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer le <b>principe du sculpt</b>&nbsp;: manipuler des millions de polygones «&nbsp;comme de l'argile&nbsp;» pour bâtir un <b>high-poly</b>.</li>
+                <li>Distinguer les trois technologies de densité&nbsp;: <b>tessellation dynamique</b> (Dyntopo), <b>Multiresolution</b> (paliers de subdivision) et <b>remesh par voxels</b> (DynaMesh).</li>
+                <li>Situer <b>ZBrush</b> (Maxon) dans l'industrie&nbsp;: sa logique <b>2.5D</b>, ses SubTools, ZSpheres, PolyPaint, le <b>ZRemesher</b>, ses points forts et sa courbe d'apprentissage.</li>
+                <li>Connaître les <b>alternatives</b> crédibles&nbsp;: le mode Sculpt de <b>Blender</b> (gratuit), 3D-Coat, Nomad Sculpt (tablette).</li>
+                <li>Placer le sculpt dans le pipeline&nbsp;: <b>sculpt → retopo → bake</b>, et reconnaître <b>quand le sculpt n'est pas utile</b>.</li>
+                <li>Appliquer le bon ordre de travail&nbsp;: <b>bloquer la forme → subdiviser → détailler → polir</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tout ce que tu admires de «&nbsp;vivant&nbsp;» dans un jeu — un visage marqué de rides, une créature couverte d'écailles, une armure cabossée, un rocher érodé, les plis lourds d'une cape — n'a presque jamais été modélisé sommet par sommet. Cela a été <b>sculpté</b>. Le sculpt est la discipline qui permet de traiter la matière 3D comme de la <b>terre glaise</b>&nbsp;: au lieu de déplacer des points un par un (la modélisation classique vue en <a href="../../cours/logiciels/l01-blender.html">L1</a>), on <b>pousse, creuse, lisse et étire</b> une surface dense de millions de polygones avec des brosses, comme un sculpteur travaille l'argile avec ses doigts et ses outils.</p>
+            <p>Dans un vrai pipeline de production (revois <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>), le sculpt occupe une place précise&nbsp;: il sert à produire le <b>high-poly</b>, c'est-à-dire la version <b>ultra-détaillée</b> de l'asset, beaucoup trop lourde pour tourner en temps réel. Ce high-poly n'entre jamais tel quel dans le moteur. Son détail est ensuite <b>transféré</b> sur une version légère (le low-poly) sous forme de textures, en particulier la <b>normal map</b>, via l'opération de <span class="gloss">baking</span> (voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>). Autrement dit&nbsp;: on sculpte la vérité, on la photographie, et on colle la photo sur un mannequin économe. Comprendre cette logique, c'est comprendre pourquoi un personnage de jeu peut sembler avoir des pores de peau alors que sa géométrie réelle est quasiment lisse.</p>
+            <p>Cette leçon est un <b>panorama</b>, pas un tutoriel exhaustif de ZBrush&nbsp;: l'enjeu est que tu saisisses le <b>pourquoi</b> et le <b>comment général</b> du sculpt, que tu connaisses l'outil de référence de l'industrie, et que tu saches qu'une alternative <b>gratuite et largement suffisante pour débuter</b> existe déjà dans Blender.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le principe&nbsp;: pourquoi «&nbsp;sculpter&nbsp;» plutôt que modéliser</h3>
+            <p>La modélisation polygonale classique est merveilleuse pour les formes <b>nettes et logiques</b> — une caisse, une épée, un bâtiment — parce qu'on y contrôle chaque arête. Mais demande-lui de produire le nez d'un dragon, les muscles d'un torse ou l'écorce d'un vieux chêne, et elle devient un cauchemar&nbsp;: tu passerais des heures à déplacer des centaines de points pour approcher une forme que ta main «&nbsp;sent&nbsp;» mais que la grille de polygones refuse d'épouser.</p>
+            <p>Le sculpt renverse le problème. Tu pars d'une surface <b>très dense</b> (des centaines de milliers, voire des millions de polygones&nbsp;: si dense que l'œil ne distingue plus les facettes) et tu la déformes au pinceau. Chaque coup de brosse déplace localement des milliers de sommets d'un coup, selon un profil (en bosse, en creux, en pli…). Tu ne penses plus «&nbsp;arêtes et faces&nbsp;», tu penses <b>volume, masse et surface</b> — exactement comme un sculpteur sur argile. C'est pour cela que le sculpt est l'outil roi du <b>détail organique</b>.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Brosse, alpha et stylet</div>
+              <p>Une <span class="term">brosse</span> de sculpt n'est pas un simple «&nbsp;crayon&nbsp;»&nbsp;: c'est une combinaison d'un <b>comportement</b> (ajouter de la matière, en retirer, lisser, attraper…) et d'un <b>profil</b>, souvent piloté par un <span class="term">alpha</span> — une petite image en niveaux de gris qui sert de tampon (un alpha en forme d'écaille tamponne des écailles, un alpha de grain tamponne de la peau). Le travail au sculpt suppose presque toujours une <b>tablette graphique à stylet</b>&nbsp;: la <b>pression</b> du stylet module la force de la brosse, ce qui donne un trait sensible et naturel, impossible à obtenir au clic de souris.</p>
+            </div>
+
+            <h3>2. Le vrai problème technique&nbsp;: d'où vient la matière à détailler&nbsp;?</h3>
+            <p>Si tu pousses une sphère de 500 polygones, tu obtiens une sphère bosselée et grossière&nbsp;: il n'y a pas «&nbsp;assez de matière&nbsp;» pour porter un détail fin. Sculpter un pore de peau exige des polygones <b>là où se trouve le pore</b>. Tout le génie technique du sculpt tient donc dans une question&nbsp;: <b>comment fournir de la densité, et où&nbsp;?</b> Trois réponses coexistent, et il faut les distinguer car elles ne servent pas aux mêmes moments.</p>
+
+            <h4>2.1 La tessellation dynamique (Dyntopo / Sculptris)</h4>
+            <p>La <span class="term">tessellation dynamique</span> (<em>dynamic tessellation</em> ou <em>dynamic topology</em>, abrégée <b>Dyntopo</b> dans Blender, héritée du défunt <em>Sculptris</em>) ajoute des polygones <b>à la volée, uniquement là où la brosse passe</b>. Tu commences avec peu de matière&nbsp;; dès que tu sculptes un détail, le logiciel subdivise localement pour t'en donner. C'est génial pour <b>bloquer une forme libre</b> (modeler une tête à partir d'une boule sans se soucier de la grille). Le revers&nbsp;: la <b>topologie</b> (l'organisation des polygones) devient un fouillis triangulaire désordonné, et la densité peut <b>exploser</b> sans que tu t'en rendes compte, faisant ramer la machine.</p>
+
+            <h4>2.2 La Multiresolution (paliers de subdivision)</h4>
+            <p>La <span class="term">Multiresolution</span> (Multires) fonctionne par <b>paliers</b>. Tu pars d'un maillage propre, et le logiciel le subdivise par niveaux&nbsp;: niveau&nbsp;0 = la cage de base&nbsp;; niveau&nbsp;1 = quatre fois plus de polygones&nbsp;; niveau&nbsp;2 = encore quatre fois plus, et ainsi de suite. Au niveau bas, tu sculptes les <b>grands volumes</b>&nbsp;; au niveau haut, le <b>détail fin</b>. Surtout, tu peux <b>monter et descendre</b> entre les niveaux à volonté&nbsp;: corriger une grosse proportion en bas sans détruire les rides ajoutées en haut. C'est structuré, prévisible, et c'est le système privilégié quand on prévoit de <b>baker</b> ensuite (voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>), parce que le niveau&nbsp;0 fournit déjà une topologie nette utilisable comme base.</p>
+
+            <h4>2.3 Le remesh par voxels (DynaMesh)</h4>
+            <p>Le <span class="term">remesh par voxels</span> (le <b>DynaMesh</b> de ZBrush, le <em>Voxel Remesh</em> de Blender) prend ta forme actuelle et la <b>reconstruit entièrement</b> en une nouvelle surface de densité uniforme, comme si on la replongeait dans l'argile fraîche. À quoi ça sert&nbsp;? À <b>fusionner</b> des morceaux (coller une corne sur un crâne, souder deux masses) et à <b>repartir d'une topologie propre et homogène</b> quand le maillage est devenu trop tiré ou trop dense par endroits. On l'utilise massivement en phase de <b>blocking</b>&nbsp;: on assemble des boules, on les fond ensemble, on re-DynaMesh, on continue. Le détail très fin se fait plus tard, avec la Multires.</p>
+
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Technologie</th><th>Densité fournie</th><th>Topologie obtenue</th><th>Bon usage</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Dyntopo / Sculptris</b></td><td>Locale, à la volée sous la brosse</td><td>Désordonnée (triangles)</td><td>Bloquer une forme libre, idéation</td></tr>
+                  <tr><td><b>Multiresolution</b></td><td>Par paliers globaux (×4 à chaque niveau)</td><td>Propre, hiérarchique</td><td>Détail final, base saine pour le bake</td></tr>
+                  <tr><td><b>Voxel remesh / DynaMesh</b></td><td>Uniforme, reconstruite</td><td>Régulière mais non optimisée</td><td>Fusionner, repartir propre en blocking</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Progression du sculpt en quatre étapes : une sphère simple, une forme bloquée grossière, la même forme subdivisée plus dense, puis la forme détaillée avec rides et reliefs">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Le sculpt avance du gros au fin&nbsp;: jamais l'inverse</text>
+                <!-- étape 1 : sphère -->
+                <g transform="translate(20,50)">
+                  <rect x="0" y="0" width="140" height="190" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <circle cx="70" cy="80" r="46" fill="#59b0ff" fill-opacity="0.12" stroke="#59b0ff" stroke-width="1.6"/>
+                  <line x1="24" y1="80" x2="116" y2="80" stroke="#59b0ff" stroke-opacity="0.5" stroke-width="0.8"/>
+                  <line x1="70" y1="34" x2="70" y2="126" stroke="#59b0ff" stroke-opacity="0.5" stroke-width="0.8"/>
+                  <text x="70" y="158" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">1 · Sphère</text>
+                  <text x="70" y="176" text-anchor="middle" class="svg-dim" font-size="10">la matière brute</text>
+                </g>
+                <!-- étape 2 : forme bloquée -->
+                <g transform="translate(176,50)">
+                  <rect x="0" y="0" width="140" height="190" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <path d="M40 120 C 30 70, 55 30, 70 30 C 92 30, 110 60, 100 100 C 96 118, 80 130, 70 130 C 56 130, 44 128, 40 120 Z" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a" stroke-width="1.6"/>
+                  <text x="70" y="158" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">2 · Forme bloquée</text>
+                  <text x="70" y="176" text-anchor="middle" class="svg-dim" font-size="10">grandes masses (Grab)</text>
+                </g>
+                <!-- étape 3 : subdivision -->
+                <g transform="translate(332,50)">
+                  <rect x="0" y="0" width="140" height="190" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <path d="M40 120 C 30 70, 55 30, 70 30 C 92 30, 110 60, 100 100 C 96 118, 80 130, 70 130 C 56 130, 44 128, 40 120 Z" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441" stroke-width="1.4"/>
+                  <g stroke="#f2b441" stroke-opacity="0.55" stroke-width="0.6">
+                    <line x1="45" y1="55" x2="98" y2="55"/><line x1="40" y1="78" x2="103" y2="78"/><line x1="38" y1="101" x2="102" y2="101"/><line x1="44" y1="122" x2="96" y2="122"/>
+                    <line x1="58" y1="32" x2="58" y2="128"/><line x1="74" y1="30" x2="74" y2="130"/><line x1="90" y1="40" x2="90" y2="118"/>
+                  </g>
+                  <text x="70" y="158" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">3 · Subdivision</text>
+                  <text x="70" y="176" text-anchor="middle" class="svg-dim" font-size="10">on densifie (Multires)</text>
+                </g>
+                <!-- étape 4 : détails -->
+                <g transform="translate(488,50)">
+                  <rect x="0" y="0" width="140" height="190" rx="8" class="svg-surface" stroke="#313c4c"/>
+                  <path d="M40 120 C 30 70, 55 30, 70 30 C 92 30, 110 60, 100 100 C 96 118, 80 130, 70 130 C 56 130, 44 128, 40 120 Z" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441" stroke-width="1.6"/>
+                  <g stroke="#f2b441" stroke-width="1.1" fill="none" stroke-linecap="round">
+                    <path d="M50 60 q 12 -6 24 -2"/><path d="M52 72 q 14 -5 26 -1"/>
+                    <path d="M48 92 q 16 8 30 2"/><path d="M54 104 q 14 7 26 1"/>
+                  </g>
+                  <circle cx="62" cy="50" r="1.6" fill="#f2b441"/><circle cx="80" cy="48" r="1.6" fill="#f2b441"/><circle cx="88" cy="80" r="1.6" fill="#f2b441"/>
+                  <text x="70" y="158" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">4 · Détails</text>
+                  <text x="70" y="176" text-anchor="middle" class="svg-dim" font-size="10">rides, pores (Draw Sharp)</text>
+                </g>
+                <!-- flèches entre étapes -->
+                <g>
+                  <path d="M161 145 l 12 0 l -4 -4 m 4 4 l -4 4" stroke="#717c8c" stroke-width="1.6" fill="none"/>
+                  <path d="M317 145 l 12 0 l -4 -4 m 4 4 l -4 4" stroke="#717c8c" stroke-width="1.6" fill="none"/>
+                  <path d="M473 145 l 12 0 l -4 -4 m 4 4 l -4 4" stroke="#717c8c" stroke-width="1.6" fill="none"/>
+                </g>
+              </svg>
+              <figcaption>Le sculpt va toujours du <b>volume</b> vers le <b>détail</b>. On ne dessine pas une ride sur une sphère informe&nbsp;: on bloque d'abord la masse, puis on densifie, puis seulement on détaille.</figcaption>
+            </figure>
+
+            <h3>3. ZBrush&nbsp;: le standard de l'industrie et sa logique très particulière</h3>
+            <p><b>ZBrush</b> (édité par <b>Maxon</b>) est, depuis vingt ans, l'outil de sculpt de référence des studios de cinéma et de jeu vidéo. Si tu vois un visage de personnage AAA, il a de fortes chances d'être passé par ZBrush. Sa puissance vient d'un moteur capable d'avaler des <b>dizaines de millions de polygones</b> sans broncher, là où d'autres logiciels saturent — c'est ce qui autorise un niveau de détail extrême.</p>
+            <p>Mais ZBrush déroute, parce qu'il n'a <b>pas été conçu comme un logiciel 3D classique</b>. Il faut connaître quelques notions clés pour ne pas être perdu.</p>
+
+            <h4>3.1 Le 2.5D&nbsp;: l'héritage qui explique tout</h4>
+            <p>ZBrush est né comme un outil de peinture «&nbsp;<span class="term">2.5D</span>&nbsp;»&nbsp;: on peignait sur un canevas 2D des coups de pinceau qui portaient une information de <b>profondeur</b> (d'où le «&nbsp;,5&nbsp;»). De cet héritage vient sa navigation atypique et son vocabulaire à part. Concrètement, pour un débutant venant de Blender ou Maya, cela signifie que la <b>rotation, le zoom et les raccourcis ne ressemblent à rien d'autre</b>&nbsp;: c'est la première marche de sa courbe d'apprentissage réputée raide.</p>
+
+            <h4>3.2 SubTools&nbsp;: les «&nbsp;objets&nbsp;» de ZBrush</h4>
+            <p>Ce que les autres logiciels appellent «&nbsp;objets&nbsp;», ZBrush l'appelle <span class="term">SubTool</span>. Une scène ZBrush est une pile de SubTools (le corps, la tête, chaque pièce d'armure, chaque dent…). On les empile, on les masque, on les fusionne. Comprendre que «&nbsp;1 SubTool = 1 morceau indépendant&nbsp;» évite bien des confusions au début.</p>
+
+            <h4>3.3 ZSpheres&nbsp;: bâtir une base à partir de «&nbsp;squelettes&nbsp;»</h4>
+            <p>Les <span class="term">ZSpheres</span> sont un système pour construire rapidement une base&nbsp;: tu poses des sphères reliées en chaîne (un peu comme un bonhomme en ballons de baudruche) pour esquisser une silhouette — tronc, membres, queue — que ZBrush transforme ensuite en maillage sculptable. C'est une façon de partir d'un «&nbsp;squelette&nbsp;» plutôt que d'une boule.</p>
+
+            <h4>3.4 PolyPaint&nbsp;: peindre la couleur sans UV</h4>
+            <p>Le <span class="term">PolyPaint</span> permet de <b>peindre de la couleur directement sur les sommets</b> du modèle, sans avoir déplié les UV au préalable. Chaque vertex porte sa couleur. C'est extrêmement pratique pour poser une mise en couleur dès le sculpt&nbsp;; cette couleur pourra plus tard être bakée dans une texture une fois les UV créés.</p>
+
+            <h4>3.5 ZRemesher&nbsp;: la retopologie automatique</h4>
+            <p>Le <span class="term">ZRemesher</span> est l'outil de <b>retopologie automatique</b> de ZBrush&nbsp;: à partir de ton sculpt dense et désordonné, il génère une nouvelle surface à la topologie <b>propre, régulière et beaucoup plus légère</b>. C'est un pont direct vers le low-poly. Attention&nbsp;: une retopo automatique est souvent un bon point de départ, mais rarement parfaite pour un asset destiné à l'animation (où l'on veut des boucles d'arêtes précises autour des yeux, de la bouche, des articulations)&nbsp;; on la retouche alors à la main.</p>
+
+            <h4>3.6 Brosses, alphas et VDM&nbsp;: l'arsenal qui fait la différence</h4>
+            <p>La vraie force quotidienne de ZBrush, ce sont ses <b>brosses</b> et ses bibliothèques d'<b>alphas</b>. Les <span class="term">VDM</span> (<em>Vector Displacement Mesh</em>, brosses à déplacement vectoriel) vont plus loin qu'un simple relief en hauteur&nbsp;: elles peuvent tamponner des formes en <b>surplomb</b> (une oreille, un bouton, une écaille recourbée) en un seul coup, parce qu'elles déplacent la surface dans <b>les trois directions</b>, pas seulement vers le haut. C'est un gain de temps spectaculaire pour le détail répétitif.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Courbe d'apprentissage et prix&nbsp;: le vrai bilan</div>
+              <p>ZBrush est puissant mais <b>exigeant</b>&nbsp;: interface dense, navigation atypique, vocabulaire propre. Côté tarif, Maxon le propose désormais en <b>abonnement</b> (et l'inclut dans la suite Maxon One), avec une version mobile <b>ZBrush for iPad</b>. Pour un débutant ou un solo, l'investissement (en temps comme en argent) n'est <b>pas obligatoire</b>&nbsp;: on peut apprendre tout le <b>raisonnement</b> du sculpt — et produire d'excellents props — dans Blender, gratuitement. ZBrush devient pertinent quand tu vises le <b>détail extrême</b> de personnages/créatures ou un poste en studio qui l'exige.</p>
+            </div>
+
+            <h3>4. Les alternatives&nbsp;: tu n'as pas besoin de ZBrush pour commencer</h3>
+            <ul>
+              <li><b>Le mode Sculpt de Blender</b> — <b>gratuit</b>, intégré, et <b>largement suffisant pour débuter</b> comme pour la majorité des props. Il offre Dyntopo et un modifier Multires, et un jeu de brosses solide&nbsp;: <b>Clay Strips</b> (dépose des bandes de matière, idéale pour bâtir un volume), <b>Draw Sharp</b> (trace net pour les arêtes franches, les plis, les rides), <b>Grab</b> (attrape et déplace une grande zone pour les proportions), <b>Smooth</b> (<kbd>Shift</kbd> maintenu&nbsp;: lisse). C'est l'outil sur lequel s'appuie la démo de cette leçon.</li>
+              <li><b>3D-Coat</b> — un concurrent complet (sculpt par voxels, retopo, texturing), apprécié pour son flux voxel intuitif et un modèle de licence plus accessible.</li>
+              <li><b>Nomad Sculpt</b> — une application de sculpt <b>sur tablette</b> (iPad/Android), étonnamment capable, parfaite pour s'entraîner au stylet n'importe où et pour les artistes nomades.</li>
+            </ul>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le raisonnement se transfère d'un logiciel à l'autre</div>
+              <p>Une brosse Clay Strips de Blender, une brosse Clay Buildup de ZBrush et une brosse «&nbsp;clay&nbsp;» de Nomad font fondamentalement la même chose. Les noms et les raccourcis changent, mais la <b>logique</b> — bloquer la masse, densifier, détailler, polir — est universelle. Apprendre à <em>penser comme un sculpteur</em> compte bien plus que le logiciel précis&nbsp;; c'est cette compétence-là que vise la leçon.</p>
+            </div>
+
+            <h3>5. La place dans le pipeline&nbsp;: sculpt → retopo → bake</h3>
+            <p>Le sculpt n'est jamais une fin en soi pour le jeu&nbsp;: c'est le <b>premier maillon</b> d'une chaîne. Un sculpt de personnage peut peser <b>10 à 40 millions de polygones</b>&nbsp;; aucun moteur temps réel ne peut afficher cela pour une dizaine de personnages simultanés. Il faut donc transformer ce trésor de détail en quelque chose de léger.</p>
+            <ol>
+              <li><b>Sculpt (high-poly).</b> On crée la version riche, vérité de l'objet.</li>
+              <li><b>Retopo (retopologie).</b> On reconstruit par-dessus une <b>nouvelle surface propre et légère</b> (le low-poly), avec une topologie pensée pour l'animation. C'est le sujet de <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>, et le travail des outils comme ZRemesher ou de la retopo manuelle.</li>
+              <li><b>UV.</b> On déplie le low-poly (revois <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) pour pouvoir y projeter des textures.</li>
+              <li><b>Bake.</b> On <b>projette</b> le détail du high-poly sur le low-poly sous forme de <b>normal map</b> (et autres cartes&nbsp;: AO, courbure). Le low-poly paraît alors aussi détaillé que le sculpt, pour une fraction du coût (voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</li>
+            </ol>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 240" role="img" aria-label="Place du sculpt dans le pipeline : le high-poly sculpté très dense passe par la retopologie pour donner un low-poly léger, puis le baking transfère le détail du high-poly vers une normal map appliquée au low-poly final texturé">
+                <text x="320" y="22" text-anchor="middle" class="svg-text" font-weight="700" font-size="14">Du sculpt au modèle de jeu&nbsp;: on garde le détail, on jette le poids</text>
+                <!-- high poly -->
+                <g transform="translate(20,50)">
+                  <rect x="0" y="0" width="150" height="150" rx="8" fill="#f2b441" fill-opacity="0.10" stroke="#f2b441"/>
+                  <circle cx="75" cy="60" r="38" fill="#f2b441" fill-opacity="0.16" stroke="#f2b441" stroke-width="1.4"/>
+                  <g stroke="#f2b441" stroke-opacity="0.6" stroke-width="0.5">
+                    <line x1="40" y1="45" x2="110" y2="45"/><line x1="38" y1="60" x2="112" y2="60"/><line x1="40" y1="75" x2="110" y2="75"/>
+                    <line x1="55" y1="26" x2="55" y2="94"/><line x1="75" y1="22" x2="75" y2="98"/><line x1="95" y1="26" x2="95" y2="94"/>
+                  </g>
+                  <text x="75" y="120" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">High-poly</text>
+                  <text x="75" y="137" text-anchor="middle" class="svg-dim" font-size="10">sculpt · ~20 M polys</text>
+                </g>
+                <!-- low poly retopo -->
+                <g transform="translate(245,50)">
+                  <rect x="0" y="0" width="150" height="150" rx="8" fill="#5ad19a" fill-opacity="0.10" stroke="#5ad19a"/>
+                  <path d="M75 24 L110 50 L100 90 L50 90 L40 50 Z" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a" stroke-width="1.4"/>
+                  <g stroke="#5ad19a" stroke-opacity="0.7" stroke-width="0.8">
+                    <line x1="40" y1="50" x2="110" y2="50"/><line x1="50" y1="90" x2="75" y2="24"/><line x1="100" y1="90" x2="75" y2="24"/>
+                  </g>
+                  <text x="75" y="120" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Low-poly</text>
+                  <text x="75" y="137" text-anchor="middle" class="svg-dim" font-size="10">retopo · ~5 000 polys</text>
+                </g>
+                <!-- low poly final texturé -->
+                <g transform="translate(470,50)">
+                  <rect x="0" y="0" width="150" height="150" rx="8" fill="#59b0ff" fill-opacity="0.10" stroke="#59b0ff"/>
+                  <path d="M75 24 L110 50 L100 90 L50 90 L40 50 Z" fill="#59b0ff" fill-opacity="0.16" stroke="#59b0ff" stroke-width="1.4"/>
+                  <g stroke="#59b0ff" stroke-width="0.9" fill="none" stroke-linecap="round">
+                    <path d="M52 44 q 10 -4 20 -1"/><path d="M55 56 q 12 5 22 0"/><path d="M58 70 q 9 4 16 0"/>
+                  </g>
+                  <text x="75" y="120" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Low-poly texturé</text>
+                  <text x="75" y="137" text-anchor="middle" class="svg-dim" font-size="10">+ normal map → en jeu</text>
+                </g>
+                <!-- flèches -->
+                <g>
+                  <path d="M170 110 l 70 0 l -8 -5 m 8 5 l -8 5" stroke="#717c8c" stroke-width="1.8" fill="none"/>
+                  <text x="205" y="100" text-anchor="middle" class="svg-dim" font-size="10">retopo</text>
+                  <path d="M395 110 l 70 0 l -8 -5 m 8 5 l -8 5" stroke="#f2b441" stroke-width="1.8" fill="none"/>
+                  <text x="430" y="100" text-anchor="middle" class="svg-dim" font-size="10">UV + bake</text>
+                </g>
+                <!-- flèche de bake qui descend du high vers la normal -->
+                <path d="M95 50 C 95 232, 545 232, 545 202" stroke="#f2b441" stroke-width="1.4" fill="none" stroke-dasharray="5 4"/>
+                <text x="320" y="227" text-anchor="middle" class="svg-dim" font-size="10" fill="#f2b441">le détail du high-poly est bakÉ dans la normal map du low-poly</text>
+              </svg>
+              <figcaption>Le sculpt est le point de départ. La <b>retopo</b> donne une cage légère animable&nbsp;; le <b>bake</b> y dépose le détail du high-poly sous forme de normal map. Le moteur n'affiche que la dernière boîte.</figcaption>
+            </figure>
+
+            <h3>6. Quand le sculpt n'est PAS utile</h3>
+            <p>Le sculpt fascine, au point qu'on est tenté de tout sculpter. Erreur. Pour un objet <b>hard-surface géométrique simple</b> — une caisse, une table, un mur, une poutre, un panneau métallique plat —, le sculpt n'apporte <b>rien</b>, voire complique tout. Ces objets sont mieux servis par la <b>modélisation classique</b> (arêtes nettes, <b>Bevel</b> contrôlé, modifiers) et par un détail de surface ajouté <b>en texture</b> dans un outil comme Substance (voir <a href="../../cours/logiciels/l02-substance.html">L2</a>). Sculpter une simple caisse, c'est dépenser des heures et des millions de polygones pour un résultat qu'une bonne <b>normal map de bois</b> donne en deux minutes. La règle&nbsp;: <b>sculpte ce qui est organique ou riche en accidents&nbsp;; modélise et texture ce qui est géométrique et régulier.</b></p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Démonstration <b>conceptuelle</b> dans le <b>mode Sculpt de Blender</b> (gratuit). Objectif&nbsp;: comprendre le rythme «&nbsp;bloquer → subdiviser → détailler → polir&nbsp;» sur une petite tête de créature, sans viser la perfection.</p>
+            <ol>
+              <li><b>Préparer la matière.</b> Pars d'une UV Sphere (<span class="menu-path">Add<span class="arrow">▸</span>Mesh<span class="arrow">▸</span>UV Sphere</span>). Passe au Workspace <b>Sculpting</b> (onglet en haut)&nbsp;: l'interface bascule en mode brosses. Tu disposes maintenant d'une surface à pétrir.</li>
+              <li><b>Bloquer les grandes masses — d'abord, toujours.</b> Prends la brosse <b>Grab</b> (raccourci <kbd>G</kbd>) et tire la sphère pour suggérer un museau, le sommet du crâne, la mâchoire. Ne cherche aucun détail&nbsp;: tu poses des <b>volumes</b>. C'est l'étape la plus importante&nbsp;; une forme générale juste sauve tout le reste.</li>
+              <li><b>Donner de la matière où il en manque.</b> Active <b>Dyntopo</b> (panneau du haut, <em>Dyntopo</em>, ou <kbd>Ctrl+D</kbd>) pour que de nouveaux polygones apparaissent sous la brosse pendant que tu modèles librement&nbsp;; règle le <em>Detail Size</em> raisonnablement pour ne pas exploser la densité. Avec <b>Clay Strips</b> (<kbd>C</kbd>), dépose des bandes de matière pour bâtir les arcades, les joues, le front.</li>
+              <li><b>Passer en Multires pour le détail propre.</b> Quand la forme te plaît, désactive Dyntopo. Ajoute un modifier <b>Multiresolution</b> dans les Properties (icône clé), clique <b>Subdivide</b> deux ou trois fois&nbsp;: tu obtiens des paliers. Tu sculpteras le fin sur le niveau haut, tout en pouvant redescendre corriger un volume.</li>
+              <li><b>Détailler.</b> Sur le niveau haut, prends <b>Draw Sharp</b> (trace net) pour creuser des rides, des plis de paupière, la fente de la bouche. Maintiens <kbd>Ctrl</kbd> pour inverser une brosse (creuser au lieu d'ajouter). C'est seulement <b>maintenant</b> qu'on détaille — jamais avant la forme.</li>
+              <li><b>Polir.</b> Maintiens <kbd>Shift</kbd> (brosse <b>Smooth</b>) pour adoucir les transitions trop dures et unifier la surface. Le polish sépare un sculpt amateur d'un sculpt propre&nbsp;: il enlève le «&nbsp;bruit&nbsp;» involontaire.</li>
+              <li><b>Vérifier la symétrie.</b> La symétrie X est active par défaut (panneau <em>Symmetry</em>)&nbsp;: ce que tu sculptes d'un côté se reflète de l'autre. Pratique pour un visage&nbsp;; pense à la <b>désactiver</b> pour ajouter des asymétries naturelles (une cicatrice, une oreille tombante) qui rendent la créature crédible.</li>
+              <li><b>Garder à l'esprit la suite.</b> Ce sculpt est un <b>high-poly</b>. Pour l'utiliser en jeu, il devra être <b>retopologisé</b> puis <b>baké</b> (étapes <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a> et <a href="../../cours/fondamentaux/f08-baking.html">F8</a>). Ne l'exporte jamais brut dans un moteur.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon sculpt a des détails fins partout mais les proportions sont fausses et impossibles à corriger sans tout casser.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as <b>détaillé trop tôt</b>, avant d'avoir bloqué la forme générale. Les rides «&nbsp;verrouillent&nbsp;» la masse.</div>
+                <div class="pi-fix"><b>Correction</b>Respecte l'ordre&nbsp;: <b>bloquer → subdiviser → détailler → polir</b>. Travaille les volumes en basse résolution (Grab/Clay), ne touche au détail qu'à la fin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Blender rame de plus en plus, le sculpt devient saccadé, la machine sature.</div>
+                <div class="pi-cause"><b>Cause</b><b>Dyntopo</b> a fait <b>exploser la densité</b>&nbsp;: un Detail Size trop fin ajoute des millions de polygones invisibles.</div>
+                <div class="pi-fix"><b>Correction</b>Augmente le <em>Detail Size</em>, utilise un <em>Voxel Remesh</em> pour homogénéiser, ou bascule en <b>Multires</b> dès que la forme est posée.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai exporté mon sculpt de 15 M de polygones dans le moteur&nbsp;: il plante ou tombe à 2 images/seconde.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as oublié que le high-poly <b>doit être retopologisé et baké</b>&nbsp;: un sculpt brut n'a rien à faire dans un moteur temps réel.</div>
+                <div class="pi-fix"><b>Correction</b>Passe par la chaîne <b>retopo → UV → bake</b>. Seul le low-poly + normal map entre dans le moteur (voir F5 et F8).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon sculpt est «&nbsp;mou&nbsp;», tout arrondi, sans arêtes franches ni netteté.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de <b>Smooth</b> et usage de brosses douces uniquement&nbsp;; rien pour marquer les plis nets.</div>
+                <div class="pi-fix"><b>Correction</b>Alterne avec des brosses dures (<b>Draw Sharp</b>, Pinch) pour les arêtes&nbsp;; le Smooth ne sert qu'au polish ciblé, pas à tout lisser.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai passé une journée à sculpter une caisse en bois pour un résultat décevant.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as sculpté un objet <b>hard-surface géométrique</b> qui ne s'y prête pas&nbsp;: le sculpt n'apporte rien aux formes régulières.</div>
+                <div class="pi-fix"><b>Correction</b>Modélise-le proprement (Bevel, modifiers) et ajoute le grain du bois <b>en texture/normal map</b>. Réserve le sculpt à l'organique.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma créature semble «&nbsp;de synthèse&nbsp;», trop parfaite, irréelle.</div>
+                <div class="pi-cause"><b>Cause</b>La <b>symétrie</b> est restée active partout&nbsp;: aucune asymétrie naturelle, donc un aspect artificiel.</div>
+                <div class="pi-fix"><b>Correction</b>Désactive la symétrie pour la passe finale et ajoute de petites irrégularités (cicatrice, ride asymétrique, oreille différente).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans le mode Sculpt de Blender (gratuit), sculpte une <b>petite tête de créature</b> en respectant strictement l'ordre de travail&nbsp;:</p>
+              <ol>
+                <li>Pars d'une UV Sphere. <b>Bloque</b> les grandes masses (museau, crâne, mâchoire) à la brosse <b>Grab</b>, sans aucun détail, en basse résolution.</li>
+                <li>Active <b>Dyntopo</b> pour gagner de la matière et pose les volumes secondaires (arcades, joues) au <b>Clay Strips</b>.</li>
+                <li>Passe en <b>Multiresolution</b> (2–3 subdivisions), puis <b>détaille</b> les rides et plis au <b>Draw Sharp</b>.</li>
+                <li><b>Polis</b> les transitions au <b>Smooth</b>, puis désactive la symétrie pour ajouter <b>une</b> asymétrie volontaire.</li>
+                <li>Rédige <b>deux phrases</b> expliquant ce qu'il faudrait faire de ce sculpt pour l'utiliser dans un jeu (retopo, UV, bake).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les <b>proportions générales</b> sont lisibles avant tout détail (forme bloquée d'abord).</li>
+                  <li>Blender reste <b>fluide</b>&nbsp;: tu n'as pas laissé Dyntopo exploser la densité.</li>
+                  <li>Le sculpt présente à la fois des <b>zones douces</b> (Smooth) et des <b>arêtes nettes</b> (Draw Sharp), pas un bloc mou.</li>
+                  <li>Au moins une <b>asymétrie</b> volontaire est visible.</li>
+                  <li>Tu sais expliquer pourquoi ce maillage ne peut pas entrer <b>tel quel</b> dans un moteur, et nommer les trois étapes qui suivent (<b>retopo, UV, bake</b>).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>sculpt</b> traite des millions de polygones «&nbsp;comme de l'argile&nbsp;» pour créer le <b>high-poly</b>&nbsp;: l'outil roi du détail <b>organique</b>.</li>
+                <li>Trois technologies de densité&nbsp;: <b>Dyntopo</b> (à la volée, désordonné), <b>Multires</b> (paliers propres, idéal pour le bake), <b>voxel remesh / DynaMesh</b> (reconstruit, pour fusionner).</li>
+                <li><b>ZBrush</b> (Maxon) est le standard industrie (logique 2.5D, SubTools, ZSpheres, PolyPaint, ZRemesher, brosses/alphas/VDM)&nbsp;: puissant, payant, courbe d'apprentissage raide.</li>
+                <li>Le <b>mode Sculpt de Blender</b> est gratuit et <b>suffit largement pour débuter</b> et pour la plupart des props. Autres options&nbsp;: 3D-Coat, Nomad (tablette).</li>
+                <li>Ordre universel&nbsp;: <b>bloquer → subdiviser → détailler → polir</b>. Jamais l'inverse.</li>
+                <li>Place dans le pipeline&nbsp;: <b>sculpt → retopo → UV → bake</b>. Le sculpt n'entre <b>jamais brut</b> dans un moteur. Et on <b>ne sculpte pas</b> le hard-surface géométrique simple.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Sculpt</b> — technique consistant à déformer une surface 3D très dense au pinceau, «&nbsp;comme de l'argile&nbsp;», pour créer du détail organique.</p>
+              <p><b>High-poly</b> — version ultra-détaillée d'un asset (des millions de polygones), trop lourde pour le temps réel&nbsp;; sert de source au baking.</p>
+              <p><b>Tessellation dynamique (Dyntopo)</b> — ajout de polygones à la volée, uniquement sous la brosse&nbsp;; topologie désordonnée mais grande liberté de forme.</p>
+              <p><b>Multiresolution (Multires)</b> — subdivision par paliers permettant de sculpter le gros en basse résolution et le fin en haute, en montant/descendant les niveaux.</p>
+              <p><b>Voxel remesh / DynaMesh</b> — reconstruction complète de la surface en densité uniforme, pour fusionner des morceaux ou repartir d'une topologie propre.</p>
+              <p><b>ZBrush</b> — logiciel de sculpt de référence de l'industrie (Maxon), capable de gérer des dizaines de millions de polygones&nbsp;; logique 2.5D particulière.</p>
+              <p><b>SubTool</b> — équivalent ZBrush d'un «&nbsp;objet&nbsp;»&nbsp;: chaque morceau indépendant d'une scène (corps, tête, pièce d'armure…).</p>
+              <p><b>ZRemesher</b> — outil de retopologie automatique de ZBrush qui régénère une topologie propre et légère à partir d'un sculpt dense.</p>
+              <p><b>PolyPaint</b> — peinture de couleur directement sur les sommets du modèle, sans UV préalables.</p>
+              <p><b>Alpha</b> — image en niveaux de gris servant de tampon de relief à une brosse de sculpt (écailles, grain de peau…).</p>
+              <p><b>VDM</b> — <em>Vector Displacement Mesh</em>&nbsp;: brosse à déplacement vectoriel capable de tamponner des formes en surplomb en un seul coup.</p>
+              <p><b>Retopo (retopologie)</b> — reconstruction d'une surface propre et légère (low-poly) par-dessus un sculpt dense, pour l'animation et le jeu.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>&nbsp;: vertices, edges, faces et topologie, pour comprendre ce que le sculpt manipule.</li>
+              <li><a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5 — Le pipeline d'asset</a>&nbsp;: où s'enchaînent high-poly, retopo, UV et bake.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a>&nbsp;: transférer le détail d'un sculpt high-poly vers une normal map.</li>
+              <li><a href="../../cours/logiciels/l01-blender.html">L1 — Blender</a>&nbsp;: le mode Sculpt, les brosses et le modifier Multires en pratique.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance 3D</a>&nbsp;: ajouter le détail de surface en texture là où le sculpt n'est pas pertinent.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

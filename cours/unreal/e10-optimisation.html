@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E10 — Optimisation graphique Unreal · Atelier Game Art</title>
+  <meta name="description" content="Optimiser Unreal Engine 5.7 : LOD vs Nanite, scalabilité de Lumen, profiling (commandes Stat, GPU Visualizer, view modes) et réglages de Scalability.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Optimisation graphique</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E10 — Optimisation graphique Unreal</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>, <a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a> et <a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage (Lumen)</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Identifier si tu es <b>CPU-bound ou GPU-bound</b> avec <code>stat unit</code>.</li>
+                <li>Arbitrer entre <b>LOD</b> et <b>Nanite</b>, et réduire les draw calls par instancing.</li>
+                <li>Maîtriser le coût de <b>Lumen</b> et des ombres via la <b>Scalability</b>.</li>
+                <li>Lire un <b>GPU Visualizer</b> et les <b>view modes</b> (Shader Complexity, Lightmap Density…) pour viser les bons coupables.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Unreal&nbsp;5 rend des images magnifiques «&nbsp;par défaut&nbsp;», mais cette beauté a un prix&nbsp;: Lumen, les Virtual Shadow Maps, Nanite et la translucidité peuvent faire fondre le framerate si on les laisse à fond sans réfléchir. Optimiser, ce n'est pas «&nbsp;tout baisser&nbsp;» au hasard&nbsp;: c'est <b>mesurer</b> d'abord où part le temps, puis agir sur le bon poste. Cette leçon te donne la méthode et les outils — la suite naturelle des concepts de <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a> appliqués à Unreal.</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Règle d'or</div>
+              <p>On ne devine pas, on <b>mesure</b>. Toute optimisation commence par un profilage. Optimiser «&nbsp;au pif&nbsp;» fait perdre du temps et casse parfois le rendu pour rien.</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Où part le temps&nbsp;? CPU-bound vs GPU-bound</h3>
+            <p>Une image coûte du temps au <b>CPU</b> (préparer les <span class="gloss">draw calls</span>, le gameplay) <em>et</em> au <b>GPU</b> (calculer les pixels). Le framerate est limité par le plus lent des deux (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>). La commande console <code>stat unit</code> affiche&nbsp;:</p>
+            <ul>
+              <li><b>Frame</b>&nbsp;: le temps total d'une image (≈ le max des autres).</li>
+              <li><b>Game</b>&nbsp;: le temps CPU côté logique de jeu.</li>
+              <li><b>Draw</b>&nbsp;: le temps CPU côté rendu (préparation des draw calls).</li>
+              <li><b>GPU</b>&nbsp;: le temps carte graphique.</li>
+              <li><b>RHIT</b>&nbsp;: le thread d'interface matérielle de rendu.</li>
+            </ul>
+            <p>Si <b>GPU</b> domine → tu es GPU-bound (trop de pixels/effets&nbsp;: Lumen, ombres, translucidité, résolution). Si <b>Draw</b> domine → tu es CPU-bound côté rendu (trop de draw calls&nbsp;: réduis-les par instancing/regroupement). Cette distinction <b>oriente tout</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="stat unit : Frame est le maximum entre Game, Draw et GPU">
+                <g class="svg-text" font-size="12">
+                  <text x="20" y="30" font-weight="700">stat unit — qui limite l'image&nbsp;?</text>
+                  <rect x="20" y="50" width="360" height="22" rx="5" fill="#b48cff" fill-opacity="0.2" stroke="#b48cff"/><text x="28" y="66">Frame 14,2 ms</text>
+                  <rect x="20" y="82" width="150" height="22" rx="5" fill="#5ad19a" fill-opacity="0.2" stroke="#5ad19a"/><text x="28" y="98">Game 5,1 ms</text>
+                  <rect x="20" y="110" width="180" height="22" rx="5" fill="#f2b441" fill-opacity="0.2" stroke="#f2b441"/><text x="28" y="126">Draw 6,3 ms</text>
+                  <rect x="20" y="138" width="360" height="22" rx="5" fill="#ff6b6b" fill-opacity="0.25" stroke="#ff6b6b"/><text x="28" y="154">GPU 14,0 ms ← goulot</text>
+                  <text x="410" y="100" class="svg-dim">Ici, GPU ≈ Frame → on est</text>
+                  <text x="410" y="118" class="svg-dim" font-weight="700">GPU-bound :</text>
+                  <text x="410" y="136" class="svg-dim">agir sur Lumen, ombres,</text>
+                  <text x="410" y="154" class="svg-dim">translucidité, résolution.</text>
+                </g>
+              </svg>
+              <figcaption>Le plus long des postes fixe la durée de l'image. On optimise <b>ce poste-là</b>, pas un autre.</figcaption>
+            </figure>
+
+            <h3>2. Géométrie&nbsp;: LOD, Nanite et instancing</h3>
+            <ul>
+              <li><b>LOD vs Nanite</b> (renvoi <a href="../../cours/unreal/e07-nanite.html">E7</a>)&nbsp;: opaque statique dense → Nanite&nbsp;; animé, translucent, mobile, asset simple → LOD manuels (avec auto-LOD possible). Mélanger les deux selon les assets.</li>
+              <li><b>Réduire les draw calls</b>&nbsp;: utiliser les <em>Instanced Static Mesh</em> (ISM) et <em>Hierarchical ISM</em> (HISM), ainsi que le système <em>Foliage</em>, pour dessiner des milliers de copies (herbe, cailloux) en très peu d'appels (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a> sur l'instancing).</li>
+              <li><b>Draw distance / Cull Distance</b>&nbsp;: ne pas dessiner ce qui est trop loin.</li>
+            </ul>
+
+            <h3>3. Le coût de l'éclairage&nbsp;: Lumen et ombres</h3>
+            <p>Lumen est souvent le premier poste GPU (renvoi <a href="../../cours/unreal/e06-eclairage.html">E6</a>). Leviers&nbsp;: choisir <em>Software</em> vs <em>Hardware Ray Tracing</em>, baisser la qualité du <em>Final Gather</em> et des réflexions, réduire le nombre de <b>lumières Movable</b> qui projettent des ombres, et surveiller le coût des <b>Virtual Shadow Maps</b>. Sur cibles modestes, envisager le <b>baking</b> à la place de Lumen.</p>
+
+            <h3>4. La Scalability&nbsp;: régler la qualité sans toucher au contenu</h3>
+            <p>La <span class="term">Scalability</span> (<span class="menu-path">Settings<span class="arrow">▸</span>Engine Scalability Settings</span>, ou commandes console <code>sg.*</code>) règle la qualité par <b>catégorie</b> — View Distance, Shadows, Global Illumination (Lumen), Reflections, Post Processing, Textures, Effects, Foliage, Shading — sur une échelle Low → Epic → Cinematic. C'est l'outil qui permet de faire tourner <em>le même jeu</em> sur du matériel très différent <b>sans modifier les assets</b>. La commande <code>r.ScreenPercentage</code> ajuste la résolution de rendu interne (un levier GPU majeur).</p>
+
+            <h3>5. Les outils de profilage</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Outil</th><th>À quoi il sert</th></tr></thead>
+                <tbody>
+                  <tr><td><code>stat fps</code> / <code>stat unit</code></td><td>Framerate et répartition Game/Draw/GPU (le point de départ).</td></tr>
+                  <tr><td><code>stat gpu</code></td><td>Décomposition du temps GPU par grande passe (Base Pass, Lumen, Shadows…).</td></tr>
+                  <tr><td><code>stat scenerendering</code></td><td>Nombre de draw calls, de triangles, de primitives traitées.</td></tr>
+                  <tr><td><b>GPU Visualizer</b> (<span class="menu-path">ProfileGPU</span>, <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">,</span>)</td><td>Capture une image et affiche le temps détaillé de chaque passe GPU&nbsp;: <em>le</em> moyen de savoir si c'est Lumen, les ombres ou le post-process qui coûte.</td></tr>
+                  <tr><td><b>View Modes</b></td><td><em>Shader Complexity</em> (vert→rouge selon le coût pixel&nbsp;; la translucidité empilée vire au rouge), <em>Lightmap Density</em>, <em>Quad Overdraw</em>, <em>Lumen</em> overview.</td></tr>
+                  <tr><td>Unreal Insights</td><td>Profilage avancé et enregistré (au-delà de cette leçon).</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Mode Shader Complexity : la scène va du vert (peu coûteux) au rouge (coûteux), la transparence empilée étant rouge">
+                <defs><linearGradient id="e10sc" x1="0" x2="1"><stop offset="0" stop-color="#2e7d32"/><stop offset="0.5" stop-color="#f2b441"/><stop offset="1" stop-color="#ff3b3b"/></linearGradient></defs>
+                <rect x="20" y="30" width="400" height="110" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <rect x="40" y="50" width="120" height="70" rx="6" fill="#2e7d32" fill-opacity="0.7"/><text x="100" y="90" text-anchor="middle" fill="#fff" font-size="11">opaque simple</text>
+                <ellipse cx="290" cy="85" rx="70" ry="46" fill="#ff3b3b" fill-opacity="0.6"/><text x="290" y="89" text-anchor="middle" fill="#fff" font-size="11">fumée empilée</text>
+                <rect x="450" y="40" width="30" height="100" rx="5" fill="url(#e10sc)"/>
+                <text x="495" y="50" class="svg-dim" font-size="11">cher</text>
+                <text x="495" y="138" class="svg-dim" font-size="11">peu cher</text>
+                <text x="220" y="166" text-anchor="middle" class="svg-dim" font-size="11">Le rouge signale où concentrer l'effort (souvent la translucidité / l'overdraw).</text>
+              </svg>
+              <figcaption>Le mode Shader Complexity colore la scène par coût pixel&nbsp;: les zones rouges (typiquement la transparence superposée) sont tes priorités.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans une scène chargée, ouvre la console (touche <span class="kbd">²</span> / <span class="kbd">~</span>) et tape <code>stat unit</code>. Note quel poste (Game / Draw / GPU) est proche de Frame&nbsp;: c'est ton goulot.</li>
+              <li>Si GPU-bound&nbsp;: lance <span class="menu-path">ProfileGPU</span> (GPU Visualizer) et repère la passe la plus coûteuse (souvent Lumen, Shadows ou PostProcess).</li>
+              <li>Active le <span class="menu-path">View Mode<span class="arrow">▸</span>Optimization Viewmodes<span class="arrow">▸</span>Shader Complexity</span>&nbsp;: identifie les zones rouges (translucidité, feuillage).</li>
+              <li>Ouvre <span class="menu-path">Settings<span class="arrow">▸</span>Engine Scalability Settings</span> et baisse <em>Global Illumination</em> et <em>Shadows</em> d'un cran&nbsp;: observe le gain dans <code>stat unit</code>. Teste aussi <code>r.ScreenPercentage 75</code>.</li>
+              <li>Si Draw-bound&nbsp;: regarde <code>stat scenerendering</code> (nombre de draw calls)&nbsp;; convertis des objets répétés en Instanced Static Mesh / Foliage et recompare.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'optimise depuis des heures sans gain.</div>
+                <div class="pi-cause"><b>Cause</b>Tu agis sur le mauvais poste (tu réduis des polygones alors que tu es Draw-bound, ou l'inverse).</div>
+                <div class="pi-fix"><b>Correction</b>Commence par <code>stat unit</code> pour savoir si c'est CPU ou GPU, puis ProfileGPU pour la passe coupable.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Framerate au sol dans une scène pas si dense.</div>
+                <div class="pi-cause"><b>Cause</b>Lumen + Virtual Shadow Maps à pleine qualité sur une cible modeste, et/ou translucidité plein écran (overdraw).</div>
+                <div class="pi-fix"><b>Correction</b>Baisse la Scalability (GI, Shadows, Reflections), réduis la translucidité, envisage le baking.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des milliers d'objets identiques saturent le CPU (Draw élevé).</div>
+                <div class="pi-cause"><b>Cause</b>Chaque objet est un draw call séparé.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise Instanced/Hierarchical Static Mesh ou le système Foliage pour les regrouper.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>«&nbsp;J'ai tout mis en Nanite&nbsp;» mais ça ne va pas mieux.</div>
+                <div class="pi-cause"><b>Cause</b>Nanite mal employé (translucent, animé, petite scène) ou problème non géométrique (Lumen, textures).</div>
+                <div class="pi-fix"><b>Correction</b>Profile d'abord&nbsp;; réserve Nanite à l'opaque statique&nbsp;; traite séparément éclairage et textures.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Sur une scène existante, relève <code>stat unit</code> et conclus&nbsp;: CPU- ou GPU-bound&nbsp;?</li>
+                <li>Lance ProfileGPU et note les trois passes les plus chères.</li>
+                <li>Applique <b>un</b> changement ciblé (baisser un cran de Scalability OU instancier des objets répétés OU réduire la translucidité) et <b>re-mesure</b>&nbsp;: quantifie le gain en ms.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais dire si tu es CPU- ou GPU-bound et le justifier avec stat unit.</li>
+                  <li>Tu cites la passe GPU la plus chère grâce à ProfileGPU.</li>
+                  <li>Ton changement est ciblé et le gain mesuré (avant/après en ms), pas supposé.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Mesure d'abord</b>&nbsp;: <code>stat unit</code> dit CPU- ou GPU-bound&nbsp;; <code>ProfileGPU</code> dit quelle passe coûte.</li>
+                <li>Géométrie&nbsp;: Nanite pour l'opaque statique, LOD sinon&nbsp;; instancie (ISM/HISM/Foliage) pour écraser les draw calls.</li>
+                <li>Éclairage&nbsp;: Lumen et VSM sont chers&nbsp;; règle-les via la Scalability, limite les Movable, bake sur cibles faibles.</li>
+                <li>La <b>Scalability</b> et <code>r.ScreenPercentage</code> adaptent la qualité sans toucher au contenu.</li>
+                <li>Les <b>view modes</b> (Shader Complexity, Quad Overdraw) montrent visuellement les coûts.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>stat unit</b> — commande affichant la répartition Frame/Game/Draw/GPU pour situer le goulot.</p>
+              <p><b>GPU Visualizer (ProfileGPU)</b> — capture détaillant le temps de chaque passe GPU.</p>
+              <p><b>Scalability</b> — réglages de qualité par catégorie pour adapter le rendu au matériel sans changer le contenu.</p>
+              <p><b>Instanced Static Mesh (ISM/HISM)</b> — dessin de nombreuses copies d'un mesh en très peu de draw calls.</p>
+              <p><b>Shader Complexity</b> — mode de vue colorant la scène selon le coût pixel (vert→rouge).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation graphique</a>&nbsp;: tous les concepts (draw calls, LOD, compression, overdraw) en amont.</li>
+              <li><a href="../../cours/unity/u11-optimisation.html">U11 — Optimisation Unity</a>&nbsp;: l'équivalent côté Unity (Profiler, Frame Debugger), pour comparer.</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6</a> &amp; <a href="../../cours/unreal/e07-nanite.html">E7</a>&nbsp;: les deux gros postes (Lumen, géométrie) à arbitrer.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

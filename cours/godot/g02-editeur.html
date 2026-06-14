@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G2 — Anatomie de l'éditeur Godot · Atelier Game Art</title>
+  <meta name="description" content="L'éditeur de Godot 4.x : le modèle Scene + Node, l'arbre de scène, l'Inspector, le dock FileSystem, le viewport et la navigation.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Anatomie de l'éditeur</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G2 — Anatomie de l'éditeur Godot</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g01-installation.html">G1 — Installation</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre le modèle fondateur de Godot&nbsp;: <b>Node</b> + <b>Scene</b>.</li>
+                <li>Te repérer dans les principaux <b>docks</b> (Scene, Inspector, FileSystem) et le <b>viewport</b>.</li>
+                <li>Naviguer dans la vue 3D et placer/transformer des nodes.</li>
+                <li>Saisir l'idée des <b>scènes instanciées</b> (réutilisation), équivalent des prefabs.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Godot a une approche unique et très cohérente&nbsp;: <b>tout est un Node</b>, et on assemble des nodes en <b>scènes</b> qu'on imbrique. Une fois cette logique comprise, l'éditeur devient limpide. C'est différent du modèle GameObject+Components d'Unity ou Actor d'Unreal&nbsp;; comprendre la nuance dès le départ évite la confusion la plus fréquente des nouveaux venus.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le modèle Node + Scene</h3>
+            <p>Un <span class="term">Node</span> est une brique qui fait <em>une</em> chose&nbsp;: afficher un mesh (<code>MeshInstance3D</code>), émettre de la lumière (<code>DirectionalLight3D</code>), une caméra (<code>Camera3D</code>), un corps physique, du son, etc. Il existe des centaines de types de nodes spécialisés. On les organise en <b>arbre</b> (parent/enfant)&nbsp;: un node enfant hérite de la transformation de son parent.</p>
+            <p>Une <span class="term">Scene</span> (scène) est simplement un <b>arbre de nodes sauvegardé</b> dans un fichier (<code>.tscn</code>). Point clé&nbsp;: une scène peut être <b>instanciée</b> à l'intérieur d'une autre. Un «&nbsp;personnage&nbsp;» (scène avec mesh + collision + animation) peut être déposé 50 fois dans une scène «&nbsp;niveau&nbsp;». C'est l'équivalent des prefabs d'Unity, mais c'est ici le concept central&nbsp;: <b>scène = brique réutilisable</b>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Comparaison express</div>
+              <p>Unity&nbsp;: un GameObject + des Components. Unreal&nbsp;: un Actor + des Components. Godot&nbsp;: un <b>arbre de Nodes</b>, chaque node étant déjà spécialisé (pas de «&nbsp;composant&nbsp;» à ajouter — on choisit le bon type de node). La composition se fait par <b>imbrication de nodes et de scènes</b>.</p>
+            </div>
+
+            <h3>2. Les docks de l'éditeur</h3>
+            <ul>
+              <li><b>Viewport</b> (centre)&nbsp;: la vue d'édition. Bascule <b>2D / 3D / Script / AssetLib</b> via les boutons en haut au centre.</li>
+              <li><b>Scene</b> (dock haut-gauche)&nbsp;: l'arbre des nodes de la scène ouverte. On y ajoute des nodes (bouton <span class="kbd">+</span> ou <span class="kbd">Ctrl</span>+<span class="kbd">A</span>).</li>
+              <li><b>FileSystem</b> (dock bas-gauche)&nbsp;: les fichiers du projet (assets, scènes, scripts) rangés sous <code>res://</code>.</li>
+              <li><b>Inspector</b> (dock droit)&nbsp;: toutes les propriétés du node sélectionné (transform, mesh, matériau, paramètres…).</li>
+              <li><b>Bottom panel</b>&nbsp;: Output, Debugger, Audio, Animation… selon le contexte.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Disposition de l'éditeur Godot et exemple d'arbre de nodes">
+                <rect x="14" y="32" width="612" height="204" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <rect x="14" y="14" width="612" height="20" rx="6" fill="#4f9bd9" fill-opacity="0.16" stroke="#4f9bd9"/>
+                <text x="24" y="29" class="svg-text" font-size="11" font-weight="700">2D · 3D · Script · AssetLib</text>
+                <!-- Scene dock -->
+                <rect x="24" y="44" width="150" height="100" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="32" y="60" class="svg-text" font-size="10.5" font-weight="700">Scene (arbre)</text>
+                <text x="36" y="78" class="svg-dim" font-size="10">▸ Level (Node3D)</text>
+                <text x="46" y="94" class="svg-dim" font-size="10">• Camera3D</text>
+                <text x="46" y="108" class="svg-dim" font-size="10">• DirectionalLight3D</text>
+                <text x="46" y="122" class="svg-dim" font-size="10">• MeshInstance3D</text>
+                <text x="46" y="136" class="svg-dim" font-size="10">• [Player] (scène instanciée)</text>
+                <!-- FileSystem -->
+                <rect x="24" y="150" width="150" height="78" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="32" y="166" class="svg-text" font-size="10.5" font-weight="700">FileSystem</text>
+                <text x="36" y="184" class="svg-dim" font-size="10">res://</text>
+                <text x="46" y="198" class="svg-dim" font-size="10">scenes/ assets/ scripts/</text>
+                <!-- viewport -->
+                <rect x="184" y="44" width="270" height="184" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="319" y="138" text-anchor="middle" class="svg-text" font-size="13" font-weight="700">Viewport 3D</text>
+                <text x="319" y="158" text-anchor="middle" class="svg-dim" font-size="10">édition, gizmos, navigation</text>
+                <!-- inspector -->
+                <rect x="464" y="44" width="150" height="184" rx="6" fill="#0c1320" stroke="#2e425f"/>
+                <text x="472" y="60" class="svg-text" font-size="10.5" font-weight="700">Inspector</text>
+                <text x="476" y="80" class="svg-dim" font-size="10">Transform</text>
+                <text x="476" y="96" class="svg-dim" font-size="10">Mesh</text>
+                <text x="476" y="112" class="svg-dim" font-size="10">Material</text>
+                <text x="476" y="128" class="svg-dim" font-size="10">…propriétés du node</text>
+              </svg>
+              <figcaption>L'éditeur Godot&nbsp;: l'arbre <b>Scene</b> à gauche, le <b>viewport</b> au centre, l'<b>Inspector</b> à droite, le <b>FileSystem</b> en bas-gauche.</figcaption>
+            </figure>
+
+            <h3>3. Naviguer et transformer</h3>
+            <p>Dans le viewport 3D&nbsp;: <b>clic-molette</b> pour orbiter, <span class="kbd">Maj</span>+molette pour le panoramique, rouleau pour zoomer&nbsp;; le mode «&nbsp;survol&nbsp;» avec <b>clic droit + ZQSD/WASD</b> (comme un FPS). On transforme les nodes via les <b>gizmos</b> (déplacer/tourner/mettre à l'échelle) ou les valeurs dans l'Inspector (section Transform). <span class="kbd">F</span> recentre la vue sur le node sélectionné.</p>
+
+            <h3>4. Scènes instanciées (réutilisation)</h3>
+            <p>Pour réutiliser&nbsp;: on glisse une scène (.tscn) depuis le FileSystem dans l'arbre d'une autre scène → elle devient une <b>instance</b>. Modifier la scène source met à jour toutes ses instances (comme un prefab). On peut aussi cliquer droit sur un node ▸ <span class="menu-path">Save Branch as Scene</span> pour extraire une sous-partie réutilisable.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Nouvelle scène&nbsp;: dans le dock <span class="menu-path">Scene</span>, choisis un node racine <b>3D Scene</b> (crée un <code>Node3D</code>).</li>
+              <li>Ajoute des enfants (bouton <span class="kbd">+</span> / <span class="kbd">Ctrl</span>+<span class="kbd">A</span>)&nbsp;: <code>Camera3D</code>, <code>DirectionalLight3D</code>, et <code>MeshInstance3D</code> (assigne-lui un mesh primitif dans l'Inspector ▸ Mesh ▸ New BoxMesh).</li>
+              <li>Sélectionne le mesh, déplace-le avec le gizmo&nbsp;; observe ses valeurs dans l'Inspector ▸ Transform.</li>
+              <li>Sauvegarde la scène (<span class="kbd">Ctrl</span>+<span class="kbd">S</span>) dans <code>res://scenes/</code> sous un nom clair.</li>
+              <li>Crée une seconde scène «&nbsp;niveau&nbsp;», puis glisse ta première scène depuis le FileSystem dans son arbre&nbsp;: tu viens d'<b>instancier</b> une scène.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je cherche où « ajouter un composant » à mon objet.</div>
+                <div class="pi-cause"><b>Cause</b>Godot n'a pas de composants&nbsp;: on ajoute des <em>nodes</em> spécialisés en enfants.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute le bon type de node (MeshInstance3D, light, collision…) comme enfant.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Modifier un objet n'affecte pas ses copies (ou les affecte toutes).</div>
+                <div class="pi-cause"><b>Cause</b>Confusion entre instance d'une scène et nodes dupliqués localement.</div>
+                <div class="pi-fix"><b>Correction</b>Pour partager les modifs, utilise une <em>scène instanciée</em>&nbsp;; édite la scène source.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon node n'apparaît pas dans la vue.</div>
+                <div class="pi-cause"><b>Cause</b>Vue en mode 2D, node hors champ, ou visibilité désactivée.</div>
+                <div class="pi-fix"><b>Correction</b>Passe en mode 3D, sélectionne le node et appuie <span class="kbd">F</span> pour le cadrer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je ne retrouve plus une propriété dans l'Inspector.</div>
+                <div class="pi-cause"><b>Cause</b>Les propriétés dépendent du <em>type</em> de node sélectionné.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie quel node est sélectionné&nbsp;; les sections de l'Inspector changent en conséquence.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Construis une scène « Prop » (Node3D + MeshInstance3D + collision) et sauvegarde-la.</li>
+                <li>Crée une scène « Niveau » et instancie ta scène « Prop » trois fois à des positions différentes.</li>
+                <li>Modifie la scène « Prop » (change le mesh) et constate la mise à jour des trois instances.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu construis un arbre de nodes cohérent et le sauvegardes en .tscn.</li>
+                  <li>Tu sais instancier une scène et expliquer pourquoi modifier la source propage le changement.</li>
+                  <li>Tu navigues sans peine dans le viewport 3D.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Dans Godot, <b>tout est un Node</b> spécialisé&nbsp;; on les organise en <b>arbre</b>.</li>
+                <li>Une <b>Scene</b> = un arbre de nodes sauvegardé&nbsp;; elle s'<b>instancie</b> (≈ prefab) pour être réutilisée.</li>
+                <li>Docks clés&nbsp;: <b>Scene</b> (arbre), <b>Inspector</b> (propriétés), <b>FileSystem</b> (<code>res://</code>), viewport au centre.</li>
+                <li>Pas de «&nbsp;composant&nbsp;» à ajouter&nbsp;: on choisit le bon <b>type de node</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Node</b> — brique spécialisée de Godot (mesh, lumière, caméra…), organisée en arbre.</p>
+              <p><b>Scene (.tscn)</b> — arbre de nodes sauvegardé&nbsp;; réutilisable par instanciation.</p>
+              <p><b>Instance de scène</b> — copie d'une scène intégrée dans une autre, mise à jour depuis la source (≈ prefab).</p>
+              <p><b>res://</b> — racine du système de fichiers du projet Godot.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/godot/g04-projet.html">G4 — Créer &amp; configurer un projet</a>&nbsp;: organiser <code>res://</code>.</li>
+              <li><a href="../../cours/unity/u02-editeur.html">U2</a> / <a href="../../cours/unreal/e02-editeur.html">E2</a>&nbsp;: les éditeurs Unity/Unreal, pour comparer les modèles.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

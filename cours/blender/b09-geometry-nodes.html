@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B9 — Geometry Nodes (procédural) · Atelier Game Art</title>
+  <meta name="description" content="Geometry Nodes dans Blender : modélisation et scatter procéduraux par nœuds — bases, instances, distribution de points, champs et paramètres exposés.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 52</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Geometry Nodes</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>B9 — Geometry Nodes (procédural)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b03-modelisation.html">B3</a>, <a href="../../cours/blender/b04-modifiers.html">B4</a> et <a href="../../cours/blender/b07-shading.html">B7</a> (logique des nœuds).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre ce que sont les <b>Geometry Nodes</b> et le concept de <b>champ (field)</b>.</li>
+                <li>Créer un réseau de base&nbsp;: générer, transformer et combiner de la géométrie.</li>
+                <li>Distribuer des <b>instances</b> sur une surface (scatter de cailloux, végétation).</li>
+                <li>Exposer des <b>paramètres</b> pour rendre ton outil réglable et réutilisable.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les <span class="term">Geometry Nodes</span> sont le système de modélisation <b>procédurale</b> de Blender (renvoi <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a> sur procédural vs texture-based)&nbsp;: au lieu de modéliser à la main, on décrit la géométrie par un <b>réseau de nœuds</b> non destructif. Pour le game art, c'est précieux&nbsp;: éparpiller de la végétation/des débris sur un décor, générer des variations, construire des assets paramétriques (clôtures, escaliers, modules). Un seul réseau bien fait remplace des heures de placement manuel.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un modifier qui est un graphe</h3>
+            <p>Geometry Nodes est en réalité un <b>modifier</b> (renvoi <a href="../../cours/blender/b04-modifiers.html">B4</a>) particulier&nbsp;: il prend la géométrie de l'objet en entrée (<em>Group Input</em>) et renvoie une géométrie en sortie (<em>Group Output</em>), via un réseau qu'on édite dans le <b>Geometry Node Editor</b> (Workspace <em>Geometry Nodes</em>). Comme tout modifier, c'est non destructif et réglable à tout moment.</p>
+
+            <h3>2. La notion de champ (field)</h3>
+            <p>Le concept déroutant mais puissant&nbsp;: un <span class="gloss">champ</span> (<em>field</em>) est une valeur <b>calculée par élément</b> (par point, par face…), pas une valeur unique. Par exemple «&nbsp;la normale&nbsp;» ou «&nbsp;la position&nbsp;» est un champ&nbsp;: chaque point a la sienne. Les entrées affichées comme des <b>losanges</b> (et non des ronds) attendent un champ. On les combine avec des nœuds comme <em>Random Value</em>, <em>Math</em>, <em>Compare</em> pour piloter la distribution, l'échelle, la rotation par élément. C'est ce qui rend les variations possibles (chaque caillou tourné/dimensionné différemment).</p>
+
+            <h3>3. Les nœuds clés pour le scatter</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Nœud</th><th>Rôle</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Distribute Points on Faces</b></td><td>Sème des points (aléatoires ou selon une densité) sur la surface d'un mesh.</td></tr>
+                  <tr><td><b>Instance on Points</b></td><td>Place une copie (instance) d'un objet/collection sur chaque point généré.</td></tr>
+                  <tr><td><b>Random Value</b></td><td>Donne une valeur aléatoire par instance (pour varier échelle/rotation).</td></tr>
+                  <tr><td><b>Rotate / Scale Instances</b></td><td>Applique rotation/échelle (souvent pilotées par un champ aléatoire).</td></tr>
+                  <tr><td><b>Set Position / Transform Geometry</b></td><td>Déplace/transforme la géométrie ou les points.</td></tr>
+                  <tr><td><b>Realize Instances</b></td><td>Convertit les instances en géométrie réelle (utile avant export — voir pièges).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Les <b>instances</b> sont essentielles à la performance&nbsp;: comme l'<span class="gloss">instancing</span> en jeu (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>), elles affichent des milliers de copies à coût réduit, tant qu'on ne les «&nbsp;réalise&nbsp;» pas inutilement.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Réseau Geometry Nodes : distribuer des points puis instancier des cailloux">
+                <defs><marker id="b9ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="14" y="80" width="96" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="62" y="104" text-anchor="middle" font-weight="700">Group Input</text>
+                  <rect x="130" y="80" width="130" height="40" rx="6" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8"/><text x="195" y="98" text-anchor="middle" font-weight="700">Distribute Points</text><text x="195" y="113" text-anchor="middle" class="svg-dim">on Faces</text>
+                  <rect x="282" y="80" width="130" height="40" rx="6" fill="#c084fc" fill-opacity="0.14" stroke="#c084fc"/><text x="347" y="98" text-anchor="middle" font-weight="700">Instance on Points</text><text x="347" y="113" text-anchor="middle" class="svg-dim">caillou</text>
+                  <rect x="434" y="80" width="120" height="40" rx="6" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="494" y="98" text-anchor="middle" font-weight="700">Rotate/Scale</text><text x="494" y="113" text-anchor="middle" class="svg-dim">+ Random</text>
+                  <rect x="566" y="80" width="60" height="40" rx="6" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="596" y="104" text-anchor="middle" font-weight="700">Output</text>
+                </g>
+                <g stroke="#e0a14b" stroke-width="1.7" marker-end="url(#b9ar)">
+                  <line x1="110" y1="100" x2="128" y2="100"/><line x1="260" y1="100" x2="280" y2="100"/><line x1="412" y1="100" x2="432" y2="100"/><line x1="554" y1="100" x2="564" y2="100"/>
+                </g>
+                <text x="320" y="160" text-anchor="middle" class="svg-dim" font-size="11">Sème des points → pose un caillou sur chacun → varie rotation/échelle par instance.</text>
+                <text x="320" y="180" text-anchor="middle" class="svg-dim" font-size="11">Tout reste non destructif et réglable.</text>
+              </svg>
+              <figcaption>Un scatter type en quelques nœuds&nbsp;: distribuer, instancier, varier. Le même réseau marche sur n'importe quelle surface.</figcaption>
+            </figure>
+
+            <h3>4. Exposer des paramètres</h3>
+            <p>Comme un Master Material expose des paramètres (renvoi <a href="../../cours/unreal/e05-material-editor.html">E5</a>), un réseau Geometry Nodes peut exposer des <b>entrées</b> (densité, échelle min/max, seed) dans le panneau du modifier. On les crée dans le <em>Group Input</em> / l'onglet <em>Group</em>. Ton réseau devient alors un <b>outil réutilisable</b> que tu (ou un collègue) règle sans toucher au graphe — on peut même le sauver en asset dans la bibliothèque.</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: éparpiller des cailloux</h2>
+            <ol>
+              <li>Crée un plan (le sol). <span class="menu-path">Modifier Properties<span class="arrow">▸</span>Add Modifier<span class="arrow">▸</span>Geometry Nodes</span> ▸ <em>New</em>. Passe au Workspace <em>Geometry Nodes</em>.</li>
+              <li>Ajoute <span class="menu-path">Distribute Points on Faces</span> entre Group Input et Output, branche la géométrie&nbsp;; règle la <em>Density</em>.</li>
+              <li>Ajoute <span class="menu-path">Instance on Points</span> ; dans son entrée <em>Instance</em>, branche un <em>Object Info</em> pointant vers ton mesh de caillou (ou une <em>Collection Info</em> pour varier les modèles).</li>
+              <li>Ajoute <span class="menu-path">Rotate Instances</span> et <span class="menu-path">Scale Instances</span>, pilotés par un <em>Random Value</em> (losange) pour varier chaque caillou.</li>
+              <li>Expose <em>Density</em> et <em>Scale</em> en paramètres du modifier (Group Input) pour les régler depuis le panneau.</li>
+              <li>Pour exporter vers un moteur&nbsp;: soit tu instancies aussi côté moteur (mieux), soit tu ajoutes <em>Realize Instances</em> + applique le modifier pour obtenir un vrai mesh (attention au poids).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une entrée refuse ma valeur (elle est en losange).</div>
+                <div class="pi-cause"><b>Cause</b>L'entrée attend un <em>champ</em> (par élément), pas une valeur unique.</div>
+                <div class="pi-fix"><b>Correction</b>Branche un nœud qui produit un champ (Random Value, Position, Normal, Math…).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon export en jeu est énorme / les cailloux disparaissent.</div>
+                <div class="pi-cause"><b>Cause</b>Les instances ne sont pas «&nbsp;réalisées&nbsp;» (rien à exporter) ou le sont toutes (poids démesuré).</div>
+                <div class="pi-fix"><b>Correction</b>Pour l'export, soit <em>Realize Instances</em> + Apply (en surveillant les tris), soit instancie côté moteur (Foliage/ISM, renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tous les cailloux sont identiques et alignés, ça fait répétitif.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de variation aléatoire (rotation/échelle/modèle).</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute Random Value sur la rotation/échelle&nbsp;; utilise une Collection de plusieurs modèles avec un index aléatoire.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La distribution change à chaque fois que je touche un réglage.</div>
+                <div class="pi-cause"><b>Cause</b>Le <em>Seed</em> n'est pas fixé.</div>
+                <div class="pi-fix"><b>Correction</b>Expose et fige un <em>Seed</em> pour une distribution reproductible.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un scatter de cailloux/herbes sur un sol avec densité, rotation et échelle aléatoires.</li>
+                <li>Expose au moins deux paramètres (densité, échelle) réglables depuis le modifier.</li>
+                <li>Bonus&nbsp;: distribue plusieurs modèles via une Collection (variété).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le réseau distribue et varie les instances de façon convaincante (pas répétitif).</li>
+                  <li>Tu règles le résultat via des paramètres exposés sans éditer le graphe.</li>
+                  <li>Tu sais expliquer ce qu'est un champ et comment exporter proprement.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Geometry Nodes = modélisation <b>procédurale non destructive</b> par réseau (un modifier-graphe).</li>
+                <li>Un <b>champ (field)</b> = une valeur par élément (entrées en losange)&nbsp;; clé des variations.</li>
+                <li>Scatter type&nbsp;: <b>Distribute Points → Instance on Points → Rotate/Scale (Random)</b>.</li>
+                <li>Expose des <b>paramètres</b> pour un outil réutilisable&nbsp;; gère les instances avec soin à l'export.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Geometry Nodes</b> — système de modélisation procédurale par nœuds de Blender (un modifier).</p>
+              <p><b>Champ (field)</b> — valeur calculée par élément (point, face) plutôt qu'unique.</p>
+              <p><b>Instance (Geometry Nodes)</b> — copie légère d'un objet posée sur des points, peu coûteuse.</p>
+              <p><b>Realize Instances</b> — conversion des instances en géométrie réelle (avant export si nécessaire).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a>&nbsp;: procédural vs texture-based.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: l'instancing et son intérêt en jeu.</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10</a> / <a href="../../cours/unity/u11-optimisation.html">U11</a>&nbsp;: instancier la végétation côté moteur.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

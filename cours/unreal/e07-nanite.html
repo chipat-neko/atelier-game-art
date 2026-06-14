@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E7 — Nanite (géométrie virtualisée) · Atelier Game Art</title>
+  <meta name="description" content="Nanite dans Unreal Engine 5.7 : ce que c'est, comment fonctionne la géométrie virtualisée, quand l'activer et ses limites réelles.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Nanite</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E7 — Nanite (géométrie virtualisée)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a> (les LOD) et <a href="../../cours/unreal/e04-import-assets.html">E4 — Import d'assets</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est la <b>géométrie virtualisée</b> et le problème qu'elle résout.</li>
+                <li>Comprendre <em>comment</em> Nanite n'affiche que le détail réellement visible (clusters, LOD continu).</li>
+                <li>Activer Nanite à l'import ou après coup, et le vérifier dans le viewport.</li>
+                <li>Décider <b>quand</b> Nanite est pertinent — et reconnaître ses <b>limites</b> pour ne pas l'utiliser à tort.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Depuis toujours, le game art vit sous une contrainte&nbsp;: le <b>budget de polygones</b> (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>). On sculpte un high-poly magnifique, puis on le réduit en low-poly et on cuit ses détails dans une normal map (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>), et on fabrique des <span class="gloss">LOD</span> à la main. Tout ce travail existe parce que le GPU ne peut pas afficher des centaines de millions de triangles.</p>
+            <p><span class="gloss">Nanite</span> remet en cause cette contrainte pour la géométrie statique&nbsp;: on peut importer directement des meshes extrêmement denses (scans, sculpts, <a href="../../cours/logiciels/l05-bibliotheques-assets.html">Megascans</a>) sans LOD manuels ni budget de tris classique. Mais Nanite n'est <b>pas magique</b> et a des limites précises&nbsp;: l'utiliser à tort dégrade les performances. Comprendre où il brille et où il ne faut pas l'employer fait partie du métier de technical artist moderne.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le problème&nbsp;: trop de triangles pour trop peu de pixels</h3>
+            <p>Quand un objet est loin, il ne couvre que quelques pixels à l'écran&nbsp;: afficher ses millions de triangles est un pur gaspillage (plusieurs triangles tombent dans le même pixel). À l'inverse, en gros plan, on voudrait tout le détail. Les <b>LOD classiques</b> répondent grossièrement à ce problème en basculant entre quelques versions pré-faites du mesh selon la distance — d'où le travail manuel et le «&nbsp;popping&nbsp;» visible lors des bascules.</p>
+
+            <h3>2. La solution&nbsp;: la géométrie virtualisée</h3>
+            <p><span class="term">Nanite</span> découpe chaque mesh en petits paquets de triangles appelés <span class="term">clusters</span>. À chaque image, le moteur ne charge et ne dessine que les clusters réellement <b>visibles</b>, à un niveau de détail choisi pour qu'un triangle fasse environ <b>la taille d'un pixel</b>. C'est un <b>LOD continu et automatique</b>&nbsp;: pas de bascule brutale entre deux versions, mais un ajustement fin et permanent. La géométrie est <em>streamée</em> depuis le disque selon le besoin, et rendue par un pipeline dédié (à base de <em>visibility buffer</em>) bien plus efficace que le rendu classique pour ces densités.</p>
+            <p>Résultat&nbsp;: afficher un mesh de 10&nbsp;millions de triangles coûte sensiblement le même prix que d'en afficher beaucoup moins, car Nanite n'en traite que ce que l'écran peut montrer.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="Nanite : un mesh dense vu de près est rendu finement, vu de loin ses clusters sont automatiquement simplifiés à la taille du pixel">
+                <!-- camera -->
+                <path d="M40 125 L70 105 L70 145 Z" fill="#b48cff"/>
+                <text x="55" y="170" text-anchor="middle" class="svg-dim" font-size="11">caméra</text>
+                <!-- proche : dense -->
+                <g transform="translate(150,60)">
+                  <circle cx="60" cy="65" r="58" fill="none" stroke="#5ad19a" stroke-width="1.4"/>
+                  <g stroke="#5ad19a" stroke-width="0.6" opacity="0.8">
+                    <path d="M20 30 L40 20 60 32 80 18 100 30M10 55 L35 45 60 58 85 44 110 56M20 95 L42 84 64 96 86 82 105 94"/>
+                    <path d="M30 10 L26 120M60 6 L60 124M90 12 L94 118"/>
+                  </g>
+                  <text x="60" y="140" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">proche → clusters fins</text>
+                </g>
+                <!-- loin : grossier -->
+                <g transform="translate(430,80)">
+                  <circle cx="45" cy="45" r="40" fill="none" stroke="#f2b441" stroke-width="1.4"/>
+                  <g stroke="#f2b441" stroke-width="0.9" opacity="0.85">
+                    <path d="M12 40 L45 18 78 40 45 75 Z"/><path d="M45 18 L45 75M12 40 L78 40"/>
+                  </g>
+                  <text x="45" y="105" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">loin → clusters fusionnés</text>
+                </g>
+                <line x1="70" y1="125" x2="150" y2="125" stroke="#717c8c" stroke-dasharray="4 4"/>
+                <line x1="270" y1="120" x2="430" y2="120" stroke="#717c8c" stroke-dasharray="4 4"/>
+                <text x="320" y="225" text-anchor="middle" class="svg-dim" font-size="11">Même mesh, même asset&nbsp;: Nanite ajuste en continu la densité à ce que l'écran montre (≈ 1 triangle/pixel).</text>
+              </svg>
+              <figcaption>La géométrie virtualisée&nbsp;: pas de versions LOD à fabriquer, le détail s'adapte tout seul, sans «&nbsp;popping&nbsp;».</figcaption>
+            </figure>
+
+            <h3>3. Activer Nanite</h3>
+            <ul>
+              <li><b>À l'import</b>&nbsp;: cocher <span class="menu-path">Build Nanite</span> dans les options FBX (renvoi <a href="../../cours/unreal/e04-import-assets.html">E4</a>).</li>
+              <li><b>Après coup</b>&nbsp;: clic droit sur le Static Mesh dans le Content Browser ▸ <span class="menu-path">Nanite<span class="arrow">▸</span>Enable</span> (ou via l'éditeur de Static Mesh, section Nanite Settings).</li>
+              <li><b>Vérifier</b>&nbsp;: dans le viewport, menu des modes de vue ▸ <span class="menu-path">Nanite Visualization<span class="arrow">▸</span>Clusters / Triangles / Overview</span>. On voit alors la densité réellement rendue.</li>
+            </ul>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Nanite gère la géométrie, pas les textures</div>
+              <p>Erreur fréquente&nbsp;: croire que Nanite résout aussi le coût des textures. Non&nbsp;: il s'occupe uniquement des <b>triangles</b>. Pour les textures, ce sont la compression, les mipmaps et le <span class="gloss">Virtual Texture</span> qui jouent (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>, <a href="../../cours/unreal/e04-import-assets.html">E4</a>).</p>
+            </div>
+
+            <h3>4. Les bénéfices concrets</h3>
+            <ul>
+              <li>Importer des <b>scans</b> et <b>Megascans</b> haute densité directement, sans retopo ni bake pour le décor statique.</li>
+              <li>Oublier la fabrication manuelle de LOD pour les meshes opaques statiques.</li>
+              <li>Des ombres nettes et cohérentes grâce aux <a href="../../cours/unreal/e06-eclairage.html">Virtual Shadow Maps</a>, conçues main dans la main avec Nanite.</li>
+              <li>Moins de «&nbsp;popping&nbsp;» qu'avec des LOD discrets.</li>
+            </ul>
+
+            <h3>5. Les limites (à connaître absolument)</h3>
+            <p>Nanite est avant tout pensé pour la géométrie <b>opaque et statique</b>. Ses zones de prudence&nbsp;:</p>
+            <ul>
+              <li><b>Animation / skeletal&nbsp;:</b> historiquement, Nanite ne gérait pas la géométrie déformée par un squelette&nbsp;; le support s'élargit au fil des versions d'UE&nbsp;5, mais reste à manier avec précaution (un personnage animé n'est pas un cas «&nbsp;par défaut&nbsp;»).</li>
+              <li><b>Matériaux Translucent&nbsp;:</b> Nanite est optimal pour l'opaque et le masked&nbsp;; la translucidité a un chemin de rendu différent et coûteux.</li>
+              <li><b>World Position Offset (vent, vagues)&nbsp;:</b> possible mais avec un surcoût&nbsp;; à utiliser en connaissance de cause.</li>
+              <li><b>Petites scènes / mobile&nbsp;:</b> sur peu de géométrie ou du matériel modeste, Nanite peut coûter <em>plus</em> qu'il ne rapporte (surcoût fixe, support limité selon plateforme).</li>
+              <li><b>Mémoire/disque&nbsp;:</b> les meshes Nanite occupent plus de place (données de clusters).</li>
+              <li><b>Collision&nbsp;:</b> gérée séparément (la collision n'utilise pas la densité Nanite&nbsp;; renvoi <a href="../../cours/unreal/e04-import-assets.html">E4</a>).</li>
+            </ul>
+
+            <h3>6. Nanite ou LOD manuels&nbsp;?</h3>
+            <p>La règle pratique&nbsp;: <b>opaque + statique + dense</b> → Nanite. <b>Translucent, animé, plateforme sans Nanite, ou asset très simple</b> → LOD classiques (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a> et <a href="../../cours/unreal/e10-optimisation.html">E10</a>). Les deux approches coexistent dans un même projet.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Arbre de décision Nanite vs LOD manuels">
+                <g class="svg-text" font-size="12">
+                  <rect x="220" y="14" width="200" height="40" rx="9" class="svg-surface" stroke="#313c4c"/>
+                  <text x="320" y="39" text-anchor="middle" font-weight="700">Mesh opaque ET statique&nbsp;?</text>
+                  <rect x="40" y="100" width="240" height="56" rx="9" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/>
+                  <text x="160" y="124" text-anchor="middle" font-weight="700">Oui → Nanite</text>
+                  <text x="160" y="143" text-anchor="middle" class="svg-dim" font-size="11">décor, scans, hard-surface dense</text>
+                  <rect x="360" y="100" width="240" height="56" rx="9" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                  <text x="480" y="124" text-anchor="middle" font-weight="700">Non → LOD manuels</text>
+                  <text x="480" y="143" text-anchor="middle" class="svg-dim" font-size="11">animé, translucent, mobile, simple</text>
+                </g>
+                <line x1="280" y1="54" x2="160" y2="98" stroke="#5ad19a" stroke-width="1.8"/>
+                <line x1="360" y1="54" x2="480" y2="98" stroke="#f2b441" stroke-width="1.8"/>
+              </svg>
+              <figcaption>Un réflexe simple pour trancher au cas par cas, sans dogme.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Importe (ou prends) un mesh très dense, par exemple un rocher scanné depuis <a href="../../cours/logiciels/l05-bibliotheques-assets.html">Fab/Quixel</a>. Sans Nanite, place-le et regarde le coût géométrique.</li>
+              <li>Clic droit sur l'asset ▸ <span class="menu-path">Nanite<span class="arrow">▸</span>Enable</span> (ou ouvre l'éditeur de Static Mesh et active les Nanite Settings). Sauvegarde.</li>
+              <li>Dans le viewport, active <span class="menu-path">View Mode<span class="arrow">▸</span>Nanite Visualization<span class="arrow">▸</span>Triangles</span>. Approche et éloigne la caméra&nbsp;: observe la densité de triangles rendus monter en gros plan et fondre à distance, sans saccade de bascule.</li>
+              <li>Duplique le rocher des dizaines de fois pour remplir la scène. Compare le coût GPU avec et sans Nanite via <span class="menu-path">ProfileGPU</span> (renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>).</li>
+              <li>Ajoute la collision si l'objet doit être solide (elle est gérée à part de Nanite).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai tout passé en Nanite et certaines choses rament ou s'affichent mal.</div>
+                <div class="pi-cause"><b>Cause</b>Nanite appliqué à des cas non adaptés&nbsp;: matériaux Translucent, petits objets, mobile, géométrie animée.</div>
+                <div class="pi-fix"><b>Correction</b>Réserve Nanite à l'opaque statique dense&nbsp;; garde des LOD classiques pour le reste.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes textures sont toujours floues / lourdes malgré Nanite.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion&nbsp;: Nanite ne gère que la géométrie, pas les textures.</div>
+                <div class="pi-fix"><b>Correction</b>Optimise les textures à part&nbsp;: compression, mipmaps, Virtual Textures (renvoi <a href="../../cours/unreal/e04-import-assets.html">E4</a>, <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon personnage Nanite se déforme mal ou n'en profite pas.</div>
+                <div class="pi-cause"><b>Cause</b>La géométrie animée par squelette n'est pas le cas «&nbsp;par défaut&nbsp;» de Nanite.</div>
+                <div class="pi-fix"><b>Correction</b>Pour les personnages, reste prudent&nbsp;: low-poly skinné + normal map + LOD restent la valeur sûre.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'objet Nanite n'a pas de collision (on passe au travers).</div>
+                <div class="pi-cause"><b>Cause</b>La collision est indépendante de la représentation Nanite et n'a pas été générée.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute une collision simple (ou complexe) dans l'éditeur de Static Mesh.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Prends un mesh dense (rocher/statue scannée). Mesure son coût GPU sans Nanite, puis active Nanite et mesure à nouveau (ProfileGPU / stat).</li>
+                <li>Utilise la Nanite Visualization (Triangles) et décris ce qui se passe quand tu varies la distance.</li>
+                <li>Liste, pour TON projet, trois assets qui devraient être Nanite et trois qui ne devraient pas l'être, avec la raison.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu constates un coût stable malgré une densité énorme, et tu l'expliques par le LOD continu.</li>
+                  <li>Tu sais citer au moins trois limites de Nanite.</li>
+                  <li>Ton classement Nanite / non-Nanite est justifié (opaque/statique vs animé/translucent/mobile).</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Nanite = <b>géométrie virtualisée</b>&nbsp;: il n'affiche que les <b>clusters visibles</b>, à ≈ 1 triangle/pixel, en LOD continu automatique.</li>
+                <li>Bénéfices&nbsp;: scans/sculpts importés directs, plus de LOD manuels, ombres VSM cohérentes, pas de popping (pour l'opaque statique).</li>
+                <li>Limites&nbsp;: animé/skeletal délicat, Translucent coûteux, mobile/petites scènes peu rentables, mémoire accrue, collision à part.</li>
+                <li>Nanite gère la <b>géométrie</b>, jamais les <b>textures</b>.</li>
+                <li>Règle&nbsp;: opaque + statique + dense → Nanite&nbsp;; sinon → LOD classiques.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Géométrie virtualisée</b> — technique n'affichant que le détail géométrique réellement visible à l'écran.</p>
+              <p><b>Cluster</b> — petit paquet de triangles, unité de base que Nanite charge et simplifie indépendamment.</p>
+              <p><b>LOD continu</b> — ajustement progressif et automatique de la densité, sans bascule visible entre versions.</p>
+              <p><b>Visibility buffer</b> — pipeline de rendu spécifique utilisé par Nanite pour traiter efficacement de très fortes densités.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation graphique</a>&nbsp;: les LOD classiques et le budget de tris que Nanite vient bousculer.</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage (Lumen)</a>&nbsp;: pourquoi Nanite et les Virtual Shadow Maps fonctionnent ensemble.</li>
+              <li><a href="../../cours/unreal/e10-optimisation.html">E10 — Optimisation Unreal</a>&nbsp;: mesurer Nanite et arbitrer avec les LOD.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glossaire · Atelier Game Art</title>
+  <meta name="description" content="Glossaire global des termes de game art : PBR, UV, normales, Lumen, Nanite, draw calls et bien plus.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <article class="content">
+        <nav class="breadcrumb"><a href="index.html">Accueil</a><span class="sep">/</span><span>Glossaire</span></nav>
+        <h1>Glossaire</h1>
+        <p style="color:var(--text-dim);max-width:70ch">Tous les termes techniques du cours, définis simplement. Utilise le champ de recherche ci-dessous ou les lettres pour naviguer. Chaque définition renvoie aux concepts liés.</p>
+
+        <div class="gloss-controls">
+          <input type="text" id="gloss-search" placeholder="Filtrer les termes (ex. roughness, UV, Nanite)…" autocomplete="off" spellcheck="false">
+          <span class="pill" id="gloss-count">— termes</span>
+        </div>
+        <nav class="alpha-nav" id="alpha-nav" aria-label="Navigation alphabétique"></nav>
+
+        <div id="gloss-body"></div>
+        <p id="gloss-noresult" class="search-empty" style="display:none">Aucun terme ne correspond à ta recherche.</p>
+      </article>
+    </main>
+  </div>
+
+  <script src="js/site-data.js"></script>
+  <script src="js/glossaire-data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    (function () {
+      function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");}
+      function slug(s){return norm(s).replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");}
+      var data = (window.GLOSSAIRE||[]).slice().sort(function(a,b){return norm(a.terme).localeCompare(norm(b.terme),"fr");});
+      document.getElementById("gloss-count").textContent = data.length + " termes";
+
+      // Groupes par lettre
+      var groups = {};
+      data.forEach(function(g){
+        var L = norm(g.terme.charAt(0)).toUpperCase();
+        if(!/[A-Z]/.test(L)) L = "#";
+        (groups[L]=groups[L]||[]).push(g);
+      });
+      var letters = Object.keys(groups).sort();
+
+      // Nav alpha
+      var alpha = document.getElementById("alpha-nav");
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function(L){
+        var a=document.createElement("a"); a.textContent=L;
+        if(groups[L]){ a.href="#g-letter-"+L; } else { a.style.opacity=.3; a.style.pointerEvents="none"; }
+        alpha.appendChild(a);
+      });
+
+      // Corps
+      var body = document.getElementById("gloss-body");
+      letters.forEach(function(L){
+        var sec=document.createElement("div"); sec.className="gloss-group";
+        var h=document.createElement("h2"); h.id="g-letter-"+L; h.textContent=L; sec.appendChild(h);
+        var dl=document.createElement("dl");
+        groups[L].forEach(function(g){
+          var entry=document.createElement("div"); entry.className="gloss-entry"; entry.id="g-"+slug(g.terme);
+          entry.dataset.search = norm(g.terme+" "+(g.alias||[]).join(" ")+" "+g.def);
+          var aliasHtml = (g.alias&&g.alias.length)? ' <span class="gloss-tag">'+g.alias.join(" · ")+'</span>' : '';
+          var srcHtml = '';
+          if (g.src && window.SITE_DATA && window.SITE_DATA.byId) {
+            var Lsrc = window.SITE_DATA.byId(g.src);
+            if (Lsrc) srcHtml = '<a class="gloss-src" href="'+Lsrc.href+'">→ Introduit dans : '+Lsrc.titre+'</a>';
+          }
+          entry.innerHTML = '<dt>'+g.terme+aliasHtml+'</dt><dd>'+g.def+srcHtml+'</dd>';
+          dl.appendChild(entry);
+        });
+        sec.appendChild(dl); body.appendChild(sec);
+      });
+
+      // Filtre
+      var search=document.getElementById("gloss-search");
+      var nores=document.getElementById("gloss-noresult");
+      search.addEventListener("input", function(){
+        var q=norm(search.value.trim()); var shown=0;
+        document.querySelectorAll(".gloss-entry").forEach(function(e){
+          var ok = !q || e.dataset.search.indexOf(q)!==-1;
+          e.classList.toggle("hidden", !ok); if(ok) shown++;
+        });
+        document.querySelectorAll(".gloss-group").forEach(function(grp){
+          var any = grp.querySelectorAll(".gloss-entry:not(.hidden)").length>0;
+          grp.style.display = any?"":"none";
+        });
+        nores.style.display = shown? "none":"block";
+        document.getElementById("gloss-count").textContent = shown + (q?" trouvés":" termes");
+      });
+    })();
+  </script>
+</body>
+</html>

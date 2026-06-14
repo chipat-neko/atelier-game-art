@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G10 — Plugins & AssetLib dans Godot · Atelier Game Art</title>
+  <meta name="description" content="Étendre Godot : l'Asset Library (AssetLib) intégrée, le dossier addons, le fichier plugin.cfg, et activer/désactiver des plugins d'éditeur.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 63</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Plugins &amp; AssetLib</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G10 — Plugins &amp; AssetLib</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g04-projet.html">G4 — Créer un projet</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser l'<b>Asset Library (AssetLib)</b> intégrée pour trouver plugins et assets.</li>
+                <li>Comprendre le dossier <code>addons/</code> et le fichier <code>plugin.cfg</code>.</li>
+                <li>Activer/désactiver un <b>plugin d'éditeur</b> dans les Project Settings.</li>
+                <li>Lire les licences avant d'utiliser un asset (rappel <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Godot est extensible via des <b>plugins</b> écrits par la communauté (outils d'éditeur, importeurs, générateurs…) et dispose d'une boutique intégrée et gratuite, l'<span class="term">AssetLib</span>. Savoir installer et activer un plugin proprement t'ouvre un écosystème entier — souvent gratuit et open source — sans quitter l'éditeur.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'Asset Library (AssetLib)</h3>
+            <p>Accessible depuis l'onglet <span class="term">AssetLib</span> en haut de l'éditeur (à côté de 2D/3D/Script), ou depuis le Project Manager. C'est un dépôt communautaire d'<b>add-ons, outils et démos</b>, majoritairement <b>gratuits et open source</b>. On cherche, on télécharge, et Godot installe le contenu dans le projet (généralement sous <code>addons/</code>). C'est l'équivalent — en plus léger et libre — de l'Asset Store d'Unity (renvoi <a href="../../cours/unity/u10-plugins-packages.html">U10</a>) ou de Fab côté Unreal (renvoi <a href="../../cours/unreal/e09-plugins.html">E9</a>).</p>
+
+            <h3>2. Le dossier addons et plugin.cfg</h3>
+            <p>Un plugin d'éditeur vit dans <code>res://addons/&lt;nom_du_plugin&gt;/</code> et contient un fichier descripteur <span class="term">plugin.cfg</span> (nom, auteur, version, script principal). Installer un plugin tiers manuellement = copier son dossier dans <code>addons/</code>. C'est transparent et versionnable (le plugin fait partie de ton projet).</p>
+
+            <h3>3. Activer / désactiver un plugin</h3>
+            <p>On gère les plugins dans <span class="menu-path">Project<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Plugins</span>&nbsp;: la liste des plugins présents dans <code>addons/</code>, chacun avec une case <em>Enable</em>. Activer un plugin charge son outil dans l'éditeur (parfois un nouveau dock, un menu, un type de node). Pas de redémarrage nécessaire dans la plupart des cas.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Sources d'extension Godot : AssetLib et plugin tiers vers addons/ puis activation">
+                <defs><marker id="g10ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
+                <g class="svg-text" font-size="11.5">
+                  <rect x="20" y="30" width="170" height="44" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="105" y="50" text-anchor="middle" font-weight="700">AssetLib (intégrée)</text><text x="105" y="66" text-anchor="middle" class="svg-dim" font-size="10">gratuit, open source</text>
+                  <rect x="20" y="100" width="170" height="44" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="105" y="120" text-anchor="middle" font-weight="700">Plugin tiers (.zip)</text><text x="105" y="136" text-anchor="middle" class="svg-dim" font-size="10">copié manuellement</text>
+                  <rect x="250" y="65" width="160" height="50" rx="8" class="svg-surface" stroke="#313c4c"/><text x="330" y="86" text-anchor="middle" font-weight="700">res://addons/</text><text x="330" y="104" text-anchor="middle" class="svg-dim" font-size="10">plugin.cfg</text>
+                  <rect x="460" y="65" width="160" height="50" rx="8" fill="#4f9bd9" fill-opacity="0.16" stroke="#4f9bd9" stroke-width="1.6"/><text x="540" y="86" text-anchor="middle" font-weight="700">Project Settings</text><text x="540" y="104" text-anchor="middle" class="svg-dim" font-size="10">▸ Plugins ▸ Enable</text>
+                </g>
+                <g stroke="#4f9bd9" stroke-width="1.7" marker-end="url(#g10ar)">
+                  <path d="M190 52 C 220 60, 230 78, 248 84"/>
+                  <path d="M190 122 C 220 114, 230 98, 248 92"/>
+                  <line x1="410" y1="90" x2="458" y2="90"/>
+                </g>
+              </svg>
+              <figcaption>Deux portes d'entrée (AssetLib ou plugin tiers) → le dossier <code>addons/</code> → activation dans Project Settings ▸ Plugins.</figcaption>
+            </figure>
+
+            <h3>4. Plugins utiles côté graphisme</h3>
+            <p>On trouve dans l'AssetLib des outils de génération de terrain, des importeurs, des éditeurs de courbes/matériaux, des packs d'assets, des shaders prêts à l'emploi, etc. Beaucoup sont gratuits&nbsp;; pour les packs d'<b>assets</b>, comme toujours, <b>lis la licence</b> avant un usage commercial (rappel <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>&nbsp;: CC0, CC-BY, propriétaire…).</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Ouvre l'onglet <span class="menu-path">AssetLib</span> en haut de l'éditeur. Recherche un outil simple (ex. un add-on d'aide à l'édition).</li>
+              <li>Télécharge-le&nbsp;: Godot l'installe sous <code>res://addons/</code>.</li>
+              <li>Va dans <span class="menu-path">Project<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Plugins</span> et coche <em>Enable</em> pour l'activer.</li>
+              <li>Pour un plugin tiers téléchargé hors AssetLib&nbsp;: copie son dossier dans <code>res://addons/</code> (via le FileSystem de Godot), puis active-le de la même façon.</li>
+              <li>Vérifie ce que le plugin ajoute (dock, menu, node) et désactive-le si tu ne t'en sers pas.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai installé un plugin mais il ne fait rien.</div>
+                <div class="pi-cause"><b>Cause</b>Il n'est pas <em>activé</em> dans Project Settings ▸ Plugins.</div>
+                <div class="pi-fix"><b>Correction</b>Coche <em>Enable</em>&nbsp;; vérifie qu'il vit bien sous <code>addons/</code> avec un <code>plugin.cfg</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le plugin provoque des erreurs au chargement.</div>
+                <div class="pi-cause"><b>Cause</b>Plugin prévu pour une autre version de Godot (souvent 3.x vs 4.x).</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie la compatibilité avec ta version 4.x&nbsp;; désactive-le si incompatible.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai utilisé un asset « gratuit » en commercial sans vérifier.</div>
+                <div class="pi-cause"><b>Cause</b>Licence non lue (certains assets exigent attribution ou interdisent le commercial).</div>
+                <div class="pi-fix"><b>Correction</b>Lis la licence de chaque asset avant usage (renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon éditeur devient instable après plusieurs plugins.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de plugins actifs, certains de qualité variable.</div>
+                <div class="pi-fix"><b>Correction</b>Désactive ceux que tu n'utilises pas&nbsp;; n'active que le nécessaire.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Installe un plugin depuis l'AssetLib et active-le dans Project Settings ▸ Plugins.</li>
+                <li>Repère ce qu'il ajoute à l'éditeur, puis désactive-le.</li>
+                <li>Trouve un pack d'assets dans l'AssetLib et note sa licence (commercial autorisé&nbsp;? attribution&nbsp;?).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu installes/actives/désactives un plugin proprement.</li>
+                  <li>Tu sais où vivent les plugins (<code>addons/</code> + <code>plugin.cfg</code>).</li>
+                  <li>Tu vérifies une licence avant d'utiliser un asset.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>L'<b>AssetLib</b> intégrée offre plugins et assets, surtout <b>gratuits et open source</b>.</li>
+                <li>Les plugins vivent sous <code>res://addons/</code> (avec un <code>plugin.cfg</code>) et font partie du projet.</li>
+                <li>On les active dans <b>Project Settings ▸ Plugins</b>&nbsp;; n'active que le nécessaire.</li>
+                <li>Vérifie la <b>version</b> (4.x) et la <b>licence</b> des assets avant usage.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>AssetLib</b> — bibliothèque d'assets et de plugins intégrée à Godot, gratuite et communautaire.</p>
+              <p><b>addons/</b> — dossier du projet où résident les plugins d'éditeur.</p>
+              <p><b>plugin.cfg</b> — fichier descripteur d'un plugin Godot (nom, version, script principal).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5 — Bibliothèques d'assets &amp; scans</a>&nbsp;: les sources d'assets et les licences en détail.</li>
+              <li><a href="../../cours/unity/u10-plugins-packages.html">U10</a> / <a href="../../cours/unreal/e09-plugins.html">E9</a>&nbsp;: l'extensibilité des autres moteurs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

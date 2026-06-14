@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F3 — Formats de fichiers · Atelier Game Art</title>
+  <meta name="description" content="Formats d'images (PNG, TGA, JPG, EXR, TIFF, HDR) et 3D (FBX, OBJ, glTF/GLB, USD, Alembic) : quand utiliser quoi et pourquoi.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="f03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/fondamentaux/f01-image-numerique.html">Fondamentaux</a><span class="sep">/</span>
+            <span>Formats de fichiers</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>F3 — Formats de fichiers</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 0 · Fondamentaux</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a> (profondeur de couleur, alpha, sRGB/linéaire).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Choisir le bon <b>format d'image</b> (PNG, TGA, JPG, EXR, TIFF, HDR) selon le rôle d'une texture, et justifier ce choix.</li>
+                <li>Expliquer <em>pourquoi</em> le <span class="term">JPG</span> est interdit pour les <b>normal maps</b> et toute carte de données.</li>
+                <li>Distinguer ce que transporte chaque <b>format 3D</b> (OBJ, FBX, glTF/GLB, USD, Alembic) — géométrie seule ou scène animée complète.</li>
+                <li>Reconnaître les pièges classiques de <span class="term">FBX</span>&nbsp;: versions incompatibles, échelle, axes.</li>
+                <li>Lire une matrice «&nbsp;j'ai besoin de X → j'exporte en Y&nbsp;» et l'appliquer à un cas réel de production.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un format de fichier, ce n'est pas un détail administratif&nbsp;: c'est un <b>contrat</b>. Quand tu enregistres une texture ou un modèle, tu décides quelles informations seront <b>conservées</b>, lesquelles seront <b>compressées</b> (et donc dégradées), et lesquelles seront tout simplement <b>perdues</b>. Le mauvais format, c'est une normal map qui éclaire de travers, une animation qui disparaît à l'import, un personnage qui arrive 100 fois trop petit dans le moteur.</p>
+            <p>Dans un vrai pipeline de production, les fichiers voyagent en permanence&nbsp;: de <span class="term">ZBrush</span> vers <span class="term">Blender</span>, de Blender vers <span class="term">Substance</span>, de Substance vers <a href="../../cours/unity/u05-import-assets.html">Unity</a> ou <a href="../../cours/unreal/e04-import-assets.html">Unreal</a>. Chaque passage est un point de bascule où l'on choisit un format — donc un endroit où l'on peut tout casser. Savoir <em>ce que chaque format sait transporter</em> est la compétence qui distingue un artiste qui «&nbsp;galère à l'import&nbsp;» d'un artiste dont les assets arrivent propres du premier coup. C'est aussi le socle de la leçon <a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Deux mondes&nbsp;: images (2D) et modèles (3D)</h3>
+            <p>Il faut séparer mentalement deux catégories de formats. D'un côté, les <b>formats d'image</b>&nbsp;: ils stockent une grille de pixels (voir <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>) — ce seront tes textures. De l'autre, les <b>formats 3D</b>&nbsp;: ils stockent de la géométrie (sommets, faces), des coordonnées <span class="gloss">UV</span>, parfois un squelette et des animations — ce seront tes modèles. Un fichier <code>.png</code> ne contient jamais de mesh&nbsp;; un <code>.fbx</code> ne contient (presque) jamais l'image elle-même, seulement un <em>chemin</em> vers elle.</p>
+            <p>La question centrale, pour chaque format, est toujours la même&nbsp;: <b>qu'est-ce qui est conservé, et qu'est-ce qui est jeté&nbsp;?</b> Garde cette question en tête, c'est le fil rouge de toute la leçon.</p>
+
+            <h3>2. Compression&nbsp;: sans perte (lossless) vs avec perte (lossy)</h3>
+            <p>Avant de regarder les formats un par un, il faut comprendre <b>deux familles de compression</b>, car c'est ce qui décide si un format est utilisable pour des données techniques.</p>
+            <ul>
+              <li><b>Sans perte (lossless)</b>&nbsp;: le fichier est réduit, mais quand on le rouvre, on retrouve <b>exactement</b> les mêmes pixels, au bit près. PNG, TGA, TIFF, EXR fonctionnent ainsi. C'est comme un fichier ZIP&nbsp;: plus petit, rien de perdu.</li>
+              <li><b>Avec perte (lossy)</b>&nbsp;: le fichier <b>jette de l'information</b> que l'œil humain remarque peu, pour devenir beaucoup plus léger. JPG fonctionne ainsi. C'est efficace pour une photo, catastrophique pour des données.</li>
+            </ul>
+            <p>La distinction n'est pas un caprice de puriste. Pour une texture <b>albedo</b> (la couleur vue par l'œil), une légère perte JPG peut passer inaperçue. Mais pour une texture de <b>données</b> — une normal map, une roughness — chaque pixel est un <em>nombre</em> précis utilisé dans un calcul. Altérer ce nombre, c'est altérer le résultat physique du rendu.</p>
+
+            <h3>3. Pourquoi le JPG est interdit pour les maps de données</h3>
+            <p>C'est l'un des messages les plus importants de cette leçon, alors creusons le <em>mécanisme</em> au lieu de répéter l'interdit.</p>
+            <h4>La compression JPG, en deux étapes destructrices</h4>
+            <p>Le <span class="term">JPG</span> (ou JPEG) compresse en deux temps. D'abord, le <b>sous-échantillonnage de la chrominance</b> (<em>chroma subsampling</em>)&nbsp;: l'image est séparée en luminosité (luma) et couleur (chroma), et la couleur est stockée à <b>moitié résolution</b>, parce que l'œil humain voit mal les détails colorés. Ensuite, la <b>transformée en cosinus discrète</b> (<span class="term">DCT</span>)&nbsp;: l'image est découpée en blocs de 8×8 pixels, chaque bloc est converti en «&nbsp;fréquences&nbsp;», et les hautes fréquences (les détails fins) sont arrondies, voire supprimées.</p>
+            <p>Résultat&nbsp;: autour des contours nets et dans les zones de fort contraste, apparaissent des <b>artefacts en blocs</b> et un halo de fourmillement (<em>ringing</em>). Sur une photo de vacances, on ne les voit pas. Sur une <b>normal map</b>, c'est un désastre&nbsp;: chaque pixel y encode une <b>direction</b> (un vecteur X, Y, Z rangé dans les canaux R, V, B). Le sous-échantillonnage chroma <b>mélange ces directions entre voisins</b>, la DCT <b>arrondit les valeurs</b> — et la surface se met à refléter la lumière n'importe comment&nbsp;: bosses fantômes, joints visibles tous les 8 pixels, éclats sales.</p>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>JPG + absence d'alpha = double disqualification</div>
+              <p>En plus de sa compression destructrice, le JPG <b>ne possède aucun canal alpha</b>. Impossible d'y stocker une transparence ou un masque. Pour une texture de jeu, c'est rédhibitoire&nbsp;: on perd la compression propre <em>et</em> le quatrième canal. Le JPG ne devrait servir, au pire, qu'à une référence visuelle ou un aperçu — jamais à une texture qui part dans le moteur.</p>
+            </div>
+
+            <h3>4. Le tour des formats d'image</h3>
+            <p>Voici la table de référence. Lis la colonne «&nbsp;Quand l'utiliser&nbsp;» comme une recommandation de production, pas comme une règle absolue.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Format</th><th>Compression</th><th>Bits / canal</th><th>Alpha</th><th>HDR&nbsp;?</th><th>Quand l'utiliser</th></tr></thead>
+                <tbody>
+                  <tr><td><b>PNG</b></td><td>Sans perte</td><td>8 ou 16</td><td>Oui</td><td>Non</td><td>Le défaut pour les textures couleur et la 2D. Albedo, masques 8&nbsp;bits, UI.</td></tr>
+                  <tr><td><b>TGA</b></td><td>Sans perte (option RLE)</td><td>8</td><td>Oui</td><td>Non</td><td>Historique mais très courant en jeu&nbsp;: textures + masque alpha, attendu par d'anciens pipelines.</td></tr>
+                  <tr><td><b>JPG</b></td><td><b>Avec perte</b></td><td>8</td><td><b>Non</b></td><td>Non</td><td>Références, moodboards, aperçus web. <b>Jamais</b> pour normal/data maps.</td></tr>
+                  <tr><td><b>EXR</b></td><td>Sans perte (plusieurs codecs)</td><td>16 ou 32 <b>flottant</b></td><td>Oui (multi-canaux)</td><td><b>Oui</b></td><td>Le standard du rendu et du <a href="../../cours/fondamentaux/f08-baking.html">baking</a> de qualité, du compositing, des passes de rendu.</td></tr>
+                  <tr><td><b>TIFF</b></td><td>Sans perte</td><td>8 ou 16</td><td>Oui</td><td>Limité</td><td>Échanges entre logiciels <span class="gloss">DCC</span> (Photoshop ↔ Substance), sources 16&nbsp;bits.</td></tr>
+                  <tr><td><b>HDR</b> (.hdr)</td><td>Encodage RGBE</td><td>Flottant (RGBE)</td><td>Non</td><td><b>Oui</b></td><td>Images d'environnement <span class="gloss">HDRI</span> pour l'éclairage et les reflets.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <h4>Ce qui distingue vraiment EXR et HDR du reste</h4>
+            <p>PNG, TGA, TIFF, JPG sont des formats <b>SDR</b> (<em>Standard Dynamic Range</em>)&nbsp;: leurs valeurs vont de 0 (noir) à 1 (blanc maximal), pas au-delà. Or le monde réel contient des intensités bien supérieures&nbsp;: le soleil est des milliers de fois plus lumineux qu'un mur gris. Pour représenter cela, il faut des nombres <b>flottants</b> capables de dépasser 1,0 — c'est le <span class="gloss">HDR</span> (<em>High Dynamic Range</em>).</p>
+            <p>L'<span class="term">EXR</span> (OpenEXR, créé par Industrial Light &amp; Magic) est le champion de cette catégorie&nbsp;: 16 ou 32 bits flottants, plusieurs canaux arbitraires dans un même fichier (couleur, profondeur, vecteurs de mouvement, identifiants d'objets…), compression sans perte. C'est pourquoi un <b>baking</b> propre ou un rendu destiné au compositing sort en EXR&nbsp;: aucune valeur n'est tronquée. Le <span class="term">HDR</span> (format Radiance <code>.hdr</code>) est plus ancien et plus simple&nbsp;: il sert surtout à stocker une image d'environnement panoramique (un <span class="gloss">HDRI</span>) pour éclairer une scène de manière réaliste — on le verra en <a href="../../cours/unity/u07-eclairage.html">U7</a> et <a href="../../cours/unreal/e06-eclairage.html">E6</a>.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce de production&nbsp;: le format dépend du rôle, pas de l'habitude</div>
+              <p>Ne choisis pas «&nbsp;PNG par réflexe&nbsp;». Demande-toi&nbsp;: cette image est-elle une <b>couleur</b> (→ PNG/TGA), une <b>donnée</b> 16&nbsp;bits (→ PNG 16 ou TIFF), une <b>passe de rendu HDR</b> (→ EXR) ou un <b>éclairage d'environnement</b> (→ HDR/EXR)&nbsp;? Le rôle décide du format.</p>
+            </div>
+
+            <h3>5. Le tour des formats 3D</h3>
+            <p>On passe à la 3D. La grille de lecture change&nbsp;: au lieu de «&nbsp;compression et bits&nbsp;», la question devient «&nbsp;<b>quelles données de scène ce format sait-il transporter&nbsp;?</b>&nbsp;». Un format peut porter la géométrie seule, ou bien tout un personnage rigué et animé.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Format</th><th>Géométrie + UV</th><th>Normales</th><th>Squelette + skin</th><th>Animation</th><th>Scène / hiérarchie</th><th>Rôle typique</th></tr></thead>
+                <tbody>
+                  <tr><td><b>OBJ</b></td><td>Oui</td><td>Oui (basique)</td><td>Non</td><td>Non</td><td>Non</td><td>Échange ultra-simple d'un modèle figé. Universel, vieux.</td></tr>
+                  <tr><td><b>FBX</b></td><td>Oui</td><td>Oui</td><td><b>Oui</b></td><td><b>Oui</b></td><td>Oui</td><td>Le pivot Autodesk&nbsp;: meshes animés, perso rigués. Quasi universel.</td></tr>
+                  <tr><td><b>glTF / GLB</b></td><td>Oui</td><td>Oui</td><td>Oui</td><td>Oui</td><td>Oui</td><td>Temps réel et web, <span class="gloss">PBR</span> natif. «&nbsp;Le JPEG de la 3D&nbsp;».</td></tr>
+                  <tr><td><b>USD</b></td><td>Oui</td><td>Oui</td><td>Oui</td><td>Oui</td><td><b>Oui (layers)</b></td><td>Scènes entières, collaboration studio. Pivot moderne.</td></tr>
+                  <tr><td><b>Alembic</b></td><td>Oui (cache)</td><td>Oui</td><td><b>Non (pas de rig)</b></td><td><b>Oui (bakée)</b></td><td>Oui</td><td>Géométrie animée «&nbsp;cuite&nbsp;»&nbsp;: VFX, tissu, simulations.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>OBJ — minimal et universel</h4>
+            <p>Le <span class="term">OBJ</span> (Wavefront) est un format texte des années 1980. Il stocke des sommets, des faces et des UV — et c'est tout. <b>Aucune animation, aucun squelette, aucune hiérarchie d'objets.</b> Sa force est sa simplicité&nbsp;: absolument tout logiciel 3D sait le lire. On l'utilise encore pour transmettre un modèle <b>figé</b> (un prop, une pièce sculptée à exporter pour rebake) quand on veut zéro surprise. Mais choisir OBJ pour un objet qui doit bouger est une erreur de débutant&nbsp;: l'information n'existe simplement pas dans le format.</p>
+
+            <h4>FBX — le pivot historique de l'industrie</h4>
+            <p>Le <span class="term">FBX</span> (Filmbox, propriété d'Autodesk) est, depuis quinze ans, le format d'échange standard du jeu vidéo. Il transporte presque tout&nbsp;: meshes, UV, normales, <b>squelette</b> et poids de <span class="gloss">skinning</span>, <b>animations</b>, <b>morph targets</b> (blend shapes), hiérarchie, parfois caméras et lumières. C'est lui que tu exportes le plus souvent de Blender vers Unity ou Unreal pour un personnage animé. Il est généralement <b>binaire</b> (compact), avec une variante ASCII lisible mais lourde.</p>
+            <p>Sa contrepartie&nbsp;: c'est un format <b>propriétaire et versionné</b>. Deux logiciels qui ne parlent pas la même version de FBX peuvent perdre des données silencieusement. Et il traîne deux pièges d'<b>échelle</b> et d'<b>axe</b> redoutables, qu'on détaille plus bas&nbsp;: Blender pense en mètres avec le Z vers le haut, l'écosystème FBX historique pense en centimètres avec le Y vers le haut.</p>
+
+            <h4>glTF / GLB — le standard ouvert du temps réel</h4>
+            <p>Le <span class="term">glTF</span> (<em>GL Transmission Format</em>, du consortium Khronos) a été conçu spécifiquement pour le <b>temps réel</b> et le <b>web</b>. Son grand atout&nbsp;: il décrit nativement les matériaux <span class="gloss">PBR</span> (base color, metallic, roughness, normal…), là où FBX ne standardise pas vraiment les matériaux. On le surnomme «&nbsp;le JPEG de la 3D&nbsp;» parce qu'il vise à devenir <em>le</em> format de livraison universel. Il existe en deux variantes&nbsp;: <code>.gltf</code> (un fichier JSON + des fichiers séparés) et <code>.glb</code> (tout empaqueté dans un seul binaire, plus pratique à distribuer). C'est le format à privilégier pour livrer un asset sur le web, dans une visionneuse, ou vers un moteur qui le supporte bien.</p>
+
+            <h4>USD — la scène entière, en couches</h4>
+            <p>L'<span class="term">USD</span> (<em>Universal Scene Description</em>, créé par Pixar) ne décrit pas un seul objet&nbsp;: il décrit une <b>scène complète</b>, avec sa hiérarchie, ses références à d'autres fichiers, et surtout un système de <b>layers</b> (couches) qui permet à plusieurs artistes de travailler en parallèle sur la même scène sans s'écraser — l'un pose le décor, l'autre l'éclairage, un troisième l'animation. C'est ce qui en fait le nouveau <b>pivot de studio</b>, de plus en plus adopté par Maya, Houdini, Blender, Unreal et Omniverse. Pour un débutant, retiens surtout&nbsp;: USD = échange à l'échelle de la <em>scène</em>, pas du seul modèle.</p>
+
+            <h4>Alembic — la géométrie animée «&nbsp;cuite&nbsp;»</h4>
+            <p>L'<span class="term">Alembic</span> (<code>.abc</code>) ne stocke <b>pas de rig</b>. À la place, il enregistre la <b>position de chaque sommet à chaque image</b> — une animation déjà calculée, «&nbsp;bakée&nbsp;» (figée image par image). C'est l'outil idéal pour les choses qu'un squelette ne peut pas décrire&nbsp;: un drapeau qui ondule, un tissu simulé, une explosion de particules, un personnage déformé par une simulation musculaire. L'avantage&nbsp;: le résultat est identique partout, sans dépendre du moteur de simulation d'origine. L'inconvénient&nbsp;: les fichiers sont <b>lourds</b> (on stocke beaucoup de positions) et l'animation n'est <b>plus modifiable</b> — elle est cuite. C'est le pendant 3D de l'EXR&nbsp;: on cuit une fois, proprement, et on transporte le résultat.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 360" role="img" aria-label="Arbre de décision : selon le besoin, choisir le bon format de fichier">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">J'ai besoin de… → j'exporte en…</text>
+
+                <!-- noeud racine -->
+                <rect x="240" y="44" width="160" height="40" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="320" y="69" text-anchor="middle" class="svg-text" font-size="12.5" font-weight="700">Quel est le contenu&nbsp;?</text>
+
+                <!-- branche IMAGE -->
+                <line x1="280" y1="84" x2="150" y2="116" class="svg-stroke" stroke-width="1.5"/>
+                <rect x="60" y="116" width="180" height="34" rx="7" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/>
+                <text x="150" y="138" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Une IMAGE (texture)</text>
+
+                <g font-size="11.5">
+                  <rect x="20" y="170" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="80" y="190" text-anchor="middle" class="svg-dim" font-size="10.5">couleur + alpha</text>
+                  <text x="80" y="207" text-anchor="middle" class="svg-text" font-weight="700" fill="#5ad19a">PNG / TGA</text>
+
+                  <rect x="150" y="170" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="210" y="190" text-anchor="middle" class="svg-dim" font-size="10.5">HDR / rendu</text>
+                  <text x="210" y="207" text-anchor="middle" class="svg-text" font-weight="700" fill="#f2b441">EXR</text>
+
+                  <rect x="20" y="226" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="80" y="246" text-anchor="middle" class="svg-dim" font-size="10.5">éclairage HDRI</text>
+                  <text x="80" y="263" text-anchor="middle" class="svg-text" font-weight="700" fill="#f2b441">.hdr</text>
+
+                  <rect x="150" y="226" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="210" y="246" text-anchor="middle" class="svg-dim" font-size="10.5">data map</text>
+                  <text x="210" y="263" text-anchor="middle" class="svg-text" font-weight="700" fill="#ff6b6b">jamais JPG</text>
+                </g>
+                <line x1="80" y1="150" x2="80" y2="170" class="svg-stroke" stroke-width="1.2"/>
+                <line x1="210" y1="150" x2="210" y2="170" class="svg-stroke" stroke-width="1.2"/>
+                <line x1="80" y1="216" x2="80" y2="226" class="svg-stroke" stroke-width="1.2"/>
+                <line x1="210" y1="216" x2="210" y2="226" class="svg-stroke" stroke-width="1.2"/>
+
+                <!-- branche 3D -->
+                <line x1="360" y1="84" x2="490" y2="116" class="svg-stroke" stroke-width="1.5"/>
+                <rect x="400" y="116" width="180" height="34" rx="7" fill="#c89bff" fill-opacity="0.14" stroke="#c89bff"/>
+                <text x="490" y="138" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Un MODÈLE 3D</text>
+
+                <g font-size="11.5">
+                  <rect x="370" y="170" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="430" y="190" text-anchor="middle" class="svg-dim" font-size="10.5">modèle figé</text>
+                  <text x="430" y="207" text-anchor="middle" class="svg-text" font-weight="700" fill="#59b0ff">OBJ</text>
+
+                  <rect x="500" y="170" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="560" y="190" text-anchor="middle" class="svg-dim" font-size="10.5">rigué + animé</text>
+                  <text x="560" y="207" text-anchor="middle" class="svg-text" font-weight="700" fill="#5ad19a">FBX</text>
+
+                  <rect x="370" y="226" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="430" y="246" text-anchor="middle" class="svg-dim" font-size="10.5">web / temps réel</text>
+                  <text x="430" y="263" text-anchor="middle" class="svg-text" font-weight="700" fill="#5ad19a">glTF / GLB</text>
+
+                  <rect x="500" y="226" width="120" height="46" rx="6" class="svg-surface" stroke="#313c4c"/>
+                  <text x="560" y="246" text-anchor="middle" class="svg-dim" font-size="10.5">simu / cloth</text>
+                  <text x="560" y="263" text-anchor="middle" class="svg-text" font-weight="700" fill="#c89bff">Alembic</text>
+                </g>
+                <line x1="430" y1="150" x2="430" y2="170" class="svg-stroke" stroke-width="1.2"/>
+                <line x1="560" y1="150" x2="560" y2="170" class="svg-stroke" stroke-width="1.2"/>
+                <line x1="430" y1="216" x2="430" y2="226" class="svg-stroke" stroke-width="1.2"/>
+                <line x1="560" y1="216" x2="560" y2="226" class="svg-stroke" stroke-width="1.2"/>
+
+                <rect x="170" y="300" width="300" height="40" rx="8" fill="#5ad19a" fill-opacity="0.12" stroke="#5ad19a"/>
+                <text x="320" y="319" text-anchor="middle" class="svg-text" font-size="11.5">Scène entière, plusieurs artistes&nbsp;?</text>
+                <text x="320" y="334" text-anchor="middle" class="svg-text" font-size="12" font-weight="700" fill="#5ad19a">USD</text>
+              </svg>
+              <figcaption>Arbre de décision&nbsp;: on part du <b>contenu</b> (image ou modèle), puis du <b>rôle</b> précis, pour aboutir au format. Aucune route ne mène au JPG pour une data map.</figcaption>
+            </figure>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Comparaison de ce que transporte un fichier FBX par rapport à un fichier OBJ">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Que transporte le format&nbsp;?</text>
+
+                <!-- FBX box -->
+                <rect x="30" y="48" width="280" height="224" rx="12" fill="#5ad19a" fill-opacity="0.10" stroke="#5ad19a" stroke-width="2"/>
+                <text x="170" y="74" text-anchor="middle" class="svg-text" font-weight="700" font-size="15" fill="#5ad19a">FBX</text>
+                <text x="170" y="92" text-anchor="middle" class="svg-dim" font-size="11">la valise complète</text>
+                <g font-size="12.5">
+                  <rect x="56" y="104" width="228" height="24" rx="5" class="svg-surface" stroke="#313c4c"/><text x="170" y="121" text-anchor="middle" class="svg-text">Mesh (sommets, faces)</text>
+                  <rect x="56" y="134" width="228" height="24" rx="5" class="svg-surface" stroke="#313c4c"/><text x="170" y="151" text-anchor="middle" class="svg-text">UV</text>
+                  <rect x="56" y="164" width="228" height="24" rx="5" class="svg-surface" stroke="#313c4c"/><text x="170" y="181" text-anchor="middle" class="svg-text">Normales</text>
+                  <rect x="56" y="194" width="228" height="24" rx="5" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/><text x="170" y="211" text-anchor="middle" class="svg-text" font-weight="700">Squelette + skinning</text>
+                  <rect x="56" y="224" width="228" height="24" rx="5" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/><text x="170" y="241" text-anchor="middle" class="svg-text" font-weight="700">Animations + morph targets</text>
+                </g>
+
+                <!-- OBJ box -->
+                <rect x="345" y="48" width="265" height="224" rx="12" fill="#59b0ff" fill-opacity="0.08" stroke="#59b0ff" stroke-width="2"/>
+                <text x="477" y="74" text-anchor="middle" class="svg-text" font-weight="700" font-size="15" fill="#59b0ff">OBJ</text>
+                <text x="477" y="92" text-anchor="middle" class="svg-dim" font-size="11">juste l'essentiel figé</text>
+                <g font-size="12.5">
+                  <rect x="371" y="104" width="213" height="24" rx="5" class="svg-surface" stroke="#313c4c"/><text x="477" y="121" text-anchor="middle" class="svg-text">Mesh (sommets, faces)</text>
+                  <rect x="371" y="134" width="213" height="24" rx="5" class="svg-surface" stroke="#313c4c"/><text x="477" y="151" text-anchor="middle" class="svg-text">UV</text>
+                  <rect x="371" y="164" width="213" height="24" rx="5" class="svg-surface" stroke="#313c4c"/><text x="477" y="181" text-anchor="middle" class="svg-text">Normales (basiques)</text>
+                  <rect x="371" y="194" width="213" height="24" rx="5" fill="#ff6b6b" fill-opacity="0.10" stroke="#ff6b6b" stroke-dasharray="4 3"/><text x="477" y="211" text-anchor="middle" class="svg-dim">✗ pas de squelette</text>
+                  <rect x="371" y="224" width="213" height="24" rx="5" fill="#ff6b6b" fill-opacity="0.10" stroke="#ff6b6b" stroke-dasharray="4 3"/><text x="477" y="241" text-anchor="middle" class="svg-dim">✗ pas d'animation</text>
+                </g>
+              </svg>
+              <figcaption>FBX transporte le personnage <em>vivant</em> (os + animation)&nbsp;; OBJ ne transporte qu'une statue. Choisir OBJ pour un asset animé, c'est perdre l'animation au moment de l'export — elle n'a nulle part où aller.</figcaption>
+            </figure>
+
+            <h3>6. La matrice de décision «&nbsp;besoin → format&nbsp;»</h3>
+            <p>Voici la table à garder sous les yeux pendant tes premiers projets. Elle traduit chaque besoin concret en format recommandé.</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>J'ai besoin de…</th><th>Format recommandé</th><th>Pourquoi</th></tr></thead>
+                <tbody>
+                  <tr><td>Une texture albedo / base color</td><td><b>PNG</b> (ou TGA)</td><td>Sans perte, alpha possible, 8&nbsp;bits suffisent pour une couleur.</td></tr>
+                  <tr><td>Une normal / roughness / metallic</td><td><b>PNG</b> (8 ou 16, sRGB décoché) ou TGA</td><td>Données précises&nbsp;: aucune perte tolérée, surtout pas du JPG.</td></tr>
+                  <tr><td>Une passe de rendu / un bake de qualité</td><td><b>EXR</b></td><td>Flottant HDR, multi-canaux, sans perte.</td></tr>
+                  <tr><td>Un éclairage d'environnement</td><td><b>HDR</b> (.hdr) ou EXR</td><td>Valeurs lumineuses au-delà de 1,0 pour un éclairage réaliste.</td></tr>
+                  <tr><td>Un modèle figé (prop, sculpt à rebake)</td><td><b>OBJ</b></td><td>Simple, universel, zéro surprise.</td></tr>
+                  <tr><td>Un personnage rigué et animé</td><td><b>FBX</b> (ou glTF)</td><td>Transporte squelette, skin, animations, morphs.</td></tr>
+                  <tr><td>Un asset pour le web / une visionneuse</td><td><b>glTF / GLB</b></td><td>Conçu pour le temps réel, PBR natif, un seul binaire avec GLB.</td></tr>
+                  <tr><td>Une simulation (tissu, drapeau, particules)</td><td><b>Alembic</b></td><td>Animation bakée image par image, identique partout.</td></tr>
+                  <tr><td>Une scène collaborative de studio</td><td><b>USD</b></td><td>Layers, références, plusieurs artistes en parallèle.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Exportons un même objet en deux formats pour <b>voir</b> ce qui survit et ce qui disparaît. On le fait dans <b>Blender</b>, mais la logique est identique partout.</p>
+            <ol>
+              <li>Dans Blender, ajoute un objet et donne-lui une animation simple&nbsp;: sélectionne le cube par défaut, puis <span class="menu-path">Object<span class="arrow">▸</span>Animation<span class="arrow">▸</span>Insert Keyframe</span> à deux images différentes après l'avoir déplacé. Tu as maintenant un objet <b>animé</b>.</li>
+              <li>Exporte-le d'abord en OBJ&nbsp;: <span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>Wavefront (.obj)</span>. Dans le panneau d'options à droite, observe qu'il n'existe <b>aucune case «&nbsp;Animation&nbsp;»</b>&nbsp;: le format ne sait pas la stocker. Ce que tu obtiens est une statue figée à l'image courante.</li>
+              <li>Exporte ensuite en FBX&nbsp;: <span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>FBX (.fbx)</span>. Cette fois, le panneau propose une section <span class="menu-path">Bake Animation</span> et un onglet d'animations&nbsp;: le format <b>réserve une place</b> pour ces données. C'est la preuve concrète de la différence du schéma précédent.</li>
+              <li>Toujours dans le panneau FBX, repère le réglage <span class="menu-path">Transform<span class="arrow">▸</span>Scale</span> et le menu <span class="menu-path">Apply Scalings</span>. Note la valeur. C'est ici que se joue le fameux piège d'échelle&nbsp;: Blender exporte en unités qui, mal réglées, font arriver l'objet 100&nbsp;fois trop grand ou trop petit dans le moteur.</li>
+              <li>Réimporte tes deux fichiers dans une scène vide (<span class="menu-path">File<span class="arrow">▸</span>Import</span>) et compare&nbsp;: l'OBJ revient sans animation&nbsp;; le FBX, lui, rejoue le mouvement. Tu viens de vérifier de tes yeux le «&nbsp;contrat&nbsp;» de chaque format.</li>
+            </ol>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le piège des textures «&nbsp;manquantes&nbsp;»</div>
+              <p>Un FBX (comme un OBJ) ne contient pas l'image de tes textures&nbsp;: il garde seulement un <b>chemin</b> vers le fichier <code>.png</code>. Si tu déplaces le projet sans les textures, le modèle arrive «&nbsp;tout gris&nbsp;». Le GLB, lui, peut <em>empaqueter</em> les images dans le binaire&nbsp;: c'est l'un de ses avantages pour la livraison.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma surface a des bosses fantômes et des joints sales tous les quelques pixels.</div>
+                <div class="pi-cause"><b>Cause</b>La normal map (ou une autre data map) a été enregistrée en <b>JPG</b>&nbsp;: la DCT et le sous-échantillonnage chroma ont corrompu les directions stockées.</div>
+                <div class="pi-fix"><b>Correction</b>Réexporte la map en <b>PNG</b> ou TGA sans perte, depuis la source. Bannis le JPG de tout ce qui n'est pas une référence visuelle.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>J'ai exporté mon personnage animé, mais dans le moteur il est immobile.</div>
+                <div class="pi-cause"><b>Cause</b>Export en <b>OBJ</b>&nbsp;: ce format ne transporte ni squelette ni animation&nbsp;; elles n'ont jamais été écrites dans le fichier.</div>
+                <div class="pi-fix"><b>Correction</b>Exporte en <b>FBX</b> ou <b>glTF</b>, active le bake d'animation, et vérifie que le squelette est bien inclus.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon modèle arrive 100&nbsp;fois trop grand (ou minuscule) dans Unity/Unreal.</div>
+                <div class="pi-cause"><b>Cause</b>Conflit d'unités&nbsp;: Blender en mètres, FBX historique en centimètres. Le réglage <em>Scale</em>/<em>Apply Scalings</em> n'était pas cohérent.</div>
+                <div class="pi-fix"><b>Correction</b>Fixe une convention d'unités à l'export, applique les transforms (<em>Apply Transform</em>) avant export, et corrige le <em>Scale Factor</em> à l'import.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon modèle est couché sur le côté ou tourné de 90° après import.</div>
+                <div class="pi-cause"><b>Cause</b>Conflit d'<b>axe</b>&nbsp;: Blender utilise Z vers le haut, l'écosystème FBX/moteur souvent Y vers le haut.</div>
+                <div class="pi-fix"><b>Correction</b>Règle l'orientation d'export (<em>Forward</em> / <em>Up</em>) sur la convention du moteur cible, ou laisse l'option «&nbsp;automatique&nbsp;» quand le logiciel la propose.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'autre logiciel refuse mon FBX ou en perd des morceaux.</div>
+                <div class="pi-cause"><b>Cause</b>Incompatibilité de <b>version FBX</b> (FBX 2020 vs une cible plus ancienne).</div>
+                <div class="pi-fix"><b>Correction</b>Choisis une version FBX que le destinataire supporte (souvent FBX 2018/2020 binaire), et teste un aller-retour avant de livrer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon dégradé / rendu HDR est «&nbsp;écrêté&nbsp;»&nbsp;: les zones lumineuses sont devenues blanc plat.</div>
+                <div class="pi-cause"><b>Cause</b>Le rendu a été enregistré en PNG/JPG (SDR, plafond à 1,0) au lieu d'un format flottant.</div>
+                <div class="pi-fix"><b>Correction</b>Exporte les passes de rendu et les bakes en <b>EXR</b> pour conserver les valeurs au-delà de 1,0.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Objectif&nbsp;: prouver par toi-même les deux contrats clés (image et 3D).</p>
+              <ol>
+                <li>Prends une <b>normal map</b> (tu peux en générer une simple dans Substance ou en télécharger une, voir <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>). Enregistre-en deux copies&nbsp;: une en PNG, une en JPG qualité moyenne.</li>
+                <li>Applique chaque copie à un même matériau sous lumière rasante et compare les reflets. Identifie les artefacts en blocs sur la version JPG.</li>
+                <li>Crée un cube animé dans Blender. Exporte-le en OBJ et en FBX, réimporte les deux dans une scène vide.</li>
+                <li>Note, dans un petit tableau, ce qui a survécu à chaque export (géométrie, UV, animation), et conclus quel format choisir pour quel besoin.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu peux montrer visuellement la dégradation d'une normal map en JPG et l'expliquer par la DCT et le sous-échantillonnage chroma.</li>
+                  <li>Tu confirmes que l'OBJ a perdu l'animation et que le FBX l'a conservée, et tu sais dire pourquoi.</li>
+                  <li>Tu sais énoncer, pour cinq besoins de production, le format que tu choisirais et la raison.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un format est un <b>contrat</b>&nbsp;: il décide ce qui est conservé, compressé ou perdu.</li>
+                <li><b>Sans perte</b> (PNG, TGA, TIFF, EXR) pour toute texture qui compte&nbsp;; <b>avec perte</b> (JPG) seulement pour des aperçus.</li>
+                <li><b>JPG interdit</b> pour les data maps&nbsp;: la DCT + le sous-échantillonnage chroma corrompent les nombres, et il n'a pas d'alpha.</li>
+                <li><b>EXR/HDR</b> = flottant, valeurs au-delà de 1,0&nbsp;: rendu, baking, éclairage HDRI.</li>
+                <li>En 3D&nbsp;: <b>OBJ</b> = modèle figé&nbsp;; <b>FBX</b> = perso rigué/animé (attention version, échelle, axe)&nbsp;; <b>glTF/GLB</b> = web et temps réel&nbsp;; <b>USD</b> = scène collaborative&nbsp;; <b>Alembic</b> = simulation bakée.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Lossless / Lossy</b> — compression sans perte (pixels intacts) vs avec perte (information jetée pour alléger).</p>
+              <p><b>DCT</b> — transformée en cosinus discrète&nbsp;; cœur de la compression JPG, qui arrondit les détails par blocs de 8×8.</p>
+              <p><b>Sous-échantillonnage chroma</b> — stockage de la couleur à résolution réduite dans le JPG&nbsp;; mélange les valeurs voisines.</p>
+              <p><b>EXR</b> — format d'image flottant HDR multi-canaux&nbsp;; standard du rendu, du baking et du compositing.</p>
+              <p><b>HDR (.hdr)</b> — format Radiance pour les images d'environnement (HDRI) servant à l'éclairage.</p>
+              <p><b>OBJ</b> — format 3D minimal&nbsp;: géométrie et UV uniquement, sans animation ni squelette.</p>
+              <p><b>FBX</b> — format pivot Autodesk transportant meshes, squelette, skinning, animations et morphs.</p>
+              <p><b>glTF / GLB</b> — format ouvert pour le temps réel et le web, avec PBR natif&nbsp;; «&nbsp;le JPEG de la 3D&nbsp;».</p>
+              <p><b>USD</b> — description de scène universelle (Pixar) avec layers&nbsp;; pivot collaboratif de studio.</p>
+              <p><b>Alembic</b> — cache de géométrie animée «&nbsp;bakée&nbsp;» image par image, sans rig&nbsp;; pour VFX et simulations.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a>&nbsp;: profondeur de couleur, alpha et sRGB/linéaire, qui décident du format d'image à choisir.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: pourquoi chaque map a un format et un espace colorimétrique précis.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a>&nbsp;: pourquoi l'EXR est le format des bakes de qualité.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets entre moteurs</a>&nbsp;: FBX, glTF et USD en conditions réelles, avec les pièges d'échelle et d'axe.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation</a>&nbsp;: comment ces fichiers sont compressés pour le GPU sans casser les données.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

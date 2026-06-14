@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E8 — Niagara (VFX) · Atelier Game Art</title>
+  <meta name="description" content="Niagara, le système de VFX d'Unreal Engine 5.7 : systèmes, émetteurs, modules et la construction pas à pas d'un effet de base.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>Niagara (VFX)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E8 — Niagara (VFX)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 4 · Unreal Engine</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f11-vfx-particules.html">F11 — VFX &amp; particules (concepts)</a> et <a href="../../cours/unreal/e05-material-editor.html">E5 — Le Material Editor</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre la hiérarchie <b>System → Emitter → Modules</b> de Niagara.</li>
+                <li>Lire la <b>pile de modules</b> d'un émetteur (Emitter/Particle Spawn/Update, Render).</li>
+                <li>Construire pas à pas un effet de base (étincelles / petit feu).</li>
+                <li>Choisir entre simulation <b>CPU</b> et <b>GPU</b> et relier le matériau VFX au bon mode de blending.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les effets visuels — feu, fumée, magie, étincelles, poussière — donnent vie et lisibilité à un jeu&nbsp;: ils signalent un impact, une zone dangereuse, une compétence. Unreal&nbsp;5 utilise <span class="term">Niagara</span>, un système moderne et très puissant qui remplace l'ancien Cascade. Sa logique modulaire peut sembler intimidante, mais elle est <b>cohérente</b>&nbsp;: une fois la hiérarchie comprise, on construit n'importe quel effet en empilant des briques. Et comme les VFX sont la première source d'<span class="gloss">overdraw</span> (renvoi <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>), savoir les construire <em>proprement</em> est aussi une affaire de performance.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La hiérarchie&nbsp;: System, Emitter, Module</h3>
+            <p>Niagara s'organise en trois niveaux emboîtés&nbsp;:</p>
+            <ul>
+              <li><b>Niagara System</b>&nbsp;: l'effet complet, l'asset qu'on place dans le niveau (par ex. «&nbsp;feu de camp&nbsp;»). Il contient un ou plusieurs émetteurs.</li>
+              <li><b>Emitter</b>&nbsp;: gère <em>un type</em> de particules (par ex. les flammes, OU la fumée, OU les braises). Un feu de camp réaliste combine donc plusieurs émetteurs dans un même système.</li>
+              <li><b>Module</b>&nbsp;: une brique de comportement empilée dans un émetteur (par ex. «&nbsp;ajouter de la vélocité&nbsp;», «&nbsp;réduire la taille avec l'âge&nbsp;»). C'est en empilant des modules qu'on décrit la vie des particules.</li>
+            </ul>
+
+            <h3>2. La pile de modules (le Stack)</h3>
+            <p>Chaque émetteur est une <b>pile</b> de groupes, exécutés dans cet ordre&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Groupe</th><th>Quand</th><th>Exemples de modules</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Emitter Spawn</b></td><td>Une fois, au démarrage de l'émetteur</td><td>Réglages initiaux de l'émetteur.</td></tr>
+                  <tr><td><b>Emitter Update</b></td><td>Chaque image, au niveau émetteur</td><td><em>Spawn Rate</em> (combien de particules naissent par seconde), <em>Spawn Burst</em> (rafale ponctuelle).</td></tr>
+                  <tr><td><b>Particle Spawn</b></td><td>À la naissance de chaque particule</td><td><em>Initialize Particle</em> (durée de vie, taille, couleur), <em>Shape Location</em> (où elle naît&nbsp;: point, cône, sphère), vélocité initiale.</td></tr>
+                  <tr><td><b>Particle Update</b></td><td>Chaque image, pour chaque particule vivante</td><td>Forces (<em>Gravity</em>, <em>Drag</em>), <em>Color/Scale over Life</em>, <em>Collision</em>.</td></tr>
+                  <tr><td><b>Render</b></td><td>À l'affichage</td><td><em>Sprite Renderer</em> (billboard), <em>Mesh Renderer</em>, <em>Ribbon Renderer</em> + le matériau utilisé.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>La logique est limpide une fois posée&nbsp;: ce qui arrive <b>à la naissance</b> va dans <em>Particle Spawn</em> (valeurs initiales), ce qui arrive <b>au fil du temps</b> va dans <em>Particle Update</em> (évolution), et <em>Render</em> décide à quoi ça ressemble.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Hiérarchie Niagara : un System contient des Emitters, chacun étant une pile de modules">
+                <defs><marker id="e8ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#b48cff"/></marker></defs>
+                <rect x="20" y="20" width="170" height="260" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="1.6"/>
+                <text x="105" y="44" text-anchor="middle" class="svg-text" font-weight="800" font-size="14">Niagara System</text>
+                <text x="105" y="62" text-anchor="middle" class="svg-dim" font-size="11">« Feu de camp »</text>
+                <g class="svg-text" font-size="11">
+                  <rect x="36" y="80" width="138" height="44" rx="7" class="svg-surface" stroke="#313c4c"/><text x="105" y="106" text-anchor="middle">Emitter · Flammes</text>
+                  <rect x="36" y="134" width="138" height="44" rx="7" class="svg-surface" stroke="#313c4c"/><text x="105" y="160" text-anchor="middle">Emitter · Fumée</text>
+                  <rect x="36" y="188" width="138" height="44" rx="7" class="svg-surface" stroke="#313c4c"/><text x="105" y="214" text-anchor="middle">Emitter · Braises</text>
+                </g>
+                <!-- détail d'un emitter -->
+                <line x1="174" y1="102" x2="250" y2="60" stroke="#b48cff" stroke-width="1.6" marker-end="url(#e8ar)"/>
+                <g class="svg-text" font-size="11.5">
+                  <rect x="260" y="30" width="360" height="240" rx="10" class="svg-surface" stroke="#313c4c"/>
+                  <text x="440" y="52" text-anchor="middle" font-weight="700">Pile de modules (Emitter · Flammes)</text>
+                  <rect x="280" y="66" width="320" height="34" rx="6" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/><text x="292" y="88">Emitter Update — Spawn Rate</text>
+                  <rect x="280" y="106" width="320" height="34" rx="6" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="292" y="128">Particle Spawn — Initialize, Shape Location</text>
+                  <rect x="280" y="146" width="320" height="34" rx="6" fill="#59b0ff" fill-opacity="0.14" stroke="#59b0ff"/><text x="292" y="168">Particle Update — Gravity, Color over Life</text>
+                  <rect x="280" y="186" width="320" height="34" rx="6" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/><text x="292" y="208">Render — Sprite Renderer + matériau additif</text>
+                  <text x="440" y="248" text-anchor="middle" class="svg-dim">Exécuté de haut en bas, chaque image.</text>
+                </g>
+              </svg>
+              <figcaption>Un système regroupe plusieurs émetteurs&nbsp;; chaque émetteur est une pile de modules exécutée dans l'ordre. On construit un effet en empilant des briques.</figcaption>
+            </figure>
+
+            <h3>3. CPU ou GPU&nbsp;?</h3>
+            <p>Chaque émetteur a un <b>Sim Target</b>&nbsp;: <em>CPU</em> (par défaut, jusqu'à quelques milliers de particules, peut interagir facilement avec le gameplay) ou <em>GPU</em> (des centaines de milliers à des millions&nbsp;: tempêtes, nuées, fluides). Le GPU est extrêmement puissant mais certaines fonctionnalités (collisions précises, lecture de données côté CPU) y sont plus contraintes. Règle simple&nbsp;: petit effet localisé → CPU&nbsp;; nuée massive → GPU.</p>
+
+            <h3>4. Le matériau fait l'apparence</h3>
+            <p>Une particule n'est qu'un quad&nbsp;: c'est son <b>matériau</b> (renvoi <a href="../../cours/unreal/e05-material-editor.html">E5</a>) qui lui donne son aspect. Les choix de blending vus en <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a> s'appliquent&nbsp;: matériau <b>Translucent additif</b> pour ce qui émet de la lumière (feu, étincelles, magie&nbsp;: ça s'éclaircit, insensible au tri), <b>Translucent alpha</b> pour la fumée (transparence triée), souvent en Shading Model <em>Unlit</em>. On y branche fréquemment un <span class="gloss">flipbook</span> (texture d'animation) et la couleur de la particule.</p>
+
+            <h2>🔧 Démonstration pas à pas&nbsp;: des étincelles</h2>
+            <ol>
+              <li>Dans le Content Browser&nbsp;: <span class="menu-path">clic droit<span class="arrow">▸</span>FX<span class="arrow">▸</span>Niagara System</span>. Choisis <em>New system from selected emitter(s)</em> et pars d'un template simple (Fountain), ou <em>Empty</em> pour tout contrôler. Nomme-le <code>NS_Sparks</code>.</li>
+              <li>Ouvre-le. Dans l'émetteur, règle <span class="menu-path">Emitter Update<span class="arrow">▸</span>Spawn Rate</span> (ou ajoute un <em>Spawn Burst Instantaneous</em> pour une rafale d'étincelles ponctuelle).</li>
+              <li><span class="menu-path">Particle Spawn<span class="arrow">▸</span>Initialize Particle</span>&nbsp;: règle une <em>Lifetime</em> courte (0,4–0,8&nbsp;s), une petite taille, une couleur chaude (orange).</li>
+              <li>Ajoute <span class="menu-path">Particle Spawn<span class="arrow">▸</span>Add Velocity</span> (Shape = cone vers le haut) pour projeter les étincelles, et règle la dispersion.</li>
+              <li><span class="menu-path">Particle Update<span class="arrow">▸</span>Gravity Force</span>&nbsp;: les étincelles retombent. Ajoute <em>Drag</em> pour qu'elles ralentissent.</li>
+              <li><span class="menu-path">Particle Update<span class="arrow">▸</span>Scale Color</span> (ou Color over Life)&nbsp;: fais décroître l'alpha vers la fin de vie pour qu'elles s'éteignent en douceur.</li>
+              <li><span class="menu-path">Render<span class="arrow">▸</span>Sprite Renderer</span>&nbsp;: assigne un matériau d'étincelle additif (Unlit, Translucent additif). Sauvegarde, glisse <code>NS_Sparks</code> dans la scène et observe.</li>
+            </ol>
+            <p>Tu viens de couvrir tout le cycle&nbsp;: naissance (Spawn), vie (vélocité + gravité + fade), apparence (Render + matériau). N'importe quel effet plus complexe n'est qu'une accumulation de modules sur ce squelette.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Énorme chute de framerate quand l'effet remplit l'écran.</div>
+                <div class="pi-cause"><b>Cause</b>Overdraw&nbsp;: trop de grands quads transparents superposés (renvoi <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>).</div>
+                <div class="pi-fix"><b>Correction</b>Réduis le nombre/la taille des particules, limite la zone, et privilégie l'additif quand c'est possible.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes particules s'affichent en carrés opaques ou noirs.</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais matériau / mauvais Blend Mode (Opaque au lieu de Translucent), ou alpha non géré.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un matériau Translucent (additif ou alpha) Unlit conçu pour les particules.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je voulais un million de particules mais ça ne suit pas / certaines options manquent.</div>
+                <div class="pi-cause"><b>Cause</b>Émetteur en simulation CPU pour une charge massive.</div>
+                <div class="pi-fix"><b>Correction</b>Passe le Sim Target en GPU pour les grandes nuées (en acceptant ses limites de collision/données).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Rien ne s'affiche du tout.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de module Render, durée de vie nulle, Spawn Rate à 0, ou taille trop petite.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie le Sprite Renderer, une Lifetime &gt; 0, un Spawn Rate/Burst, et une taille visible.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Construis <code>NS_Sparks</code> comme dans la démo (rafale d'étincelles qui retombent et s'éteignent).</li>
+                <li>Ajoute un <b>second émetteur</b> de fumée (Translucent alpha, montée lente, fade) dans le même système pour enrichir l'effet.</li>
+                <li>Affiche le coût&nbsp;: ouvre la fenêtre des stats de Niagara et le mode Shader Complexity de la scène (renvoi <a href="../../cours/unreal/e10-optimisation.html">E10</a>)&nbsp;; réduis l'overdraw si la zone vire au rouge.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les étincelles naissent, sont projetées, retombent et s'éteignent proprement.</li>
+                  <li>Tu peux nommer le rôle de chaque groupe de modules (Spawn vs Update vs Render).</li>
+                  <li>Ton effet ne fait pas chuter le framerate de façon déraisonnable.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Niagara s'organise en <b>System → Emitter → Module</b>&nbsp;: un système combine des émetteurs, chacun étant une pile de modules.</li>
+                <li>Valeurs initiales → <b>Particle Spawn</b>&nbsp;; évolution dans le temps → <b>Particle Update</b>&nbsp;; apparence → <b>Render</b> + matériau.</li>
+                <li><b>CPU</b> pour les petits effets, <b>GPU</b> pour les nuées massives.</li>
+                <li>Le matériau (Translucent additif/alpha, souvent Unlit) fait l'apparence&nbsp;; surveille l'<b>overdraw</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Niagara</b> — système de VFX d'Unreal&nbsp;5 (successeur de Cascade).</p>
+              <p><b>Niagara System</b> — l'effet complet placé dans le niveau, contenant un ou plusieurs émetteurs.</p>
+              <p><b>Emitter</b> — sous-ensemble gérant un type de particules.</p>
+              <p><b>Module</b> — brique de comportement empilée dans un émetteur.</p>
+              <p><b>Stack</b> — la pile de groupes/modules d'un émetteur (Emitter/Particle Spawn/Update, Render).</p>
+              <p><b>Sim Target</b> — choix de simulation CPU ou GPU d'un émetteur.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f11-vfx-particules.html">F11 — VFX &amp; particules (concepts)</a>&nbsp;: les fondamentaux transférables (blending, flipbook, overdraw).</li>
+              <li><a href="../../cours/unity/u09-vfx.html">U9 — Particules &amp; VFX (Unity)</a>&nbsp;: l'équivalent Unity (Particle System / VFX Graph), pour comparer.</li>
+              <li><a href="../../cours/unreal/e05-material-editor.html">E5 — Le Material Editor</a>&nbsp;: créer les matériaux de tes particules.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

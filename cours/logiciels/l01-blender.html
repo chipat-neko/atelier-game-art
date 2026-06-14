@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L1 — Blender · Atelier Game Art</title>
+  <meta name="description" content="Blender 4.x : installation, interface et navigation, modélisation, sculpt, UV unwrap, matériaux Eevee/Cycles, export FBX/glTF propre, et installation d'add-ons.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>Blender</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L1 — Blender</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>55 min</span>
+              <span class="badge">Piste 1 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>, <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>. Utile : <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Installer <b>Blender 4.x LTS</b> proprement et savoir s'il exploite ton <span class="gloss">GPU</span>.</li>
+                <li>Te repérer dans l'interface&nbsp;: <b>Workspaces</b>, éditeurs (Viewport, Outliner, Properties, Timeline), <b>header</b>, <b>N-panel</b> et <b>T-panel</b>.</li>
+                <li>Naviguer dans la vue 3D (orbit, pan, zoom, vues numpad) et comprendre le rôle du <b>curseur 3D</b>.</li>
+                <li>Modéliser en <b>Edit Mode</b> avec les opérations clés (Extrude, Inset, Bevel, Loop Cut) et les <b>modifiers</b> non destructifs.</li>
+                <li>Sculpter l'essentiel, <b>déplier les UV</b> (seams + Unwrap), construire un matériau <b>PBR</b> avec le <b>Principled BSDF</b>.</li>
+                <li>Distinguer <b>EEVEE</b> et <b>Cycles</b>, et <b>exporter proprement</b> vers un moteur en <span class="term">glTF</span> ou <span class="term">FBX</span>.</li>
+                <li>Activer un <b>add-on</b> intégré et installer un <code>.zip</code> tiers.</li>
+              </ul>
+            </div>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Cette leçon est un aperçu</div>
+              <p>Ici, on survole Blender pour situer son rôle dans le pipeline. Si tu veux <b>maîtriser l'outil de A à Z</b>, suis la <a href="../../cours/blender/b01-installation.html">Piste&nbsp;2 · Blender</a> (11 leçons)&nbsp;: installation, interface, modélisation, modifiers, sculpt &amp; retopo, UV, shading, texture paint &amp; baking, Geometry Nodes, rigging/animation et export vers les moteurs.</p>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p><b>Blender</b> est le pilier <b>gratuit</b> et open source de tout pipeline d'art 3D. Un <span class="gloss">DCC</span> (<em>Digital Content Creation</em>, «&nbsp;logiciel de création de contenu numérique&nbsp;») est l'outil où l'on fabrique l'asset avant qu'il n'entre dans un moteur. Maya, 3ds Max ou Houdini sont des DCC payants&nbsp;; Blender fait tout ce que la majorité des productions de jeu exigent — modélisation, sculpt, UV, texturing de base, rig, animation, rendu — sans coûter un centime ni imposer d'abonnement.</p>
+            <p>Concrètement, dans un studio comme chez un solo, Blender occupe la <b>première moitié du pipeline d'asset</b> (voir <a href="../../cours/fondamentaux/f05-pipeline-asset.html">F5</a>)&nbsp;: on y crée la géométrie, on la déplie, on lui donne une apparence, puis on l'<b>exporte</b> vers Unity ou Unreal. Si l'export est bâclé — mauvaise échelle, transforms non appliquées, normal map mal réglée — l'asset arrive cassé dans le moteur et tu perds des heures à chercher pourquoi ton mur fait 100&nbsp;mètres de haut. Maîtriser Blender de bout en bout, c'est donc maîtriser la source de la chaîne&nbsp;: tout ce qui est propre ici reste propre ensuite.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Installer Blender 4.x&nbsp;: ce que tu télécharges vraiment</h3>
+            <p>On télécharge Blender uniquement depuis le site officiel <code>blender.org</code> (jamais un site tiers&nbsp;: risque de versions vérolées). Choisis la branche <b>LTS</b> — <em>Long Term Support</em>, «&nbsp;support à long terme&nbsp;» —, aujourd'hui <b>Blender 4.5 LTS</b>. Une version LTS reçoit des correctifs de bugs pendant deux ans&nbsp;: c'est le choix raisonnable pour un projet sérieux, par opposition aux versions «&nbsp;courantes&nbsp;» (4.x non-LTS) qui apportent des nouveautés mais bougent plus vite.</p>
+            <h4>Installeur vs portable</h4>
+            <p>Le site propose deux formats. L'<b>installeur</b> (<code>.msi</code> sous Windows) écrit Blender dans <em>Program Files</em> et l'associe aux fichiers <code>.blend</code>&nbsp;: pratique pour une seule version «&nbsp;principale&nbsp;». Le <b>portable</b> (archive <code>.zip</code>) ne s'installe pas&nbsp;: tu décompresses le dossier où tu veux (même sur une clé USB) et tu lances <code>blender.exe</code> directement. Son intérêt&nbsp;: tu peux faire cohabiter <b>plusieurs versions</b> côte à côte sans conflit — indispensable quand un projet est verrouillé sur, disons, la 4.2 LTS et qu'un autre teste la 4.5.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Le GPU sert à deux choses bien distinctes</div>
+              <p>Ne confonds pas l'<b>affichage</b> (dessiner la fenêtre 3D en temps réel) et le <b>rendu</b> (calculer l'image finale). L'affichage utilise toujours ta carte. Le <b>rendu Cycles</b>, lui, peut tourner sur le CPU <em>ou</em> être accéléré par le GPU via CUDA/OptiX (NVIDIA), HIP (AMD) ou Metal (Mac). Active-le dans <span class="menu-path">Edit<span class="arrow">▸</span>Preferences<span class="arrow">▸</span>System</span> en choisissant la bonne API et en cochant ta carte. Un GPU moderne rend souvent 5 à 20 fois plus vite que le CPU&nbsp;: c'est le réglage le plus rentable de ton installation.</p>
+            </div>
+
+            <h3>2. L'interface&nbsp;: une grille d'éditeurs, pas des «&nbsp;fenêtres&nbsp;»</h3>
+            <p>La logique de Blender déroute au début parce qu'elle est <b>différente</b> de Photoshop ou Word. L'écran n'est pas «&nbsp;un programme avec des panneaux flottants&nbsp;»&nbsp;: c'est une <b>grille de zones</b>, et chaque zone est un <span class="term">éditeur</span> interchangeable. Tu peux transformer n'importe quelle zone en n'importe quel éditeur via le menu déroulant tout en haut à gauche de cette zone. Comprendre ça, c'est cesser de «&nbsp;chercher la bonne fenêtre&nbsp;»&nbsp;: tu décides toi-même quelle zone affiche quoi.</p>
+            <h4>Les éditeurs que tu utiliseras tout le temps</h4>
+            <ul>
+              <li><b>3D Viewport</b> — la grande zone centrale&nbsp;: la vue 3D où tu manipules les objets. C'est ton atelier.</li>
+              <li><b>Outliner</b> — en haut à droite&nbsp;: la <b>liste hiérarchique</b> de tout ce que contient la scène (objets, collections, données). C'est ton explorateur de fichiers interne.</li>
+              <li><b>Properties</b> — en bas à droite&nbsp;: une colonne d'onglets verticaux (Render, Output, Modifiers à l'icône clé, Material à l'icône sphère…). C'est ici que se règlent les détails de l'objet sélectionné.</li>
+              <li><b>Timeline</b> — bande en bas&nbsp;: la ligne de temps pour l'animation (lecture, images clés).</li>
+            </ul>
+            <h4>Workspaces&nbsp;: des pré-réglages d'écran par tâche</h4>
+            <p>Les onglets en haut de la fenêtre (<b>Layout, Modeling, Sculpting, UV Editing, Texture Paint, Shading, Animation, Rendering…</b>) sont les <span class="term">Workspaces</span> («&nbsp;espaces de travail&nbsp;»). Chacun n'est rien d'autre qu'une <b>disposition d'éditeurs mémorisée</b>, optimisée pour une étape. Le Workspace <b>UV Editing</b> affiche d'office l'éditeur UV à gauche et le Viewport à droite&nbsp;; <b>Shading</b> ouvre le <b>Shader Editor</b> en bas. Ils ne changent pas ton modèle&nbsp;: ils ré-arrangent juste les zones pour t'éviter de tout reconfigurer à la main. Tu peux passer de l'un à l'autre sans rien perdre.</p>
+            <h4>Header, N-panel, T-panel&nbsp;: où vivent les outils</h4>
+            <p>Dans le Viewport, trois zones d'outils reviennent sans cesse&nbsp;:</p>
+            <ul>
+              <li>Le <b>header</b> (barre du haut de l'éditeur)&nbsp;: les menus (<em>View, Select, Add, Object…</em>) et le sélecteur de <b>mode</b> (Object Mode / Edit Mode…).</li>
+              <li>Le <b>T-panel</b> (barre d'outils latérale gauche, touche <code>T</code>)&nbsp;: les outils interactifs (déplacer, tourner, extruder…) sous forme d'icônes.</li>
+              <li>Le <b>N-panel</b> (panneau latéral droit, touche <code>N</code>)&nbsp;: les <b>valeurs numériques</b> de l'objet sélectionné — sa position, sa rotation, son <b>échelle</b> (onglet <em>Item</em>). Tu y reviendras à chaque vérification d'export.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 380" role="img" aria-label="Carte de l'interface Blender : Workspaces en haut, Viewport central avec T-panel et N-panel, Outliner en haut à droite, Properties en bas à droite, Timeline en bas">
+                <!-- barre workspaces -->
+                <rect x="20" y="18" width="600" height="26" rx="5" class="svg-surface" stroke="#313c4c"/>
+                <text x="30" y="35" class="svg-dim" font-size="11">Workspaces&nbsp;:</text>
+                <g font-size="11" class="svg-text">
+                  <text x="110" y="35" fill="#f2b441" font-weight="700">Layout</text>
+                  <text x="165" y="35">Modeling</text>
+                  <text x="232" y="35">Sculpting</text>
+                  <text x="300" y="35">UV Editing</text>
+                  <text x="375" y="35">Shading</text>
+                  <text x="435" y="35">Animation</text>
+                  <text x="510" y="35">Rendering</text>
+                </g>
+                <!-- header viewport -->
+                <rect x="20" y="50" width="430" height="22" class="svg-surface" stroke="#313c4c"/>
+                <text x="30" y="65" class="svg-dim" font-size="10.5">header  ·  View  Select  Add  Object  ·  [Object Mode ▾]</text>
+                <!-- viewport -->
+                <rect x="20" y="74" width="430" height="232" fill="#59b0ff" fill-opacity="0.08" stroke="#59b0ff"/>
+                <text x="235" y="120" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">3D Viewport</text>
+                <text x="235" y="140" text-anchor="middle" class="svg-dim" font-size="11">l'atelier&nbsp;: on manipule la 3D ici</text>
+                <!-- cube illustratif -->
+                <g transform="translate(195,170)" stroke="#59b0ff" stroke-width="1.6" fill="#59b0ff" fill-opacity="0.18">
+                  <path d="M0 22 L40 0 L80 22 L40 44 Z"/>
+                  <path d="M0 22 L0 70 L40 92 L40 44 Z"/>
+                  <path d="M80 22 L80 70 L40 92 L40 44 Z" fill-opacity="0.30"/>
+                </g>
+                <!-- T-panel -->
+                <rect x="20" y="74" width="26" height="232" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/>
+                <text x="33" y="200" text-anchor="middle" transform="rotate(-90,33,200)" class="svg-text" fill="#5ad19a" font-size="10.5" font-weight="700">T-panel (T)</text>
+                <!-- N-panel -->
+                <rect x="380" y="74" width="70" height="232" fill="#f2b441" fill-opacity="0.14" stroke="#f2b441"/>
+                <text x="415" y="200" text-anchor="middle" transform="rotate(-90,415,200)" class="svg-text" fill="#f2b441" font-size="10.5" font-weight="700">N-panel (N) — transforms</text>
+                <!-- Outliner -->
+                <rect x="458" y="50" width="162" height="120" fill="#c89bff" fill-opacity="0.12" stroke="#c89bff"/>
+                <text x="539" y="74" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Outliner</text>
+                <text x="539" y="92" text-anchor="middle" class="svg-dim" font-size="10">hiérarchie de la scène</text>
+                <g class="svg-dim" font-size="10"><text x="472" y="114">▸ Collection</text><text x="482" y="132">▸ Camera</text><text x="482" y="150">▸ Cube</text></g>
+                <!-- Properties -->
+                <rect x="458" y="174" width="162" height="132" fill="#f2b441" fill-opacity="0.10" stroke="#f2b441"/>
+                <text x="539" y="198" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Properties</text>
+                <text x="539" y="216" text-anchor="middle" class="svg-dim" font-size="10">onglets : Render, Modifiers (🔧),</text>
+                <text x="539" y="230" text-anchor="middle" class="svg-dim" font-size="10">Material (⬤), Object…</text>
+                <!-- Timeline -->
+                <rect x="20" y="312" width="600" height="50" fill="#313c4c" fill-opacity="0.30" stroke="#313c4c"/>
+                <text x="320" y="342" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Timeline — ligne de temps de l'animation</text>
+              </svg>
+              <figcaption>Carte mentale de l'écran par défaut. Tout est un <b>éditeur</b> dans une zone redimensionnable&nbsp;; les Workspaces ne font que pré-arranger ces zones selon la tâche.</figcaption>
+            </figure>
+
+            <h3>3. Naviguer&nbsp;: orbiter, panoramiquer, zoomer, et le curseur 3D</h3>
+            <p>La navigation 3D repose sur la <b>molette de la souris</b> qui sert aussi de bouton central (MMB).</p>
+            <ul>
+              <li><b>Orbit</b> (tourner autour) — <b>maintenir la molette</b> (MMB) et bouger la souris. C'est le geste le plus fréquent&nbsp;: tu fais «&nbsp;tourner&nbsp;» ton point de vue autour de la scène.</li>
+              <li><b>Pan</b> (déplacer latéralement) — <b>Shift + MMB</b>. La caméra glisse sans tourner.</li>
+              <li><b>Zoom</b> — <b>rouler la molette</b>, ou <b>Ctrl + MMB</b> pour un zoom continu.</li>
+              <li><b>Vues numpad</b> — le pavé numérique donne des vues orthographiques exactes&nbsp;: <code>1</code> = face, <code>3</code> = côté, <code>7</code> = dessus, <code>0</code> = vue caméra. <code>5</code> bascule perspective/orthographique. Ces angles précis sont essentiels pour modéliser sans déformation.</li>
+            </ul>
+            <p>Le <span class="term">curseur 3D</span> (la petite cible rouge et blanche au centre) est un point de référence mobile. Par défaut, tout nouvel objet créé apparaît <b>à l'emplacement du curseur 3D</b>, et il sert aussi de pivot ou de point d'alignement. S'il a été déplacé par mégarde, tes nouveaux objets surgiront au mauvais endroit&nbsp;: <kbd>Shift+C</kbd> le renvoie à l'origine du monde (0,0,0). La <b>sélection</b> se fait au clic <b>gauche</b> (LMB)&nbsp;; <kbd>A</kbd> sélectionne tout, <kbd>Alt+A</kbd> désélectionne tout.</p>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Pas de molette&nbsp;? Émule le pavé numérique</div>
+              <p>Sur un portable sans pavé numérique ni vraie molette, va dans <span class="menu-path">Edit<span class="arrow">▸</span>Preferences<span class="arrow">▸</span>Input</span> et coche <b>Emulate Numpad</b> (les chiffres du clavier principal font les vues) et <b>Emulate 3 Button Mouse</b> (<kbd>Alt</kbd>+clic gauche remplace la molette pour orbiter). Tu peux travailler entièrement sans matériel dédié.</p>
+            </div>
+
+            <h3>4. Modéliser&nbsp;: Object Mode vs Edit Mode</h3>
+            <p>Blender sépare deux niveaux d'action, et la touche <kbd>Tab</kbd> bascule entre eux&nbsp;:</p>
+            <ul>
+              <li>L'<b>Object Mode</b> manipule l'objet <b>en bloc</b>&nbsp;: tu le déplaces, le tournes, le redimensionnes comme un tout.</li>
+              <li>L'<b>Edit Mode</b> (touche <kbd>Tab</kbd>) ouvre l'objet pour éditer sa géométrie interne&nbsp;: ses <b>vertices</b> (points), ses <b>edges</b> (arêtes) et ses <b>faces</b>. Les touches <kbd>1</kbd>, <kbd>2</kbd>, <kbd>3</kbd> basculent entre ces trois modes de sélection.</li>
+            </ul>
+            <p>Cette distinction est fondamentale&nbsp;: c'est la différence entre «&nbsp;poser une boîte&nbsp;» et «&nbsp;sculpter les coins de la boîte&nbsp;». (Si les mots vertex/edge/face sont flous, relis <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4 — Anatomie d'un mesh</a>.)</p>
+            <h4>Les opérations qui couvrent 90&nbsp;% du travail</h4>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Opération</th><th>Touche</th><th>Ce qu'elle fait — et pourquoi</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Extrude</b></td><td><kbd>E</kbd></td><td>Tire de la nouvelle géométrie depuis une face/arête sélectionnée. C'est le geste de base pour «&nbsp;faire pousser&nbsp;» une forme (un bras hors d'un torse, une cheminée hors d'un toit).</td></tr>
+                  <tr><td><b>Inset</b></td><td><kbd>I</kbd></td><td>Crée une face plus petite à l'intérieur d'une face existante. Sert à préparer un creux, un bouton, un cadre.</td></tr>
+                  <tr><td><b>Bevel</b></td><td><kbd>Ctrl+B</kbd></td><td>Chanfreine une arête vive en plusieurs petites facettes. <b>Crucial</b>&nbsp;: dans la vraie vie aucune arête n'est parfaitement vive&nbsp;; un léger bevel accroche la lumière et rend l'objet crédible. La molette ajoute des segments.</td></tr>
+                  <tr><td><b>Loop Cut</b></td><td><kbd>Ctrl+R</kbd></td><td>Insère une boucle d'arêtes complète qui fait le tour du mesh. Indispensable pour ajouter de la définition là où on veut plier ou détailler.</td></tr>
+                  <tr><td><b>Knife</b></td><td><kbd>K</kbd></td><td>Découpe à main levée en cliquant des points. Utile pour des coupes que les boucles ne couvrent pas.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>5. Les modifiers&nbsp;: éditer sans détruire</h3>
+            <p>Un <span class="term">modifier</span> est une opération <b>non destructive</b> empilée sur l'objet&nbsp;: il transforme l'apparence du mesh <b>au moment de l'affichage/rendu</b>, sans toucher à la géométrie de base que tu continues d'éditer. On les ajoute dans l'onglet <b>Modifiers</b> (icône clé à molette) du panneau Properties. L'analogie&nbsp;: ce sont des «&nbsp;calques de réglage&nbsp;» comme dans Photoshop — tu peux les régler, les réordonner ou les supprimer à tout moment, et l'original reste intact. Les trois incontournables&nbsp;:</p>
+            <ul>
+              <li><b>Mirror</b> — reflète la géométrie par rapport à un axe. Tu modélises <b>une moitié</b> d'un personnage ou d'un véhicule, l'autre se construit automatiquement et symétriquement. Tu divises ton travail par deux et tu garantis la symétrie.</li>
+              <li><b>Subdivision Surface</b> (<kbd>Ctrl+1</kbd>…<kbd>3</kbd>) — subdivise et lisse le mesh à la volée. Tu modèles une cage anguleuse «&nbsp;légère&nbsp;», le modifier en fait une surface douce et dense. C'est la clé du <em>hard-surface</em> lisse et des formes organiques.</li>
+              <li><b>Solidify</b> — donne une épaisseur à une surface fine (un mur, une coque, un tissu) qui n'avait qu'une seule épaisseur de face.</li>
+            </ul>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>«&nbsp;Apply&nbsp;» fige le modifier</div>
+              <p>Tant qu'un modifier n'est pas appliqué (<em>Apply</em>), il reste vivant et réglable mais n'existe pas «&nbsp;en dur&nbsp;». Pour exporter vers un moteur, on <b>applique</b> souvent les modifiers (ou l'exporteur le fait) afin que le fichier contienne la vraie géométrie finale. Le Mirror non appliqué exporté tel quel peut surprendre&nbsp;: vérifie toujours le résultat.</p>
+            </div>
+
+            <h3>6. Sculpter&nbsp;: quand et comment</h3>
+            <p>La <b>modélisation</b> place des points avec précision&nbsp;; le <b>sculpt</b>, lui, traite le mesh comme de la <b>pâte à modeler</b> qu'on pousse avec des brosses. On sculpte pour les formes <b>organiques</b> et les <b>détails</b> difficiles à poser sommet par sommet&nbsp;: visages, plis de tissu, rochers, écorce, créatures.</p>
+            <p>Deux systèmes gèrent la densité de matière nécessaire au détail&nbsp;:</p>
+            <ul>
+              <li><b>Dyntopo</b> (<em>Dynamic Topology</em>) — ajoute des polygones <b>à la volée</b> là où tu sculptes. Liberté totale pour bloquer une forme, mais topologie désordonnée.</li>
+              <li><b>Multires</b> (Multiresolution, un modifier) — subdivise par paliers&nbsp;: tu sculptes le gros en basse résolution, le fin en haute, et tu peux revenir en arrière. Plus structuré, et c'est lui qu'on utilise pour <b>baker</b> ensuite les détails dans une normal map (voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>).</li>
+            </ul>
+            <p>Les brosses de base&nbsp;: <b>Draw</b> (ajoute/creuse de la matière), <b>Clay Strips</b> (dépose de la matière par bandes, idéal pour bâtir des volumes), <b>Grab</b> (attrape et déplace une grosse zone, pour les grandes formes), <b>Smooth</b> (<kbd>Shift</kbd> maintenu sur n'importe quelle brosse&nbsp;: lisse les aspérités). En jeu, le sculpt sert surtout à fabriquer un <b>high-poly</b> détaillé qu'on transfère ensuite sur un <b>low-poly</b> léger via le baking&nbsp;: on ne met presque jamais le maillage sculpté brut dans le moteur, il est bien trop lourd.</p>
+
+            <h3>7. Déplier les UV&nbsp;: seams et Unwrap</h3>
+            <p>Une <span class="gloss">UV</span> est la coordonnée 2D qui dit «&nbsp;quel pixel de la texture va sur ce point du modèle&nbsp;». Déplier (<em>unwrap</em>), c'est <b>aplatir</b> la surface 3D en un patron 2D, exactement comme on découpe et déplie un patron de couture. Pour que l'aplatissement ne déforme pas la texture, il faut indiquer où «&nbsp;couper&nbsp;»&nbsp;: ce sont les <b>seams</b> (coutures).</p>
+            <p>En Edit Mode, on sélectionne les arêtes des coutures et on fait <span class="menu-path">Edge<span class="arrow">▸</span>Mark Seam</span> (les arêtes deviennent rouges). Puis on sélectionne tout (<kbd>A</kbd>) et on lance <kbd>U</kbd> <span class="arrow">▸</span> <b>Unwrap</b>. Le résultat s'affiche dans l'<b>UV Editor</b> (Workspace <b>UV Editing</b>). On vérifie l'absence de déformation en appliquant une texture <b>checker</b> (damier)&nbsp;: si les carreaux sont réguliers et carrés partout, le dépliage est sain&nbsp;; s'ils sont étirés ou de tailles inégales, il faut ajouter ou déplacer des seams. Le détail complet est dans <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;; ici tu retiens le geste Blender&nbsp;: <em>marquer les seams</em> → <em>Unwrap</em> → <em>vérifier au damier</em>.</p>
+
+            <h3>8. Matériaux&nbsp;: le Shader Editor et le Principled BSDF</h3>
+            <p>Un <b>matériau</b> décrit comment une surface réagit à la lumière. Dans Blender, on le construit avec des <b>nœuds</b> (petites boîtes reliées par des fils) dans le <b>Shader Editor</b> (Workspace <b>Shading</b>). Le nœud central est le <span class="term">Principled BSDF</span> — un <b>shader PBR</b> «&nbsp;tout-en-un&nbsp;» (<em>Physically Based Rendering</em>, rendu basé sur la physique&nbsp;: voir <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>). Ses entrées correspondent aux maps PBR standard, ce qui le rend directement compatible avec les moteurs&nbsp;:</p>
+            <ul>
+              <li><b>Base Color</b> — la couleur de surface (albédo). Branche-y une texture via un nœud <b>Image Texture</b> réglé en espace <b>sRGB</b> (c'est une couleur vue par l'œil).</li>
+              <li><b>Metallic</b> — 0 = diélectrique (bois, plastique), 1 = métal pur. Donnée brute.</li>
+              <li><b>Roughness</b> — 0 = miroir, 1 = mat. Donnée brute.</li>
+              <li><b>Normal</b> — la normal map qui simule le relief. <b>Attention</b>&nbsp;: elle passe par un nœud <b>Normal Map</b>, et son Image Texture doit être réglé en <b>Non-Color</b>.</li>
+            </ul>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Color Space&nbsp;: la faute n°1 sur les data maps</div>
+              <p>Sur chaque nœud <b>Image Texture</b>, un menu <b>Color Space</b> dit à Blender comment interpréter les nombres du fichier. Pour la <b>Base Color</b> (une couleur), laisse <b>sRGB</b>. Pour la <b>Roughness, le Metallic, la Normal, l'AO, la Height</b> — qui sont des <b>données</b>, pas des couleurs —, règle <b>Non-Color</b>. Si tu laisses une normal map en sRGB, Blender lui applique une correction gamma qui fausse les valeurs&nbsp;: le relief devient mou et l'éclairage faux. C'est exactement la règle sRGB/linéaire vue en <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a> et <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 320" role="img" aria-label="Graphe de nœuds : Image Texture sRGB vers Base Color, et Image Texture Non-Color vers Normal Map vers l'entrée Normal du Principled BSDF, qui sort vers Material Output">
+                <defs>
+                  <marker id="nw" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#59b0ff"/></marker>
+                </defs>
+                <!-- image texture base color -->
+                <rect x="20" y="30" width="150" height="74" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="95" y="50" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Image Texture</text>
+                <text x="95" y="68" text-anchor="middle" class="svg-text" fill="#f2b441" font-size="11" font-weight="700">Color Space: sRGB</text>
+                <text x="95" y="86" text-anchor="middle" class="svg-dim" font-size="10">basecolor.png</text>
+                <circle cx="170" cy="60" r="4" fill="#5ad19a"/>
+                <!-- image texture normal -->
+                <rect x="20" y="200" width="150" height="74" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="95" y="220" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Image Texture</text>
+                <text x="95" y="238" text-anchor="middle" class="svg-text" fill="#59b0ff" font-size="11" font-weight="700">Color Space: Non-Color</text>
+                <text x="95" y="256" text-anchor="middle" class="svg-dim" font-size="10">normal.png</text>
+                <circle cx="170" cy="230" r="4" fill="#c89bff"/>
+                <!-- normal map node -->
+                <rect x="230" y="198" width="120" height="56" rx="8" fill="#c89bff" fill-opacity="0.14" stroke="#c89bff"/>
+                <text x="290" y="222" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Normal Map</text>
+                <text x="290" y="240" text-anchor="middle" class="svg-dim" font-size="10">décode le relief</text>
+                <circle cx="230" cy="226" r="4" fill="#c89bff"/>
+                <circle cx="350" cy="226" r="4" fill="#c89bff"/>
+                <!-- principled bsdf -->
+                <rect x="410" y="60" width="150" height="190" rx="8" fill="#f2b441" fill-opacity="0.12" stroke="#f2b441"/>
+                <text x="485" y="84" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Principled BSDF</text>
+                <text x="485" y="100" text-anchor="middle" class="svg-dim" font-size="10">shader PBR</text>
+                <g font-size="10.5" class="svg-text">
+                  <circle cx="410" cy="126" r="4" fill="#5ad19a"/><text x="422" y="130">Base Color</text>
+                  <circle cx="410" cy="150" r="4" fill="#717c8c"/><text x="422" y="154">Metallic</text>
+                  <circle cx="410" cy="174" r="4" fill="#717c8c"/><text x="422" y="178">Roughness</text>
+                  <circle cx="410" cy="226" r="4" fill="#c89bff"/><text x="422" y="230">Normal</text>
+                </g>
+                <circle cx="560" cy="120" r="4" fill="#f2b441"/>
+                <!-- material output -->
+                <rect x="470" y="276" width="150" height="36" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="545" y="299" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Material Output</text>
+                <circle cx="470" cy="294" r="4" fill="#f2b441"/>
+                <!-- liens -->
+                <path d="M170 60 C 300 60, 290 126, 406 126" fill="none" stroke="#5ad19a" stroke-width="2" marker-end="url(#nw)"/>
+                <path d="M170 230 L 226 226" fill="none" stroke="#c89bff" stroke-width="2" marker-end="url(#nw)"/>
+                <path d="M350 226 L 406 226" fill="none" stroke="#c89bff" stroke-width="2" marker-end="url(#nw)"/>
+                <path d="M560 120 C 600 120, 600 294, 474 294" fill="none" stroke="#f2b441" stroke-width="2" marker-end="url(#nw)"/>
+                <text x="300" y="20" text-anchor="middle" class="svg-dim" font-size="11">Couleur en sRGB&nbsp;·&nbsp;données en Non-Color&nbsp;·&nbsp;Normal passe par un nœud Normal Map</text>
+              </svg>
+              <figcaption>Le câblage type d'un matériau PBR dans le Shader Editor. La couleur entre directement&nbsp;; la normal map passe d'abord par le nœud <b>Normal Map</b>, et son Image Texture est en <b>Non-Color</b>.</figcaption>
+            </figure>
+
+            <h4>EEVEE vs Cycles&nbsp;: deux moteurs de rendu, deux philosophies</h4>
+            <p>Blender embarque deux moteurs, et ils ne donnent pas la même image&nbsp;:</p>
+            <ul>
+              <li><b>EEVEE</b> est un <b>rasterizer temps réel</b>, proche de la façon dont un moteur de jeu (Unity/Unreal) calcule l'image&nbsp;: <b>très rapide</b>, interactif, mais il <b>approxime</b> certains effets (reflets, ombres de contact, transparence). Idéal pour itérer vite et pour pré-visualiser ce que donnera l'asset en jeu.</li>
+              <li><b>Cycles</b> est un <b>path tracer</b>&nbsp;: il simule physiquement les rayons de lumière qui rebondissent. Résultat <b>réaliste</b> (reflets, réfractions, éclairage indirect corrects) mais <b>lent</b>, avec du <b>bruit</b> qui se réduit au fil des échantillons.</li>
+            </ul>
+            <p>Conséquence pratique&nbsp;: un même matériau peut paraître différent entre EEVEE et Cycles. Pour du game art, EEVEE est ton ami au quotidien (il imite le moteur de jeu)&nbsp;; Cycles sert aux rendus de présentation et au <b>baking</b> de cartes de haute qualité.</p>
+
+            <h3>9. Exporter proprement vers un moteur</h3>
+            <p>C'est l'étape qui fait la différence entre un pro et un débutant. Deux formats dominent (voir <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>)&nbsp;:</p>
+            <ul>
+              <li><span class="term">glTF 2.0</span> (<code>.glb</code>/<code>.gltf</code>) — format <b>ouvert et moderne</b>, pensé pour le temps réel&nbsp;: il embarque maillage, UV, matériaux PBR et animations dans un seul fichier <code>.glb</code>. C'est le choix recommandé aujourd'hui, surtout pour le web et les moteurs récents.</li>
+              <li><span class="term">FBX</span> — format <b>historique</b> d'Autodesk, omniprésent dans l'industrie et bien lu par Unity comme Unreal. Plus capricieux sur les <b>échelles</b> et les <b>axes</b>.</li>
+            </ul>
+            <h4>Le rituel anti-bug avant tout export</h4>
+            <p>Trois vérifications évitent 95&nbsp;% des problèmes d'import&nbsp;:</p>
+            <ol>
+              <li><b>Appliquer les transforms</b> — <kbd>Ctrl+A</kbd> <span class="arrow">▸</span> <b>All Transforms</b>. Si tu as redimensionné un objet en Object Mode, son échelle réelle n'est pas «&nbsp;1&nbsp;» mais, par exemple, «&nbsp;0,3&nbsp;» (visible dans le <b>N-panel</b> → Scale). Le moteur peut interpréter ça de travers. Appliquer remet position 0, rotation 0 et <b>échelle 1</b> tout en gardant l'aspect visuel&nbsp;: la géométrie devient «&nbsp;propre&nbsp;».</li>
+              <li><b>Vérifier l'échelle du monde</b> — Blender et les moteurs travaillent en <b>mètres</b>&nbsp;: un objet d'1&nbsp;m dans Blender doit faire 1&nbsp;m dans le moteur. L'exporteur FBX propose souvent un facteur d'échelle&nbsp;; laisse-le cohérent et coche <b>Apply Transform</b> si disponible.</li>
+              <li><b>Sélectionner les bons objets</b> — avant d'exporter, sélectionne précisément ce que tu veux et coche, dans la fenêtre d'export, <b>Selected Objects / Limit to Selection</b>. Sinon tu embarques la caméra, la lampe et le cube par défaut.</li>
+            </ol>
+
+            <h3>10. Add-ons&nbsp;: étendre Blender</h3>
+            <p>Un <span class="term">add-on</span> est une extension (script Python) qui ajoute des fonctions. On les gère dans <span class="menu-path">Edit<span class="arrow">▸</span>Preferences<span class="arrow">▸</span>Add-ons</span>. Deux cas&nbsp;:</p>
+            <ul>
+              <li><b>Add-on intégré</b> — livré avec Blender, il suffit de le <b>cocher</b> pour l'activer (rien à télécharger).</li>
+              <li><b>Add-on tiers</b> — un fichier <code>.zip</code> que tu installes via le bouton <b>Install…</b> (ou <em>Install from Disk</em> selon la version), puis que tu coches.</li>
+            </ul>
+            <p>Deux add-ons intégrés à connaître&nbsp;: <b>Node Wrangler</b> (raccourcis surpuissants dans le Shader Editor&nbsp;: <kbd>Ctrl+Shift+T</kbd> branche automatiquement un jeu complet de textures PBR sur le Principled BSDF) et <b>LoopTools</b> (outils de boucles d'arêtes&nbsp;: arrondir, espacer, ponter). Active-les une fois, ils te font gagner un temps fou.</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Fil rouge&nbsp;: <b>modéliser une caisse en bois, lui donner un matériau PBR, la déplier, l'exporter en glTF</b> prête pour un moteur.</p>
+            <ol>
+              <li><b>Partir propre.</b> Ouvre Blender. La scène contient un cube par défaut&nbsp;: parfait pour une caisse. Mets le curseur 3D à l'origine avec <kbd>Shift+C</kbd> pour être sûr de ton centre.</li>
+              <li><b>Donner du relief aux arêtes.</b> Sélectionne le cube, <kbd>Tab</kbd> pour entrer en <b>Edit Mode</b>, <kbd>A</kbd> pour tout sélectionner. Fais <kbd>Ctrl+B</kbd> (<b>Bevel</b>) et tire un tout petit chanfrein, puis ajoute 1 segment à la molette. Les arêtes accrochent désormais la lumière&nbsp;: la caisse paraît réelle, pas un cube de synthèse.</li>
+              <li><b>Creuser les planches.</b> Toujours en Edit Mode, mode face (<kbd>3</kbd>), sélectionne les 6 faces et fais <kbd>I</kbd> (<b>Inset</b>) pour créer un cadre, puis <kbd>E</kbd> (<b>Extrude</b>) légèrement vers l'intérieur pour suggérer des planches en relief. <kbd>Tab</kbd> pour revenir en Object Mode.</li>
+              <li><b>Déplier les UV.</b> Reviens en Edit Mode, sélectionne les arêtes des angles, <span class="menu-path">Edge<span class="arrow">▸</span>Mark Seam</span>. Tout sélectionner (<kbd>A</kbd>), puis <kbd>U</kbd> <span class="arrow">▸</span> <b>Smart UV Project</b> (rapide pour un objet simple) ou <b>Unwrap</b>. Passe au Workspace <b>UV Editing</b> et vérifie que le patron 2D est régulier.</li>
+              <li><b>Créer le matériau PBR.</b> Workspace <b>Shading</b>. Dans le panneau Properties <span class="menu-path">Material<span class="arrow">▸</span>New</span>&nbsp;: un <b>Principled BSDF</b> apparaît dans le Shader Editor. Glisse une texture de bois sur <b>Base Color</b> via <span class="menu-path">Add<span class="arrow">▸</span>Texture<span class="arrow">▸</span>Image Texture</span> (Color Space <b>sRGB</b>). Ajoute une <b>Roughness</b> et une <b>Normal</b> en <b>Non-Color</b>, la Normal passant par un nœud <b>Normal Map</b> (cf. schéma ci-dessus). <span class="gloss">Astuce</span>&nbsp;: avec Node Wrangler, <kbd>Ctrl+Shift+T</kbd> fait tout ce câblage d'un coup.</li>
+              <li><b>Prévisualiser.</b> Bascule le Viewport en mode <b>Material Preview</b> (sphères en haut à droite du Viewport) ou choisis le moteur <b>EEVEE</b> dans <span class="menu-path">Render Properties</span>&nbsp;: tu vois la caisse texturée comme elle apparaîtra approximativement en jeu.</li>
+              <li><b>Nettoyer avant export.</b> Object Mode, caisse sélectionnée, <kbd>Ctrl+A</kbd> <span class="arrow">▸</span> <b>All Transforms</b>. Ouvre le <b>N-panel</b> (<kbd>N</kbd>) et vérifie&nbsp;: Location 0, Rotation 0, <b>Scale 1</b>. Supprime la caméra et la lampe si tu n'exportes que la caisse, ou tu les exclus à l'étape suivante.</li>
+              <li><b>Exporter en glTF.</b> <span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>glTF 2.0 (.glb/.gltf)</span>. Dans le panneau de droite, coche <b>Include <span class="arrow">▸</span> Selected Objects</b>, format <b>glTF Binary (.glb)</b>, et sous <b>Transform</b> laisse <b>+Y Up</b> (convention attendue par les moteurs). Valide&nbsp;: ton <code>.glb</code> contient maillage, UV et matériau PBR, prêt à glisser dans Unity ou Unreal.</li>
+            </ol>
+            <p>Tu viens de parcourir la <b>première moitié complète</b> d'un pipeline d'asset&nbsp;: forme → relief → UV → matériau → export propre. Le même enchaînement vaut pour n'importe quel objet, du tonneau au personnage.</p>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Dans le moteur, mon objet est minuscule ou gigantesque, ou il tourne tout seul.</div>
+                <div class="pi-cause"><b>Cause</b>Les <b>transforms n'ont pas été appliquées</b>&nbsp;: l'échelle réelle de l'objet n'est pas 1, et le moteur l'interprète mal.</div>
+                <div class="pi-fix"><b>Correction</b>En Object Mode, <kbd>Ctrl+A</kbd> <span class="arrow">▸</span> <b>All Transforms</b>. Vérifie ensuite <b>Scale = 1</b> dans le N-panel avant d'exporter.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map donne un relief plat, mou, ou éclaire à l'envers.</div>
+                <div class="pi-cause"><b>Cause</b>L'Image Texture de la normal est resté en <b>sRGB</b>&nbsp;: Blender applique une correction gamma à des données qui n'en veulent pas.</div>
+                <div class="pi-fix"><b>Correction</b>Passe son <b>Color Space</b> en <b>Non-Color</b> et fais-la passer par un nœud <b>Normal Map</b>. Idem pour Roughness, Metallic, AO, Height.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon fichier exporté contient une caméra, une lampe et un cube en trop.</div>
+                <div class="pi-cause"><b>Cause</b>L'export a pris <b>toute la scène</b> faute d'avoir limité à la sélection.</div>
+                <div class="pi-fix"><b>Correction</b>Sélectionne uniquement tes objets et coche <b>Selected Objects / Limit to Selection</b> dans la fenêtre d'export.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon rendu superbe dans Cycles paraît terne ou différent une fois en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as jugé l'asset dans <b>Cycles</b> (path tracer) alors que le moteur, comme <b>EEVEE</b>, est un rasterizer&nbsp;: ils n'approximent pas la lumière pareil.</div>
+                <div class="pi-fix"><b>Correction</b>Pré-visualise ton game art en <b>EEVEE</b> ou en Material Preview&nbsp;; garde Cycles pour les rendus de présentation et le baking.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes nouveaux objets apparaissent au mauvais endroit dans la scène.</div>
+                <div class="pi-cause"><b>Cause</b>Le <b>curseur 3D</b> a été déplacé&nbsp;: c'est lui qui définit où naissent les objets.</div>
+                <div class="pi-fix"><b>Correction</b><kbd>Shift+C</kbd> recentre le curseur à l'origine (0,0,0) avant de créer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le damier (checker) sur mon modèle est étiré sur certaines faces.</div>
+                <div class="pi-cause"><b>Cause</b>Les <b>seams</b> sont mal placés&nbsp;: l'aplatissement force des étirements.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute des coutures là où la surface se courbe fort, refais <kbd>U</kbd> <span class="arrow">▸</span> Unwrap, et vise des carreaux carrés et réguliers partout.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Reproduis le fil rouge en autonomie, puis pousse un cran plus loin&nbsp;:</p>
+              <ol>
+                <li>Modélise un <b>petit coffre en bois</b> (caisse + couvercle séparé) à partir de deux cubes, avec un léger <b>Bevel</b> sur toutes les arêtes.</li>
+                <li>Ajoute un modifier <b>Subdivision Surface</b> niveau 1 sur le couvercle pour l'arrondir, puis observe la cage qui reste éditable.</li>
+                <li>Marque les <b>seams</b>, déplie en UV, et vérifie au <b>damier</b>.</li>
+                <li>Construis un matériau PBR&nbsp;: Base Color en <b>sRGB</b>, Roughness et Normal en <b>Non-Color</b>.</li>
+                <li>Applique les transforms (<kbd>Ctrl+A</kbd>) et exporte les deux objets sélectionnés en un seul <b>.glb</b>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le N-panel affiche <b>Scale 1, Rotation 0</b> sur tes deux objets avant l'export.</li>
+                  <li>Le damier est régulier sur l'ensemble des faces (pas d'étirement visible).</li>
+                  <li>La normal map est en <b>Non-Color</b> et passe par un nœud <b>Normal Map</b>.</li>
+                  <li>Le fichier <code>.glb</code> exporté ne contient <b>que</b> le coffre et son couvercle (ni caméra, ni lampe).</li>
+                  <li>Tu sais expliquer pourquoi tu as pré-visualisé en EEVEE plutôt qu'en Cycles.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Blender 4.x LTS est le <b>DCC gratuit</b> de référence&nbsp;: il couvre la première moitié du pipeline d'asset.</li>
+                <li>L'interface est une <b>grille d'éditeurs</b>&nbsp;; les <b>Workspaces</b> pré-arrangent ces éditeurs par tâche. Retiens <kbd>Tab</kbd> (Object/Edit), <kbd>N</kbd> (transforms), <kbd>T</kbd> (outils).</li>
+                <li>Opérations clés&nbsp;: <kbd>E</kbd> Extrude, <kbd>I</kbd> Inset, <kbd>Ctrl+B</kbd> Bevel, <kbd>Ctrl+R</kbd> Loop Cut. Les <b>modifiers</b> (Mirror, Subdivision, Solidify) sont <b>non destructifs</b>.</li>
+                <li>Le <b>Principled BSDF</b> est un shader PBR&nbsp;: couleur en <b>sRGB</b>, données (normal, roughness, metallic) en <b>Non-Color</b>.</li>
+                <li><b>EEVEE</b> imite le moteur de jeu (rapide)&nbsp;; <b>Cycles</b> est réaliste mais lent.</li>
+                <li>Avant export&nbsp;: <kbd>Ctrl+A</kbd> (transforms), <b>échelle 1</b>, bons <b>axes</b>, et <b>sélection</b> limitée. Préfère <b>glTF 2.0</b>, FBX en second.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>DCC</b> — <em>Digital Content Creation</em>&nbsp;: logiciel de création d'assets (Blender, Maya, 3ds Max) en amont du moteur.</p>
+              <p><b>Workspace</b> — disposition d'éditeurs mémorisée et optimisée pour une tâche (Modeling, Sculpting, UV Editing…).</p>
+              <p><b>Éditeur</b> — type de contenu affiché dans une zone de l'écran Blender (Viewport, Outliner, Properties…), interchangeable.</p>
+              <p><b>Curseur 3D</b> — point de référence mobile où apparaissent les nouveaux objets et qui sert de pivot/alignement.</p>
+              <p><b>Edit Mode</b> — mode (touche Tab) où l'on édite la géométrie interne&nbsp;: vertices, edges, faces.</p>
+              <p><b>Modifier</b> — opération non destructive empilée sur un objet (Mirror, Subdivision Surface, Solidify), réglable à tout moment.</p>
+              <p><b>Principled BSDF</b> — shader PBR tout-en-un de Blender dont les entrées correspondent aux maps standard (Base Color, Metallic, Roughness, Normal).</p>
+              <p><b>EEVEE</b> — moteur de rendu temps réel (rasterizer) de Blender, rapide, proche d'un moteur de jeu.</p>
+              <p><b>Cycles</b> — moteur de rendu par lancer de rayons (path tracer) de Blender, réaliste mais lent.</p>
+              <p><b>glTF 2.0</b> — format d'échange ouvert et moderne (.glb/.gltf) adapté au temps réel, embarquant maillage, UV, matériaux PBR.</p>
+              <p><b>Add-on</b> — extension Python ajoutant des fonctions (Node Wrangler, LoopTools), activée dans les préférences.</p>
+              <p>Tous ces termes (et bien d'autres) sont rassemblés dans le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b01-installation.html">Piste 2 · Blender (parcours complet)</a>&nbsp;: chaque sujet de cet aperçu, approfondi sur 11 leçons.</li>
+              <li><a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV mapping</a>&nbsp;: la théorie complète des seams, du dépliage et de la densité de texels.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>&nbsp;: à quoi correspond chaque entrée du Principled BSDF, map par map.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a>&nbsp;: transférer le détail d'un sculpt high-poly vers un low-poly via une normal map.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance 3D</a>&nbsp;: texturer la caisse de façon avancée après l'avoir dépliée dans Blender.</li>
+              <li><a href="../../cours/comparaison/c02-transfert-assets.html">C2 — Transfert d'assets</a>&nbsp;: importer proprement ton glTF/FBX dans Unity et Unreal.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

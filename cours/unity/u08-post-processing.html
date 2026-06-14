@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U8 — Post-processing (Volume) · Atelier Game Art</title>
+  <meta name="description" content="Le framework Volume d'Unity et les effets de post-traitement : bloom, tonemapping, color grading, ambient occlusion, profondeur de champ, vignette.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 41</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>Post-processing (Volume)</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U8 — Post-processing (Volume)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage</a> et <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est le <b>post-processing</b> et <em>pourquoi</em> il s'applique sur l'image finale, après le rendu de la scène.</li>
+                <li>Comprendre le <b>framework Volume</b> d'Unity&nbsp;: Volume Profile, Overrides, Volume <b>Global</b> vs <b>Local</b>, priorité et blend distance.</li>
+                <li>Régler le <b>Tonemapping</b> (ACES/Neutral) et savoir <em>pourquoi</em> il est indispensable dès qu'on travaille en <span class="gloss">HDR</span>.</li>
+                <li>Doser <b>Bloom</b>, <b>Color Adjustments</b>, <b>Ambient Occlusion</b>, <b>Depth of Field</b>, <b>Vignette</b> et les autres effets sans tomber dans le «&nbsp;trop&nbsp;».</li>
+                <li>Reconnaître et corriger les erreurs classiques&nbsp;: HDR cramé, bloom envahissant, halos noirs d'AO, flou sur l'UI, effet sur le mauvais pipeline.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Une scène 3D peut être parfaitement modélisée, texturée en <a href="../../cours/fondamentaux/f07-pbr.html">PBR</a> et éclairée avec soin&nbsp;: à l'écran, elle paraîtra souvent <b>plate, trop contrastée ou délavée</b> tant qu'on n'a pas appliqué la dernière couche de traitement. Cette couche, c'est le <span class="term">post-processing</span> (post-traitement)&nbsp;: un ensemble d'effets appliqués sur l'<b>image entière déjà rendue</b>, juste avant qu'elle ne s'affiche. C'est l'équivalent de l'étalonnage au cinéma&nbsp;: le tournage donne les images brutes, l'étalonnage leur donne leur «&nbsp;look&nbsp;».</p>
+            <p>Dans un vrai pipeline de production, le post-processing est ce qui transforme un rendu technique en image qui «&nbsp;raconte&nbsp;» quelque chose&nbsp;: une grotte oppressante, un coucher de soleil chaleureux, un couloir d'horreur glacé. Surtout, il accomplit une tâche <b>non négociable</b>&nbsp;: ramener les couleurs <span class="gloss">HDR</span> (qui peuvent monter bien au-delà de 1,0) dans la plage affichable d'un écran. Sans cette étape — le <b>tonemapping</b> — toute scène lumineuse devient un magma de blanc cramé. Un artiste technique qui ne maîtrise pas le Volume livre des scènes qui «&nbsp;brillent mal&nbsp;», illisibles ou criardes.</p>
+            <p>Unity centralise tout cela dans un système élégant, le <b>framework Volume</b>, partagé par <span class="gloss">URP</span> et <span class="gloss">HDRP</span>. Le comprendre, c'est pouvoir piloter l'ambiance de chaque zone d'un niveau (entrer dans une cave assombrit et désature l'image automatiquement), tout en gardant un coût GPU maîtrisé&nbsp;: un sujet directement lié à l'<a href="../../cours/unity/u11-optimisation.html">optimisation</a>.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Où le post-processing s'insère dans le rendu</h3>
+            <p>Un moteur ne dessine pas l'image d'un coup&nbsp;: il enchaîne des <b>passes</b>. D'abord la géométrie opaque, puis les ombres, l'éclairage, le transparent… À ce stade, le moteur dispose d'une image «&nbsp;brute&nbsp;» stockée en <span class="gloss">HDR</span> dans un tampon (un <span class="term">render target</span>, c'est-à-dire une texture où le moteur peint le rendu). Le post-processing intervient <b>après</b>&nbsp;: il prend cette image complète et lui applique une série de filtres, un par un, comme une chaîne de calques d'effets dans Photoshop, sauf qu'ici tout est recalculé 60 fois par seconde.</p>
+            <p>Ce point de timing explique une propriété essentielle&nbsp;: le post-processing travaille <b>en 2D, sur des pixels</b>, sans connaître les objets 3D. Il ne sait pas qu'il y a une «&nbsp;épée&nbsp;» dans l'image&nbsp;; il voit seulement des pixels clairs et sombres. Certains effets ont toutefois accès à des <b>tampons annexes</b>, en particulier le <span class="term">depth buffer</span> (tampon de profondeur&nbsp;: la distance de chaque pixel à la caméra), ce qui leur permet de simuler la profondeur — c'est ainsi que fonctionnent la profondeur de champ et l'occlusion ambiante écran.</p>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Pourquoi «&nbsp;après le rendu&nbsp;» change tout</div>
+              <p>Comme l'effet s'applique sur l'image finale, il touche <b>tout</b> indistinctement&nbsp;: décor, personnages et — attention — l'<b>interface utilisateur</b> si elle est dessinée avant. C'est la raison de plusieurs pièges plus loin (DOF qui floute l'UI). Retiens dès maintenant&nbsp;: un effet de post-process ne «&nbsp;voit&nbsp;» que des pixels, jamais des objets.</p>
+            </div>
+
+            <h3>2. Le framework Volume&nbsp;: Profile et Overrides</h3>
+            <p>Unity ne te demande pas de coder une chaîne d'effets. Il propose un système déclaratif appelé <span class="term">Volume</span>. L'idée&nbsp;: tu décris <b>quels effets</b> tu veux et <b>avec quels réglages</b>, dans un fichier réutilisable&nbsp;; le moteur s'occupe de les appliquer dans le bon ordre.</p>
+            <p>Trois briques à distinguer&nbsp;:</p>
+            <ul>
+              <li>Le <span class="term">Volume Profile</span>&nbsp;: un <b>asset</b> (un fichier <code>.asset</code> dans ton projet) qui contient la liste des effets activés et leurs valeurs. C'est un «&nbsp;preset d'ambiance&nbsp;» réutilisable, partageable entre plusieurs scènes.</li>
+              <li>L'<span class="term">Override</span> (surcharge)&nbsp;: <b>un</b> effet dans le profil, par exemple «&nbsp;Bloom&nbsp;» ou «&nbsp;Tonemapping&nbsp;». On l'ajoute via le bouton <span class="menu-path">Add Override</span>. Le mot «&nbsp;override&nbsp;» n'est pas anodin&nbsp;: chaque champ d'un effet a une <b>case à cocher</b> qui décide s'il <em>remplace</em> la valeur par défaut ou la laisse intacte (on y revient pour le blending).</li>
+              <li>Le composant <span class="term">Volume</span>&nbsp;: un composant posé sur un GameObject de la scène, qui <b>pointe vers</b> un Profile et décide de sa portée (global ou local), de sa priorité et de son influence.</li>
+            </ul>
+            <p>Cette séparation entre <b>données</b> (le Profile, réutilisable) et <b>présence dans la scène</b> (le composant Volume) est ce qui rend le système si souple&nbsp;: un même profil «&nbsp;Cave_Dark&nbsp;» peut être référencé par dix grottes différentes&nbsp;; corrige-le une fois, toutes en profitent.</p>
+
+            <h3>3. Global vs Local&nbsp;: changer l'ambiance selon la zone</h3>
+            <p>Un composant Volume a un mode <b>Mode</b> qui prend deux valeurs lourdes de conséquences.</p>
+            <h4>Volume Global</h4>
+            <p>Un <span class="term">Volume Global</span> s'applique <b>partout dans la scène</b>, en permanence, quel que soit l'endroit où se trouve la caméra. C'est ton ambiance «&nbsp;de base&nbsp;»&nbsp;: le tonemapping, le color grading général, un léger bloom. Une scène a presque toujours <b>au moins un</b> Volume Global, ne serait-ce que pour porter le tonemapping.</p>
+            <h4>Volume Local</h4>
+            <p>Un <span class="term">Volume Local</span> n'agit que lorsque la caméra <b>entre dans une zone</b> délimitée par un <b>Collider</b> (souvent un Box Collider) marqué <em>Is Trigger</em>. Le trigger sert ici de «&nbsp;volume d'influence&nbsp;»&nbsp;: dehors, l'effet est nul&nbsp;; dedans, il s'applique pleinement. C'est le mécanisme qui fait qu'en franchissant la porte d'une cave, l'image se désature et s'assombrit toute seule, sans une ligne de code.</p>
+            <p>Le passage n'est pas brutal grâce à la <span class="term">Blend Distance</span> (distance de fondu)&nbsp;: une marge, exprimée en mètres autour du collider, sur laquelle l'effet se <b>mélange progressivement</b> entre l'extérieur et l'intérieur. Avec une Blend Distance de 2&nbsp;m, l'ambiance commence à virer 2&nbsp;mètres avant la frontière, pour un fondu doux plutôt qu'un «&nbsp;clic&nbsp;» visible.</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Weight et Priority&nbsp;: le dosage et l'arbitrage</div>
+              <p>Deux réglages complètent le tableau. Le <b>Weight</b> (poids, 0→1) dose l'intensité globale d'un volume — pratique pour atténuer une ambiance locale sans la supprimer. La <b>Priority</b> tranche quand <b>plusieurs volumes se chevauchent</b>&nbsp;: le volume de plus haute priorité l'emporte sur les champs qu'il surcharge. Un Volume Local de cave (Priority 1) bat ainsi le Volume Global (Priority 0) pendant que la caméra est dedans.</p>
+            </div>
+
+            <h3>4. Le composant Volume sur la caméra (URP)</h3>
+            <p>Pour qu'une caméra <b>affiche</b> réellement le post-processing, il ne suffit pas qu'un Volume existe&nbsp;: la caméra doit l'autoriser. Dans <span class="gloss">URP</span>, sélectionne la caméra et coche <span class="menu-path">Camera<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Post Processing</span>. Sans cette case, ta scène ignore tous les Volumes&nbsp;: c'est l'une des sources de confusion les plus fréquentes chez les débutants («&nbsp;j'ai ajouté un bloom, rien ne change&nbsp;»).</p>
+            <p>De plus, le post-processing doit être activé au niveau du <b>Renderer</b> du pipeline (le <a href="../../cours/unity/u03-render-pipelines.html">render pipeline asset</a> URP), et certains effets exigent que la caméra génère le <b>Depth Texture</b> ou l'<b>Opaque Texture</b>. Retiens la chaîne d'autorisations&nbsp;: <b>pipeline → caméra → Volume</b>. Si un maillon manque, l'effet ne s'affiche pas, même parfaitement réglé.</p>
+
+            <h3>5. Le Tonemapping&nbsp;: l'effet non négociable</h3>
+            <p>C'est le cœur de la leçon. Le moteur calcule l'éclairage en <span class="gloss">HDR</span> (<em>High Dynamic Range</em>, voir <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>)&nbsp;: les valeurs de luminosité ne sont pas bornées à 1,0&nbsp;: le soleil peut valoir 8, une lampe émissive 20, un reflet spéculaire 50. C'est voulu&nbsp;: cela préserve les nuances dans les hautes lumières et permet un éclairage physiquement correct. Mais un écran, lui, ne sait afficher que des valeurs <b>entre 0 et 1</b> (le noir et le blanc maximal). Il faut donc <b>traduire</b> le HDR illimité vers cette plage finie.</p>
+            <p>Cette traduction s'appelle le <span class="term">tonemapping</span> (mappage tonal). Sans lui, le moteur «&nbsp;coupe&nbsp;» brutalement tout ce qui dépasse 1,0 (<em>clipping</em>)&nbsp;: une fenêtre ensoleillée, un néon, un ciel deviennent un aplat de blanc pur, sans aucune nuance. Avec un bon tonemapping, ces hautes valeurs sont <b>compressées en douceur</b>&nbsp;: le blanc reste lumineux mais garde du détail, et les couleurs saturées ne virent pas au blanc.</p>
+            <h4>Neutral vs ACES</h4>
+            <p>Unity propose deux courbes principales&nbsp;:</p>
+            <ul>
+              <li><b>Neutral</b>&nbsp;: une compression douce qui touche le moins possible aux teintes. Idéale quand tu veux contrôler toi-même le look via le color grading, ou pour un rendu fidèle aux couleurs d'origine.</li>
+              <li><b>ACES</b> (<em>Academy Color Encoding System</em>)&nbsp;: la courbe standard du cinéma. Elle donne un rendu <b>contrasté et «&nbsp;filmique&nbsp;»</b>, avec de beaux noirs profonds et des hautes lumières qui «&nbsp;roulent&nbsp;» joliment. Elle a tendance à <b>désaturer légèrement</b> les couleurs très vives (un orange vif tire vers le jaune), ce qui «&nbsp;sent juste&nbsp;» mais peut surprendre.</li>
+            </ul>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Pas de tonemapping = HDR cramé</div>
+              <p>Si ta scène est éclairée en HDR (et elle l'est, par défaut, en URP/HDRP) et que tu n'ajoutes <b>aucun</b> Tonemapping, toutes les zones lumineuses se transforment en blanc plat. C'est l'erreur n°1 du débutant&nbsp;: «&nbsp;ma scène est cramée&nbsp;». La solution n'est pas de baisser les lumières (ce qui assombrit tout) mais d'<b>ajouter un Tonemapping</b> pour ramener proprement le HDR à l'écran.</p>
+            </div>
+
+            <h3>6. Le Bloom&nbsp;: le halo des zones très lumineuses</h3>
+            <p>Le <span class="term">bloom</span> simule un défaut bien réel de l'œil et des objectifs&nbsp;: face à une source très lumineuse, la lumière «&nbsp;déborde&nbsp;» et forme un <b>halo</b> diffus autour d'elle. Dans Unity, le bloom détecte les pixels dont la luminosité dépasse un seuil — le <b>Threshold</b> — puis les floute et les rajoute par-dessus l'image. Le réglage <b>Intensity</b> contrôle l'ampleur du halo.</p>
+            <p>Point capital&nbsp;: le bloom ne se déclenche réellement que sur les valeurs <b>supérieures à 1,0</b>, c'est-à-dire le domaine HDR. C'est précisément ce qui relie le bloom à l'<b>émission</b> vue en <a href="../../cours/unity/u06-materiaux.html">U6</a>&nbsp;: un matériau dont l'Emission est poussée au-delà de 1 (via l'intensité HDR du color picker) «&nbsp;allumera&nbsp;» visiblement, avec un halo. Un néon, une lave, l'écran d'un terminal&nbsp;: leur éclat ne vient pas de la couleur seule mais du couple <b>émission HDR + bloom</b>. Sans bloom, l'émission reste un aplat coloré sans magie&nbsp;; avec un bloom trop fort, toute l'image baigne dans la brume.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 250" role="img" aria-label="La chaîne du post-processing : image rendue HDR, puis tonemapping, bloom, color grading, vignette, donnant l'image finale affichée">
+                <text x="320" y="26" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">La chaîne du post-processing</text>
+                <!-- entrée -->
+                <rect x="14" y="86" width="104" height="78" rx="10" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+                <text x="66" y="118" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Scène</text>
+                <text x="66" y="134" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">rendue</text>
+                <text x="66" y="152" text-anchor="middle" class="svg-dim" font-size="10">HDR &gt; 1,0</text>
+                <!-- flèche -->
+                <line x1="120" y1="125" x2="150" y2="125" stroke="#313c4c" stroke-width="2"/><polygon points="150,125 140,120 140,130" fill="#313c4c"/>
+                <!-- étapes -->
+                <g>
+                  <rect x="152" y="92" width="92" height="66" rx="8" class="svg-surface" stroke="#f2b441" stroke-width="2"/>
+                  <text x="198" y="120" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Tonemapping</text>
+                  <text x="198" y="136" text-anchor="middle" class="svg-dim" font-size="9">HDR → écran</text>
+
+                  <rect x="256" y="92" width="84" height="66" rx="8" class="svg-surface" stroke="#59b0ff" stroke-width="2"/>
+                  <text x="298" y="120" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Bloom</text>
+                  <text x="298" y="136" text-anchor="middle" class="svg-dim" font-size="9">halos &gt; 1,0</text>
+
+                  <rect x="352" y="92" width="98" height="66" rx="8" class="svg-surface" stroke="#5ad19a" stroke-width="2"/>
+                  <text x="401" y="116" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Color</text>
+                  <text x="401" y="130" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Grading</text>
+                  <text x="401" y="146" text-anchor="middle" class="svg-dim" font-size="9">contraste, teinte</text>
+
+                  <rect x="462" y="92" width="84" height="66" rx="8" class="svg-surface" stroke="#c89bff" stroke-width="2"/>
+                  <text x="504" y="120" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Vignette</text>
+                  <text x="504" y="136" text-anchor="middle" class="svg-dim" font-size="9">bords assombris</text>
+                </g>
+                <!-- flèches entre étapes -->
+                <g stroke="#313c4c" stroke-width="2" fill="#313c4c">
+                  <line x1="244" y1="125" x2="256" y2="125"/><polygon points="256,125 247,120 247,130"/>
+                  <line x1="340" y1="125" x2="352" y2="125"/><polygon points="352,125 343,120 343,130"/>
+                  <line x1="450" y1="125" x2="462" y2="125"/><polygon points="462,125 453,120 453,130"/>
+                </g>
+                <!-- sortie -->
+                <line x1="548" y1="125" x2="576" y2="125" stroke="#313c4c" stroke-width="2"/><polygon points="576,125 566,120 566,130" fill="#313c4c"/>
+                <rect x="560" y="170" width="0" height="0"/>
+                <text x="320" y="200" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">↓ Image finale affichée à l'écran (0 → 1)</text>
+                <rect x="160" y="212" width="320" height="26" rx="6" class="svg-surface" stroke="#313c4c"/>
+                <text x="320" y="229" text-anchor="middle" class="svg-dim" font-size="11">ordre fixe&nbsp;: l'ordre des effets dans le Volume n'a pas d'importance, le pipeline l'impose</text>
+              </svg>
+              <figcaption>Le post-processing prend l'image rendue en HDR et la fait passer dans une suite d'étapes. Le tonemapping ramène d'abord le HDR à l'écran&nbsp;; le bloom ajoute les halos&nbsp;; le color grading ajuste l'ambiance&nbsp;; la vignette cadre le regard. L'ordre est imposé par le moteur, pas par l'ordre où tu ajoutes les Overrides.</figcaption>
+            </figure>
+
+            <h3>7. Le Color Grading&nbsp;: l'étalonnage</h3>
+            <p>Le <span class="term">color grading</span> (étalonnage) regroupe les outils qui retravaillent la couleur et le contraste de l'image, comme un coloriste de cinéma. En URP, l'essentiel se concentre dans deux Overrides&nbsp;: <b>Color Adjustments</b> et <b>White Balance</b>, complétés par <b>Shadows / Midtones / Highlights</b>, <b>Color Curves</b> et le <b>Lift / Gamma / Gain</b>.</p>
+            <ul>
+              <li><b>Post Exposure</b>&nbsp;: l'exposition globale (en valeurs d'arrêt, comme un appareil photo). Éclaircit ou assombrit toute l'image sans toucher aux teintes.</li>
+              <li><b>Contrast</b>&nbsp;: écarte ou rapproche les sombres et les clairs. Trop de contraste «&nbsp;bouche&nbsp;» les ombres et crame les hautes lumières.</li>
+              <li><b>Saturation</b>&nbsp;: l'intensité des couleurs. La désaturer évoque le froid, la peur, la nostalgie&nbsp;; la pousser donne un look «&nbsp;arcade&nbsp;».</li>
+              <li><b>Color Filter</b> et <b>White Balance (Temperature/Tint)</b>&nbsp;: teintent l'image (bleu froid, orange chaud) pour poser une émotion.</li>
+            </ul>
+            <p>Un cran au-dessus, la <span class="term">LUT</span> (<em>Look-Up Table</em>, table de correspondance) est une «&nbsp;recette&nbsp;» de couleurs pré-calculée, stockée dans une petite texture, qui réétalonne toute l'image d'un coup (Override <b>Color Lookup</b>). C'est le moyen le plus rapide d'appliquer un look cohérent à tout un jeu, et de le partager entre artistes.</p>
+
+            <h3>8. Les effets de profondeur&nbsp;: AO, Depth of Field, Motion Blur</h3>
+            <p>Ces trois effets utilisent le <span class="term">depth buffer</span> pour réintroduire un peu de la 3D dans le traitement 2D.</p>
+            <ul>
+              <li>L'<span class="gloss">Ambient Occlusion</span> en post-process, le <span class="term">SSAO</span> (<em>Screen-Space Ambient Occlusion</em>), assombrit les <b>recoins et contacts</b> entre objets, là où la lumière ambiante pénètre mal. Il ancre les objets au sol et creuse les détails. Trop fort, il crée des <b>halos noirs</b> disgracieux autour des silhouettes.</li>
+              <li>La <span class="term">Depth of Field</span> (profondeur de champ) floute ce qui est hors du plan de netteté, comme un objectif photo. Le flou des points lumineux produit le fameux <b>bokeh</b> (taches lumineuses douces). Excellent pour les gros plans et les cinématiques, mais coûteux et redoutable s'il floute par erreur l'interface.</li>
+              <li>Le <span class="term">Motion Blur</span> (flou de mouvement) étire les pixels selon leur déplacement, pour une sensation de vitesse. Discret, il fluidifie&nbsp;; trop appuyé, il donne la nausée et masque l'action.</li>
+            </ul>
+
+            <h3>9. Les effets «&nbsp;d'objectif&nbsp;»&nbsp;: Vignette, Grain, Aberration, Distortion</h3>
+            <p>Ce dernier groupe imite les imperfections d'une caméra réelle, ce qui paradoxalement rend l'image plus crédible (notre cerveau associe ces défauts à «&nbsp;de la vraie pellicule&nbsp;»).</p>
+            <ul>
+              <li><span class="term">Vignette</span>&nbsp;: assombrit légèrement les <b>bords</b> de l'écran. Concentre le regard vers le centre&nbsp;; un classique discret et efficace.</li>
+              <li><span class="term">Film Grain</span>&nbsp;: ajoute un grain animé, pour casser l'aspect «&nbsp;trop propre&nbsp;» du rendu numérique et évoquer la pellicule.</li>
+              <li><span class="term">Chromatic Aberration</span> (aberration chromatique)&nbsp;: sépare légèrement les canaux rouge/vert/bleu sur les bords, comme un objectif bon marché. Avec parcimonie, ça «&nbsp;décrispe&nbsp;» l'image&nbsp;; à l'excès, ça donne mal aux yeux.</li>
+              <li><span class="term">Lens Distortion</span>&nbsp;: courbe l'image (effet fish-eye ou pincement), utile pour un POV grand-angle ou un effet d'ivresse.</li>
+            </ul>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Le piège du «&nbsp;trop&nbsp;»</div>
+              <p>Le post-processing est addictif&nbsp;: chaque effet «&nbsp;rend mieux&nbsp;» séparément, et on empile. Résultat fréquent&nbsp;: bloom envahissant + aberration chromatique forte + grain épais + vignette lourde = une image <b>illisible et fatigante</b>. Règle d'or&nbsp;: le post-process réussi est celui qu'on <b>ne remarque pas</b>. Pousse chaque effet jusqu'à le voir, puis recule jusqu'à la moitié.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 300" role="img" aria-label="Une caméra se déplace de l'extérieur lumineux vers l'intérieur d'une cave délimitée par un Volume Local : la blend distance assure un fondu progressif de l'ambiance">
+                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Volume Global vs Volume Local (avec Blend Distance)</text>
+                <!-- bandeau global -->
+                <rect x="14" y="40" width="612" height="22" rx="6" class="svg-surface" stroke="#59b0ff" stroke-width="2"/>
+                <text x="320" y="55" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Volume Global — tonemapping + grading de base, partout</text>
+                <!-- sol extérieur -->
+                <rect x="14" y="210" width="612" height="60" class="svg-surface"/>
+                <!-- boîte du volume local (cave) -->
+                <rect x="380" y="86" width="246" height="124" rx="6" fill="#16242f" stroke="#c89bff" stroke-width="2.5"/>
+                <text x="503" y="108" text-anchor="middle" class="svg-text" font-size="12" font-weight="700" fill="#c89bff">Volume Local (cave)</text>
+                <text x="503" y="126" text-anchor="middle" class="svg-dim" font-size="10">Box Collider · Is Trigger</text>
+                <text x="503" y="170" text-anchor="middle" class="svg-dim" font-size="10">désature + assombrit</text>
+                <text x="503" y="186" text-anchor="middle" class="svg-dim" font-size="10">Priority &gt; Global</text>
+                <!-- zone de blend -->
+                <rect x="320" y="86" width="60" height="124" fill="#c89bff" fill-opacity="0.16" stroke="#c89bff" stroke-width="1" stroke-dasharray="4 4"/>
+                <text x="350" y="234" text-anchor="middle" class="svg-dim" font-size="10">Blend</text>
+                <text x="350" y="247" text-anchor="middle" class="svg-dim" font-size="10">Distance</text>
+                <!-- trajectoire caméra -->
+                <line x1="70" y1="150" x2="560" y2="150" stroke="#f2b441" stroke-width="2" stroke-dasharray="6 5"/>
+                <!-- caméra position 1 (extérieur) -->
+                <g transform="translate(70,150)">
+                  <rect x="-16" y="-12" width="32" height="24" rx="4" fill="#f2b441"/>
+                  <polygon points="16,-7 30,-14 30,14 16,7" fill="#f2b441"/>
+                </g>
+                <text x="70" y="190" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">extérieur</text>
+                <text x="70" y="203" text-anchor="middle" class="svg-dim" font-size="9">100 % global</text>
+                <!-- caméra position 2 (dans le blend) -->
+                <g transform="translate(350,150)" opacity="0.85">
+                  <rect x="-16" y="-12" width="32" height="24" rx="4" fill="#f2b441"/>
+                  <polygon points="16,-7 30,-14 30,14 16,7" fill="#f2b441"/>
+                </g>
+                <!-- caméra position 3 (intérieur) -->
+                <g transform="translate(520,150)">
+                  <rect x="-16" y="-12" width="32" height="24" rx="4" fill="#c89bff"/>
+                  <polygon points="16,-7 30,-14 30,14 16,7" fill="#c89bff"/>
+                </g>
+                <text x="520" y="190" text-anchor="middle" class="svg-text" font-size="10" font-weight="700">intérieur</text>
+                <text x="520" y="203" text-anchor="middle" class="svg-dim" font-size="9">100 % cave</text>
+                <!-- courbe de mélange -->
+                <text x="200" y="288" class="svg-dim" font-size="10">Influence cave&nbsp;:</text>
+                <path d="M270 288 L320 288 Q350 288 350 276 Q350 264 380 264 L470 264" fill="none" stroke="#5ad19a" stroke-width="2.5"/>
+                <text x="300" y="283" class="svg-dim" font-size="9">0&nbsp;%</text>
+                <text x="430" y="259" class="svg-dim" font-size="9">100&nbsp;%</text>
+              </svg>
+              <figcaption>Le Volume Global pose l'ambiance partout. En entrant dans la boîte du Volume Local, la caméra voit l'ambiance basculer&nbsp;: la Blend Distance (zone pointillée) crée un fondu doux plutôt qu'un changement brutal à la frontière du collider.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>On part d'une scène <span class="gloss">URP</span> déjà éclairée (voir <a href="../../cours/unity/u07-eclairage.html">U7</a>). Objectif&nbsp;: poser un <b>Volume Global</b> avec Tonemapping ACES, Bloom, un léger Color Adjustments et une Vignette, puis vérifier qu'on ne crame plus.</p>
+            <ol>
+              <li>Active d'abord le post-processing sur la caméra&nbsp;: sélectionne <b>Main Camera</b>, dans l'Inspector coche <span class="menu-path">Camera<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Post Processing</span>. Sans cette case, aucun effet ne s'affichera, même bien réglé.</li>
+              <li>Crée le volume&nbsp;: <span class="menu-path">GameObject<span class="arrow">▸</span>Volume<span class="arrow">▸</span>Global Volume</span>. Unity ajoute un GameObject portant un composant <b>Volume</b> en mode <em>Global</em>. À côté, clique <b>New</b> pour qu'il crée un <b>Volume Profile</b> vierge&nbsp;: c'est le fichier qui stockera tes effets.</li>
+              <li>Ajoute le tonemapping&nbsp;: sur le composant Volume, clique <span class="menu-path">Add Override<span class="arrow">▸</span>Tonemapping</span>, puis coche le champ <b>Mode</b> et choisis <b>ACES</b>. Effet immédiat&nbsp;: les zones blanches cramées récupèrent du détail, le contraste se «&nbsp;filmise&nbsp;». C'est l'étape qui change le plus l'image.</li>
+              <li>Ajoute le bloom&nbsp;: <span class="menu-path">Add Override<span class="arrow">▸</span>Bloom</span>. Coche <b>Threshold</b> (≈ 1) et <b>Intensity</b> (commence bas, ≈ 0,15). Pointe ta caméra vers une source émissive (un néon de <a href="../../cours/unity/u06-materiaux.html">U6</a>)&nbsp;: un halo doux apparaît autour. Si tout l'écran brille, baisse l'Intensity et monte le Threshold.</li>
+              <li>Ajoute un étalonnage léger&nbsp;: <span class="menu-path">Add Override<span class="arrow">▸</span>Color Adjustments</span>. Coche <b>Post Exposure</b> (réglage fin de luminosité), <b>Contrast</b> (≈ +8), <b>Saturation</b> (≈ +5). Reste subtil&nbsp;: on accompagne le tonemapping, on ne le combat pas.</li>
+              <li>Ajoute la vignette&nbsp;: <span class="menu-path">Add Override<span class="arrow">▸</span>Vignette</span>. Coche <b>Intensity</b> (≈ 0,25) et <b>Smoothness</b> (≈ 0,4). Les bords s'assombrissent doucement, le regard se centre.</li>
+              <li>Compare avant/après&nbsp;: désactive puis réactive le GameObject Volume (case en haut de l'Inspector). L'écart te dit ce que le post-process apporte vraiment — et si tu en as trop mis.</li>
+              <li>Pour une ambiance de zone, duplique l'approche en <b>Local</b>&nbsp;: <span class="menu-path">GameObject<span class="arrow">▸</span>Volume<span class="arrow">▸</span>Box Volume</span>, place la boîte sur la zone, monte sa <b>Priority</b> au-dessus du global, règle une <b>Blend Distance</b> de 1–2&nbsp;m, et dans son profil mets une Saturation négative. En traversant la boîte, l'image se désature en fondu.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Toutes les zones lumineuses (ciel, fenêtres, néons) sont un aplat de blanc pur, sans nuance.</div>
+                <div class="pi-cause"><b>Cause</b> — Aucun <b>Tonemapping</b> dans la scène alors que le rendu est en HDR. Le moteur «&nbsp;coupe&nbsp;» tout ce qui dépasse 1,0 (clipping).</div>
+                <div class="pi-fix"><b>Correction</b> — Ajoute un Override <b>Tonemapping</b> (ACES ou Neutral) dans un Volume Global. Ne baisse pas les lumières&nbsp;: ça assombrirait toute la scène pour rien.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — L'image entière baigne dans un voile lumineux, les contours bavent, tout «&nbsp;brille&nbsp;».</div>
+                <div class="pi-cause"><b>Cause</b> — Bloom <b>trop intense</b> et/ou <b>Threshold trop bas</b>&nbsp;: même les pixels moyennement clairs déclenchent un halo.</div>
+                <div class="pi-fix"><b>Correction</b> — Monte le Threshold vers 1,0 (le bloom ne touche que le HDR &gt; 1) et baisse l'Intensity. Réserve l'éclat aux vraies sources émissives.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Des halos noirs cernent les personnages et les objets, surtout sur fond clair.</div>
+                <div class="pi-cause"><b>Cause</b> — <b>Ambient Occlusion (SSAO)</b> réglé trop fort&nbsp;: l'Intensity ou le Radius dépasse le réaliste et «&nbsp;déborde&nbsp;» sur les silhouettes.</div>
+                <div class="pi-fix"><b>Correction</b> — Baisse l'Intensity, réduis le Radius. L'AO doit creuser discrètement les contacts, pas dessiner un liseré sombre.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Les menus, le HUD ou le viseur sont <b>flous</b> alors que le décor est net.</div>
+                <div class="pi-cause"><b>Cause</b> — La <b>Depth of Field</b> (ou un autre effet) s'applique sur l'image complète, UI comprise, parce que l'UI est rendue <em>avant</em> le post-process.</div>
+                <div class="pi-fix"><b>Correction</b> — Rends l'UI dans un Canvas en <em>Screen Space - Overlay</em> (dessiné après le post-process), ou via une caméra UI dédiée non affectée par le Volume.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Tu as réglé un superbe Volume, mais à l'écran <b>rien ne change</b>.</div>
+                <div class="pi-cause"><b>Cause</b> — La case <b>Post Processing</b> de la caméra est décochée, ou le post-process est désactivé dans le Renderer du pipeline.</div>
+                <div class="pi-fix"><b>Correction</b> — Coche Post Processing sur la caméra et vérifie le Renderer du <a href="../../cours/unity/u03-render-pipelines.html">render pipeline asset</a>. La chaîne pipeline → caméra → Volume doit être complète.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> — Un tutoriel utilise un effet (ex. «&nbsp;Post-process Layer&nbsp;») que tu ne trouves nulle part dans ton projet.</div>
+                <div class="pi-cause"><b>Cause</b> — Effet conçu pour le <b>mauvais pipeline</b>&nbsp;: le PPv2 (Built-in), l'URP et l'HDRP ont des composants et des noms différents.</div>
+                <div class="pi-fix"><b>Correction</b> — Identifie ton pipeline (voir <a href="../../cours/unity/u03-render-pipelines.html">U3</a>) et suis une ressource du bon. En URP/HDRP, tout passe par le <b>framework Volume</b>, pas par un «&nbsp;Post-process Layer&nbsp;».</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Dans une scène URP éclairée avec au moins une source émissive (néon, lampe), mets en place une ambiance complète&nbsp;:</p>
+              <ol>
+                <li>Crée un <b>Global Volume</b> avec un nouveau Profile portant&nbsp;: <b>Tonemapping ACES</b>, <b>Bloom</b> dosé (Threshold ≈ 1, Intensity faible), <b>Color Adjustments</b> léger (Contrast et Saturation discrets) et une <b>Vignette</b> douce.</li>
+                <li>Ajoute un <b>Box Volume</b> (Local) délimitant une zone «&nbsp;cave&nbsp;»&nbsp;: Priority au-dessus du global, <b>Blend Distance</b> ≈ 1,5&nbsp;m, et un profil qui <b>désature</b> et <b>assombrit</b> (Saturation négative, Post Exposure légèrement négatif).</li>
+                <li>Traverse la frontière en mode Play et observe le fondu.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune zone lumineuse n'est <b>cramée</b> en blanc plat&nbsp;: le tonemapping fait son travail.</li>
+                  <li>Le bloom <b>n'apparaît que</b> sur les sources émissives, pas sur tout l'écran.</li>
+                  <li>L'étalonnage global reste <b>subtil</b> (on ne doit pas «&nbsp;voir&nbsp;» le contraste ni la vignette du premier coup d'œil).</li>
+                  <li>En entrant dans le Box Volume, l'ambiance bascule en <b>fondu progressif</b> grâce à la Blend Distance, sans saut brutal.</li>
+                  <li>L'interface (si présente) reste <b>nette</b>, non affectée par les effets.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le post-processing s'applique sur l'<b>image finale 2D</b>, après le rendu&nbsp;: il voit des pixels, pas des objets.</li>
+                <li>Tout passe par le <b>framework Volume</b>&nbsp;: un <b>Profile</b> (asset réutilisable) contenant des <b>Overrides</b> (effets), porté par un composant <b>Volume</b> <em>Global</em> ou <em>Local</em>.</li>
+                <li>Un <b>Volume Local</b> + Collider trigger + <b>Blend Distance</b> change l'ambiance d'une zone en fondu&nbsp;; la <b>Priority</b> arbitre les chevauchements.</li>
+                <li>Le <b>Tonemapping</b> (ACES/Neutral) est <b>indispensable</b> en HDR&nbsp;: sans lui, les hautes lumières crament en blanc plat.</li>
+                <li>Le <b>Bloom</b> ne réagit qu'au HDR &gt; 1,0&nbsp;: il est le partenaire de l'<b>émission</b> (U6). Dose tout&nbsp;: le bon post-process est celui qu'on ne remarque pas.</li>
+                <li>En URP, coche <b>Post Processing</b> sur la caméra, et veille à utiliser les effets du <b>bon pipeline</b> (URP/HDRP, pas Built-in).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Post-processing</b> — Ensemble d'effets appliqués sur l'image finale déjà rendue, en 2D, juste avant l'affichage (tonemapping, bloom, étalonnage…).</p>
+              <p><b>Volume (framework)</b> — Système d'Unity (URP/HDRP) qui applique le post-processing&nbsp;: un composant Volume pointe vers un Profile contenant des Overrides.</p>
+              <p><b>Volume Profile</b> — Asset réutilisable listant les effets activés et leurs réglages&nbsp;; un «&nbsp;preset d'ambiance&nbsp;» partageable entre scènes.</p>
+              <p><b>Override</b> — Un effet de post-process dans un Profile (Bloom, Tonemapping…)&nbsp;; chaque champ a une case qui décide s'il remplace la valeur par défaut.</p>
+              <p><b>Volume Global / Local</b> — Global&nbsp;: l'effet s'applique partout. Local&nbsp;: il n'agit que dans une zone délimitée par un Collider trigger.</p>
+              <p><b>Blend Distance</b> — Marge autour d'un Volume Local sur laquelle l'effet se mélange progressivement, pour un fondu doux à l'entrée/sortie de zone.</p>
+              <p><b>Tonemapping</b> — Compression des valeurs HDR illimitées vers la plage 0–1 d'un écran&nbsp;; sans lui, les hautes lumières crament. Modes Neutral et ACES.</p>
+              <p><b>Bloom</b> — Halo lumineux ajouté autour des pixels très clairs (HDR &gt; 1,0)&nbsp;; donne leur éclat aux surfaces émissives.</p>
+              <p><b>Color Grading</b> — Étalonnage de l'image&nbsp;: exposition, contraste, saturation, balance des blancs, courbes, parfois via une LUT.</p>
+              <p><b>LUT</b> — Table de correspondance de couleurs pré-calculée (texture) appliquant un look complet d'un seul coup.</p>
+              <p><b>Depth of Field / Bokeh</b> — Flou de profondeur simulant un objectif&nbsp;; le bokeh est l'aspect doux des points lumineux hors mise au point.</p>
+              <p><b>Vignette</b> — Assombrissement progressif des bords de l'écran pour concentrer le regard vers le centre.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a> pour les termes transverses (HDR, URP, HDRP, Ambient Occlusion…).</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/fondamentaux/f01-image-numerique.html">F1 — L'image numérique</a>&nbsp;: le HDR, le clipping et l'espace linéaire, fondations du tonemapping.</li>
+              <li><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage</a>&nbsp;: l'éclairage HDR que le post-process vient «&nbsp;finir&nbsp;».</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux Unity</a>&nbsp;: l'émission HDR, le partenaire indispensable du bloom.</li>
+              <li><a href="../../cours/unity/u03-render-pipelines.html">U3 — Render pipelines</a>&nbsp;: pourquoi les effets diffèrent entre Built-in, URP et HDRP.</li>
+              <li><a href="../../cours/unity/u11-optimisation.html">U11 — Optimisation</a>&nbsp;: le coût GPU des effets de post-process et comment le maîtriser.</li>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage Unreal</a>&nbsp;: le Post Process Volume d'Unreal, l'équivalent du framework Volume.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>
