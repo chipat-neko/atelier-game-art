@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP14 — Performance &amp; pièges · Atelier Game Art</title>
+  <meta name="description" content="Optimiser ses Blueprints : coût du Tick, casts lourds, nœuds pure réévalués, Blueprint vs C++, et bonnes habitudes de performance.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp14";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Performance &amp; pièges</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP14 — Performance &amp; pièges</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp05-evenements.html">BP5 — Événements</a>, <a href="../../cours/blueprints/bp10-communication.html">BP10 — Communication</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Pourquoi le <b>Tick</b> est le premier poste de coût, et comment l'éviter.</li>
+                <li>Les dangers des <b>casts</b> lourds et des dépendances.</li>
+                <li>Le piège des nœuds <b>pure</b> réévalués plusieurs fois.</li>
+                <li>Quand passer du <b>Blueprint au C++</b> et comment profiler.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les Blueprints sont interprétés (Blueprint VM)&nbsp;: un peu plus lents que le C++. Quelques réflexes évitent les pertes de framerate quand le projet grossit.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le coût du Tick</h3>
+            <p><code>Event Tick</code> tourne chaque frame sur chaque Actor qui l'active. Multiplié par des centaines d'Actors, c'est le premier responsable des chutes de framerate. Réflexes&nbsp;:</p>
+            <ul>
+              <li>Désactive le Tick s'il est inutile (<i>Start with Tick Enabled</i> off, ou <code>Set Actor Tick Enabled</code>).</li>
+              <li>Remplace par des <b>événements</b> (overlap, timer, dispatcher).</li>
+              <li>Utilise un <b>Timer</b> à intervalle (ex. toutes les 0,2 s) plutôt que chaque frame.</li>
+            </ul>
+
+            <h3>2. Casts &amp; dépendances</h3>
+            <p>Un <code>Cast To BP_X</code> crée une <b>dépendance dure</b>&nbsp;: charger le Blueprint en charge d'autres. Trop de casts = temps de chargement et mémoire en hausse. Préfère les <b>interfaces</b> (vu en <a href="../../cours/blueprints/bp10-communication.html">BP10</a>) pour découpler.</p>
+
+            <h3>3. Le piège des nœuds pure</h3>
+            <p>Un nœud/fonction <b>pure</b> est <b>réévalué à chaque branchement</b> de sa sortie. Si un calcul lourd pure est tiré par 3 nœuds, il s'exécute 3 fois. Stocke le résultat dans une variable (impure) si besoin.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>❌ Get Distance (pure, lourd) tiré 3× → calculé 3×
+✅ Calculer une fois ─▶ Set Dist ─▶ utiliser Get Dist (variable) ailleurs</code></pre>
+            </div>
+
+            <h3>4. Blueprint vs C++ &amp; profilage</h3>
+            <p>Pour les systèmes appelés très souvent (maths bas niveau, IA massive), le <b>C++</b> est plus rapide. Mesure d'abord avec le profileur (<code>stat unit</code>, <code>stat game</code>, Unreal Insights) pour cibler le vrai goulot — on n'optimise pas au hasard.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 110" role="img" aria-label="Tick coûteux remplacé par un timer ou un événement">
+                <g class="svg-text" font-size="9" font-family="sans-serif">
+                  <rect x="20" y="35" width="160" height="44" rx="8" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444"/><text x="100" y="55" text-anchor="middle">Event Tick</text><text x="100" y="70" text-anchor="middle" class="svg-dim" font-size="8">chaque frame ×N Actors</text>
+                  <path d="M190 57 H250" stroke="#f97316" stroke-width="2" marker-end="url(#a14)"/>
+                  <rect x="250" y="35" width="290" height="44" rx="8" fill="#22c55e" fill-opacity="0.08" stroke="#22c55e"/><text x="395" y="55" text-anchor="middle">Événement / Timer (intervalle)</text><text x="395" y="70" text-anchor="middle" class="svg-dim" font-size="8">déclenché quand nécessaire</text>
+                  <defs><marker id="a14" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#f97316"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Remplacer le Tick par de l'événementiel quand c'est possible.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Désactive le Tick d'un Actor qui n'en a pas besoin.</li>
+              <li>Remplace une vérification Tick par un Timer toutes les 0,2 s.</li>
+              <li>Remplace un cast par un appel d'interface.</li>
+              <li>Stocke le résultat d'un calcul pure lourd dans une variable.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Framerate en baisse avec beaucoup d'Actors.</div>
+                <div class="pi-cause"><b>Cause</b>Tick actif sur tous.</div>
+                <div class="pi-fix"><b>Correction</b>Désactive le Tick inutile&nbsp;; passe en événementiel/Timer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Temps de chargement qui explose.</div>
+                <div class="pi-cause"><b>Cause</b>Réseau de casts → dépendances dures.</div>
+                <div class="pi-fix"><b>Correction</b>Découple avec des interfaces.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Calcul exécuté plus souvent que prévu.</div>
+                <div class="pi-cause"><b>Cause</b>Nœud pure tiré à plusieurs endroits.</div>
+                <div class="pi-fix"><b>Correction</b>Calcule une fois, stocke dans une variable.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Optimisation sans effet.</div>
+                <div class="pi-cause"><b>Cause</b>On optimise sans mesurer.</div>
+                <div class="pi-fix"><b>Correction</b>Profile (stat unit, Insights) puis cible le goulot.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Transforme une logique de Tick en Timer périodique.</li>
+                <li>Remplace un Cast récurrent par une interface.</li>
+                <li>Active <code>stat unit</code> et identifie le poste le plus coûteux.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu réduis l'usage du Tick.</li>
+                  <li>Tu découples avec des interfaces.</li>
+                  <li>Tu mesures avant d'optimiser.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est souvent le premier poste de coût d'un Blueprint ?","a":["Event Tick exécuté chaque frame sur de nombreux Actors","Les commentaires","Le nom des variables","La couleur des nœuds"],"correct":0,"explain":"Tick tourne chaque frame, multiplié par le nombre d'Actors. Le désactiver quand c'est inutile, ou passer en événementiel/Timer, est la première optimisation."},
+  {"q":"Pourquoi limiter les Cast To entre Blueprints ?","a":["Ils créent des dépendances dures qui alourdissent chargement et mémoire","Ils sont interdits","Ils effacent les variables","Ils désactivent le Tick"],"correct":0,"explain":"Un cast lie le Blueprint à la classe ciblée (et à ses dépendances). En abuser gonfle le temps de chargement ; les interfaces découplent."},
+  {"q":"Un nœud pure lourd tiré par 3 nœuds différents est exécuté…","a":["3 fois (réévalué à chaque branchement)","1 fois","0 fois","Une fois par frame"],"correct":0,"explain":"Les nœuds pure n'ont pas de cache : ils sont réévalués chaque fois qu'on tire leur sortie. Pour un calcul lourd, on le fait une fois et on stocke le résultat."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Cite deux façons d'éviter de mettre une logique dans Tick.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p>Un <b>Timer</b> à intervalle (Set Timer by Event toutes les X s) et un <b>événement</b> (overlap, input, dispatcher) déclenché seulement quand nécessaire.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Réécris un calcul pure lourd pour ne l'exécuter qu'une fois.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Calculer (impur) ─▶ Set Resultat
+Utiliser Get Resultat (variable) aux 3 endroits → 1 seul calcul</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Quand vaut-il vraiment la peine de passer un système en C++&nbsp;?</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Quand le profileur montre qu'un système Blueprint appelé très souvent (maths bas niveau, IA de masse, gros parcours de données chaque frame) est le goulot. On garde le gameplay/itératif en BP et on bascule le point chaud mesuré en C++.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Tick</b> = premier coût&nbsp;: désactive-le si inutile, passe en événementiel/Timer.</li>
+                <li>Les <b>casts</b> créent des dépendances&nbsp;: préfère les interfaces.</li>
+                <li>Les nœuds <b>pure</b> sont réévalués&nbsp;: stocke les calculs lourds.</li>
+                <li>Mesure (<code>stat unit</code>, Insights) avant d'optimiser&nbsp;; C++ pour les points chauds.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Blueprint VM</b> — machine virtuelle qui interprète les Blueprints (un peu plus lente que le C++).</p>
+              <p><b>Timer</b> — déclenche un événement à intervalle régulier (alternative au Tick).</p>
+              <p><b>Dépendance dure (hard reference)</b> — lien forçant le chargement d'un autre asset.</p>
+              <p><b>stat unit / Unreal Insights</b> — outils de profilage des performances.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp15-bonnes-pratiques.html">BP15 — Bonnes pratiques &amp; mini-projet</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

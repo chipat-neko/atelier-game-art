@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP08 — Fonctions, macros &amp; graphes · Atelier Game Art</title>
+  <meta name="description" content="Structurer un Blueprint : créer des fonctions (pure vs impure), des macros, des collapsed graphs, gérer entrées/sorties pour la réutilisation et la lisibilité.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Fonctions &amp; macros</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP08 — Fonctions, macros &amp; graphes</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp05-evenements.html">BP5 — Événements</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Créer une <b>fonction</b> avec entrées/sorties.</li>
+                <li>Distinguer fonction <b>pure</b> et <b>impure</b>.</li>
+                <li>Savoir quand utiliser une <b>macro</b> ou un <b>collapsed graph</b>.</li>
+                <li>Rendre ton graphe lisible et réutilisable.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Quand un graphe grossit, il devient illisible. Regrouper la logique en <b>fonctions</b> nommées la rend réutilisable, testable et claire — exactement comme en code.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Créer une fonction</h3>
+            <p>Dans My Blueprint, «&nbsp;+&nbsp;» à côté de Functions. Une fonction a un nœud d'entrée (ses paramètres) et un nœud <b>Return</b> (ses sorties). On l'appelle ensuite comme n'importe quel nœud.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Function CalculerDegats (Base : Float, Mult : Float) → (Total : Float)
+   Return Total = Base * Mult
+
+Appel : CalculerDegats (Base=10, Mult=1.5) → 15</code></pre>
+            </div>
+
+            <h3>2. Pure vs impure</h3>
+            <ul>
+              <li><b>Impure</b> (par défaut)&nbsp;: a un fil d'exécution, peut <b>modifier l'état</b>.</li>
+              <li><b>Pure</b> (case «&nbsp;Pure&nbsp;»)&nbsp;: pas de fil exec, ne fait que <b>calculer/retourner</b> une valeur. Réévaluée à chaque fois qu'on tire sa sortie.</li>
+            </ul>
+            <p>⚠️ Une fonction pure appelée à plusieurs endroits est <b>recalculée</b> à chaque usage&nbsp;: à éviter si le calcul est lourd.</p>
+
+            <h3>3. Macros &amp; collapsed graphs</h3>
+            <ul>
+              <li><b>Macro</b>&nbsp;: comme une fonction mais «&nbsp;dépliée&nbsp;» à la compilation&nbsp;; peut avoir <b>plusieurs broches d'exécution</b> (utile pour des structures réutilisables type Gate maison). Partageable via une Macro Library.</li>
+              <li><b>Collapsed graph</b>&nbsp;: replie une portion de nœuds dans un sous-graphe pour ranger visuellement, sans en faire une fonction réutilisable.</li>
+            </ul>
+
+            <h3>4. Fonction vs macro vs collapse</h3>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Fonction        → logique réutilisable, 1 exec d'entrée, propre, debuggable
+Macro           → réutilisable, plusieurs exec possibles, dépliée à la compil
+Collapsed graph → simple rangement visuel (pas de réutilisation)</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 120" role="img" aria-label="Une fonction prend des entrées et renvoie des sorties">
+                <g class="svg-text" font-size="10" font-family="sans-serif">
+                  <rect x="30" y="45" width="110" height="36" rx="8" fill="none" stroke="#f97316"/><text x="85" y="68" text-anchor="middle">entrées</text>
+                  <path d="M140 63 H200" stroke="#f97316" stroke-width="2" marker-end="url(#a8b)"/>
+                  <rect x="200" y="38" width="150" height="50" rx="10" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="275" y="67" text-anchor="middle" font-family="monospace">Function</text>
+                  <path d="M350 63 H410" stroke="#f97316" stroke-width="2" marker-end="url(#a8b)"/>
+                  <rect x="410" y="45" width="110" height="36" rx="8" fill="none" stroke="#f97316"/><text x="465" y="68" text-anchor="middle">Return</text>
+                  <defs><marker id="a8b" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#f97316"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Une fonction&nbsp;: des entrées, un traitement, des sorties (Return).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée <code>CalculerDegats(Base, Mult)</code> qui renvoie le produit.</li>
+              <li>Crée une fonction <b>pure</b> <code>EstVivant()</code> renvoyant <code>PV &gt; 0</code>.</li>
+              <li>Replie une portion de graphe en collapsed graph.</li>
+              <li>Appelle tes fonctions depuis l'Event Graph.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Calcul lourd répété.</div>
+                <div class="pi-cause"><b>Cause</b>Fonction pure tirée à plusieurs endroits.</div>
+                <div class="pi-fix"><b>Correction</b>Mets-la impure et stocke le résultat, ou n'appelle qu'une fois.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Impossible de mettre un Delay dans une fonction.</div>
+                <div class="pi-cause"><b>Cause</b>Les fonctions n'autorisent pas les nœuds «&nbsp;latents&nbsp;».</div>
+                <div class="pi-fix"><b>Correction</b>Utilise une macro ou l'Event Graph pour les Delay/Timeline.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Graphe spaghetti.</div>
+                <div class="pi-cause"><b>Cause</b>Tout dans un seul Event Graph.</div>
+                <div class="pi-fix"><b>Correction</b>Extrais en fonctions/collapsed graphs nommés.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Logique dupliquée partout.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de factorisation.</div>
+                <div class="pi-fix"><b>Correction</b>Crée une fonction et appelle-la.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée une fonction <code>Soigner(Montant)</code> plafonnée à 100.</li>
+                <li>Crée une fonction pure <code>PourcentVie()</code>.</li>
+                <li>Replie ta logique d'init en collapsed graph nommé «&nbsp;Setup&nbsp;».</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tes fonctions ont des entrées/sorties claires.</li>
+                  <li>Tu choisis pure vs impure à bon escient.</li>
+                  <li>Ton Event Graph reste lisible.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la marque d'une fonction PURE ?","a":["Pas de fil d'exécution : elle ne fait que calculer/retourner","Elle modifie toujours l'état","Elle a deux exec d'entrée","Elle s'exécute chaque frame"],"correct":0,"explain":"Une fonction pure n'a pas de broche exec : elle renvoie une valeur sans effet de bord, et est réévaluée à chaque fois qu'on tire sa sortie."},
+  {"q":"Quel avantage a une MACRO sur une fonction ?","a":["Elle peut avoir plusieurs broches d'exécution","Elle est plus rapide à l'exécution","Elle autorise les Delay","Elle est toujours pure"],"correct":0,"explain":"Une macro est dépliée à la compilation et peut exposer plusieurs broches exec (in/out), utile pour des structures de flux réutilisables. Une fonction n'a qu'une exec d'entrée."},
+  {"q":"Pourquoi factoriser un gros Event Graph en fonctions ?","a":["Lisibilité, réutilisation et débogage facilités","Pour consommer plus de mémoire","Parce que c'est obligatoire","Pour ralentir le jeu"],"correct":0,"explain":"Comme en code, regrouper la logique en fonctions nommées rend le Blueprint lisible, réutilisable et plus facile à déboguer."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Décris une fonction <code>Doubler(x)</code> qui renvoie 2×x.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Function Doubler (x : Float) → (Result : Float)
+   Return Result = x * 2</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Fais une fonction pure <code>EstVivant()</code> renvoyant un Boolean.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Function EstVivant [Pure] → (bVivant : Boolean)
+   Return bVivant = (PV > 0)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique pourquoi un Delay ne peut pas vivre dans une fonction.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Delay est un nœud «&nbsp;latent&nbsp;» (il s'étale sur plusieurs frames). Les fonctions s'exécutent en une fois, sans état temporel&nbsp;: les nœuds latents y sont interdits. On les place dans l'Event Graph ou une macro.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Fonction</b>&nbsp;: entrées/sorties, réutilisable, 1 exec d'entrée.</li>
+                <li><b>Pure</b> (sans exec, calcul) vs <b>impure</b> (avec exec, effet)&nbsp;: pure recalculée à chaque usage.</li>
+                <li><b>Macro</b>&nbsp;: plusieurs exec, dépliée à la compilation&nbsp;; <b>collapsed graph</b>&nbsp;: rangement visuel.</li>
+                <li>Factoriser = lisibilité + réutilisation + débogage.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Fonction (Blueprint)</b> — bloc de logique réutilisable avec entrées/sorties.</p>
+              <p><b>Pure / Impure</b> — sans / avec fil d'exécution (calcul vs effet de bord).</p>
+              <p><b>Macro</b> — bloc réutilisable déplié à la compilation, plusieurs exec possibles.</p>
+              <p><b>Collapsed graph</b> — sous-graphe pour ranger visuellement des nœuds.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp09-classes-heritage.html">BP09 — Classes &amp; héritage</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

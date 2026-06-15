@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP02 — L'éditeur Blueprint · Atelier Game Art</title>
+  <meta name="description" content="L'interface de l'éditeur Blueprint d'Unreal : Event Graph, panneau Components, Viewport, My Blueprint et Details. Naviguer et placer des nœuds.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>L'éditeur</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP02 — L'éditeur Blueprint</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp01-introduction.html">BP1 — Introduction</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Repérer les zones clés&nbsp;: <b>Event Graph</b>, <b>Components</b>, <b>Viewport</b>, <b>My Blueprint</b>, <b>Details</b>.</li>
+                <li>Naviguer dans le graphe (pan, zoom) et placer des nœuds.</li>
+                <li>Compiler et sauvegarder un Blueprint.</li>
+                <li>Utiliser le menu contextuel et la recherche de nœuds.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Avant de scripter, il faut savoir <b>où</b> les choses se passent. L'éditeur Blueprint a une disposition standard qu'on retrouve dans tous les projets&nbsp;: la connaître te fait gagner un temps fou.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les panneaux essentiels</h3>
+            <ul>
+              <li><b>Event Graph</b>&nbsp;: la zone centrale où l'on relie les nœuds (le cœur du scripting).</li>
+              <li><b>Components</b> (haut-gauche)&nbsp;: la liste des composants de l'Actor (Mesh, Collision, Audio…).</li>
+              <li><b>Viewport</b>&nbsp;: l'aperçu 3D de l'Actor et de ses composants.</li>
+              <li><b>My Blueprint</b>&nbsp;: variables, fonctions, macros, graphes — l'inventaire du Blueprint.</li>
+              <li><b>Details</b>&nbsp;: les propriétés de l'élément sélectionné (nœud, variable, composant).</li>
+            </ul>
+
+            <h3>2. Naviguer dans le graphe</h3>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Pan (déplacer la vue) : clic droit maintenu + glisser
+Zoom                  : molette
+Cadrer la sélection   : touche F (ou « Home » pour tout voir)
+Placer un nœud        : clic droit dans le vide → recherche
+Tirer un fil          : glisser depuis une broche puis lâcher dans le vide</code></pre>
+            </div>
+
+            <h3>3. La recherche contextuelle</h3>
+            <p>Un clic droit (ou tirer un fil depuis une broche) ouvre une <b>palette contextuelle</b>&nbsp;: elle ne propose que les nœuds compatibles avec le contexte. Décocher «&nbsp;Context Sensitive&nbsp;» montre tout — utile quand on cherche un nœud rare.</p>
+
+            <h3>4. Compiler &amp; sauvegarder</h3>
+            <p>Le bouton <b>Compile</b> (en haut à gauche) traduit le graphe et signale les erreurs. Un Blueprint non compilé affiche un point d'interrogation. Pense à <b>Compile</b> puis <b>Save</b> après chaque changement.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 170" role="img" aria-label="Disposition de l'éditeur : Components et MyBlueprint à gauche, Viewport et Event Graph au centre, Details à droite">
+                <g class="svg-text" font-size="9" font-family="sans-serif">
+                  <rect x="20" y="30" width="110" height="55" rx="6" fill="#f97316" fill-opacity="0.1" stroke="#f97316"/><text x="75" y="60" text-anchor="middle">Components</text>
+                  <rect x="20" y="92" width="110" height="55" rx="6" fill="#f97316" fill-opacity="0.1" stroke="#f97316"/><text x="75" y="122" text-anchor="middle">My Blueprint</text>
+                  <rect x="140" y="30" width="270" height="117" rx="6" fill="#f97316" fill-opacity="0.18" stroke="#f97316"/><text x="275" y="60" text-anchor="middle">Viewport / Event Graph</text><text x="275" y="78" text-anchor="middle" class="svg-dim" font-size="8">(zone de travail centrale)</text>
+                  <rect x="420" y="30" width="120" height="117" rx="6" fill="#f97316" fill-opacity="0.1" stroke="#f97316"/><text x="480" y="92" text-anchor="middle">Details</text>
+                </g>
+              </svg>
+              <figcaption>La disposition standard de l'éditeur Blueprint.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Ouvre un Blueprint et repère les cinq panneaux.</li>
+              <li>Ajoute un composant <b>Static Mesh</b> depuis Components.</li>
+              <li>Dans l'Event Graph, clic droit → cherche «&nbsp;Print String&nbsp;».</li>
+              <li>Compile puis Save.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je ne trouve pas un nœud.</div>
+                <div class="pi-cause"><b>Cause</b>«&nbsp;Context Sensitive&nbsp;» filtre trop.</div>
+                <div class="pi-fix"><b>Correction</b>Décoche-le, ou tire le fil depuis la bonne broche.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes changements n'ont aucun effet.</div>
+                <div class="pi-cause"><b>Cause</b>Blueprint non compilé.</div>
+                <div class="pi-fix"><b>Correction</b>Clique <b>Compile</b> (puis Save).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je perds mes nœuds de vue.</div>
+                <div class="pi-cause"><b>Cause</b>Zoom/pan désorienté.</div>
+                <div class="pi-fix"><b>Correction</b>Touche <b>Home</b> pour tout cadrer, <b>F</b> pour la sélection.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Variable invisible dans Details.</div>
+                <div class="pi-cause"><b>Cause</b>Rien n'est sélectionné.</div>
+                <div class="pi-fix"><b>Correction</b>Sélectionne l'élément dans My Blueprint ou le graphe.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Ajoute un Static Mesh et donne-lui un cube dans Details.</li>
+                <li>Place 3 nœuds et relie-les, puis cadre-les avec Home.</li>
+                <li>Compile, corrige une éventuelle erreur signalée.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu nommes les cinq panneaux et leur rôle.</li>
+                  <li>Tu sais placer un nœud via la recherche contextuelle.</li>
+                  <li>Tu compiles et sauvegardes systématiquement.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Dans quel panneau relie-t-on les nœuds de logique ?","a":["L'Event Graph","Le Viewport","Le panneau Details","Le Content Browser"],"correct":0,"explain":"L'Event Graph est la zone centrale où l'on place et relie les nœuds. Le Viewport montre l'aperçu 3D, Details les propriétés."},
+  {"q":"À quoi sert le bouton Compile ?","a":["Traduire le graphe et signaler les erreurs avant de jouer","Lancer le jeu","Exporter le Blueprint","Sauvegarder uniquement"],"correct":0,"explain":"Compile traduit le Blueprint et vérifie les erreurs. Sans compilation, tes changements ne sont pas pris en compte ; pense ensuite à Save."},
+  {"q":"La recherche de nœuds ne montre pas celui que tu cherches. Que faire ?","a":["Décocher « Context Sensitive » ou tirer le fil depuis la bonne broche","Redémarrer Unreal","Réinstaller le projet","Passer en C++"],"correct":0,"explain":"« Context Sensitive » filtre selon le contexte. Le décocher (ou tirer le fil depuis la broche adéquate) révèle les nœuds compatibles."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Associe chaque panneau à son rôle (Components, Viewport, Details, My Blueprint).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p>Components = composants de l'Actor&nbsp;; Viewport = aperçu 3D&nbsp;; Details = propriétés de la sélection&nbsp;; My Blueprint = variables/fonctions/graphes.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Note la suite de gestes pour placer et relier deux nœuds.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Clic droit (vide) → chercher "Event BeginPlay"
+Tirer le fil exec depuis BeginPlay → lâcher → chercher "Print String"
+Compile → Save</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique l'intérêt d'organiser tôt ses composants dans la hiérarchie.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Une hiérarchie claire (un composant racine, des enfants attachés logiquement) rend l'Actor lisible, facilite l'attachement, les transformations relatives et le débogage quand le Blueprint grossit.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Cinq panneaux clés&nbsp;: Event Graph, Components, Viewport, My Blueprint, Details.</li>
+                <li>Clic droit + glisser = pan&nbsp;; molette = zoom&nbsp;; <b>Home</b>/<b>F</b> pour cadrer.</li>
+                <li>Place un nœud via la <b>recherche contextuelle</b>.</li>
+                <li>Toujours <b>Compile</b> puis <b>Save</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Event Graph</b> — zone centrale de scripting où l'on relie les nœuds.</p>
+              <p><b>Components</b> — éléments constitutifs d'un Actor (mesh, collision, son…).</p>
+              <p><b>My Blueprint</b> — panneau listant variables, fonctions, macros et graphes.</p>
+              <p><b>Compile</b> — traduit le Blueprint et signale les erreurs.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp03-flux-execution.html">BP03 — Le flux d'exécution</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

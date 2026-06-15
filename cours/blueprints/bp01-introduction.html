@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP01 — Introduction aux Blueprints · Atelier Game Art</title>
+  <meta name="description" content="Les Blueprints d'Unreal Engine : le scripting visuel par nœuds, pourquoi l'utiliser, Blueprint vs C++, et les principaux types de Blueprints.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Introduction</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP01 — Introduction aux Blueprints</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>aucun. Utile&nbsp;: avoir survolé la piste <a href="../../cours/unreal/e01-installation.html">Unreal Engine</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est un <b>Blueprint</b> et le principe du scripting visuel par nœuds.</li>
+                <li>Pourquoi Unreal propose ce système et à qui il s'adresse.</li>
+                <li>Les différences (et complémentarité) entre <b>Blueprint et C++</b>.</li>
+                <li>Les principaux <b>types de Blueprints</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les Blueprints permettent de programmer la logique d'un jeu Unreal <b>sans écrire de code texte</b>&nbsp;: on relie des nœuds. C'est la porte d'entrée du gameplay sur Unreal, très utilisée par les artistes, les designers et même les programmeurs pour le prototypage.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un Blueprint, c'est quoi ?</h3>
+            <p>Un Blueprint est un <b>asset</b> qui contient de la logique sous forme de graphe de nœuds. Chaque nœud fait une action (déplacer, comparer, afficher)&nbsp;; on les relie par des fils pour décrire <b>quoi faire, et dans quel ordre</b>. C'est de la vraie programmation — seulement, la syntaxe est visuelle.</p>
+
+            <h3>2. Pourquoi le scripting visuel ?</h3>
+            <ul>
+              <li><b>Accessible</b>&nbsp;: pas de syntaxe à mémoriser, pas de compilation manuelle.</li>
+              <li><b>Visuel</b>&nbsp;: le flux d'exécution se lit comme un schéma.</li>
+              <li><b>Itératif</b>&nbsp;: on teste immédiatement dans l'éditeur.</li>
+              <li><b>Intégré</b>&nbsp;: accès direct aux composants, assets et à l'API d'Unreal.</li>
+            </ul>
+
+            <h3>3. Blueprint vs C++</h3>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>BLUEPRINT                          C++
+- visuel, par nœuds                - texte, compilé
+- rapide à prototyper              - plus performant à grande échelle
+- idéal gameplay & UI             - idéal systèmes lourds / réutilisables
+- pas de compilation manuelle      - compilation requise
+
+→ En pratique : on combine les deux. Les studios écrivent
+  les systèmes critiques en C++ et exposent des nœuds aux
+  Blueprints pour le gameplay et le design.</code></pre>
+            </div>
+            <p>Ce n'est pas «&nbsp;l'un ou l'autre&nbsp;»&nbsp;: Blueprint et C++ sont conçus pour cohabiter (voir la piste <a href="../../cours/cpp/cpp01-introduction.html">C++ Unreal</a>).</p>
+
+            <h3>4. Les types de Blueprints</h3>
+            <ul>
+              <li><b>Blueprint Class (Actor)</b>&nbsp;: le plus courant — un objet placé dans le monde (porte, ennemi, item).</li>
+              <li><b>Level Blueprint</b>&nbsp;: logique propre à un niveau précis.</li>
+              <li><b>Widget Blueprint (UMG)</b>&nbsp;: interface utilisateur.</li>
+              <li><b>Blueprint Interface / Macro Library</b>&nbsp;: outils de structuration (vus plus loin).</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 120" role="img" aria-label="Un nœud Event relié à une action par un fil d'exécution">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="30" y="40" width="150" height="44" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="105" y="66" text-anchor="middle">Event BeginPlay</text>
+                  <path d="M180 62 H260" stroke="#fff" stroke-width="2.5" marker-end="url(#ab)"/><text x="220" y="54" text-anchor="middle" font-family="sans-serif" font-size="8" class="svg-dim">fil d'exécution</text>
+                  <rect x="260" y="40" width="170" height="44" rx="8" fill="#f97316" fill-opacity="0.1" stroke="#f97316"/><text x="345" y="66" text-anchor="middle">Print String</text>
+                  <defs><marker id="ab" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#fff"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Le graphe le plus simple&nbsp;: un événement déclenche une action.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans Unreal, crée un <b>Blueprint Class</b> de type Actor.</li>
+              <li>Ouvre l'Event Graph&nbsp;: repère <code>Event BeginPlay</code>.</li>
+              <li>Ajoute un nœud <code>Print String</code> et relie le fil d'exécution.</li>
+              <li>Place le Blueprint dans le niveau, lance&nbsp;: le texte s'affiche.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>«&nbsp;Les Blueprints, ce n'est pas du vrai code&nbsp;».</div>
+                <div class="pi-cause"><b>Cause</b>Idée reçue sur le visuel.</div>
+                <div class="pi-fix"><b>Correction</b>C'est de la programmation&nbsp;: mêmes concepts (variables, conditions, boucles).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Hésitation Blueprint ou C++.</div>
+                <div class="pi-cause"><b>Cause</b>On les croit exclusifs.</div>
+                <div class="pi-fix"><b>Correction</b>Combine-les&nbsp;: prototype en BP, durcis en C++ si besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Logique mise dans le mauvais Blueprint.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion Level BP / Blueprint Class.</div>
+                <div class="pi-fix"><b>Correction</b>Réutilisable → Blueprint Class&nbsp;; spécifique au niveau → Level BP.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Rien ne se passe au lancement.</div>
+                <div class="pi-cause"><b>Cause</b>Fil d'exécution non relié, ou Blueprint pas dans le niveau.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie le fil blanc et la présence dans la scène.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un Actor Blueprint qui affiche «&nbsp;Bonjour&nbsp;» au démarrage.</li>
+                <li>Liste 2 cas où tu préférerais le C++ au Blueprint.</li>
+                <li>Identifie le type de Blueprint adapté à un menu de pause.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Ton graphe relie un événement à une action.</li>
+                  <li>Tu sais que BP et C++ sont complémentaires.</li>
+                  <li>Tu choisis le bon type de Blueprint selon le besoin.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce qu'un Blueprint dans Unreal Engine ?","a":["Un système de scripting visuel par nœuds reliés","Un format d'image","Un moteur physique","Un langage texte compilé"],"correct":0,"explain":"Un Blueprint est un asset de logique sous forme de graphe de nœuds reliés par des fils : c'est de la programmation, mais visuelle."},
+  {"q":"Blueprint et C++ dans Unreal, c'est…","a":["Complémentaires : on combine souvent les deux","Strictement exclusifs","La même chose","Blueprint remplace toujours le C++"],"correct":0,"explain":"On prototype et fait le gameplay/UI en Blueprint, et on écrit les systèmes critiques en C++ qu'on expose ensuite aux Blueprints."},
+  {"q":"Pour un objet réutilisable placé dans le monde (ex. une porte), quel type choisir ?","a":["Blueprint Class de type Actor","Level Blueprint","Widget Blueprint","Aucun, du C++ obligatoire"],"correct":0,"explain":"Un objet réutilisable et plaçable est une Blueprint Class (Actor). Le Level Blueprint sert à la logique propre à un niveau."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Décris, en mots, le graphe minimal qui affiche un texte au lancement.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Event BeginPlay ──exec──▶ Print String (In String = "Bonjour")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Classe ces besoins&nbsp;: «&nbsp;système d'inventaire réseau&nbsp;», «&nbsp;ouvrir une porte&nbsp;», «&nbsp;HUD de vie&nbsp;» — Blueprint, C++ ou les deux ?</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p>Inventaire réseau → plutôt C++ (performance, robustesse). Ouvrir une porte → Blueprint. HUD de vie → Widget Blueprint (UMG), données éventuellement venues du C++.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique pourquoi le prototypage est un point fort des Blueprints.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pas de compilation manuelle, retour visuel immédiat, accès direct aux assets et composants&nbsp;: on teste une idée en minutes, on itère vite, puis on optimise (ou on passe en C++) seulement ce qui le mérite.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un Blueprint = de la logique visuelle par <b>nœuds reliés</b>.</li>
+                <li>C'est de la vraie programmation (variables, conditions, boucles).</li>
+                <li>Blueprint et C++ sont <b>complémentaires</b>.</li>
+                <li>Choisis le bon type&nbsp;: Actor (réutilisable), Level (spécifique), Widget (UI).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Blueprint</b> — asset de logique visuelle par nœuds dans Unreal.</p>
+              <p><b>Nœud (node)</b> — bloc qui réalise une action ou fournit une donnée.</p>
+              <p><b>Blueprint Class (Actor)</b> — Blueprint réutilisable représentant un objet du monde.</p>
+              <p><b>Level Blueprint</b> — logique propre à un niveau donné.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp02-editeur.html">BP02 — L'éditeur Blueprint</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP10 — Communication entre Blueprints · Atelier Game Art</title>
+  <meta name="description" content="Faire dialoguer des Blueprints : références directes, Cast To, Blueprint Interfaces et Event Dispatchers. Choisir le bon canal et découpler.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Communication</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP10 — Communication entre Blueprints</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp09-classes-heritage.html">BP9 — Classes &amp; héritage</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Appeler une fonction d'un autre Blueprint via une <b>référence directe</b>.</li>
+                <li>Utiliser <b>Cast To</b> et comprendre son coût.</li>
+                <li>Découpler avec une <b>Blueprint Interface</b>.</li>
+                <li>Diffuser un événement avec un <b>Event Dispatcher</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu, c'est plein d'objets qui doivent se parler&nbsp;: un bouton ouvre une porte, un ennemi prévient le manager qu'il est mort. Choisir le <b>bon canal</b> de communication évite le code spaghetti.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Référence directe</h3>
+            <p>Si un Blueprint possède une <b>référence</b> vers un autre, il peut appeler ses fonctions et lire/écrire ses variables (publiques).</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>(Porte est une variable BP_Porte)
+Bouton ─exec▶ Porte → Ouvrir()    -- appel direct via la référence</code></pre>
+            </div>
+
+            <h3>2. Cast To</h3>
+            <p>Quand on a une référence générique (ex. <code>Actor</code>), <b>Cast To BP_Porte</b> vérifie si l'objet est bien de ce type et donne accès à son interface. Si le cast échoue, la branche <b>Cast Failed</b> se déclenche. Les casts vers des Blueprints créent une dépendance (chargement)&nbsp;: à utiliser avec mesure.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>OtherActor ─▶ Cast To BP_Porte
+   ├ (réussi)  ─▶ As BP_Porte → Ouvrir()
+   └ Cast Failed ─▶ (ignorer)</code></pre>
+            </div>
+
+            <h3>3. Blueprint Interface (découplage)</h3>
+            <p>Une <b>Interface</b> déclare des fonctions <b>sans implémentation</b>. Tout Blueprint qui l'implémente peut recevoir le message — sans avoir besoin de connaître son type exact. C'est le moyen propre de communiquer sans Cast.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Interface "BPI_Interactable" : fonction Interagir()
+BP_Porte, BP_Coffre, BP_PNJ  implémentent Interagir() chacun à leur façon
+
+Joueur ─▶ (Cible) → Interagir() via interface   -- pas besoin de caster</code></pre>
+            </div>
+
+            <h3>4. Event Dispatcher (diffusion)</h3>
+            <p>Un <b>Event Dispatcher</b> permet à un Blueprint d'<b>annoncer</b> un événement&nbsp;; d'autres s'y abonnent (<code>Bind</code>) et réagissent. Communication <b>un-vers-plusieurs</b>, du bas vers le haut (ex. un item annonce «&nbsp;ramassé&nbsp;» au système d'inventaire).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 140" role="img" aria-label="Quatre canaux : référence directe, cast, interface, dispatcher">
+                <g class="svg-text" font-size="9" font-family="sans-serif">
+                  <rect x="20" y="30" width="120" height="40" rx="8" fill="#f97316" fill-opacity="0.12" stroke="#f97316"/><text x="80" y="48" text-anchor="middle">Référence</text><text x="80" y="62" text-anchor="middle" class="svg-dim" font-size="8">accès direct</text>
+                  <rect x="150" y="30" width="120" height="40" rx="8" fill="#f97316" fill-opacity="0.12" stroke="#f97316"/><text x="210" y="48" text-anchor="middle">Cast To</text><text x="210" y="62" text-anchor="middle" class="svg-dim" font-size="8">vérifie le type</text>
+                  <rect x="280" y="30" width="120" height="40" rx="8" fill="#f97316" fill-opacity="0.18" stroke="#f97316"/><text x="340" y="48" text-anchor="middle">Interface</text><text x="340" y="62" text-anchor="middle" class="svg-dim" font-size="8">découplé</text>
+                  <rect x="410" y="30" width="130" height="40" rx="8" fill="#f97316" fill-opacity="0.12" stroke="#f97316"/><text x="475" y="48" text-anchor="middle">Dispatcher</text><text x="475" y="62" text-anchor="middle" class="svg-dim" font-size="8">1 → plusieurs</text>
+                  <text x="280" y="105" text-anchor="middle" class="svg-dim" font-size="9">Du plus couplé (gauche) au plus découplé (droite)</text>
+                </g>
+              </svg>
+              <figcaption>Quatre canaux&nbsp;: choisis selon le couplage souhaité.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Donne au bouton une référence vers la porte et appelle <code>Ouvrir()</code>.</li>
+              <li>Depuis un <code>Actor</code> générique, fais un <code>Cast To</code> et gère l'échec.</li>
+              <li>Crée une interface <code>Interagir()</code> et implémente-la dans deux objets.</li>
+              <li>Crée un Event Dispatcher «&nbsp;Ramassé&nbsp;» et abonne un manager.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>«&nbsp;Accessed None&nbsp;» au runtime.</div>
+                <div class="pi-cause"><b>Cause</b>Référence non assignée (vide).</div>
+                <div class="pi-fix"><b>Correction</b>Assigne la référence avant de l'utiliser&nbsp;; teste sa validité (IsValid).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Temps de chargement qui gonfle.</div>
+                <div class="pi-cause"><b>Cause</b>Casts en cascade créant des dépendances dures.</div>
+                <div class="pi-fix"><b>Correction</b>Préfère les <b>interfaces</b> pour découpler.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Tout dépend de tout.</div>
+                <div class="pi-cause"><b>Cause</b>Références directes partout.</div>
+                <div class="pi-fix"><b>Correction</b>Communique vers le haut via <b>Event Dispatchers</b>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'abonné ne réagit pas.</div>
+                <div class="pi-cause"><b>Cause</b>Oubli du <code>Bind</code> au Dispatcher.</div>
+                <div class="pi-fix"><b>Correction</b>Bind l'événement (souvent au BeginPlay).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Bouton → porte via référence directe.</li>
+                <li>Interface <code>Interagir()</code> implémentée par porte et coffre.</li>
+                <li>Item qui diffuse «&nbsp;Ramassé&nbsp;» via Dispatcher à un manager.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu gères l'échec d'un Cast.</li>
+                  <li>Tu utilises une interface pour découpler.</li>
+                  <li>Ton abonné est bien <code>Bind</code> au Dispatcher.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait le nœud Cast To ?","a":["Vérifier qu'une référence est d'un type donné et y accéder","Convertir un float en int","Détruire un Actor","Créer une interface"],"correct":0,"explain":"Cast To vérifie si l'objet est bien de la classe ciblée ; en cas d'échec, la sortie Cast Failed se déclenche. Les casts créent des dépendances de chargement."},
+  {"q":"Quel canal communique sans connaître le type exact de la cible ?","a":["Une Blueprint Interface","Une référence directe","Un Cast To obligatoire","Une variable globale"],"correct":0,"explain":"L'interface déclare des fonctions que plusieurs Blueprints implémentent. On envoie le message via l'interface sans caster ni connaître la classe précise : couplage faible."},
+  {"q":"Quel mécanisme convient pour une communication un-vers-plusieurs (annoncer un événement) ?","a":["Event Dispatcher (les autres s'y abonnent avec Bind)","Cast To","Branch","Set variable"],"correct":0,"explain":"L'Event Dispatcher diffuse un événement ; les Blueprints intéressés s'abonnent (Bind) et réagissent. Idéal pour remonter une info (bas → haut) à plusieurs auditeurs."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Décris un Cast To avec gestion de l'échec.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>OtherActor ─▶ Cast To BP_Joueur
+   réussi ─▶ As BP_Joueur → AjouterScore(10)
+   Cast Failed ─▶ (rien)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Conçois une interface <code>Interagir()</code> pour porte et PNJ.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>BPI_Interactable : Interagir()
+BP_Porte  implémente Interagir() → Ouvrir
+BP_PNJ    implémente Interagir() → Dialogue
+Joueur ─▶ Cible → Interagir() (message interface)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Quel canal pour qu'un ennemi mourant prévienne un «&nbsp;WaveManager&nbsp;» (et pourquoi)&nbsp;?</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Un <b>Event Dispatcher</b> «&nbsp;OnDeath&nbsp;» sur l'ennemi. Le WaveManager s'y abonne (Bind) au spawn. L'ennemi n'a pas besoin de connaître le manager&nbsp;: communication découplée, bas vers haut, extensible à plusieurs auditeurs.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Référence directe</b>&nbsp;: simple mais couplé.</li>
+                <li><b>Cast To</b>&nbsp;: vérifie le type (gère Cast Failed)&nbsp;; crée une dépendance.</li>
+                <li><b>Interface</b>&nbsp;: communiquer sans connaître le type — découplé.</li>
+                <li><b>Event Dispatcher</b>&nbsp;: diffusion un-vers-plusieurs (Bind pour s'abonner).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Cast To</b> — vérifie/convertit une référence vers une classe précise.</p>
+              <p><b>Blueprint Interface</b> — contrat de fonctions implémentées par plusieurs Blueprints.</p>
+              <p><b>Event Dispatcher</b> — événement diffusé auquel d'autres Blueprints s'abonnent (Bind).</p>
+              <p><b>Accessed None</b> — erreur d'accès à une référence vide.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp11-composants-acteurs.html">BP11 — Composants &amp; Actors</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP05 — Événements · Atelier Game Art</title>
+  <meta name="description" content="Les événements Blueprint : Event BeginPlay, Event Tick (et son coût), événements personnalisés (Custom Events) et événements d'entrée (touches, axes).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Événements</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP05 — Événements</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp03-flux-execution.html">BP3 — Flux d'exécution</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser <code>Event BeginPlay</code> (au démarrage).</li>
+                <li>Comprendre <code>Event Tick</code> et pourquoi il coûte cher.</li>
+                <li>Créer et appeler des <b>événements personnalisés</b> (Custom Events).</li>
+                <li>Réagir aux <b>entrées</b> (touches, axes).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un événement est le <b>point de départ</b> d'une chaîne d'actions. Tout graphe commence par un événement&nbsp;: sans lui, rien ne se déclenche.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Event BeginPlay</h3>
+            <p>Déclenché <b>une fois</b>, quand l'Actor entre en jeu. Idéal pour initialiser&nbsp;: régler des variables, lancer une musique, positionner des éléments.</p>
+
+            <h3>2. Event Tick (attention au coût)</h3>
+            <p>Déclenché <b>à chaque frame</b> (≈ 60 fois/s), avec un <code>Delta Seconds</code> (le dt vu en <a href="../../cours/lua/lua12-scripting-jeu.html">scripting</a>). Très pratique mais <b>coûteux</b>&nbsp;: tout ce qu'on y met tourne en continu. On l'évite quand un événement ponctuel suffit.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Event Tick (Delta Seconds) ─exec▶ Add Movement (vitesse * Delta Seconds)
+  → mouvement fluide, mais ne mets ici QUE ce qui doit tourner chaque frame.</code></pre>
+            </div>
+
+            <h3>3. Événements personnalisés (Custom Events)</h3>
+            <p>On crée ses propres événements pour <b>nommer</b> une logique et la déclencher de n'importe où (y compris depuis un autre Blueprint). Ils peuvent recevoir des paramètres.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Custom Event "InfligerDegats" (Montant : Float)
+   ─exec▶ Set PV = PV - Montant ─exec▶ …
+
+Ailleurs : appel du nœud "InfligerDegats" (Montant = 20)</code></pre>
+            </div>
+
+            <h3>4. Événements d'entrée</h3>
+            <p>Les entrées clavier/manette déclenchent des événements&nbsp;: <b>Action</b> (pressé/relâché, ex. «&nbsp;Jump&nbsp;») et <b>Axis</b> (valeur continue, ex. «&nbsp;MoveForward&nbsp;» de -1 à 1). On les configure dans les Project Settings (Input).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 150" role="img" aria-label="BeginPlay une fois, Tick chaque frame, Custom Event appelé à la demande">
+                <g class="svg-text" font-size="9" font-family="monospace">
+                  <rect x="20" y="20" width="160" height="30" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="100" y="39" text-anchor="middle">Event BeginPlay</text><text x="200" y="39" font-family="sans-serif" font-size="8" class="svg-dim">une fois</text>
+                  <rect x="20" y="60" width="160" height="30" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="100" y="79" text-anchor="middle">Event Tick</text><text x="200" y="79" font-family="sans-serif" font-size="8" class="svg-dim">chaque frame (coûteux)</text>
+                  <rect x="20" y="100" width="160" height="30" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="100" y="119" text-anchor="middle">Custom Event</text><text x="200" y="119" font-family="sans-serif" font-size="8" class="svg-dim">quand on l'appelle</text>
+                </g>
+              </svg>
+              <figcaption>Trois déclencheurs aux rythmes différents.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Au <code>BeginPlay</code>, initialise <code>PV = 100</code>.</li>
+              <li>Crée un Custom Event <code>InfligerDegats(Montant)</code> qui réduit PV.</li>
+              <li>Configure une action d'entrée et appelle l'événement à la touche.</li>
+              <li>Mets un mouvement dans <code>Tick</code> avec <code>Delta Seconds</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Chute de framerate.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de logique dans <code>Event Tick</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Déplace ce qui peut l'être vers des événements ponctuels.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mouvement dépendant de la machine.</div>
+                <div class="pi-cause"><b>Cause</b>Tick sans multiplier par Delta Seconds.</div>
+                <div class="pi-fix"><b>Correction</b>Multiplie les vitesses par <code>Delta Seconds</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon entrée ne fait rien.</div>
+                <div class="pi-cause"><b>Cause</b>Action non mappée ou Input non reçu (pas le bon Actor).</div>
+                <div class="pi-fix"><b>Correction</b>Mappe l'action et active la réception d'input.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Initialisation jouée plusieurs fois.</div>
+                <div class="pi-cause"><b>Cause</b>Mise dans Tick au lieu de BeginPlay.</div>
+                <div class="pi-fix"><b>Correction</b>L'initialisation va dans <code>BeginPlay</code> (une fois).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Initialise deux variables au BeginPlay.</li>
+                <li>Crée un Custom Event paramétré et appelle-le deux fois.</li>
+                <li>Fais avancer l'Actor dans Tick (avec Delta Seconds).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu utilises BeginPlay pour l'init, pas Tick.</li>
+                  <li>Ton Custom Event reçoit un paramètre.</li>
+                  <li>Tes vitesses Tick sont multipliées par Delta Seconds.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quand se déclenche Event BeginPlay ?","a":["Une seule fois, quand l'Actor entre en jeu","À chaque frame","À chaque touche pressée","Jamais automatiquement"],"correct":0,"explain":"BeginPlay est appelé une fois au démarrage de l'Actor : c'est l'endroit idéal pour initialiser variables et état."},
+  {"q":"Pourquoi faut-il se méfier d'Event Tick ?","a":["Il s'exécute à chaque frame : tout ce qu'on y met coûte en continu","Il ne marche qu'une fois","Il est réservé au C++","Il bloque les entrées"],"correct":0,"explain":"Tick tourne ≈ 60 fois/s. Y mettre trop de logique pèse sur le framerate ; on préfère des événements ponctuels quand c'est possible."},
+  {"q":"À quoi sert un Custom Event ?","a":["Nommer une logique et la déclencher de n'importe où, avec des paramètres","Remplacer les variables","Compiler le Blueprint","Dessiner à l'écran"],"correct":0,"explain":"Un Custom Event encapsule une logique réutilisable, déclenchable depuis le même ou un autre Blueprint, et peut recevoir des paramètres."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Quel événement pour «&nbsp;jouer un son au tout début de la partie&nbsp;» ?</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p><code>Event BeginPlay</code> → Play Sound. C'est ponctuel, donc pas dans Tick.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Décris un Custom Event <code>Soigner(Montant)</code> plafonné à 100.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Custom Event Soigner (Montant : Float)
+  ─exec▶ Set PV = Clamp(PV + Montant, 0, 100)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Fais sauter le personnage avec une action «&nbsp;Jump&nbsp;» (pressé).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>InputAction Jump (Pressed) ─exec▶ Jump
+(Action « Jump » mappée sur Espace dans Project Settings → Input)</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>BeginPlay</code> = une fois (init)&nbsp;; <code>Tick</code> = chaque frame (coûteux).</li>
+                <li>Dans Tick, multiplie par <code>Delta Seconds</code>.</li>
+                <li><b>Custom Events</b>&nbsp;: nommer et réutiliser une logique, avec paramètres.</li>
+                <li>Entrées&nbsp;: <b>Action</b> (pressé/relâché) et <b>Axis</b> (valeur continue).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Event BeginPlay</b> — événement déclenché une fois au démarrage de l'Actor.</p>
+              <p><b>Event Tick</b> — événement appelé à chaque frame (Delta Seconds).</p>
+              <p><b>Custom Event</b> — événement personnalisé, nommé et paramétrable.</p>
+              <p><b>Input Action / Axis</b> — événements d'entrée (touche ponctuelle / valeur continue).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp06-conditions.html">BP06 — Conditions</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP03 — Le flux d'exécution · Atelier Game Art</title>
+  <meta name="description" content="Le flux d'exécution des Blueprints : le fil blanc d'exécution, les broches exec vs données, l'ordre d'évaluation et le sens de lecture du graphe.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Flux d'exécution</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP03 — Le flux d'exécution</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp02-editeur.html">BP2 — L'éditeur</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Lire le <b>fil blanc d'exécution</b> (l'ordre des actions).</li>
+                <li>Distinguer <b>broches d'exécution</b> et <b>broches de données</b>.</li>
+                <li>Comprendre l'ordre d'évaluation (les données sont «&nbsp;tirées&nbsp;» quand on en a besoin).</li>
+                <li>Lire un graphe de gauche à droite.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tout malentendu sur le flux d'exécution mène à des bugs déroutants. Comprendre <b>qui déclenche quoi, et dans quel ordre</b>, est la compétence centrale du Blueprint.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le fil blanc d'exécution</h3>
+            <p>Les nœuds d'action ont une <b>broche d'exécution</b> en entrée (gauche) et en sortie (droite). Le <b>fil blanc</b> qui les relie indique l'ordre&nbsp;: on suit la flèche, nœud après nœud, de gauche à droite.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Event BeginPlay ─exec▶ Print "A" ─exec▶ Print "B" ─exec▶ Print "C"
+                       (s'exécutent dans cet ordre : A, puis B, puis C)</code></pre>
+            </div>
+
+            <h3>2. Broches d'exécution vs broches de données</h3>
+            <ul>
+              <li><b>Broche d'exécution</b> (blanche, en forme de flèche)&nbsp;: déclenche l'action suivante.</li>
+              <li><b>Broche de données</b> (colorée par type&nbsp;: bool rouge, float vert, etc.)&nbsp;: transporte une valeur, pas un déclenchement.</li>
+            </ul>
+            <p>Une broche de données <b>ronde</b> = un seul élément&nbsp;; une broche en forme de <b>grille</b> = un tableau (array).</p>
+
+            <h3>3. L'évaluation « pull » des données</h3>
+            <p>Les données ne s'exécutent pas&nbsp;: elles sont <b>calculées à la demande</b>. Quand un nœud d'action a besoin d'une valeur, il «&nbsp;tire&nbsp;» (pull) sur le fil de données en amont juste avant de s'exécuter. C'est pourquoi un nœud de données seul, sans fil exec, ne «&nbsp;tourne&nbsp;» jamais tout seul.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>           [Get PV] ─data─┐
+                          ▼
+Event ─exec▶ Print String (In String ← convertir PV)
+   La valeur de PV est lue juste au moment du Print.</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 150" role="img" aria-label="Fil blanc d'exécution horizontal, fil de données coloré vertical">
+                <g class="svg-text" font-size="9" font-family="monospace">
+                  <rect x="30" y="70" width="120" height="40" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="90" y="94" text-anchor="middle">Event</text>
+                  <rect x="220" y="70" width="120" height="40" rx="8" fill="#f97316" fill-opacity="0.12" stroke="#f97316"/><text x="280" y="94" text-anchor="middle">Action</text>
+                  <path d="M150 90 H220" stroke="#fff" stroke-width="2.5" marker-end="url(#ax)"/><text x="185" y="82" text-anchor="middle" font-family="sans-serif" font-size="8" class="svg-dim">exec</text>
+                  <rect x="220" y="20" width="120" height="30" rx="8" fill="none" stroke="#22c55e"/><text x="280" y="40" text-anchor="middle" fill="#22c55e">Get (donnée)</text>
+                  <path d="M280 50 V70" stroke="#22c55e" stroke-width="2" marker-end="url(#axg)"/><text x="312" y="64" font-family="sans-serif" font-size="8" class="svg-dim">data</text>
+                  <defs>
+                    <marker id="ax" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" fill="#fff"/></marker>
+                    <marker id="axg" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#22c55e"/></marker>
+                  </defs>
+                </g>
+              </svg>
+              <figcaption>Exec (blanc, horizontal) = ordre&nbsp;; données (coloré) = valeurs tirées à la demande.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Enchaîne trois <code>Print String</code> et observe l'ordre A → B → C.</li>
+              <li>Branche une donnée (Get d'une variable) sur l'entrée d'un Print.</li>
+              <li>Débranche un fil exec&nbsp;: constate que le nœud n'est plus exécuté.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un nœud ne s'exécute jamais.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de fil blanc d'exécution branché.</div>
+                <div class="pi-fix"><b>Correction</b>Relie sa broche exec d'entrée à la chaîne.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je relie exec à une broche de données (refus).</div>
+                <div class="pi-cause"><b>Cause</b>Types de broches incompatibles.</div>
+                <div class="pi-fix"><b>Correction</b>Exec va à exec&nbsp;; données à données du même type.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ordre d'exécution inattendu.</div>
+                <div class="pi-cause"><b>Cause</b>Tu lis le graphe de droite à gauche.</div>
+                <div class="pi-fix"><b>Correction</b>Suis le fil blanc de gauche à droite.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Valeur «&nbsp;figée&nbsp;» alors qu'elle a changé.</div>
+                <div class="pi-cause"><b>Cause</b>Mauvaise idée que la donnée se met à jour seule.</div>
+                <div class="pi-fix"><b>Correction</b>La donnée est lue à l'instant où l'action s'exécute.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée une chaîne de 3 actions et prédis l'ordre avant de tester.</li>
+                <li>Alimente un Print avec une variable via une broche de données.</li>
+                <li>Identifie, sur un graphe, chaque type de broche.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu distingues exec et données au premier coup d'œil.</li>
+                  <li>Tu lis le flux de gauche à droite.</li>
+                  <li>Tu sais qu'une donnée est tirée à la demande.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que représente le fil blanc entre deux nœuds ?","a":["L'ordre d'exécution des actions","Une valeur numérique","Un commentaire","La couleur du nœud"],"correct":0,"explain":"Le fil blanc est le flux d'exécution : il indique quelle action se déclenche après quelle autre, de gauche à droite."},
+  {"q":"Quelle est la différence entre une broche d'exécution et une broche de données ?","a":["Exec déclenche l'action suivante ; data transporte une valeur typée","Aucune","Data déclenche, exec transporte","Les deux transportent des nombres"],"correct":0,"explain":"La broche d'exécution (blanche, en flèche) enchaîne les actions ; la broche de données (colorée par type) porte une valeur, sans déclencher."},
+  {"q":"Quand la valeur d'un fil de données est-elle calculée ?","a":["Au moment où l'action en aval s'exécute (pull)","En continu, à chaque frame","Une seule fois au démarrage","Jamais"],"correct":0,"explain":"Les données sont évaluées « à la demande » : le nœud d'action tire la valeur juste avant de s'exécuter. Un nœud de données seul ne tourne pas tout seul."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Écris l'ordre d'affichage de cette chaîne&nbsp;: BeginPlay → Print "X" → Print "Y".</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p>«&nbsp;X&nbsp;» puis «&nbsp;Y&nbsp;»&nbsp;: on suit le fil blanc de gauche à droite.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Décris comment afficher la valeur d'une variable <code>Score</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Get Score ─data▶ (To Text / Append) ─data▶ Print String
+Event ─exec▶ Print String
+La valeur de Score est lue au moment du Print.</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Pourquoi un nœud «&nbsp;Get&nbsp;» sans fil exec ne provoque-t-il rien tout seul&nbsp;?</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Parce qu'il ne fait que <i>fournir</i> une donnée. Il n'est évalué que si une action exécutée en aval tire sa valeur. Sans consommateur, il reste inerte.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>fil blanc</b> = l'ordre d'exécution, lu de gauche à droite.</li>
+                <li>Broche <b>exec</b> (flèche blanche) ≠ broche <b>données</b> (colorée par type).</li>
+                <li>Les données sont <b>tirées à la demande</b> (pull), pas exécutées.</li>
+                <li>Un nœud sans fil exec ne tourne pas&nbsp;; un Get seul reste inerte.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Fil d'exécution (exec)</b> — lien blanc indiquant l'ordre des actions.</p>
+              <p><b>Broche (pin)</b> — point de connexion d'un nœud (exec ou données).</p>
+              <p><b>Évaluation pull</b> — calcul d'une donnée au moment où une action en a besoin.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp04-variables-types.html">BP04 — Variables &amp; types</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

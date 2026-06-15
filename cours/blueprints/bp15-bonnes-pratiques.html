@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP15 — Bonnes pratiques &amp; mini-projet · Atelier Game Art</title>
+  <meta name="description" content="Bonnes pratiques Blueprint : nommage, commentaires, organisation des graphes, débogage (Print String, Breakpoint) et mini-projet : un objet à ramasser.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp15";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Bonnes pratiques &amp; mini-projet</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP15 — Bonnes pratiques &amp; mini-projet</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>idéalement les leçons <a href="../../cours/blueprints/bp05-evenements.html">BP5</a> à <a href="../../cours/blueprints/bp14-performance.html">BP14</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Les <b>conventions</b> de nommage et d'organisation Blueprint.</li>
+                <li>Commenter et ranger un graphe (Comment boxes, reroute).</li>
+                <li>Déboguer avec <b>Print String</b> et les <b>Breakpoints</b>.</li>
+                <li>Assembler un <b>mini-projet</b>&nbsp;: un objet à ramasser qui ajoute au score.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un Blueprint clair se relit, se corrige et se partage. Les bonnes pratiques transforment un graphe «&nbsp;spaghetti&nbsp;» en logique maintenable — indispensable en équipe.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Conventions</h3>
+            <ul>
+              <li><b>Préfixes</b>&nbsp;: <code>BP_</code> (Blueprint), <code>WBP_</code> (Widget), <code>BPI_</code> (Interface), <code>E_</code> (Enum), <code>S_</code> (Struct).</li>
+              <li>Variables booléennes préfixées <code>b</code> (<code>bIsOpen</code>).</li>
+              <li>Noms explicites&nbsp;: <code>VitesseMax</code> plutôt que <code>v</code>.</li>
+              <li>Une responsabilité par Blueprint, factorisée en fonctions (rappel <a href="../../cours/blueprints/bp08-fonctions-macros.html">BP8</a>).</li>
+            </ul>
+
+            <h3>2. Organiser le graphe</h3>
+            <ul>
+              <li><b>Comment boxes</b> (touche C)&nbsp;: encadre et titre des groupes de nœuds.</li>
+              <li><b>Reroute nodes</b>&nbsp;: redresse les fils pour éviter les croisements.</li>
+              <li>Aligne et espace (clic droit → alignement)&nbsp;; lecture gauche→droite.</li>
+            </ul>
+
+            <h3>3. Déboguer</h3>
+            <p><b>Print String</b> affiche une valeur à l'écran/au log (pense à le retirer en production). Un <b>Breakpoint</b> (F9 sur un nœud) met le jeu en pause pour inspecter les valeurs pas à pas&nbsp;; on survole les broches pour lire les données.</p>
+
+            <h3>4. Mini-projet : un objet à ramasser</h3>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>BP_Piece (Actor)
+ ├─ StaticMesh "Piece"     (apparence)
+ └─ SphereCollision "Zone" (détection)
+
+Event OnComponentBeginOverlap (Zone)
+   ─exec▶ Cast To BP_Joueur (OtherActor)
+            réussi ─▶ As BP_Joueur : AjouterScore(10)
+                   ─▶ Play Sound "ramassage"
+                   ─▶ Destroy Actor (self)
+
+BP_Joueur
+   - variable Score (Integer)
+   - fonction AjouterScore(n) : Set Score = Score + n
+                                ─▶ (event) MettreAJourHUD</code></pre>
+            </div>
+            <p>Ce mini-projet réunit&nbsp;: composants &amp; collision (<a href="../../cours/blueprints/bp11-composants-acteurs.html">BP11</a>), communication par Cast (<a href="../../cours/blueprints/bp10-communication.html">BP10</a>), fonction (<a href="../../cours/blueprints/bp08-fonctions-macros.html">BP8</a>), variables et HUD (<a href="../../cours/blueprints/bp12-variables-exposees-ui.html">BP12</a>), et <code>Destroy Actor</code>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 110" role="img" aria-label="Overlap déclenche ajout de score puis destruction de la pièce">
+                <g class="svg-text" font-size="9" font-family="monospace">
+                  <rect x="20" y="40" width="120" height="34" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="80" y="61" text-anchor="middle">Overlap</text>
+                  <path d="M140 57 H200" stroke="#fff" stroke-width="2" marker-end="url(#a15)"/>
+                  <rect x="200" y="40" width="130" height="34" rx="8" fill="#f97316" fill-opacity="0.12" stroke="#f97316"/><text x="265" y="61" text-anchor="middle">AjouterScore</text>
+                  <path d="M330 57 H390" stroke="#fff" stroke-width="2" marker-end="url(#a15)"/>
+                  <rect x="390" y="40" width="150" height="34" rx="8" fill="#f97316" fill-opacity="0.12" stroke="#f97316"/><text x="465" y="61" text-anchor="middle">Destroy Actor</text>
+                  <defs><marker id="a15" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#fff"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Le flux complet d'un objet à ramasser.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée <code>BP_Piece</code> (mesh + sphère de collision).</li>
+              <li>Sur l'overlap, caste vers <code>BP_Joueur</code> et appelle <code>AjouterScore(10)</code>.</li>
+              <li>Joue un son, détruis la pièce.</li>
+              <li>Encadre la logique dans une Comment box et nomme proprement.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Graphe illisible.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de commentaires ni d'organisation.</div>
+                <div class="pi-fix"><b>Correction</b>Comment boxes, reroute, fonctions nommées.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Print String laissés en production.</div>
+                <div class="pi-cause"><b>Cause</b>Oubli de nettoyage.</div>
+                <div class="pi-fix"><b>Correction</b>Retire-les ou conditionne-les (Development only).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La pièce ajoute le score à un mauvais acteur.</div>
+                <div class="pi-cause"><b>Cause</b>Cast non vérifié (overlap d'un autre Actor).</div>
+                <div class="pi-fix"><b>Correction</b>Gère <code>Cast Failed</code> avant d'agir.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Score qui se mélange entre joueurs.</div>
+                <div class="pi-cause"><b>Cause</b>Variable mise au mauvais endroit (global vs joueur).</div>
+                <div class="pi-fix"><b>Correction</b>Stocke le Score dans le Blueprint joueur concerné.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Finalise <code>BP_Piece</code> et fais-en 5 instances.</li>
+                <li>Affiche le score dans un HUD mis à jour à chaque ramassage.</li>
+                <li>Range et commente le graphe, retire les Print de debug.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Nommage cohérent (préfixes, <code>b</code> pour les booléens).</li>
+                  <li>Graphe commenté et lisible.</li>
+                  <li>Le mini-projet fonctionne de bout en bout.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel préfixe utilise-t-on conventionnellement pour un Blueprint d'Actor ?","a":["BP_","WBP_","E_","S_"],"correct":0,"explain":"BP_ pour une Blueprint Class, WBP_ pour un Widget, BPI_ pour une interface, E_ pour une Enum, S_ pour une Struct. Les booléens se préfixent souvent b."},
+  {"q":"À quoi sert un Breakpoint (F9) sur un nœud ?","a":["Mettre le jeu en pause pour inspecter les valeurs pas à pas","Supprimer le nœud","Accélérer l'exécution","Compiler"],"correct":0,"explain":"Un Breakpoint stoppe l'exécution sur ce nœud : on peut alors avancer pas à pas et survoler les broches pour lire les valeurs et trouver un bug."},
+  {"q":"Dans le mini-projet, pourquoi gérer le Cast Failed sur l'overlap ?","a":["Parce que l'overlap peut venir d'un autre Actor que le joueur","Pour aller plus vite","C'est obligatoire pour compiler","Pour détruire le joueur"],"correct":0,"explain":"Tout Actor peut entrer dans la zone. On caste vers BP_Joueur et on n'ajoute le score que si le cast réussit ; sinon on ignore (Cast Failed)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Renomme proprement&nbsp;: un widget de menu, une enum d'état, un booléen «&nbsp;ouvert&nbsp;».</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p><code>WBP_MenuPause</code>, <code>E_EtatJeu</code>, <code>bIsOpen</code>.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Décris la logique d'overlap d'une pièce qui ajoute 10 au score.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>OnComponentBeginOverlap ─▶ Cast To BP_Joueur (Other)
+   réussi ─▶ AjouterScore(10) ─▶ Play Sound ─▶ Destroy Actor
+   Cast Failed ─▶ (rien)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un objectif&nbsp;: gagner quand toutes les pièces sont ramassées.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Un compteur de pièces (ou un Event Dispatcher «&nbsp;OnPickup&nbsp;» auquel un GameMode/Manager s'abonne). À chaque ramassage, décrémente le total restant&nbsp;; quand il atteint 0, déclenche l'événement de victoire (afficher un widget, charger le niveau suivant).</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Conventions&nbsp;: préfixes (<code>BP_</code>, <code>WBP_</code>…), <code>b</code> pour les booléens, noms explicites.</li>
+                <li>Organise&nbsp;: Comment boxes, reroute, fonctions, lecture gauche→droite.</li>
+                <li>Débogue avec <b>Print String</b> et <b>Breakpoints</b> (et nettoie ensuite).</li>
+                <li>Un vrai mini-projet combine composants, communication, fonctions, UI et destruction.</li>
+              </ul>
+            </div>
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎓</span>Piste Blueprints terminée&nbsp;!</div>
+              <p>Tu maîtrises désormais les Blueprints de bout en bout&nbsp;: nœuds, flux, variables, événements, conditions, boucles, fonctions, héritage, communication, composants, UI, Timelines et performance. Pour continuer&nbsp;:</p>
+              <ul>
+                <li>Retour au <a href="../../index.html">programme complet</a> pour explorer une autre piste.</li>
+                <li>Pousse plus loin avec le <a href="../../cours/cpp/cpp01-introduction.html">C++ Unreal</a> (et exposer des nœuds aux Blueprints).</li>
+                <li>Compare les approches avec <a href="../../cours/unreal/e01-installation.html">la piste Unreal Engine</a>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Comment box</b> — cadre titré regroupant des nœuds (touche C).</p>
+              <p><b>Reroute node</b> — point de passage pour redresser un fil.</p>
+              <p><b>Print String</b> — nœud de débogage affichant une valeur.</p>
+              <p><b>Breakpoint</b> — point d'arrêt (F9) pour inspecter l'exécution pas à pas.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../index.html">Programme complet</a> — choisis ta prochaine piste.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

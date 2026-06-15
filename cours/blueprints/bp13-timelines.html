@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BP13 — Timelines &amp; animation · Atelier Game Art</title>
+  <meta name="description" content="Le nœud Timeline en Blueprint : tracks float/vector/event, interpolation (Lerp), animer une porte ou une plateforme sans écrire de code.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="bp13";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blueprints/bp01-introduction.html">Blueprints</a><span class="sep">/</span>
+            <span>Timelines</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>BP13 — Timelines &amp; animation par BP</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 12 · Blueprints</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blueprints/bp05-evenements.html">BP5 — Événements</a>, <a href="../../cours/blueprints/bp11-composants-acteurs.html">BP11 — Composants</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est un nœud <b>Timeline</b> et ses sorties (Update, Finished).</li>
+                <li>Utiliser des <b>tracks</b> Float / Vector / Event.</li>
+                <li>Interpoler avec <b>Lerp</b> pour animer une transform.</li>
+                <li>Animer une porte/plateforme sans code, avec Play / Reverse.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Beaucoup d'animations de gameplay (porte qui s'ouvre, plateforme qui monte, fondu) n'ont pas besoin d'un logiciel d'animation&nbsp;: une <b>Timeline</b> dans le Blueprint suffit et reste pilotable par la logique.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le nœud Timeline</h3>
+            <p>Une Timeline joue une <b>courbe dans le temps</b>. Entrées d'exécution&nbsp;: <code>Play</code>, <code>Play from Start</code>, <code>Reverse</code>, <code>Stop</code>. Sorties&nbsp;: <code>Update</code> (à chaque frame de lecture) et <code>Finished</code> (à la fin). Une broche de données fournit la valeur courante de chaque track.</p>
+
+            <h3>2. Les tracks</h3>
+            <ul>
+              <li><b>Float Track</b>&nbsp;: une valeur 0→1 (souvent un alpha d'interpolation).</li>
+              <li><b>Vector Track</b>&nbsp;: trois valeurs (ex. une position).</li>
+              <li><b>Event Track</b>&nbsp;: déclenche un événement à un instant précis.</li>
+            </ul>
+
+            <h3>3. Animer avec Lerp</h3>
+            <p>On utilise l'alpha de la Float Track pour <b>interpoler</b> (Lerp) entre un état A et un état B. Sur <code>Update</code>, on applique la valeur interpolée à la transform.</p>
+            <div class="codeblock" data-lang="Blueprint">
+<pre><code>Timeline "OuvrirPorte" (Float 0→1 sur 1s)
+   Update ─exec▶ Set Relative Rotation =
+                 Lerp(RotFermee, RotOuverte, Alpha)
+   Finished ─exec▶ Set bOuverte = true</code></pre>
+            </div>
+
+            <h3>4. Play / Reverse (ouvrir/fermer)</h3>
+            <p>Le même Timeline sert dans les deux sens&nbsp;: <code>Play</code> ouvre, <code>Reverse</code> ferme. Couplé à un FlipFlop (vu en <a href="../../cours/blueprints/bp07-boucles.html">BP7</a>), on bascule l'état à chaque interaction.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 130" role="img" aria-label="Timeline avec courbe et sorties Update et Finished">
+                <g class="svg-text" font-size="9" font-family="monospace">
+                  <rect x="30" y="40" width="130" height="50" rx="8" fill="#f97316" fill-opacity="0.15" stroke="#f97316"/><text x="95" y="60" text-anchor="middle">Timeline</text>
+                  <path d="M40 84 Q 75 50 150 52" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                  <path d="M160 58 H280" stroke="#fff" stroke-width="2" marker-end="url(#a13)"/><text x="220" y="50" text-anchor="middle" font-family="sans-serif" font-size="8" class="svg-dim">Update (chaque frame)</text>
+                  <rect x="280" y="42" width="160" height="32" rx="6" fill="none" stroke="#f97316"/><text x="360" y="62" text-anchor="middle">Lerp → Set Transform</text>
+                  <path d="M160 78 H280" stroke="#f97316" stroke-width="1.6" marker-end="url(#a13b)"/><text x="220" y="96" text-anchor="middle" font-family="sans-serif" font-size="8" class="svg-dim">Finished</text>
+                  <defs>
+                    <marker id="a13" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#fff"/></marker>
+                    <marker id="a13b" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#f97316"/></marker>
+                  </defs>
+                </g>
+              </svg>
+              <figcaption><code>Update</code> applique la valeur interpolée&nbsp;; <code>Finished</code> conclut.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Ajoute un Timeline avec une Float Track 0→1 sur 1 s.</li>
+              <li>Sur Update, Lerp entre rotation fermée et ouverte → Set Relative Rotation.</li>
+              <li>Sur Finished, mets à jour l'état.</li>
+              <li>Branche Play / Reverse via un FlipFlop sur l'interaction.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La porte saute d'un coup.</div>
+                <div class="pi-cause"><b>Cause</b>Set fait en une fois, pas sur Update.</div>
+                <div class="pi-fix"><b>Correction</b>Applique la valeur sur <code>Update</code> chaque frame.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Animation qui ne rejoue pas.</div>
+                <div class="pi-cause"><b>Cause</b><code>Play</code> reprend là où on s'était arrêté.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>Play from Start</code> pour repartir de zéro.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Lerp dans le mauvais sens.</div>
+                <div class="pi-cause"><b>Cause</b>A et B inversés.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie l'ordre (A = départ, B = arrivée) et l'alpha.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Timeline introuvable dans une fonction.</div>
+                <div class="pi-cause"><b>Cause</b>Les Timelines sont des nœuds latents.</div>
+                <div class="pi-fix"><b>Correction</b>Place-les dans l'Event Graph, pas dans une fonction.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Anime une plateforme qui monte de 0 à 200 en Z (Lerp sur Update).</li>
+                <li>Ajoute un Event Track qui joue un son à mi-parcours.</li>
+                <li>Ouvre/ferme avec Play / Reverse via FlipFlop.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le mouvement est fluide (appliqué sur Update).</li>
+                  <li>Play/Reverse fonctionnent dans les deux sens.</li>
+                  <li>Tu places la Timeline dans l'Event Graph.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Sur quelle sortie d'un Timeline applique-t-on le mouvement à chaque frame ?","a":["Update","Finished","Play","Stop"],"correct":0,"explain":"Update se déclenche à chaque frame de lecture : on y applique la valeur interpolée. Finished ne se déclenche qu'à la fin."},
+  {"q":"Comment animer en douceur entre une position A et une position B ?","a":["Lerp(A, B, Alpha) avec l'alpha de la Float Track","Set direct sur la valeur B","Avec un Branch","Avec Destroy Actor"],"correct":0,"explain":"On interpole : Lerp(A, B, Alpha) où Alpha va de 0 à 1 (fourni par la Float Track), appliqué chaque frame sur Update."},
+  {"q":"Pourquoi un Timeline ne peut-il pas vivre dans une fonction ?","a":["C'est un nœud latent (s'étale sur plusieurs frames)","Il consomme trop de mémoire","Il est réservé au C++","Les fonctions n'ont pas de variables"],"correct":0,"explain":"Comme Delay, le Timeline est latent : il joue sur plusieurs frames. Les fonctions s'exécutent en une fois ; on place donc les Timelines dans l'Event Graph."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Quelle sortie du Timeline utiliser pour appliquer le mouvement&nbsp;?</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p><code>Update</code> (chaque frame). <code>Finished</code> sert à conclure (changer l'état, jouer un son de fin).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Décris l'animation d'ouverture de porte (rotation).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Blueprint">
+<pre><code>Play ─▶ Timeline (Float 0→1)
+Update ─▶ Set Relative Rotation = Lerp(0°, 90°, Alpha) (autour de Z)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Conçois une plateforme qui fait des allers-retours en continu.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Sur <code>Finished</code>, rappelle <code>Reverse</code> (et inversement) — ou active la lecture en boucle de la Timeline (option <i>Loop</i>) avec une courbe qui monte puis redescend (0→1→0). Le mouvement reste appliqué sur <code>Update</code>.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le <b>Timeline</b> joue une courbe dans le temps&nbsp;: <code>Update</code> (chaque frame), <code>Finished</code> (fin).</li>
+                <li>Tracks <b>Float</b> / <b>Vector</b> / <b>Event</b>.</li>
+                <li>Anime avec <b>Lerp(A, B, Alpha)</b> appliqué sur Update.</li>
+                <li><code>Play</code> / <code>Reverse</code> pour ouvrir/fermer&nbsp;; Timeline dans l'Event Graph.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Timeline</b> — nœud qui joue une courbe dans le temps (latent).</p>
+              <p><b>Track</b> — piste d'une Timeline (Float, Vector ou Event).</p>
+              <p><b>Lerp (interpolation linéaire)</b> — mélange A→B selon un alpha 0→1.</p>
+              <p><b>Update / Finished</b> — sorties de la Timeline (chaque frame / fin).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blueprints/bp14-performance.html">BP14 — Performance &amp; pièges</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

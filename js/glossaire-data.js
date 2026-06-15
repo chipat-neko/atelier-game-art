@@ -512,3 +512,40 @@ window.GLOSSAIRE = window.GLOSSAIRE.concat([
   { terme: "Pool d'objets", def: "Réserve d'objets recyclés (projectiles, ennemis) pour éviter d'allouer/jeter sans cesse et limiter le travail du ramasse-miettes.", alias: ["object pool"], src: "lua14" },
   { terme: "Machine à états", def: "Modèle où le jeu est dans un état parmi plusieurs (menu, partie, pause…) avec des transitions définies, souvent via une table de transitions plutôt qu'une cascade de if.", alias: ["table de transitions"], src: "lua15" }
 ]);
+
+/* --- Piste 12 : Blueprints (scripting visuel Unreal) --- */
+window.GLOSSAIRE = window.GLOSSAIRE.concat([
+  { terme: "Blueprint", def: "Système de scripting visuel d'Unreal Engine : on relie des nœuds pour décrire la logique, sans écrire de code texte. Complémentaire du C++.", alias: ["scripting visuel"], src: "bp01" },
+  { terme: "Nœud (Blueprint)", def: "Bloc d'un graphe Blueprint réalisant une action (impur) ou fournissant une donnée (pur). On les relie par des fils.", alias: ["node"], src: "bp01" },
+  { terme: "Event Graph", def: "Zone centrale de l'éditeur Blueprint où l'on place et relie les nœuds de logique.", alias: [], src: "bp02" },
+  { terme: "Fil d'exécution (exec)", def: "Lien blanc reliant les broches d'exécution : il indique l'ordre des actions, lu de gauche à droite.", alias: ["exec", "fil blanc"], src: "bp03" },
+  { terme: "Broche (pin)", def: "Point de connexion d'un nœud : exec (flèche blanche, déclenche) ou données (colorée par type, transporte une valeur).", alias: ["pin"], src: "bp03" },
+  { terme: "Get / Set (Blueprint)", def: "Get lit une variable (donnée pure, sans exec) ; Set l'écrit (avec fil d'exécution).", alias: [], src: "bp04" },
+  { terme: "Event BeginPlay", def: "Événement Blueprint déclenché une fois quand l'Actor entre en jeu : idéal pour l'initialisation.", alias: [], src: "bp05" },
+  { terme: "Event Tick", def: "Événement appelé à chaque frame (Delta Seconds) : pratique mais coûteux, à utiliser avec parcimonie.", alias: ["Tick"], src: "bp05" },
+  { terme: "Custom Event", def: "Événement personnalisé, nommé et paramétrable, déclenchable depuis le même ou un autre Blueprint.", alias: [], src: "bp05" },
+  { terme: "Branch", def: "Nœud condition (if visuel) : selon un Boolean, l'exécution part par la sortie True ou False.", alias: [], src: "bp06" },
+  { terme: "Switch on Enum/Int", def: "Nœud d'aiguillage multi-cas qui route l'exécution selon une valeur (énumération ou entier).", alias: ["Switch"], src: "bp06" },
+  { terme: "ForEachLoop", def: "Boucle Blueprint parcourant un tableau : Loop Body s'exécute pour chaque élément, Completed à la fin.", alias: ["ForLoop", "WhileLoop"], src: "bp07" },
+  { terme: "Flow Control", def: "Nœuds contrôlant le flux d'exécution : DoOnce (une fois), Gate (ouvre/ferme), FlipFlop (alterne A/B), Sequence (ordre).", alias: ["DoOnce", "Gate", "FlipFlop", "Sequence"], src: "bp07" },
+  { terme: "Fonction pure / impure", def: "Pure : sans fil d'exécution, ne fait que calculer/retourner (réévaluée à chaque usage). Impure : avec exec, peut modifier l'état.", alias: ["pure", "impure"], src: "bp08" },
+  { terme: "Macro (Blueprint)", def: "Bloc réutilisable déplié à la compilation, pouvant exposer plusieurs broches d'exécution (contrairement à une fonction).", alias: [], src: "bp08" },
+  { terme: "Classe parente / enfant (Blueprint)", def: "Un Blueprint enfant hérite des variables, composants et logique d'un parent (Actor, Pawn, Character…) et n'en surcharge que le nécessaire.", alias: ["héritage Blueprint"], src: "bp09" },
+  { terme: "Override (Blueprint)", def: "Redéfinir un événement/fonction hérité dans un Blueprint enfant ; le nœud Parent: appelle la version parente.", alias: ["Parent:"], src: "bp09" },
+  { terme: "Construction Script", def: "Graphe exécuté à la construction de l'Actor (éditeur et spawn), avant le jeu : sert à configurer l'apparence. Distinct de BeginPlay.", alias: [], src: "bp09" },
+  { terme: "Cast To", def: "Nœud qui vérifie/convertit une référence vers une classe précise (sortie Cast Failed si échec). Crée une dépendance de chargement.", alias: [], src: "bp10" },
+  { terme: "Blueprint Interface", def: "Contrat de fonctions sans implémentation, que plusieurs Blueprints réalisent. Permet de communiquer sans connaître le type exact (découplage).", alias: ["BPI", "interface"], src: "bp10" },
+  { terme: "Event Dispatcher", def: "Événement diffusé par un Blueprint auquel d'autres s'abonnent (Bind) : communication un-vers-plusieurs, du bas vers le haut.", alias: ["Bind"], src: "bp10" },
+  { terme: "Component (Unreal)", def: "Élément attaché à un Actor (Static Mesh, Collision, Audio…) ; les composants forment une hiérarchie sous un Root Component.", alias: ["composant", "Root Component"], src: "bp11" },
+  { terme: "Spawn Actor", def: "Nœud qui instancie une classe d'Actor au runtime à un Transform donné et renvoie sa référence.", alias: ["Spawn Actor from Class"], src: "bp11" },
+  { terme: "Destroy Actor", def: "Retire un Actor du jeu ; sa référence devient invalide (tester IsValid avant tout accès).", alias: ["IsValid"], src: "bp11" },
+  { terme: "Instance Editable", def: "Option rendant une variable réglable par instance dans le niveau (l'œil), sans modifier le Blueprint.", alias: [], src: "bp12" },
+  { terme: "Expose on Spawn", def: "Option qui fait apparaître une variable comme broche d'entrée du nœud Spawn Actor, pour l'initialiser à la création.", alias: [], src: "bp12" },
+  { terme: "UMG", def: "Système d'interface utilisateur d'Unreal (Widget Blueprint) : on l'affiche via Create Widget + Add to Viewport.", alias: ["Widget Blueprint", "Add to Viewport"], src: "bp12" },
+  { terme: "Timeline", def: "Nœud Blueprint qui joue une courbe dans le temps (tracks Float/Vector/Event) ; Update à chaque frame, Finished à la fin. Sert à animer sans code.", alias: ["track"], src: "bp13" },
+  { terme: "Lerp (interpolation)", def: "Mélange linéaire entre A et B selon un alpha 0→1 ; combiné à une Timeline pour animer une transform en douceur.", alias: ["interpolation linéaire"], src: "bp13" },
+  { terme: "Timer (Blueprint)", def: "Déclenche un événement à intervalle régulier : alternative économe à Event Tick.", alias: [], src: "bp14" },
+  { terme: "Dépendance dure (hard reference)", def: "Lien (souvent créé par un Cast) qui force le chargement d'un autre asset ; en abuser alourdit chargement et mémoire. Les interfaces découplent.", alias: ["hard reference"], src: "bp14" },
+  { terme: "Comment box", def: "Cadre titré regroupant des nœuds (touche C) pour organiser et documenter un graphe Blueprint.", alias: ["reroute node"], src: "bp15" },
+  { terme: "Breakpoint (Blueprint)", def: "Point d'arrêt (F9) qui met le jeu en pause sur un nœud pour inspecter les valeurs pas à pas ; complément du Print String.", alias: ["Print String"], src: "bp15" }
+]);
