@@ -1,6 +1,6 @@
 # Atelier Game Art — Cours de graphisme & création d'assets (Unity & Unreal)
 
-Site web **statique, 100 % local et hors-ligne** pour apprendre la création de graphismes et d'assets de jeu vidéo, des fondamentaux jusqu'à l'intégration dans les trois moteurs majeurs — **Unity 6.3 LTS**, **Unreal Engine 5.7** et **Godot 4.x** — avec un parcours complet dédié à **Blender 4.x**. Pédagogie centrée sur le **pourquoi** autant que le **comment**.
+Site web **statique, 100 % local et hors-ligne** pour apprendre la création de graphismes et d'assets de jeu vidéo, des fondamentaux jusqu'à l'intégration dans les trois moteurs majeurs — **Unity 6.3 LTS**, **Unreal Engine 5.7** et **Godot 4.x** — avec un parcours complet dédié à **Blender** (5.0 / 4.5 LTS). Pédagogie centrée sur le **pourquoi** autant que le **comment**.
 
 ## Ouvrir le site
 
@@ -71,6 +71,7 @@ Chaque leçon suit la même structure : en-tête (niveau, durée, prérequis) �
 - **Unity 6.3 LTS** (déc. 2025, support jusqu'à déc. 2027) ; licence **Personal gratuite** (< 200 000 $/an). Pipelines : Built-in, URP, HDRP.
 - **Unreal Engine 5.7** (nov. 2025). *UE6 annoncé en mai 2026 mais pas encore téléchargeable* → les cours se basent sur 5.7. Gratuit, royalties de 5 % au-delà d'1 M$ de revenus bruts cumulés par jeu.
 - **Godot 4.x** (série 4 : 4.4, 4.5…). Libre et open source (**licence MIT**) : gratuit, **sans royalties ni seuil de revenus**. Renderers : Forward+, Mobile, Compatibility.
+- **Blender** : version courante **5.0** (mars 2026) ; dernière **LTS = 4.5** (juillet 2025, support jusqu'à juillet 2027). Gratuit et open source (GPL). Le cours s'applique aux deux.
 - **Fab** (`fab.com`) : marketplace unifiée d'Epic ayant remplacé l'Unreal Marketplace, Quixel.com, le Sketchfab Store et l'ArtStation Marketplace ; sert Unreal **et** Unity. Megascans y est (majorité payante depuis 2025). Quixel Bridge reste utilisé pour MetaHuman.
 
 ## Maintenance

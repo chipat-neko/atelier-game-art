@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L1 — Blender · Atelier Game Art</title>
-  <meta name="description" content="Blender 4.x : installation, interface et navigation, modélisation, sculpt, UV unwrap, matériaux Eevee/Cycles, export FBX/glTF propre, et installation d'add-ons.">
+  <meta name="description" content="Blender (5.0 / 4.5 LTS) : installation, interface et navigation, modélisation, sculpt, UV unwrap, matériaux Eevee/Cycles, export FBX/glTF propre, et installation d'add-ons.">
   <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
   <link rel="stylesheet" href="../../css/style.css">
   <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
@@ -66,7 +66,7 @@
               <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
               <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
               <ul>
-                <li>Installer <b>Blender 4.x LTS</b> proprement et savoir s'il exploite ton <span class="gloss">GPU</span>.</li>
+                <li>Installer <b>Blender</b> (4.5 LTS ou 5.0) proprement et savoir s'il exploite ton <span class="gloss">GPU</span>.</li>
                 <li>Te repérer dans l'interface&nbsp;: <b>Workspaces</b>, éditeurs (Viewport, Outliner, Properties, Timeline), <b>header</b>, <b>N-panel</b> et <b>T-panel</b>.</li>
                 <li>Naviguer dans la vue 3D (orbit, pan, zoom, vues numpad) et comprendre le rôle du <b>curseur 3D</b>.</li>
                 <li>Modéliser en <b>Edit Mode</b> avec les opérations clés (Extrude, Inset, Bevel, Loop Cut) et les <b>modifiers</b> non destructifs.</li>
@@ -87,8 +87,8 @@
 
             <h2>Théorie en profondeur</h2>
 
-            <h3>1. Installer Blender 4.x&nbsp;: ce que tu télécharges vraiment</h3>
-            <p>On télécharge Blender uniquement depuis le site officiel <code>blender.org</code> (jamais un site tiers&nbsp;: risque de versions vérolées). Choisis la branche <b>LTS</b> — <em>Long Term Support</em>, «&nbsp;support à long terme&nbsp;» —, aujourd'hui <b>Blender 4.5 LTS</b>. Une version LTS reçoit des correctifs de bugs pendant deux ans&nbsp;: c'est le choix raisonnable pour un projet sérieux, par opposition aux versions «&nbsp;courantes&nbsp;» (4.x non-LTS) qui apportent des nouveautés mais bougent plus vite.</p>
+            <h3>1. Installer Blender&nbsp;: ce que tu télécharges vraiment</h3>
+            <p>On télécharge Blender uniquement depuis le site officiel <code>blender.org</code> (jamais un site tiers&nbsp;: risque de versions vérolées). Deux choix possibles&nbsp;: la branche <b>LTS</b> — <em>Long Term Support</em>, «&nbsp;support à long terme&nbsp;» —, aujourd'hui <b>Blender 4.5 LTS</b> (corrigée jusqu'en juillet 2027, la valeur sûre pour un projet sérieux)&nbsp;; ou la <b>version courante</b>, <b>Blender 5.0</b> (sortie en mars 2026), qui apporte les nouveautés mais bouge plus vite (pas encore de LTS 5.x). Le cours s'applique aux deux&nbsp;; affiche toujours ta version pour rester datable.</p>
             <h4>Installeur vs portable</h4>
             <p>Le site propose deux formats. L'<b>installeur</b> (<code>.msi</code> sous Windows) écrit Blender dans <em>Program Files</em> et l'associe aux fichiers <code>.blend</code>&nbsp;: pratique pour une seule version «&nbsp;principale&nbsp;». Le <b>portable</b> (archive <code>.zip</code>) ne s'installe pas&nbsp;: tu décompresses le dossier où tu veux (même sur une clé USB) et tu lances <code>blender.exe</code> directement. Son intérêt&nbsp;: tu peux faire cohabiter <b>plusieurs versions</b> côte à côte sans conflit — indispensable quand un projet est verrouillé sur, disons, la 4.2 LTS et qu'un autre teste la 4.5.</p>
             <div class="callout info">
@@ -390,7 +390,7 @@
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
-                <li>Blender 4.x LTS est le <b>DCC gratuit</b> de référence&nbsp;: il couvre la première moitié du pipeline d'asset.</li>
+                <li>Blender (gratuit&nbsp;; 4.5 LTS ou 5.0) est le <b>DCC</b> de référence&nbsp;: il couvre la première moitié du pipeline d'asset.</li>
                 <li>L'interface est une <b>grille d'éditeurs</b>&nbsp;; les <b>Workspaces</b> pré-arrangent ces éditeurs par tâche. Retiens <kbd>Tab</kbd> (Object/Edit), <kbd>N</kbd> (transforms), <kbd>T</kbd> (outils).</li>
                 <li>Opérations clés&nbsp;: <kbd>E</kbd> Extrude, <kbd>I</kbd> Inset, <kbd>Ctrl+B</kbd> Bevel, <kbd>Ctrl+R</kbd> Loop Cut. Les <b>modifiers</b> (Mirror, Subdivision, Solidify) sont <b>non destructifs</b>.</li>
                 <li>Le <b>Principled BSDF</b> est un shader PBR&nbsp;: couleur en <b>sRGB</b>, données (normal, roughness, metallic) en <b>Non-Color</b>.</li>

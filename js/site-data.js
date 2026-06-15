@@ -51,9 +51,9 @@ window.SITE_DATA = {
       couleur: "var(--piste-blender)",
       dossier: "cours/blender/",
       icone: "blender",
-      desc: "De A à Z dans Blender 4.x : interface, modélisation, modifiers, sculpt, UV, shading, baking, Geometry Nodes, animation et export vers les moteurs.",
+      desc: "De A à Z dans Blender (5.0 / 4.5 LTS) : interface, modélisation, modifiers, sculpt, UV, shading, baking, Geometry Nodes, animation et export vers les moteurs.",
       lecons: [
-        { id:"b01", fichier:"b01-installation.html",   titre:"Installation & configuration",          niveau:"Débutant",      duree:"30 min", desc:"Télécharger Blender 4.x LTS, versions, préférences, GPU de rendu, unités, activation d'add-ons.", motscles:["Blender installation","blender.org","LTS","4.x","préférences","GPU","add-on","unités"] },
+        { id:"b01", fichier:"b01-installation.html",   titre:"Installation & configuration",          niveau:"Débutant",      duree:"30 min", desc:"Télécharger Blender (5.0 ou 4.5 LTS), versions, préférences, GPU de rendu, unités, activation d'add-ons.", motscles:["Blender installation","blender.org","LTS","5.0","4.5 LTS","préférences","GPU","add-on","unités"] },
         { id:"b02", fichier:"b02-interface.html",       titre:"Interface & navigation",                niveau:"Débutant",      duree:"40 min", desc:"Workspaces, éditeurs, 3D Viewport, Outliner, Properties, navigation, curseur 3D, pivots, raccourcis.", motscles:["interface Blender","workspace","viewport","Outliner","Properties","navigation","curseur 3D","raccourci"] },
         { id:"b03", fichier:"b03-modelisation.html",    titre:"Modélisation (Edit Mode)",              niveau:"Intermédiaire", duree:"50 min", desc:"Edit Mode, extrude, inset, bevel, loop cut, knife, snapping et bonnes pratiques de topologie.", motscles:["modélisation Blender","Edit Mode","extrude","inset","bevel","loop cut","knife","snapping","topologie"] },
         { id:"b04", fichier:"b04-modifiers.html",       titre:"Les modifiers (non destructif)",        niveau:"Intermédiaire", duree:"45 min", desc:"Mirror, Subdivision Surface, Solidify, Boolean, Array, Bevel, Shrinkwrap : la pile non destructive.", motscles:["modifier Blender","Mirror","Subdivision Surface","Solidify","Boolean","Array","Bevel","non destructif"] },

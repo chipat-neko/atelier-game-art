@@ -323,7 +323,7 @@
             </div>
 
             <h2>🔧 Démonstration pas à pas</h2>
-            <p>Objectif&nbsp;: assembler à la main un matériau PBR Metallic/Roughness dans Blender 4.x avec le shader <b>Principled BSDF</b> (le shader PBR universel), pour bien voir <em>où</em> se branche chaque map. La logique est identique dans Unity et Unreal&nbsp;; seuls les noms changent.</p>
+            <p>Objectif&nbsp;: assembler à la main un matériau PBR Metallic/Roughness dans Blender avec le shader <b>Principled BSDF</b> (le shader PBR universel), pour bien voir <em>où</em> se branche chaque map. La logique est identique dans Unity et Unreal&nbsp;; seuls les noms changent.</p>
             <ol>
               <li>Sélectionne ton objet, ouvre l'éditeur de nœuds via <span class="menu-path">Shading<span class="arrow">▸</span>Shader Editor</span>. Tu y vois déjà un nœud <b>Principled BSDF</b> relié au nœud <b>Material Output</b>&nbsp;: c'est le shader qui implémente le BRDF PBR. <em>Ce qui se passe&nbsp;:</em> chaque entrée de ce nœud correspond à une propriété physique (Base Color, Metallic, Roughness, Normal…).</li>
               <li>Ajoute une texture avec <span class="menu-path">Add<span class="arrow">▸</span>Texture<span class="arrow">▸</span>Image Texture</span>, charge ta carte <b>Base Color</b>, et relie sa sortie <code>Color</code> à l'entrée <b>Base Color</b> du Principled. Dans le nœud image, laisse <b>Color Space = sRGB</b>. <em>Pourquoi&nbsp;:</em> c'est une couleur perçue.</li>
