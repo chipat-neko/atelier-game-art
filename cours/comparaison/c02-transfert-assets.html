@@ -199,6 +199,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quels formats privilégier pour transférer un asset 3D entre logiciels et moteurs ?","a":["glTF/GLB (ouvert, temps réel) et FBX (échange courant, animations)","PSD et BMP","TXT et CSV","MP3 et WAV"],"correct":0,"explain":"glTF/GLB est ouvert et pensé pour le temps réel ; FBX reste très répandu pour l'échange, notamment animé. On choisit selon le moteur et le besoin (statique/animé)."},
+  {"q":"Quel piège fréquent lors d'un transfert d'asset entre outils ?","a":["L'échelle et l'orientation des axes qui diffèrent (facteur 100, Y-up vs Z-up)","La couleur du fichier","Le nom de l'auteur","La taille de l'écran"],"correct":0,"explain":"Les conventions d'unité (cm vs m) et d'axes (Y-up/Z-up) varient. On applique les transforms à l'export et on vérifie l'échelle/orientation à l'import pour éviter un objet géant ou couché."},
+  {"q":"Pour qu'une texture reste correcte d'un outil à l'autre, que faut-il surveiller ?","a":["L'espace colorimétrique (sRGB pour la couleur, linéaire pour les données comme la normal/roughness)","Le nom du calque","La résolution de l'écran","Le format audio"],"correct":0,"explain":"Une normal/roughness importée en sRGB par erreur fausse l'éclairage. On garde la couleur en sRGB et les maps de données en linéaire, quel que soit le moteur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Exporte un objet texturé d'un logiciel 3D en glTF et importe-le dans un moteur&nbsp;: vérifie échelle, orientation et matériau.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Applique les transforms avant export. À l'import, compare à un objet de référence (échelle), vérifie l'axe « haut » et que le matériau/les textures suivent. Corrige côté export si besoin.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Transfère un asset entre deux moteurs (ou deux projets) et documente les ajustements nécessaires.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Note les écarts&nbsp;: échelle, regroupement des maps (ORM vs séparées), espace colorimétrique, conventions de normal map (OpenGL/DirectX). Un petit « guide de transfert » t'évitera de refaire les mêmes erreurs.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets en place une convention d'export réutilisable (unités, axes, presets de textures) pour ton pipeline.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Fixe une fois pour toutes&nbsp;: unité (cm), axe up cohérent avec le moteur, presets d'export de textures par moteur (canaux, sRGB/linéaire). Documente-la&nbsp;: c'est ce qui rend un pipeline fiable et rapide.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

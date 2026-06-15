@@ -199,6 +199,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"En quoi diffèrent les approches de rendu par défaut d'Unity et d'Unreal ?","a":["Unity propose plusieurs pipelines modulables (URP/HDRP) ; Unreal offre un rendu haut de gamme unifié (Lumen/Nanite) par défaut","Unity est toujours plus réaliste","Unreal n'a pas de rendu temps réel","Ils sont identiques"],"correct":0,"explain":"Unity te fait choisir un pipeline selon ta cible (perf vs fidélité). Unreal vise d'emblée le photoréalisme (Lumen, Nanite), au prix d'exigences matérielles plus élevées."},
+  {"q":"Quel langage de script principal pour chacun ?","a":["C# pour Unity ; C++ (et Blueprint) pour Unreal","Python pour les deux","C++ pour Unity ; C# pour Unreal","GDScript pour les deux"],"correct":0,"explain":"Unity se script en C#. Unreal combine C++ et le scripting visuel Blueprint. Les concepts (POO, events) se transposent d'un écosystème à l'autre."},
+  {"q":"Comment bien choisir entre les deux ?","a":["Selon la cible (plateforme/perf), le style visuel, l'équipe et l'écosystème — pas selon une supériorité absolue","Unreal est toujours meilleur","Unity est toujours meilleur","Au hasard"],"correct":0,"explain":"Il n'y a pas de gagnant universel : mobile/indé/2D penchent souvent Unity ; AAA/photoréalisme penchent souvent Unreal. Le contexte (équipe, plateforme, style) décide."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Réflexion</span></div>
+                <p>Liste 3 critères qui, pour TON projet, pèsent le plus dans le choix d'un moteur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ex.&nbsp;: plateforme cible (mobile/PC), style visuel (stylisé/photoréaliste), langage que tu maîtrises, budget matériel, taille d'équipe, écosystème d'assets. Hiérarchise-les selon ton contexte réel.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Recrée une même scène simple (un objet éclairé) dans Unity et dans Unreal et compare l'effort et le rendu par défaut.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Note&nbsp;: temps de mise en place, rendu « sorti de la boîte », fluidité sur ta machine. Unreal impressionne souvent d'emblée (Lumen) ; Unity demande de configurer le pipeline mais reste léger et flexible.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Rédige un court argumentaire (5 lignes) recommandant un moteur pour un projet fictif précis, en justifiant.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ancre la reco dans des faits&nbsp;: « jeu mobile 2D stylisé, petite équipe C# → Unity (URP) pour la perf mobile et l'écosystème ». Ou « cinématique photoréaliste PC → Unreal pour Lumen/Nanite ». Inclure Godot si pertinent (libre, léger).</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
