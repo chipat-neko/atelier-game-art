@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP11 — Conteneurs Unreal (TArray, TMap…) · Atelier Game Art</title>
+  <meta name="description" content="Les conteneurs Unreal : TArray, TMap, TSet, et les chaînes FString/FName/FText. Ajouter, parcourir, retirer, et bien choisir.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Conteneurs</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP11 — Conteneurs Unreal (TArray, TMap…)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp05-boucles.html">CPP5 — Boucles</a> et <a href="../../cours/cpp/cpp07-classes-poo.html">CPP7</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser <code>TArray</code> (liste dynamique)&nbsp;: ajouter, parcourir, retirer.</li>
+                <li>Utiliser <code>TMap</code> (clé → valeur) et <code>TSet</code> (ensemble unique).</li>
+                <li>Manipuler les chaînes <code>FString</code> (et savoir quand <code>FName</code>/<code>FText</code>).</li>
+                <li>Choisir le bon conteneur selon le besoin.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu manipule des <b>collections</b> partout&nbsp;: la liste des ennemis, l'inventaire, la table des scores par joueur, l'ensemble des niveaux déjà visités. Unreal fournit ses propres conteneurs, optimisés et intégrés au moteur — l'équivalent des <code>List</code>/<code>Dictionary</code> de C# (voir la <a href="../../cours/csharp/cs10-collections.html">leçon C# CS10</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. TArray : la liste dynamique</h3>
+            <p>Le conteneur le plus utilisé&nbsp;: une suite ordonnée, indexée à partir de 0, de taille variable.</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()
+TArray&lt;AActor*&gt; Ennemis;     // déclaration
+
+Ennemis.Add(NouvelEnnemi);   // ajouter à la fin
+int32 n = Ennemis.Num();     // nombre d'éléments
+AActor* Premier = Ennemis[0]; // accès par index (attention aux bornes !)
+
+if (Ennemis.Contains(Cible)) { /* ... */ }   // recherche
+Ennemis.Remove(MortEnnemi);                  // retirer par valeur
+Ennemis.RemoveAt(2);                         // retirer par index
+
+for (AActor* E : Ennemis)    // parcours (range-based for, CPP5)
+{
+    if (IsValid(E)) { /* ... */ }
+}</code></pre>
+            </div>
+
+            <h3>2. TMap : associer une clé à une valeur</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()
+TMap&lt;FName, int32&gt; ScoresParJoueur;
+
+ScoresParJoueur.Add(TEXT("Alice"), 100);
+ScoresParJoueur.Add(TEXT("Bob"), 75);
+
+if (int32* Score = ScoresParJoueur.Find(TEXT("Alice")))  // Find renvoie un pointeur
+{
+    UE_LOG(LogTemp, Log, TEXT("Score : %d"), *Score);     // null si absent
+}
+
+for (const TPair&lt;FName, int32&gt;&amp; Paire : ScoresParJoueur)  // parcours clé/valeur
+{
+    UE_LOG(LogTemp, Log, TEXT("%s = %d"), *Paire.Key.ToString(), Paire.Value);
+}</code></pre>
+            </div>
+
+            <h3>3. TSet : un ensemble de valeurs uniques</h3>
+            <p>Quand on veut éviter les doublons et tester l'appartenance rapidement&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>TSet&lt;FName&gt; NiveauxVisites;
+NiveauxVisites.Add(TEXT("Donjon01"));
+NiveauxVisites.Add(TEXT("Donjon01"));   // ignoré : déjà présent
+bool bDejaVu = NiveauxVisites.Contains(TEXT("Donjon01"));  // true</code></pre>
+            </div>
+
+            <h3>4. Manipuler des FString</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>FString A = TEXT("Score : ");
+FString B = A + FString::FromInt(42);          // concaténation
+FString C = FString::Printf(TEXT("PV %d/%d"), 73, 100);  // formatage
+bool bVide = C.IsEmpty();
+int32 Longueur = C.Len();</code></pre>
+            </div>
+            <p>Rappel (<a href="../../cours/cpp/cpp02-variables-types.html">CPP2</a>)&nbsp;: <code>FString</code> pour manipuler, <code>FName</code> comme clé rapide (insensible à la casse), <code>FText</code> pour l'affichage localisé.</p>
+
+            <h3>5. Choisir le bon conteneur</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Besoin</th><th>Conteneur</th><th>Pourquoi</th></tr></thead>
+                <tbody>
+                  <tr><td>Liste ordonnée, parcourue souvent</td><td><code>TArray</code></td><td>Accès par index rapide, ajout en fin efficace.</td></tr>
+                  <tr><td>Retrouver par clé (id, nom)</td><td><code>TMap</code></td><td>Recherche rapide clé → valeur.</td></tr>
+                  <tr><td>Valeurs uniques / test d'appartenance</td><td><code>TSet</code></td><td>Pas de doublon, <code>Contains</code> rapide.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="TArray indexé, TMap clé-valeur, TSet unique">
+                <g class="svg-text" font-size="10" font-family="monospace">
+                  <text x="105" y="34" text-anchor="middle" font-family="sans-serif" class="svg-dim">TArray</text>
+                  <rect x="40" y="44" width="40" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="60" y="62" text-anchor="middle">A</text>
+                  <rect x="85" y="44" width="40" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="105" y="62" text-anchor="middle">B</text>
+                  <rect x="130" y="44" width="40" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="150" y="62" text-anchor="middle">C</text>
+                  <text x="105" y="90" text-anchor="middle" font-family="sans-serif" class="svg-dim" font-size="9">[0] [1] [2]</text>
+
+                  <text x="320" y="34" text-anchor="middle" font-family="sans-serif" class="svg-dim">TMap</text>
+                  <rect x="240" y="44" width="160" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="320" y="62" text-anchor="middle">"Alice" → 100</text>
+                  <rect x="240" y="78" width="160" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="320" y="96" text-anchor="middle">"Bob" → 75</text>
+
+                  <text x="540" y="34" text-anchor="middle" font-family="sans-serif" class="svg-dim">TSet</text>
+                  <circle cx="500" cy="60" r="20" class="svg-surface" stroke="#ec6a9e"/><text x="500" y="64" text-anchor="middle">D1</text>
+                  <circle cx="555" cy="60" r="20" class="svg-surface" stroke="#ec6a9e"/><text x="555" y="64" text-anchor="middle">D2</text>
+                  <text x="528" y="96" text-anchor="middle" font-family="sans-serif" class="svg-dim" font-size="9">sans doublon</text>
+                </g>
+                <text x="320" y="150" text-anchor="middle" class="svg-dim" font-size="10">Liste indexée · table clé→valeur · ensemble unique : trois besoins, trois conteneurs.</text>
+              </svg>
+              <figcaption>Le bon conteneur dépend de l'accès recherché&nbsp;: index, clé, ou appartenance unique.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Un <code>TArray&lt;AActor*&gt;</code> d'ennemis&nbsp;: ajoute-en, parcours-les, retire les invalides.</li>
+              <li>Un <code>TMap&lt;FName, int32&gt;</code> de scores&nbsp;: ajoute, recherche avec <code>Find</code>, parcours les paires.</li>
+              <li>Un <code>TSet&lt;FName&gt;</code> de niveaux visités&nbsp;: vérifie qu'un doublon est ignoré.</li>
+              <li>Construis un message récapitulatif avec <code>FString::Printf</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash sur un accès par index.</div>
+                <div class="pi-cause"><b>Cause</b>Index hors bornes (≥ <code>Num()</code> ou tableau vide).</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie <code>Array.IsValidIndex(i)</code> avant l'accès.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash en retirant pendant un range-based for.</div>
+                <div class="pi-cause"><b>Cause</b>Modification du conteneur en cours d'itération.</div>
+                <div class="pi-fix"><b>Correction</b>Boucle à l'envers par index, ou utilise <code>RemoveAll</code> avec un prédicat.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>Find</code> sur une TMap plante.</div>
+                <div class="pi-cause"><b>Cause</b>Déréférencement du pointeur renvoyé sans vérifier qu'il est non nul.</div>
+                <div class="pi-fix"><b>Correction</b>Teste le pointeur (<code>if (int32* p = Map.Find(k))</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes <code>AActor*</code> dans un TArray disparaissent.</div>
+                <div class="pi-cause"><b>Cause</b>Le <code>TArray</code> d'UObject n'est pas une <code>UPROPERTY()</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Marque le conteneur <code>UPROPERTY()</code> (le GC suit alors ses éléments).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un inventaire en <code>TArray</code>&nbsp;: ajouter/retirer des objets et afficher leur nombre.</li>
+                <li>Une table <code>TMap</code> « nom d'objet → quantité » avec mise à jour et recherche.</li>
+                <li>Un <code>TSet</code> des succès débloqués (sans doublon).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucun accès hors bornes.</li>
+                  <li>Les conteneurs d'UObject sont des <code>UPROPERTY()</code>.</li>
+                  <li>Le bon conteneur est choisi pour chaque besoin.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>TArray</code> (liste indexée), <code>TMap</code> (clé→valeur), <code>TSet</code> (unique) — équivalents Unreal des collections.</li>
+                <li>Parcours avec le range-based for&nbsp;; vérifie les bornes (<code>IsValidIndex</code>).</li>
+                <li><code>FString</code> pour manipuler&nbsp;; <code>FString::Printf</code> pour formater.</li>
+                <li>Un conteneur d'UObject doit être <code>UPROPERTY()</code> (sinon GC).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>TArray</b> — liste dynamique indexée d'Unreal (équivalent de List).</p>
+              <p><b>TMap</b> — table associant des clés à des valeurs (équivalent de Dictionary).</p>
+              <p><b>TSet</b> — ensemble de valeurs uniques, test d'appartenance rapide.</p>
+              <p><b>FString::Printf</b> — construit une chaîne formatée (style printf).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp12-gameplay-entrees.html">CPP12 — Gameplay framework &amp; entrées</a>.</li>
+              <li><a href="../../cours/csharp/cs10-collections.html">CS10 — Collections (C#)</a>&nbsp;: les mêmes idées côté Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

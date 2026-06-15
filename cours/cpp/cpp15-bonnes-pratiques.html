@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP15 — Bonnes pratiques, perfs & organisation · Atelier Game Art</title>
+  <meta name="description" content="Écrire un C++ Unreal propre et performant : conventions, Tick maîtrisé, IsValid, forward declarations, UE_LOG et organisation. Mini-projet récapitulatif.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp15";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Bonnes pratiques</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP15 — Bonnes pratiques, performances &amp; organisation</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>50 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>idéalement toute la piste, surtout <a href="../../cours/cpp/cpp09-actors-components.html">CPP9</a>, <a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a> et <a href="../../cours/cpp/cpp13-delegates.html">CPP13</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Appliquer les <b>conventions Unreal</b> (préfixes, nommage).</li>
+                <li>Maîtriser le <code>Tick</code> et préférer événements/timers.</li>
+                <li>Accélérer la compilation (forward declarations, includes).</li>
+                <li>Déboguer avec <code>UE_LOG</code> et réaliser un <b>mini-projet récapitulatif</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un projet Unreal C++ qui ignore les conventions et abuse du <code>Tick</code> devient lent à compiler, lent à exécuter et difficile à maintenir. Cette dernière leçon rassemble les réflexes professionnels, puis tu les appliques dans un mini-jeu qui mobilise toute la piste.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Conventions de nommage Unreal</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Préfixe</th><th>Pour</th><th>Exemple</th></tr></thead>
+                <tbody>
+                  <tr><td><code>A</code></td><td>Classe dérivée d'<code>AActor</code></td><td><code>AHeros</code></td></tr>
+                  <tr><td><code>U</code></td><td>Classe dérivée d'<code>UObject</code> (components…)</td><td><code>USante</code></td></tr>
+                  <tr><td><code>F</code></td><td>Structure / classe simple (hors UObject)</td><td><code>FStatsArme</code></td></tr>
+                  <tr><td><code>E</code></td><td>Énumération</td><td><code>EEtatIA</code></td></tr>
+                  <tr><td><code>b</code></td><td>Booléen</td><td><code>bEstVivant</code></td></tr>
+                  <tr><td><code>I</code></td><td>Interface</td><td><code>IDamageable</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Méthodes et propriétés en <code>PascalCase</code>. Ces conventions ne sont pas optionnelles&nbsp;: UHT et l'éditeur s'appuient dessus.</p>
+
+            <h3>2. Maîtriser le Tick</h3>
+            <p>Le <code>Tick</code> s'exécute chaque frame sur chaque Actor qui l'active — multiplié par des milliers d'objets, c'est un gouffre à performances. Règles&nbsp;:</p>
+            <ul>
+              <li><b>Désactive</b> le Tick si tu n'en as pas besoin&nbsp;: <code>PrimaryActorTick.bCanEverTick = false;</code>.</li>
+              <li>Préfère les <b>événements</b> (<a href="../../cours/cpp/cpp13-delegates.html">CPP13</a>) et les <b>timers</b> (<a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14</a>) à un Tick qui surveille en boucle.</li>
+              <li>Si un Tick est nécessaire mais pas à 60 Hz, augmente son intervalle&nbsp;: <code>PrimaryActorTick.TickInterval = 0.2f;</code>.</li>
+            </ul>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// ❌ Tick qui sonde en permanence
+void Tick(float Dt) { if (Joueur &amp;&amp; Distance(Joueur) &lt; 200) Attaquer(); }
+
+// ✅ Réagir à un événement / une collision quand ça se produit (pas chaque frame)
+void OnPlayerOverlap(...) { Attaquer(); }</code></pre>
+            </div>
+
+            <h3>3. IsValid partout</h3>
+            <p>Le réflexe de sécurité mémoire (<a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a>)&nbsp;: vérifie tout pointeur d'objet avant de l'utiliser.</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>if (IsValid(Cible))
+{
+    Cible-&gt;TakeDamage(/*...*/);
+}</code></pre>
+            </div>
+
+            <h3>4. Compilation : forward declarations &amp; includes</h3>
+            <p>Inclure un <code>.h</code> lourd partout ralentit énormément la compilation. Dans un <b>en-tête</b>, si tu n'utilises qu'un <em>pointeur</em> vers une classe, déclare-la en avant plutôt que de l'inclure&nbsp;; mets le <code>#include</code> dans le <code>.cpp</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Heros.h
+class UWeaponComponent;          // forward declaration (pas d'include lourd)
+
+UPROPERTY() TObjectPtr&lt;UWeaponComponent&gt; Arme;   // un pointeur suffit
+
+// Heros.cpp
+#include "WeaponComponent.h"     // l'include réel va ici</code></pre>
+            </div>
+
+            <h3>5. Déboguer proprement avec UE_LOG</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>DECLARE_LOG_CATEGORY_EXTERN(LogJeu, Log, All);   // catégorie dédiée (dans un .h)
+DEFINE_LOG_CATEGORY(LogJeu);                      // dans un .cpp
+
+UE_LOG(LogJeu, Warning, TEXT("PV du héros : %d"), PV);
+// Affichage écran ponctuel (debug) :
+GEngine-&gt;AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Touché !"));</code></pre>
+            </div>
+            <p>Crée des catégories de log par système pour filtrer&nbsp;; et nettoie les messages de debug avant une livraison.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Un GameMode coordonne des composants à responsabilité unique reliés par événements">
+                <rect x="245" y="18" width="150" height="36" rx="8" fill="#ec6a9e" fill-opacity="0.15" stroke="#ec6a9e"/>
+                <text x="320" y="41" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">GameMode</text>
+                <g class="svg-text" font-size="10">
+                  <rect x="30" y="115" width="130" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="95" y="137" text-anchor="middle">AHeros</text>
+                  <rect x="180" y="115" width="130" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="245" y="137" text-anchor="middle">USante</text>
+                  <rect x="330" y="115" width="130" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="395" y="137" text-anchor="middle">UI / Score</text>
+                  <rect x="480" y="115" width="130" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="545" y="137" text-anchor="middle">ASpawner</text>
+                </g>
+                <g stroke="#5ad19a" stroke-width="1.5" stroke-dasharray="4 3">
+                  <line x1="285" y1="54" x2="95" y2="115"/><line x1="305" y1="54" x2="245" y2="115"/>
+                  <line x1="335" y1="54" x2="395" y2="115"/><line x1="360" y1="54" x2="545" y2="115"/>
+                </g>
+                <text x="320" y="95" text-anchor="middle" class="svg-dim" font-size="9.5">communication par delegates (CPP13)</text>
+              </svg>
+              <figcaption>Composants à rôle unique, reliés par événements plutôt que par références croisées.</figcaption>
+            </figure>
+
+            <h2>🏁 Mini-projet récapitulatif</h2>
+            <p>Réalise un petit « arène survival » mobilisant toute la piste&nbsp;:</p>
+            <ol>
+              <li><b>Héros</b> <code>ACharacter</code> déplaçable via Enhanced Input (<a href="../../cours/cpp/cpp12-gameplay-entrees.html">CPP12</a>), avec un composant <code>USante</code> séparé (<a href="../../cours/cpp/cpp07-classes-poo.html">CPP7</a>, <a href="../../cours/cpp/cpp09-actors-components.html">CPP9</a>).</li>
+              <li><b>Ennemis</b> instanciés par un <code>ASpawner</code> sur timer toutes les 2 s (<a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14</a>), stockés dans un <code>TArray</code> (<a href="../../cours/cpp/cpp11-conteneurs.html">CPP11</a>).</li>
+              <li>Une <b>interface</b> <code>IDamageable</code> implémentée par le héros et les ennemis (<a href="../../cours/cpp/cpp13-delegates.html">CPP13</a>).</li>
+              <li>Un <b>delegate</b> <code>OnVieChangee</code> (<code>BlueprintAssignable</code>) mettant à jour une UI Blueprint sans couplage.</li>
+              <li>Toute référence d'UObject en <code>UPROPERTY()</code>, vérifs <code>IsValid</code>, Tick désactivé là où inutile.</li>
+              <li>Expose au Blueprint un <code>OnMort()</code> (BlueprintImplementableEvent) pour le feedback visuel.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>FPS qui s'effondre avec beaucoup d'Actors.</div>
+                <div class="pi-cause"><b>Cause</b>Tick actif et coûteux sur des milliers d'objets.</div>
+                <div class="pi-fix"><b>Correction</b>Désactive le Tick inutile, passe aux événements/timers, augmente <code>TickInterval</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Compilation interminable.</div>
+                <div class="pi-cause"><b>Cause</b>Includes lourds dans les en-têtes.</div>
+                <div class="pi-fix"><b>Correction</b>Forward declarations dans le <code>.h</code>, includes dans le <code>.cpp</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crashes mémoire intermittents.</div>
+                <div class="pi-cause"><b>Cause</b>Pointeurs non vérifiés / références hors GC.</div>
+                <div class="pi-fix"><b>Correction</b><code>UPROPERTY()</code> sur les références, <code>IsValid</code> avant accès.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une classe « fait tout », impossible à maintenir.</div>
+                <div class="pi-cause"><b>Cause</b>Responsabilités mélangées.</div>
+                <div class="pi-fix"><b>Correction</b>Découpe en composants à rôle unique reliés par delegates.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Réalise le mini-projet « arène survival » ci-dessus, ou au minimum les points 1 à 4.</li>
+                <li>Passe ton code en revue&nbsp;: préfixes corrects&nbsp;? Tick justifié&nbsp;? <code>IsValid</code> partout&nbsp;?</li>
+                <li>Déplace un include lourd d'un <code>.h</code> vers le <code>.cpp</code> via une forward declaration.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucun Tick inutile&nbsp;; la logique réactive passe par événements/timers.</li>
+                  <li>Toutes les références d'UObject sont des <code>UPROPERTY()</code> et vérifiées.</li>
+                  <li>Conventions Unreal respectées&nbsp;; projet organisé et compilant proprement.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Respecte les <b>préfixes</b> (<code>A</code>/<code>U</code>/<code>F</code>/<code>E</code>/<code>I</code>/<code>b</code>) et le PascalCase.</li>
+                <li>Le <code>Tick</code> est coûteux&nbsp;: désactive-le, espace-le, ou remplace-le par événements/timers.</li>
+                <li>Mémoire&nbsp;: <code>UPROPERTY()</code> + <code>IsValid</code>&nbsp;; compilation&nbsp;: forward declarations.</li>
+                <li>Découpe en composants à rôle unique reliés par delegates&nbsp;; logue par catégories.</li>
+              </ul>
+            </div>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">🎓</span>Bravo — fin de la piste C++ !</div>
+              <p>Tu maîtrises désormais les fondations du C++ pour Unreal&nbsp;: types, mémoire, POO, réflexion, gameplay framework, delegates et perfs. La suite&nbsp;: pratiquer sur de vrais prototypes, et relier ce code à la piste <a href="../../cours/unreal/e01-installation.html">Unreal</a>. À toi de jouer&nbsp;!</p>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Préfixes Unreal</b> — A/U/F/E/I/b imposés par convention et par UHT.</p>
+              <p><b>Forward declaration</b> — annoncer une classe sans l'inclure, pour alléger un en-tête.</p>
+              <p><b>TickInterval</b> — espacement (en secondes) entre deux Tick d'un Actor.</p>
+              <p><b>Catégorie de log</b> — canal nommé pour filtrer les messages <code>UE_LOG</code>.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unreal/e01-installation.html">Piste Unreal</a>&nbsp;: appliquer ce code dans le moteur.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">Unity vs Unreal</a>&nbsp;: situer C++/Unreal face à C#/Unity.</li>
+              <li><a href="../../cours/csharp/cs15-bonnes-pratiques.html">CS15 — Bonnes pratiques (C#)</a>&nbsp;: comparer les réflexes.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

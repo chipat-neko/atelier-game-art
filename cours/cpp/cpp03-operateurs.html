@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP03 — Opérateurs & expressions · Atelier Game Art</title>
+  <meta name="description" content="Opérateurs C++ : arithmétique, comparaison, logique, affectation composée et conversions de types.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Opérateurs</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP03 — Opérateurs &amp; expressions</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp02-variables-types.html">CPP2 — Variables &amp; types</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser les opérateurs arithmétiques, de comparaison et logiques.</li>
+                <li>Employer l'affectation composée et l'incrément (<code>+=</code>, <code>++</code>).</li>
+                <li>Comprendre la priorité des opérateurs et l'usage des parenthèses.</li>
+                <li>Convertir explicitement entre types (cast).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tout calcul de gameplay — dégâts, vitesse, score, distances, conditions de victoire — repose sur des <b>expressions</b> combinant des opérateurs. Bien les maîtriser évite les bugs subtils (division entière, comparaisons de flottants, priorités).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Arithmétique</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>int32 a = 7, b = 2;
+int32 somme   = a + b;   // 9
+int32 produit = a * b;   // 14
+int32 quotient = a / b;  // 3  (division ENTIÈRE : la partie décimale est perdue)
+int32 reste   = a % b;   // 1  (modulo : reste de la division)
+
+float precis = 7.0f / 2.0f;  // 3.5  (au moins un flottant => division flottante)</code></pre>
+            </div>
+
+            <h3>2. Comparaison &amp; logique</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>bool egal      = (a == b);   // ==  égal à
+bool different = (a != b);   // !=  différent de
+bool plusGrand = (a &gt; b);    // &gt;  &gt;=  &lt;  &lt;=
+
+bool peutTirer = aDesMunitions &amp;&amp; !enRechargement;   // ET logique, NON
+bool estBloque = murDevant || ennemiDevant;          // OU logique</code></pre>
+            </div>
+            <p>Les opérateurs logiques sont <b>court-circuités</b>&nbsp;: dans <code>A &amp;&amp; B</code>, si <code>A</code> est faux, <code>B</code> n'est même pas évalué. Pratique pour protéger un test (ex.&nbsp;: <code>ptr != nullptr &amp;&amp; ptr-&gt;EstActif()</code>).</p>
+
+            <h3>3. Affectation composée &amp; incrément</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>score += 10;     // équivaut à score = score + 10
+vie   -= degats; // soustraction
+munitions--;     // décrémente de 1
+combo++;         // incrémente de 1</code></pre>
+            </div>
+
+            <h3>4. Priorité des opérateurs</h3>
+            <p>Comme en maths&nbsp;: <code>*</code> et <code>/</code> avant <code>+</code> et <code>-</code>. En cas de doute, <b>mets des parenthèses</b> — c'est plus lisible et sans ambiguïté&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>int32 r1 = 2 + 3 * 4;        // 14  (multiplication d'abord)
+int32 r2 = (2 + 3) * 4;      // 20  (parenthèses d'abord)
+float deg = base * (1.0f + bonus) - reduction;</code></pre>
+            </div>
+
+            <h3>5. Conversions (cast)</h3>
+            <p>Le C++ ne convertit pas tout automatiquement&nbsp;; pour passer d'un type à un autre, on caste explicitement&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>int32 pv = 73, pvMax = 100;
+float ratio = (float)pv / (float)pvMax;          // 0.73  (cast style C)
+float ratio2 = static_cast&lt;float&gt;(pv) / pvMax;    // forme C++ recommandée
+
+int32 arrondi = FMath::RoundToInt(ratio * 100);  // utilitaires Unreal : FMath</code></pre>
+            </div>
+            <p>Sans le cast, <code>pv / pvMax</code> ferait une division <b>entière</b> (73/100 = 0). C'est le piège n°1 du débutant.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Comparaison division entière et division flottante">
+                <g class="svg-text" font-size="12" font-family="monospace">
+                  <rect x="40" y="40" width="250" height="70" rx="10" fill="#f4b740" fill-opacity="0.10" stroke="#f4b740"/>
+                  <text x="165" y="34" text-anchor="middle" font-size="10.5" font-family="sans-serif" class="svg-dim">division ENTIÈRE</text>
+                  <text x="165" y="72" text-anchor="middle">73 / 100</text>
+                  <text x="165" y="96" text-anchor="middle" fill="#f4b740" font-weight="700">= 0  ✗</text>
+
+                  <rect x="350" y="40" width="250" height="70" rx="10" fill="#5ad19a" fill-opacity="0.10" stroke="#5ad19a"/>
+                  <text x="475" y="34" text-anchor="middle" font-size="10.5" font-family="sans-serif" class="svg-dim">division FLOTTANTE</text>
+                  <text x="475" y="72" text-anchor="middle">(float)73 / 100</text>
+                  <text x="475" y="96" text-anchor="middle" fill="#5ad19a" font-weight="700">= 0.73  ✓</text>
+                </g>
+              </svg>
+              <figcaption>Pour un pourcentage ou un ratio, caste en <code>float</code> <b>avant</b> de diviser.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Calcule des dégâts&nbsp;: <code>float total = base * (1.0f + bonusCritique);</code>.</li>
+              <li>Teste une condition composée&nbsp;: peut attaquer si <code>(munitions &gt; 0) &amp;&amp; !enPause</code>.</li>
+              <li>Calcule un pourcentage de vie correct avec un cast, puis arrondis-le avec <code>FMath::RoundToInt</code>.</li>
+              <li>Utilise <code>%</code> pour détecter un tour pair&nbsp;: <code>(tour % 2 == 0)</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un ratio vaut toujours 0.</div>
+                <div class="pi-cause"><b>Cause</b>Division entière entre deux <code>int32</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Caste en <code>float</code> avant de diviser.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash sur division.</div>
+                <div class="pi-cause"><b>Cause</b>Division par zéro.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie le diviseur (<code>if (n != 0)</code>) avant de diviser.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Deux flottants « égaux » testés faux.</div>
+                <div class="pi-cause"><b>Cause</b>Imprécision des flottants&nbsp;: <code>a == b</code> est fragile.</div>
+                <div class="pi-fix"><b>Correction</b>Compare avec <code>FMath::IsNearlyEqual(a, b)</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Résultat de calcul inattendu.</div>
+                <div class="pi-cause"><b>Cause</b>Priorité des opérateurs mal anticipée.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute des parenthèses explicites.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Écris une formule de dégâts avec bonus critique et réduction d'armure (en flottants).</li>
+                <li>Calcule et affiche le pourcentage de vie restant (cast + arrondi).</li>
+                <li>Détermine si le joueur peut tirer via une condition logique court-circuitée.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune division entière non voulue.</li>
+                  <li>Les conditions composées sont lisibles et correctes.</li>
+                  <li>Tu compares les flottants avec <code>IsNearlyEqual</code> si besoin.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>/</code> entre entiers = division <b>entière</b>&nbsp;; caste en <code>float</code> pour un ratio.</li>
+                <li><code>&amp;&amp;</code> et <code>||</code> sont court-circuités&nbsp;: utile pour protéger un test.</li>
+                <li>En cas de doute sur la priorité, <b>parenthèse</b>.</li>
+                <li>Compare les flottants avec <code>FMath::IsNearlyEqual</code>, jamais <code>==</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Modulo (%)</b> — reste d'une division entière (utile pour la parité, les cycles).</p>
+              <p><b>Court-circuit</b> — <code>&amp;&amp;</code>/<code>||</code> n'évaluent pas le 2ᵉ opérande si inutile.</p>
+              <p><b>static_cast</b> — conversion de type explicite et sûre, forme C++ recommandée.</p>
+              <p><b>FMath</b> — bibliothèque mathématique d'Unreal (RoundToInt, IsNearlyEqual, Clamp…).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp04-conditions.html">CPP4 — Conditions</a>&nbsp;: utiliser ces expressions pour brancher.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

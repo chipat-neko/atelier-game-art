@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP12 — Gameplay framework & entrées · Atelier Game Art</title>
+  <meta name="description" content="Le gameplay framework d'Unreal : GameMode, Pawn/Character, PlayerController, et lire les entrées avec Enhanced Input.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp12";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Gameplay &amp; entrées</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP12 — Gameplay framework &amp; entrées</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp09-actors-components.html">CPP9 — Actors</a> et <a href="../../cours/cpp/cpp07-classes-poo.html">CPP7</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Identifier les rôles de <code>GameMode</code>, <code>Pawn</code>/<code>Character</code>, <code>PlayerController</code>.</li>
+                <li>Comprendre la <b>possession</b> d'un Pawn par un Controller.</li>
+                <li>Mettre en place l'<b>Enhanced Input</b> (Mapping Context, Input Action).</li>
+                <li>Brancher une entrée sur une fonction C++ pour déplacer un personnage.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Unreal sépare proprement «&nbsp;qui joue&nbsp;» (le Controller), «&nbsp;quel corps&nbsp;» (le Pawn/Character) et «&nbsp;quelles règles&nbsp;» (le GameMode). Cette architecture, déroutante au début, rend le code réutilisable et réseau-compatible. Et depuis UE5, les entrées passent par l'<b>Enhanced Input</b>, bien plus souple que l'ancien système.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les pièces du gameplay framework</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Classe</th><th>Rôle</th></tr></thead>
+                <tbody>
+                  <tr><td><code>AGameModeBase</code></td><td>Les <b>règles</b>&nbsp;: quel Pawn par défaut, conditions de victoire, qui peut rejoindre.</td></tr>
+                  <tr><td><code>APawn</code> / <code>ACharacter</code></td><td>Le <b>corps</b> contrôlable. <code>ACharacter</code> = Pawn avec déplacement bipède intégré.</td></tr>
+                  <tr><td><code>APlayerController</code></td><td>Le <b>cerveau</b> du joueur&nbsp;: reçoit les entrées, possède un Pawn.</td></tr>
+                  <tr><td><code>APlayerState</code></td><td>Données persistantes du joueur (score, nom).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>La <b>possession</b>&nbsp;: un Controller «&nbsp;possède&nbsp;» un Pawn pour le piloter. On peut changer de Pawn (entrer dans un véhicule) sans changer de Controller.</p>
+
+            <h3>2. Un Character en C++</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Heros.h
+UCLASS()
+class MONJEU_API AHeros : public ACharacter
+{
+    GENERATED_BODY()
+public:
+    AHeros();
+protected:
+    virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+    void Deplacer(const FInputActionValue&amp; Value);   // recevra l'entrée
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    UInputMappingContext* ContexteDefaut;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    UInputAction* ActionDeplacer;
+};</code></pre>
+            </div>
+
+            <h3>3. Enhanced Input : Mapping Context &amp; Input Action</h3>
+            <p>Deux assets à créer dans l'éditeur&nbsp;:</p>
+            <ul>
+              <li><b>Input Action</b> (IA)&nbsp;: une intention abstraite («&nbsp;Déplacer&nbsp;», «&nbsp;Sauter&nbsp;»), avec un type de valeur (Axis2D, booléen…).</li>
+              <li><b>Input Mapping Context</b> (IMC)&nbsp;: relie des <b>touches physiques</b> aux Input Actions (ZQSD → Déplacer).</li>
+            </ul>
+            <p>On <b>active</b> le contexte pour le joueur, puis on <b>lie</b> chaque action à une fonction&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>void AHeros::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+    // Active le contexte d'entrées pour ce joueur
+    if (APlayerController* PC = Cast&lt;APlayerController&gt;(GetController()))
+    {
+        if (UEnhancedInputLocalPlayerSubsystem* Sub =
+            ULocalPlayer::GetSubsystem&lt;UEnhancedInputLocalPlayerSubsystem&gt;(PC-&gt;GetLocalPlayer()))
+        {
+            Sub-&gt;AddMappingContext(ContexteDefaut, 0);
+        }
+    }
+
+    // Lie l'action "Déplacer" à notre fonction
+    if (UEnhancedInputComponent* EIC = Cast&lt;UEnhancedInputComponent&gt;(PlayerInputComponent))
+    {
+        EIC-&gt;BindAction(ActionDeplacer, ETriggerEvent::Triggered, this, &amp;AHeros::Deplacer);
+    }
+}</code></pre>
+            </div>
+            <div class="codeblock" data-lang="C++">
+<pre><code>void AHeros::Deplacer(const FInputActionValue&amp; Value)
+{
+    const FVector2D Axe = Value.Get&lt;FVector2D&gt;();   // X = latéral, Y = avant
+    AddMovementInput(GetActorForwardVector(), Axe.Y);
+    AddMovementInput(GetActorRightVector(),   Axe.X);
+}</code></pre>
+            </div>
+            <p><code>Cast&lt;T&gt;</code> convertit un pointeur vers un type plus précis (renvoie <code>nullptr</code> si la conversion échoue — d'où les <code>if</code>). <code>AddMovementInput</code> utilise le composant de déplacement du <code>ACharacter</code>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Le PlayerController possède le Pawn, le GameMode fixe les règles, l'Enhanced Input alimente les actions">
+                <defs><marker id="cpp12ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="30" y="70" width="130" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="95" y="88" text-anchor="middle" font-weight="700">Touches</text><text x="95" y="104" text-anchor="middle" class="svg-dim">ZQSD…</text>
+                  <rect x="195" y="70" width="140" height="44" rx="8" fill="#ec6a9e" fill-opacity="0.14" stroke="#ec6a9e"/><text x="265" y="88" text-anchor="middle" font-weight="700">PlayerController</text><text x="265" y="104" text-anchor="middle" class="svg-dim">Enhanced Input</text>
+                  <rect x="370" y="70" width="130" height="44" rx="8" class="svg-surface" stroke="#7aa2f7"/><text x="435" y="88" text-anchor="middle" font-weight="700">Pawn / Character</text><text x="435" y="104" text-anchor="middle" class="svg-dim">le corps</text>
+                  <rect x="370" y="14" width="130" height="34" rx="8" fill="#c084fc" fill-opacity="0.14" stroke="#c084fc"/><text x="435" y="35" text-anchor="middle">GameMode (règles)</text>
+                </g>
+                <g stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp12ar)">
+                  <line x1="160" y1="92" x2="193" y2="92"/><line x1="335" y1="92" x2="368" y2="92"/>
+                </g>
+                <line x1="435" y1="48" x2="435" y2="68" stroke="#c084fc" stroke-width="1.5" marker-end="url(#cpp12ar)"/>
+                <text x="352" y="88" class="svg-dim" font-size="9">possède</text>
+                <text x="320" y="150" text-anchor="middle" class="svg-dim" font-size="10">Le Controller (entrées) possède le Pawn&nbsp;; le GameMode fixe les règles de la partie.</text>
+              </svg>
+              <figcaption>Séparation des rôles&nbsp;: entrées (Controller) → corps (Pawn), règles à part (GameMode).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un <code>ACharacter</code> C++ <code>AHeros</code> et un <code>AGameModeBase</code> qui le définit comme Pawn par défaut.</li>
+              <li>Dans l'éditeur, crée une Input Action « Déplacer » (Axis2D) et un Mapping Context (ZQSD/WASD).</li>
+              <li>Assigne ces assets aux <code>UPROPERTY</code> du héros, ajoute le contexte et lie l'action dans <code>SetupPlayerInputComponent</code>.</li>
+              <li>Implémente <code>Deplacer</code> avec <code>AddMovementInput</code> et teste.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Aucune entrée ne répond.</div>
+                <div class="pi-cause"><b>Cause</b>Mapping Context jamais ajouté au subsystem.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle <code>AddMappingContext</code> dans <code>SetupPlayerInputComponent</code> (ou BeginPlay).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« EnhancedInput introuvable » à la compilation.</div>
+                <div class="pi-cause"><b>Cause</b>Module non déclaré.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute <code>"EnhancedInput"</code> dans <code>.Build.cs</code> (dépendances).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le personnage n'est pas contrôlé.</div>
+                <div class="pi-cause"><b>Cause</b>Pawn non possédé / GameMode non configuré.</div>
+                <div class="pi-fix"><b>Correction</b>Définis le GameMode et son <code>DefaultPawnClass</code>, ou « Auto Possess Player ».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash sur un <code>Cast</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Résultat du <code>Cast</code> non vérifié (nullptr).</div>
+                <div class="pi-fix"><b>Correction</b>Encadre par <code>if (T* p = Cast&lt;T&gt;(...))</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un <code>ACharacter</code> déplaçable (Axis2D) via Enhanced Input.</li>
+                <li>Ajoute une action « Sauter » (booléenne) liée à <code>ACharacter::Jump</code>.</li>
+                <li>Configure un GameMode qui spawn ton héros par défaut.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le personnage se déplace et saute via les Input Actions.</li>
+                  <li>Le module <code>EnhancedInput</code> est bien déclaré.</li>
+                  <li>Chaque <code>Cast</code> est vérifié.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Rôles séparés&nbsp;: <code>GameMode</code> (règles), <code>Pawn/Character</code> (corps), <code>PlayerController</code> (entrées).</li>
+                <li>Un Controller <b>possède</b> un Pawn pour le piloter.</li>
+                <li>Enhanced Input&nbsp;: <b>Input Action</b> (intention) + <b>Mapping Context</b> (touches), ajouté au subsystem.</li>
+                <li><code>BindAction</code> relie une action à une fonction&nbsp;; <code>AddMovementInput</code> déplace le Character.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>GameMode</b> — définit les règles de la partie et le Pawn par défaut.</p>
+              <p><b>Pawn / Character</b> — corps contrôlable&nbsp;; Character ajoute le déplacement bipède.</p>
+              <p><b>PlayerController</b> — reçoit les entrées et possède un Pawn.</p>
+              <p><b>Enhanced Input</b> — système d'entrées UE5 (Input Action + Mapping Context).</p>
+              <p><b>Cast</b> — conversion sûre d'un pointeur vers un type plus précis (nullptr si échec).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp13-delegates.html">CPP13 — Delegates &amp; événements</a>.</li>
+              <li><a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12 — Entrées (Unity)</a>&nbsp;: comparer l'approche.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

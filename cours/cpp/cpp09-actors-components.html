@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP09 — Actors, Components & cycle de vie · Atelier Game Art</title>
+  <meta name="description" content="AActor et ses Components : CreateDefaultSubobject, RootComponent, hiérarchie, BeginPlay/Tick/EndPlay, SpawnActor et Destroy.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Actors &amp; Components</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP09 — Actors, Components &amp; cycle de vie</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp08-reflexion-unreal.html">CPP8 — Réflexion</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Distinguer un <code>AActor</code> de ses <code>Component</code>s.</li>
+                <li>Créer des components en C++ avec <code>CreateDefaultSubobject</code> et les attacher.</li>
+                <li>Comprendre le cycle de vie&nbsp;: <code>BeginPlay</code>, <code>Tick</code>, <code>EndPlay</code>.</li>
+                <li>Faire apparaître/détruire un Actor avec <code>SpawnActor</code> et <code>Destroy</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Dans Unreal, tout ce qui existe dans un niveau est un <span class="gloss">Actor</span> (un coffre, un personnage, une lumière). Un Actor est <b>composé</b> de <span class="gloss">Component</span>s qui lui donnent ses capacités&nbsp;: un mesh pour la forme, une collision, un son. C'est le pendant Unreal du modèle GameObject/Component d'Unity — un même socle pensé différemment.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Créer des Components dans le constructeur</h3>
+            <p>Les components «&nbsp;par défaut&nbsp;» se créent dans le <b>constructeur</b> avec <code>CreateDefaultSubobject</code>, puis s'organisent en hiérarchie&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Coffre.h
+UPROPERTY(VisibleAnywhere) USceneComponent* Racine;
+UPROPERTY(VisibleAnywhere) UStaticMeshComponent* Mesh;</code></pre>
+            </div>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Coffre.cpp
+ACoffre::ACoffre()
+{
+    PrimaryActorTick.bCanEverTick = true;
+
+    Racine = CreateDefaultSubobject&lt;USceneComponent&gt;(TEXT("Racine"));
+    RootComponent = Racine;                 // le component « racine » de l'Actor
+
+    Mesh = CreateDefaultSubobject&lt;UStaticMeshComponent&gt;(TEXT("Mesh"));
+    Mesh-&gt;SetupAttachment(RootComponent);   // attache le mesh sous la racine
+}</code></pre>
+            </div>
+            <p>Le <code>RootComponent</code> définit la position de l'Actor&nbsp;; les autres components s'y <b>attachent</b> et suivent ses déplacements. Note la <code>UPROPERTY()</code> sur chaque pointeur de component (sinon le GC les détruit — <a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a>).</p>
+
+            <h3>2. Le cycle de vie d'un Actor</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Fonction</th><th>Quand</th><th>Usage typique</th></tr></thead>
+                <tbody>
+                  <tr><td><code>Constructeur</code></td><td>À la création de l'objet (et dans l'éditeur).</td><td>Créer les components, valeurs par défaut.</td></tr>
+                  <tr><td><code>BeginPlay()</code></td><td>Au démarrage du jeu / au spawn.</td><td>Initialisation runtime, récupérer des références.</td></tr>
+                  <tr><td><code>Tick(DeltaTime)</code></td><td>Chaque frame (si activé).</td><td>Logique continue (multiplie par DeltaTime).</td></tr>
+                  <tr><td><code>EndPlay()</code></td><td>À la destruction / fin du jeu.</td><td>Nettoyage, désabonnements.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="codeblock" data-lang="C++">
+<pre><code>void ACoffre::BeginPlay()
+{
+    Super::BeginPlay();          // TOUJOURS appeler la version parente
+    UE_LOG(LogTemp, Log, TEXT("Coffre prêt"));
+}
+
+void ACoffre::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    AddActorLocalRotation(FRotator(0, 90 * DeltaTime, 0));  // tourne sur lui-même
+}</code></pre>
+            </div>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Constructeur ≠ BeginPlay</div>
+              <p>Le <b>constructeur</b> s'exécute aussi dans l'éditeur (pour afficher l'Actor) — n'y mets <b>pas</b> de logique de jeu (chercher d'autres Actors, lancer des timers…). Réserve ça à <code>BeginPlay</code>, qui ne tourne qu'en jeu.</p>
+            </div>
+
+            <h3>3. Spawn &amp; Destroy</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Faire apparaître un Actor à l'exécution
+FVector Position(0, 0, 200);
+FRotator Rotation = FRotator::ZeroRotator;
+AProjectile* Tir = GetWorld()-&gt;SpawnActor&lt;AProjectile&gt;(ClasseProjectile, Position, Rotation);
+
+// Le détruire
+Tir-&gt;Destroy();                // détruit maintenant
+SetLifeSpan(3.0f);            // ou : auto-destruction de CET Actor dans 3 s</code></pre>
+            </div>
+            <p><code>GetWorld()</code> donne accès au monde courant&nbsp;; <code>SpawnActor</code> y crée un Actor d'une classe donnée.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Cycle de vie : constructeur, BeginPlay, Tick répété, EndPlay">
+                <defs><marker id="cpp09ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="20" y="55" width="120" height="40" rx="8" class="svg-surface" stroke="#313c4c"/><text x="80" y="79" text-anchor="middle">Constructeur</text>
+                  <rect x="170" y="55" width="110" height="40" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="225" y="79" text-anchor="middle">BeginPlay</text>
+                  <rect x="310" y="55" width="160" height="40" rx="8" fill="#ec6a9e" fill-opacity="0.14" stroke="#ec6a9e"/><text x="390" y="74" text-anchor="middle">Tick (chaque frame)</text><text x="390" y="88" text-anchor="middle" class="svg-dim" font-size="9">↻ en boucle</text>
+                  <rect x="500" y="55" width="120" height="40" rx="8" class="svg-surface" stroke="#313c4c"/><text x="560" y="79" text-anchor="middle">EndPlay</text>
+                </g>
+                <g stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp09ar)">
+                  <line x1="140" y1="75" x2="168" y2="75"/><line x1="280" y1="75" x2="308" y2="75"/><line x1="470" y1="75" x2="498" y2="75"/>
+                </g>
+                <path d="M390 95 C 360 120, 420 120, 390 96" stroke="#ec6a9e" stroke-width="1.4" fill="none" marker-end="url(#cpp09ar)"/>
+              </svg>
+              <figcaption>Constructeur (création) → BeginPlay (départ) → Tick (chaque frame) → EndPlay (destruction).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée <code>ACoffre</code> avec une racine et un <code>UStaticMeshComponent</code> attaché&nbsp;; assigne un mesh dans l'éditeur.</li>
+              <li>Active le Tick et fais tourner le coffre sur lui-même (multiplié par <code>DeltaTime</code>).</li>
+              <li>Logge dans <code>BeginPlay</code> et <code>EndPlay</code> pour visualiser le cycle.</li>
+              <li>Depuis un autre Actor, fais apparaître un coffre avec <code>SpawnActor</code> puis détruis-le après 3 s.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'Actor n'a pas de forme / position incohérente.</div>
+                <div class="pi-cause"><b>Cause</b><code>RootComponent</code> non défini ou mesh non attaché.</div>
+                <div class="pi-fix"><b>Correction</b>Assigne le <code>RootComponent</code> et <code>SetupAttachment</code> les autres.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash au lancement, pas dans l'éditeur.</div>
+                <div class="pi-cause"><b>Cause</b>Logique de jeu (Find, timers) placée dans le constructeur.</div>
+                <div class="pi-fix"><b>Correction</b>Déplace-la dans <code>BeginPlay</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le Tick ne s'exécute pas.</div>
+                <div class="pi-cause"><b>Cause</b><code>PrimaryActorTick.bCanEverTick = false</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Active-le dans le constructeur (ou désactive si inutile pour les perfs).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>SpawnActor</code> renvoie <code>nullptr</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Collision au point de spawn ou classe non assignée.</div>
+                <div class="pi-fix"><b>Correction</b>Assigne la classe, vérifie le résultat, ajuste les règles de spawn.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un <code>ARamassable</code> avec mesh attaché qui tourne lentement (Tick + DeltaTime).</li>
+                <li>Un <code>ASpawner</code> qui fait apparaître un ramassable au <code>BeginPlay</code> via <code>SpawnActor</code>.</li>
+                <li>Auto-destruction du ramassable après quelques secondes (<code>SetLifeSpan</code>).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Hiérarchie de components correcte (racine + mesh attaché).</li>
+                  <li>Aucune logique de jeu dans le constructeur.</li>
+                  <li>Spawn et destruction fonctionnent sans warning GC.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un <b>Actor</b> est composé de <b>Components</b> créés dans le constructeur (<code>CreateDefaultSubobject</code>).</li>
+                <li><code>RootComponent</code> = base&nbsp;; les autres s'attachent via <code>SetupAttachment</code>.</li>
+                <li>Cycle&nbsp;: Constructeur → <code>BeginPlay</code> → <code>Tick</code> (chaque frame) → <code>EndPlay</code>&nbsp;; toujours <code>Super::</code>.</li>
+                <li><code>SpawnActor</code> crée, <code>Destroy</code>/<code>SetLifeSpan</code> détruit&nbsp;; la logique de jeu va dans <code>BeginPlay</code>, pas le constructeur.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Actor</b> — tout objet plaçable dans un niveau Unreal (préfixe <code>A</code>).</p>
+              <p><b>Component</b> — brique attachée à un Actor lui donnant une capacité (mesh, collision, son).</p>
+              <p><b>CreateDefaultSubobject</b> — crée un component par défaut dans le constructeur.</p>
+              <p><b>RootComponent</b> — component racine définissant la transformation de l'Actor.</p>
+              <p><b>BeginPlay / Tick / EndPlay</b> — étapes du cycle de vie d'un Actor.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10 — Pointeurs &amp; mémoire</a>&nbsp;: pourquoi <code>UPROPERTY()</code> sur les components.</li>
+              <li><a href="../../cours/cpp/cpp12-gameplay-entrees.html">CPP12 — Gameplay framework</a>&nbsp;: Pawn, Controller, GameMode.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

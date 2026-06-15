@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP13 — Delegates & événements · Atelier Game Art</title>
+  <meta name="description" content="Communiquer entre classes Unreal sans tout coupler : delegates simples et multicast, DECLARE_DYNAMIC_MULTICAST_DELEGATE, BlueprintAssignable et interfaces.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp13";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Delegates &amp; événements</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP13 — Delegates &amp; événements</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp08-reflexion-unreal.html">CPP8</a> et <a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre le <b>couplage</b> et pourquoi le réduire.</li>
+                <li>Déclarer un delegate <b>dynamic multicast</b> et le déclencher.</li>
+                <li>S'abonner avec <code>AddDynamic</code> et exposer au Blueprint (<code>BlueprintAssignable</code>).</li>
+                <li>Savoir quand préférer une <b>interface</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Quand le joueur meurt, l'UI, le son, le score et le spawner doivent réagir. Si la classe <code>Sante</code> appelle directement chacun, elle devient un nœud couplé à tout le projet. Les <b>delegates</b> (le patron <span class="gloss">observateur</span>, comme les events C# de <a href="../../cours/csharp/cs13-evenements.html">CS13</a>) inversent la dépendance&nbsp;: <code>Sante</code> <em>annonce</em>, et qui veut réagir s'abonne.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les familles de delegates</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type</th><th>Abonnés</th><th>Blueprint ?</th></tr></thead>
+                <tbody>
+                  <tr><td>Single</td><td>un seul</td><td>non</td></tr>
+                  <tr><td>Multicast</td><td>plusieurs</td><td>non</td></tr>
+                  <tr><td><b>Dynamic Multicast</b></td><td>plusieurs</td><td><b>oui</b> (sérialisable, <code>BlueprintAssignable</code>)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Pour le gameplay exposé au Blueprint, on utilise presque toujours le <b>dynamic multicast</b>.</p>
+
+            <h3>2. Déclarer &amp; déclencher un événement</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Sante.h — déclare le TYPE de delegate (hors de la classe), avec 1 paramètre
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnVieChangee, int32, NouveauPV);
+
+UCLASS()
+class MONJEU_API USante : public UActorComponent
+{
+    GENERATED_BODY()
+public:
+    // L'ÉVÉNEMENT, exposé au Blueprint
+    UPROPERTY(BlueprintAssignable, Category = "Sante")
+    FOnVieChangee OnVieChangee;
+
+    void Subir(int32 Degats);
+
+private:
+    UPROPERTY(EditAnywhere) int32 PV = 100;
+};</code></pre>
+            </div>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Sante.cpp
+void USante::Subir(int32 Degats)
+{
+    PV = FMath::Max(0, PV - Degats);
+    OnVieChangee.Broadcast(PV);   // notifie TOUS les abonnés
+}</code></pre>
+            </div>
+            <p>Les macros existent en variantes selon le nombre de paramètres&nbsp;: <code>..._OneParam</code>, <code>..._TwoParams</code>, etc.</p>
+
+            <h3>3. S'abonner en C++</h3>
+            <p>La fonction abonnée doit être une <code>UFUNCTION()</code> (exigence du dynamic delegate)&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// BarreVieUI.h
+UFUNCTION()
+void MajBarre(int32 NouveauPV);   // doit être une UFUNCTION
+
+// BarreVieUI.cpp
+void UBarreVieUI::Init(USante* Sante)
+{
+    if (Sante)
+    {
+        Sante-&gt;OnVieChangee.AddDynamic(this, &amp;UBarreVieUI::MajBarre);   // s'abonner
+    }
+}
+
+// se désabonner quand on n'écoute plus :
+// Sante-&gt;OnVieChangee.RemoveDynamic(this, &amp;UBarreVieUI::MajBarre);</code></pre>
+            </div>
+            <p>Côté <b>Blueprint</b>, comme l'événement est <code>BlueprintAssignable</code>, on peut s'y abonner visuellement avec un nœud «&nbsp;Bind Event to On Vie Changee&nbsp;» — sans aucun code côté abonné.</p>
+
+            <h3>4. Et les interfaces ?</h3>
+            <p>Un delegate sert à <b>notifier</b>. Une <b>interface</b> sert à garantir qu'une classe <b>sait faire</b> quelque chose (ex.&nbsp;: tout ce qui est «&nbsp;endommageable&nbsp;»). Unreal les déclare en deux temps&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UINTERFACE(MinimalAPI)
+class UDamageable : public UInterface { GENERATED_BODY() };
+
+class IDamageable
+{
+    GENERATED_BODY()
+public:
+    virtual void RecevoirDegats(int32 Montant) = 0;   // à implémenter
+};
+
+// Usage polymorphe :
+if (IDamageable* Cible = Cast&lt;IDamageable&gt;(Acteur))
+{
+    Cible-&gt;RecevoirDegats(10);
+}</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Sante diffuse OnVieChangee à plusieurs abonnés découplés">
+                <defs><marker id="cpp13ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <rect x="40" y="80" width="150" height="50" rx="8" fill="#ec6a9e" fill-opacity="0.16" stroke="#ec6a9e"/>
+                <text x="115" y="102" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">USante</text>
+                <text x="115" y="119" text-anchor="middle" class="svg-dim" font-size="10">Broadcast(PV)</text>
+                <g class="svg-text" font-size="11">
+                  <rect x="430" y="24" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="46" text-anchor="middle">Barre de vie (UI)</text>
+                  <rect x="430" y="84" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="106" text-anchor="middle">Audio (cri)</text>
+                  <rect x="430" y="144" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="166" text-anchor="middle">Blueprint (FX)</text>
+                </g>
+                <g stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp13ar)" fill="none">
+                  <path d="M190 98 C 300 70, 340 46, 428 42"/>
+                  <path d="M190 105 C 300 105, 340 102, 428 102"/>
+                  <path d="M190 112 C 300 140, 340 160, 428 162"/>
+                </g>
+                <text x="300" y="194" text-anchor="middle" class="svg-dim" font-size="10">USante ne connaît aucun abonné. Chacun s'abonne (AddDynamic / Bind Event).</text>
+              </svg>
+              <figcaption>Le composant de santé diffuse&nbsp;; UI, audio et Blueprints réagissent sans qu'il les connaisse.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un <code>USante</code> avec <code>FOnVieChangee</code> (<code>BlueprintAssignable</code>) et déclenche-le dans <code>Subir</code>.</li>
+              <li>Une UI s'abonne en C++ via <code>AddDynamic</code> (fonction <code>UFUNCTION</code>).</li>
+              <li>Dans un Blueprint, abonne-toi visuellement au même événement et joue un effet — sans toucher au C++.</li>
+              <li>Ajoute un événement <code>OnMort</code> (sans paramètre) déclenché à 0 PV.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« AddDynamic : la fonction n'est pas reconnue ».</div>
+                <div class="pi-cause"><b>Cause</b>La fonction abonnée n'est pas une <code>UFUNCTION()</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Marque-la <code>UFUNCTION()</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash quand l'événement se déclenche.</div>
+                <div class="pi-cause"><b>Cause</b>Un abonné a été détruit sans se désabonner.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle <code>RemoveDynamic</code> dans <code>EndPlay</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'événement n'apparaît pas en Blueprint.</div>
+                <div class="pi-cause"><b>Cause</b>Delegate non <code>dynamic</code> ou pas <code>BlueprintAssignable</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>DECLARE_DYNAMIC_MULTICAST_DELEGATE…</code> + <code>BlueprintAssignable</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'émetteur référence ses abonnés.</div>
+                <div class="pi-cause"><b>Cause</b>On a recréé du couplage au lieu d'utiliser le delegate.</div>
+                <div class="pi-fix"><b>Correction</b>L'émetteur ne fait que <code>Broadcast</code>&nbsp;; il ne connaît personne.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un composant <code>USante</code> diffusant <code>OnVieChangee(int32)</code> et <code>OnMort()</code>.</li>
+                <li>Une UI C++ et un Blueprint qui s'abonnent tous deux à <code>OnVieChangee</code>.</li>
+                <li>Une interface <code>IDamageable</code> implémentée par le joueur et les ennemis.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'émetteur ne référence aucun abonné.</li>
+                  <li>Les abonnés C++ utilisent des <code>UFUNCTION</code> et se désabonnent.</li>
+                  <li>Un Blueprint peut réagir à l'événement sans modifier le C++.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les delegates réduisent le couplage&nbsp;: l'émetteur <code>Broadcast</code>, les abonnés réagissent.</li>
+                <li>Pour le gameplay exposé&nbsp;: <code>DECLARE_DYNAMIC_MULTICAST_DELEGATE…</code> + <code>BlueprintAssignable</code>.</li>
+                <li>S'abonner en C++&nbsp;: <code>AddDynamic</code> sur une <code>UFUNCTION</code>&nbsp;; se désabonner dans <code>EndPlay</code>.</li>
+                <li>Delegate = <b>notifier</b>&nbsp;; interface = garantir qu'une classe <b>sait faire</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Delegate</b> — objet référençant des fonctions à appeler&nbsp;; multicast = plusieurs abonnés.</p>
+              <p><b>Dynamic multicast</b> — delegate sérialisable, exposable au Blueprint (<code>BlueprintAssignable</code>).</p>
+              <p><b>Broadcast / AddDynamic</b> — déclencher l'événement / s'y abonner.</p>
+              <p><b>Interface (UINTERFACE)</b> — contrat de fonctions qu'une classe s'engage à implémenter.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14 — Exposer au Blueprint &amp; timers</a>.</li>
+              <li><a href="../../cours/csharp/cs13-evenements.html">CS13 — Événements (C#)</a>&nbsp;: le même patron côté Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP04 — Conditions (if, switch) · Atelier Game Art</title>
+  <meta name="description" content="Brancher le code en C++ : if / else if / else, opérateur ternaire, switch, et l'erreur classique = vs ==.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Conditions</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP04 — Conditions (if, switch)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp03-operateurs.html">CPP3 — Opérateurs</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Brancher le code avec <code>if</code> / <code>else if</code> / <code>else</code>.</li>
+                <li>Utiliser l'opérateur ternaire pour une décision courte.</li>
+                <li>Choisir entre plusieurs cas avec <code>switch</code>.</li>
+                <li>Éviter l'erreur classique <code>=</code> au lieu de <code>==</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu prend des décisions en permanence&nbsp;: «&nbsp;si la vie atteint 0, mourir&nbsp;», «&nbsp;selon l'état de l'IA, patrouiller ou attaquer&nbsp;». Les conditions sont le mécanisme de base de toute logique de gameplay.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. if / else if / else</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>if (pv &lt;= 0)
+{
+    Mourir();
+}
+else if (pv &lt; 30)
+{
+    AfficherAlerteVie();   // entre 1 et 29
+}
+else
+{
+    // tout va bien
+}</code></pre>
+            </div>
+            <p>Les accolades <code>{ }</code> ne sont pas obligatoires pour une seule instruction, mais <b>mets-les toujours</b>&nbsp;: elles évitent des bugs lors de l'ajout de lignes.</p>
+
+            <h3>2. L'opérateur ternaire</h3>
+            <p>Pour choisir entre deux valeurs, une forme compacte&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>FString etat = (pv &gt; 0) ? TEXT("Vivant") : TEXT("Mort");
+float vitesse = bCourt ? 600.0f : 300.0f;</code></pre>
+            </div>
+            <p>À réserver aux cas simples&nbsp;; pour une logique riche, un <code>if</code> reste plus lisible.</p>
+
+            <h3>3. switch : choisir parmi des cas</h3>
+            <p>Quand une variable peut prendre des valeurs discrètes (souvent un <code>enum</code>, vu en <a href="../../cours/cpp/cpp08-reflexion-unreal.html">CPP8</a>), <code>switch</code> est plus clair qu'une cascade de <code>if</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>switch (etatIA)
+{
+    case EEtatIA::Patrouille:
+        Patrouiller();
+        break;            // NE PAS OUBLIER : sinon on « tombe » dans le cas suivant
+
+    case EEtatIA::Poursuite:
+        Poursuivre();
+        break;
+
+    case EEtatIA::Attaque:
+        Attaquer();
+        break;
+
+    default:              // tous les autres cas
+        Attendre();
+        break;
+}</code></pre>
+            </div>
+            <p>Le <code>break</code> est <b>indispensable</b>&nbsp;: sans lui, l'exécution continue dans le cas suivant (« fall-through »), source de bugs.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Un if dirige le flux selon une condition vraie ou fausse">
+                <defs><marker id="cpp04ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <rect x="265" y="20" width="110" height="40" rx="8" fill="#ec6a9e" fill-opacity="0.15" stroke="#ec6a9e"/>
+                <text x="320" y="44" text-anchor="middle" class="svg-text" font-size="11">pv &lt;= 0 ?</text>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="90" y="110" width="150" height="40" rx="8" class="svg-surface" stroke="#5ad19a"/><text x="165" y="134" text-anchor="middle">VRAI → Mourir()</text>
+                  <rect x="400" y="110" width="170" height="40" rx="8" class="svg-surface" stroke="#313c4c"/><text x="485" y="134" text-anchor="middle">FAUX → continuer</text>
+                </g>
+                <g stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp04ar)" fill="none">
+                  <path d="M300 60 L175 108"/><path d="M340 60 L470 108"/>
+                </g>
+                <text x="210" y="92" class="svg-dim" font-size="10">vrai</text>
+                <text x="410" y="92" class="svg-dim" font-size="10">faux</text>
+              </svg>
+              <figcaption>Une condition dirige le flux d'exécution vers une branche ou l'autre.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Écris une fonction <code>EvaluerVie(int32 pv)</code> qui logge « Mort », « Critique » ou « OK » selon des seuils.</li>
+              <li>Choisis une vitesse avec un ternaire selon un booléen <code>bCourt</code>.</li>
+              <li>Crée un <code>enum class</code> d'états et un <code>switch</code> qui appelle une action par état (avec <code>break</code> et <code>default</code>).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La condition est toujours vraie.</div>
+                <div class="pi-cause"><b>Cause</b><code>if (pv = 0)</code> — affectation au lieu de comparaison.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>==</code> pour comparer. (Astuce&nbsp;: certains écrivent <code>0 == pv</code>.)</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Plusieurs cas d'un switch s'exécutent.</div>
+                <div class="pi-cause"><b>Cause</b><code>break</code> oublié (fall-through).</div>
+                <div class="pi-fix"><b>Correction</b>Termine chaque <code>case</code> par <code>break</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une ligne ajoutée après un if sans accolades ne marche pas.</div>
+                <div class="pi-cause"><b>Cause</b>Seule la 1ʳᵉ ligne dépend du if (pas d'accolades).</div>
+                <div class="pi-fix"><b>Correction</b>Mets systématiquement des accolades <code>{ }</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Cascade de if illisible.</div>
+                <div class="pi-cause"><b>Cause</b>Beaucoup de cas discrets traités en if/else.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un <code>switch</code> (souvent sur un enum).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un système de « rang » selon le score (Bronze / Argent / Or) via if/else if.</li>
+                <li>Un enum d'états d'IA et un switch qui déclenche l'action correspondante.</li>
+                <li>Un ternaire qui choisit un message court selon que le joueur est vivant.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune confusion <code>=</code>/<code>==</code>.</li>
+                  <li>Chaque <code>case</code> a son <code>break</code> et il y a un <code>default</code>.</li>
+                  <li>Les blocs sont toujours entre accolades.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>if/else if/else</code> branche selon des conditions booléennes&nbsp;; toujours des accolades.</li>
+                <li>Le ternaire <code>cond ? a : b</code> pour choisir une valeur courte.</li>
+                <li><code>switch</code> pour des cas discrets&nbsp;; <code>break</code> obligatoire, <code>default</code> recommandé.</li>
+                <li>Comparer = <code>==</code> ; <code>=</code> est une affectation (piège classique).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Ternaire</b> — opérateur <code>condition ? valeurSiVrai : valeurSiFaux</code>.</p>
+              <p><b>switch / case</b> — branchement multi-cas sur une valeur discrète.</p>
+              <p><b>Fall-through</b> — passage involontaire d'un <code>case</code> au suivant faute de <code>break</code>.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp05-boucles.html">CPP5 — Boucles</a>&nbsp;: répéter selon une condition.</li>
+              <li><a href="../../cours/cpp/cpp08-reflexion-unreal.html">CPP8 — Réflexion</a>&nbsp;: les <code>UENUM</code> exposés à l'éditeur.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP01 — Introduction au C++ & Unreal · Atelier Game Art</title>
+  <meta name="description" content="Pourquoi le C++ dans Unreal Engine, C++ vs Blueprint, créer sa première classe C++, compiler et utiliser le Live Coding.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Introduction</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP01 — Introduction au C++ &amp; Unreal</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>aucune expérience du C++ requise. Avoir déjà ouvert Unreal aide (voir la <a href="../../cours/unreal/e01-installation.html">piste Unreal</a>).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Pourquoi Unreal utilise le <b>C++</b> et comment il se marie au <b>Blueprint</b>.</li>
+                <li>Ce qu'est un projet C++ Unreal (module, <code>.h</code>/<code>.cpp</code>, <code>.Build.cs</code>).</li>
+                <li>Créer ta première classe C++ depuis l'éditeur.</li>
+                <li>Compiler et utiliser le <b>Live Coding</b> pour itérer vite.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Unreal Engine est lui-même écrit en C++. Tout ce que tu fais en Blueprint repose sur du code C++ sous-jacent. Apprendre le C++ te donne accès à <b>tout le moteur</b>&nbsp;: performances maximales, systèmes que le Blueprint ne peut pas faire, et la capacité de lire/comprendre le code source d'Unreal. Ce n'est pas «&nbsp;Blueprint <em>ou</em> C++&nbsp;» — les deux <b>coexistent</b>, et les studios professionnels combinent presque toujours les deux.</p>
+
+            <h3>C++ vs Blueprint : complémentaires, pas rivaux</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Axe</th><th>C++</th><th>Blueprint</th></tr></thead>
+                <tbody>
+                  <tr><td><b>Performance</b></td><td>Code natif compilé, maximal.</td><td>Interprété (machine virtuelle)&nbsp;: plus lent à grande échelle.</td></tr>
+                  <tr><td><b>Idéal pour</b></td><td>Systèmes de base, logique lourde, accès complet au moteur.</td><td>Prototypage, UI, level design, câblage gameplay.</td></tr>
+                  <tr><td><b>Itération</b></td><td>Nécessite une compilation (Live Coding accélère).</td><td>Immédiate, visuelle, sans compilation longue.</td></tr>
+                  <tr><td><b>Versionnage</b></td><td>Texte&nbsp;: diffs et revues de code propres.</td><td>Binaire&nbsp;: diffs difficiles, conflits délicats.</td></tr>
+                  <tr><td><b>Accessibilité</b></td><td>Exigeant&nbsp;: syntaxe stricte, mémoire.</td><td>Accessible aux non-programmeurs.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>L'approche classique&nbsp;: écrire les <b>fondations</b> et les systèmes coûteux en C++, puis <b>exposer</b> au Blueprint (variables et fonctions) pour que les designers les assemblent (on verra l'exposition en <a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Anatomie d'un projet C++ Unreal</h3>
+            <p>Quand tu crées un projet C++, Unreal génère un <b>module</b> de code&nbsp;:</p>
+            <ul>
+              <li><code>Source/MonProjet/</code> — tes fichiers <code>.h</code> (en-têtes, déclarations) et <code>.cpp</code> (définitions, code).</li>
+              <li><code>MonProjet.Build.cs</code> — décrit les dépendances du module (un fichier C#, pas C++).</li>
+              <li><code>MonProjet.uproject</code> — le projet, ouvrable dans l'éditeur.</li>
+            </ul>
+            <p>Chaque classe C++ vit généralement dans <b>deux fichiers</b>&nbsp;: un en-tête (<code>.h</code>) qui <em>déclare</em> ce qui existe, et une source (<code>.cpp</code>) qui <em>définit</em> ce que ça fait (on détaille en <a href="../../cours/cpp/cpp06-fonctions.html">CPP6</a>).</p>
+
+            <h3>2. Ta première classe C++</h3>
+            <p>Dans l'éditeur&nbsp;: <b>Tools ▸ New C++ Class</b> ▸ choisis une classe parente (souvent <code>Actor</code>) ▸ nomme-la. Unreal génère le squelette&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// MonActor.h — l'EN-TÊTE : on déclare la classe
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "MonActor.generated.h"   // généré par Unreal — toujours en DERNIER include
+
+UCLASS()
+class MONPROJET_API AMonActor : public AActor
+{
+    GENERATED_BODY()
+
+public:
+    AMonActor();                  // constructeur
+
+protected:
+    virtual void BeginPlay() override;   // appelé au lancement du jeu
+
+public:
+    virtual void Tick(float DeltaTime) override;  // appelé chaque frame
+};</code></pre>
+            </div>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// MonActor.cpp — la SOURCE : on définit le comportement
+#include "MonActor.h"
+
+AMonActor::AMonActor()
+{
+    PrimaryActorTick.bCanEverTick = true;   // active le Tick
+}
+
+void AMonActor::BeginPlay()
+{
+    Super::BeginPlay();
+    UE_LOG(LogTemp, Warning, TEXT("Bonjour depuis le C++ !"));
+}
+
+void AMonActor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+}</code></pre>
+            </div>
+            <p>Remarque le préfixe <code>A</code> de <code>AMonActor</code>&nbsp;: Unreal impose des préfixes par convention (<code>A</code> pour Actor, <code>U</code> pour objet, <code>F</code> pour structure…). On y reviendra en <a href="../../cours/cpp/cpp08-reflexion-unreal.html">CPP8</a>.</p>
+
+            <h3>3. Compiler &amp; Live Coding</h3>
+            <p>Le C++ doit être <b>compilé</b> (traduit en code machine) avant de s'exécuter — contrairement au Blueprint. Trois façons&nbsp;:</p>
+            <ul>
+              <li><b>Live Coding</b> (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F11</kbd> depuis l'éditeur)&nbsp;: recompile à chaud sans fermer l'éditeur — idéal pour itérer.</li>
+              <li>Bouton <b>Compile</b> de la barre d'outils de l'éditeur.</li>
+              <li>Build complet depuis l'IDE (Visual Studio / Rider) — nécessaire après certains changements de structure.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Flux : écrire le C++, compiler, exécuter dans l'éditeur, exposer au Blueprint">
+                <defs><marker id="cpp01ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="20" y="62" width="130" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="85" y="82" text-anchor="middle" font-weight="700">Code C++</text><text x="85" y="99" text-anchor="middle" class="svg-dim">.h / .cpp</text>
+                  <rect x="195" y="62" width="130" height="46" rx="8" fill="#ec6a9e" fill-opacity="0.15" stroke="#ec6a9e"/><text x="260" y="82" text-anchor="middle" font-weight="700">Compilation</text><text x="260" y="99" text-anchor="middle" class="svg-dim">Live Coding</text>
+                  <rect x="370" y="62" width="130" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="435" y="82" text-anchor="middle" font-weight="700">Éditeur</text><text x="435" y="99" text-anchor="middle" class="svg-dim">classes dispo</text>
+                  <rect x="540" y="62" width="90" height="46" rx="8" fill="#c084fc" fill-opacity="0.14" stroke="#c084fc"/><text x="585" y="82" text-anchor="middle" font-weight="700">Blueprint</text><text x="585" y="99" text-anchor="middle" class="svg-dim">assemble</text>
+                </g>
+                <g stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp01ar)">
+                  <line x1="150" y1="85" x2="193" y2="85"/><line x1="325" y1="85" x2="368" y2="85"/><line x1="500" y1="85" x2="538" y2="85"/>
+                </g>
+                <text x="320" y="140" text-anchor="middle" class="svg-dim" font-size="10">On écrit en C++, on compile, et le code devient utilisable dans l'éditeur — et exposable au Blueprint.</text>
+              </svg>
+              <figcaption>Boucle de travail Unreal C++&nbsp;: écrire → compiler (Live Coding) → utiliser dans l'éditeur → exposer au Blueprint.</figcaption>
+            </figure>
+
+            <h3>4. UE_LOG : ton premier outil de débogage</h3>
+            <p>L'équivalent du <code>print</code>&nbsp;: <code>UE_LOG</code> écrit dans la fenêtre <b>Output Log</b>. Note le <code>TEXT("...")</code> autour des chaînes (obligatoire pour le texte Unreal, vu en <a href="../../cours/cpp/cpp02-variables-types.html">CPP2</a>)&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UE_LOG(LogTemp, Warning, TEXT("Valeur : %d"), 42);     // %d pour un entier
+UE_LOG(LogTemp, Log, TEXT("Texte simple"));</code></pre>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un projet C++ (modèle « Blank », C++) ou ajoute du C++ à un projet existant.</li>
+              <li><b>Tools ▸ New C++ Class ▸ Actor</b>, nomme-la <code>MonActor</code>. Attends la compilation.</li>
+              <li>Dans <code>BeginPlay()</code>, ajoute un <code>UE_LOG(...)</code> qui affiche un message.</li>
+              <li>Lance le Live Coding (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>F11</kbd>), glisse l'Actor dans la scène, joue, et observe l'Output Log.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreur de compilation sur <code>.generated.h</code>.</div>
+                <div class="pi-cause"><b>Cause</b>L'include <code>"X.generated.h"</code> n'est pas le <b>dernier</b> des includes.</div>
+                <div class="pi-fix"><b>Correction</b>Place toujours <code>#include "X.generated.h"</code> en dernier.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes modifications C++ n'ont aucun effet.</div>
+                <div class="pi-cause"><b>Cause</b>Tu n'as pas recompilé.</div>
+                <div class="pi-fix"><b>Correction</b>Lance le Live Coding ou clique sur Compile.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Live Coding refuse certains changements.</div>
+                <div class="pi-cause"><b>Cause</b>Ajout/suppression de membres <code>UPROPERTY</code>/<code>UFUNCTION</code> ou de classes.</div>
+                <div class="pi-fix"><b>Correction</b>Ferme l'éditeur et fais un build complet depuis l'IDE.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« cannot open include file ».</div>
+                <div class="pi-cause"><b>Cause</b>Module non déclaré comme dépendance.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute le module dans <code>MonProjet.Build.cs</code> (PublicDependencyModuleNames).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée une classe C++ <code>Salutation</code> héritant d'<code>Actor</code>.</li>
+                <li>Affiche un message différent dans le constructeur et dans <code>BeginPlay()</code>.</li>
+                <li>Compile via Live Coding, place l'Actor, joue, et repère les deux messages dans l'Output Log.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La classe compile sans erreur.</li>
+                  <li>Les messages apparaissent dans l'Output Log au bon moment.</li>
+                  <li>Tu sais relancer une compilation à chaud.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Unreal est en C++&nbsp;; C++ et Blueprint sont <b>complémentaires</b>, pas concurrents.</li>
+                <li>Une classe = un <code>.h</code> (déclaration) + un <code>.cpp</code> (définition)&nbsp;; le C++ se <b>compile</b>.</li>
+                <li>Les préfixes (<code>A</code>, <code>U</code>, <code>F</code>) sont imposés&nbsp;; <code>.generated.h</code> toujours en dernier include.</li>
+                <li><b>Live Coding</b> pour itérer&nbsp;; <code>UE_LOG(..., TEXT("..."))</code> pour déboguer.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Module</b> — unité de code Unreal compilée ensemble, décrite par un fichier <code>.Build.cs</code>.</p>
+              <p><b>Live Coding</b> — recompilation à chaud du C++ sans fermer l'éditeur.</p>
+              <p><b>UE_LOG</b> — macro d'affichage de messages dans l'Output Log (débogage).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp02-variables-types.html">CPP2 — Variables, types &amp; mémoire</a>&nbsp;: la suite logique.</li>
+              <li><a href="../../cours/unreal/e01-installation.html">Piste Unreal</a>&nbsp;: l'éditeur et le moteur côté contenu.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">Unity vs Unreal</a>&nbsp;: situer C++/Unreal face à C#/Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

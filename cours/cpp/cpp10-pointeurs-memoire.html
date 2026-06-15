@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP10 — Pointeurs & mémoire (GC Unreal) · Atelier Game Art</title>
+  <meta name="description" content="Pointeurs et références en C++, le ramasse-miettes d'Unreal, UPROPERTY/TObjectPtr, TWeakObjectPtr et IsValid.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Pointeurs &amp; mémoire</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP10 — Pointeurs &amp; mémoire (GC Unreal)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp08-reflexion-unreal.html">CPP8</a> et <a href="../../cours/cpp/cpp09-actors-components.html">CPP9</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre un pointeur, <code>nullptr</code> et le déréférencement.</li>
+                <li>Comprendre le <b>ramasse-miettes</b> (GC) d'Unreal.</li>
+                <li>Garder un objet en vie avec <code>UPROPERTY()</code> / <code>TObjectPtr</code>.</li>
+                <li>Utiliser <code>TWeakObjectPtr</code> et <code>IsValid</code> pour éviter les accès invalides.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La mémoire est <b>la</b> grande différence avec le C#. En C++ pur, on gère soi-même la durée de vie des objets — source de bugs redoutés (fuites, accès à un objet détruit). Unreal apporte un <b>ramasse-miettes</b> pour ses <code>UObject</code>, mais il faut comprendre ses règles, sinon tes objets disparaissent… ou ne disparaissent jamais.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Pointeur vs référence</h3>
+            <p>Un <b>pointeur</b> (<code>Type*</code>) contient l'<em>adresse</em> d'un objet — il peut être nul (<code>nullptr</code>) et changer de cible. Une <b>référence</b> (<code>Type&amp;</code>, vue en <a href="../../cours/cpp/cpp06-fonctions.html">CPP6</a>) est un alias qui doit toujours désigner un objet valide.</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>AActor* Cible = nullptr;       // pointeur nul : ne pointe sur rien
+Cible = AutreActor;            // pointe maintenant sur AutreActor
+if (Cible != nullptr)          // TOUJOURS vérifier avant de déréférencer
+{
+    Cible-&gt;Destroy();          // -&gt; accède à un membre via un pointeur
+}</code></pre>
+            </div>
+            <p>Déréférencer un pointeur nul = <b>crash</b>. La vérification avant accès est un réflexe vital en C++.</p>
+
+            <h3>2. Le ramasse-miettes (GC) d'Unreal</h3>
+            <p>Tous les <code>UObject</code> (dont les <code>AActor</code>) sont gérés par un <b>ramasse-miettes</b>&nbsp;: périodiquement, le moteur détruit ceux qui ne sont plus <b>référencés</b>. La règle d'or&nbsp;: <b>seules les <code>UPROPERTY()</code> comptent comme références</b>. Un pointeur d'UObject sans <code>UPROPERTY()</code> est ignoré du GC — l'objet peut être détruit sous tes pieds, laissant un pointeur «&nbsp;pendouillant&nbsp;».</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()                       // ✅ le GC voit cette référence → objet maintenu en vie
+TObjectPtr&lt;AArme&gt; ArmeEquipee;     // UE5 : forme moderne, équivalente à AArme*
+
+AArme* ArmeBrute;                 // ❌ sans UPROPERTY : invisible au GC, dangereux</code></pre>
+            </div>
+            <p>En UE5, on préfère <code>TObjectPtr&lt;T&gt;</code> à <code>T*</code> pour les membres&nbsp;: même rôle, mais avec des vérifications supplémentaires dans l'éditeur.</p>
+
+            <h3>3. Références faibles : TWeakObjectPtr</h3>
+            <p>Parfois on veut <b>pointer sans empêcher la destruction</b> (ex.&nbsp;: la cible d'une IA, qui peut mourir). Un <code>TWeakObjectPtr</code> n'empêche pas le GC&nbsp;; on vérifie sa validité avant usage&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()
+TWeakObjectPtr&lt;AActor&gt; CibleIA;
+
+void Attaquer()
+{
+    if (CibleIA.IsValid())          // la cible existe-t-elle encore ?
+    {
+        CibleIA-&gt;TakeDamage(/*...*/);
+    }
+}</code></pre>
+            </div>
+
+            <h3>4. IsValid : la vérification universelle</h3>
+            <p><code>IsValid(Obj)</code> renvoie vrai si l'objet n'est ni nul ni en cours de destruction. C'est plus sûr qu'un simple <code>!= nullptr</code> pour un UObject&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>if (IsValid(ArmeEquipee))
+{
+    ArmeEquipee-&gt;Tirer();
+}</code></pre>
+            </div>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Et les objets non-UObject ?</div>
+              <p>Pour des classes C++ ordinaires (préfixe <code>F</code>, hors <code>UObject</code>), le GC ne s'applique pas. On utilise alors les <b>smart pointers</b> de la STL/Unreal&nbsp;: <code>TSharedPtr</code> (possession partagée, libère quand plus personne ne pointe) et <code>TUniquePtr</code> (possession unique). On évite presque toujours <code>new</code>/<code>delete</code> bruts.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Le GC garde les objets référencés par une UPROPERTY et détruit les autres">
+                <text x="320" y="24" text-anchor="middle" class="svg-dim" font-size="10">Passage du ramasse-miettes</text>
+                <rect x="40" y="50" width="150" height="40" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/>
+                <text x="115" y="68" text-anchor="middle" class="svg-text" font-size="10.5">UPROPERTY() → Arme</text>
+                <text x="115" y="82" text-anchor="middle" class="svg-dim" font-size="9">référencée</text>
+                <rect x="250" y="50" width="150" height="40" rx="8" class="svg-surface" stroke="#5ad19a"/>
+                <text x="325" y="74" text-anchor="middle" class="svg-text" font-size="10.5">Arme ✓ conservée</text>
+
+                <rect x="40" y="120" width="150" height="40" rx="8" fill="#f4b740" fill-opacity="0.12" stroke="#f4b740"/>
+                <text x="115" y="138" text-anchor="middle" class="svg-text" font-size="10.5">AArme* (nu)</text>
+                <text x="115" y="152" text-anchor="middle" class="svg-dim" font-size="9">non vue du GC</text>
+                <rect x="250" y="120" width="150" height="40" rx="8" class="svg-surface" stroke="#e2607e" stroke-dasharray="4 3"/>
+                <text x="325" y="144" text-anchor="middle" class="svg-text" font-size="10.5">Arme ✗ détruite</text>
+
+                <line x1="190" y1="70" x2="248" y2="70" stroke="#5ad19a" stroke-width="1.7"/>
+                <line x1="190" y1="140" x2="248" y2="140" stroke="#e2607e" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <text x="470" y="74" class="svg-dim" font-size="9.5">Référencée = vivante</text>
+                <text x="470" y="144" class="svg-dim" font-size="9.5">Non référencée = collectée</text>
+              </svg>
+              <figcaption>Le GC conserve les objets atteignables par une <code>UPROPERTY()</code> et détruit les autres. D'où l'importance de la macro.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Déclare <code>UPROPERTY() TObjectPtr&lt;AArme&gt; ArmeEquipee;</code> et équipe une arme par <code>SpawnActor</code>.</li>
+              <li>Supprime volontairement la <code>UPROPERTY()</code> et observe (en jeu prolongé) la disparition de l'arme&nbsp;: le GC l'a collectée.</li>
+              <li>Stocke une cible d'IA en <code>TWeakObjectPtr</code>&nbsp;; détruis la cible et vérifie <code>IsValid()</code> avant d'attaquer.</li>
+              <li>Protège chaque déréférencement par <code>if (IsValid(...))</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet disparaît tout seul.</div>
+                <div class="pi-cause"><b>Cause</b>Pointeur d'UObject sans <code>UPROPERTY()</code>&nbsp;: non vu du GC.</div>
+                <div class="pi-fix"><b>Correction</b>Stocke-le dans une <code>UPROPERTY()</code> / <code>TObjectPtr</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash « access violation ».</div>
+                <div class="pi-cause"><b>Cause</b>Déréférencement d'un pointeur nul ou détruit.</div>
+                <div class="pi-fix"><b>Correction</b>Teste <code>IsValid(...)</code> avant tout accès.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'IA attaque un ennemi déjà mort.</div>
+                <div class="pi-cause"><b>Cause</b>Référence forte gardée vers un objet qui aurait dû disparaître.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>TWeakObjectPtr</code> + <code>IsValid()</code> pour les cibles.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Fuite mémoire avec du C++ pur.</div>
+                <div class="pi-cause"><b>Cause</b><code>new</code> sans <code>delete</code> sur un objet non-UObject.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>TSharedPtr</code>/<code>TUniquePtr</code> plutôt que <code>new</code>/<code>delete</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un composant d'inventaire qui garde des armes dans des <code>UPROPERTY()</code> (donc maintenues en vie).</li>
+                <li>Une IA dont la cible est un <code>TWeakObjectPtr</code>&nbsp;; gère proprement la mort de la cible.</li>
+                <li>Encadre tous les accès par pointeur avec <code>IsValid</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucun objet attendu ne disparaît (références correctes).</li>
+                  <li>Aucun crash sur pointeur nul/détruit.</li>
+                  <li>Les cibles potentiellement détruites sont en référence faible.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un pointeur peut être <code>nullptr</code>&nbsp;: vérifie avant de déréférencer.</li>
+                <li>Le GC conserve les <code>UObject</code> <b>référencés par une <code>UPROPERTY()</code></b> (ou <code>TObjectPtr</code>).</li>
+                <li><code>TWeakObjectPtr</code> + <code>IsValid()</code> pour pointer sans empêcher la destruction.</li>
+                <li>Objets non-UObject&nbsp;: <code>TSharedPtr</code>/<code>TUniquePtr</code>, pas <code>new</code>/<code>delete</code> bruts.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Pointeur / nullptr</b> — variable contenant une adresse&nbsp;/ pointeur ne désignant rien.</p>
+              <p><b>Ramasse-miettes (GC)</b> — système Unreal détruisant les UObject non référencés.</p>
+              <p><b>TObjectPtr</b> — forme moderne (UE5) d'un pointeur d'UObject membre, avec vérifications.</p>
+              <p><b>TWeakObjectPtr</b> — référence faible n'empêchant pas la destruction (testée par <code>IsValid</code>).</p>
+              <p><b>IsValid</b> — teste qu'un objet n'est ni nul ni en destruction.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp11-conteneurs.html">CPP11 — Conteneurs Unreal</a>.</li>
+              <li><a href="../../cours/cpp/cpp15-bonnes-pratiques.html">CPP15 — Bonnes pratiques</a>&nbsp;: réflexes mémoire au quotidien.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

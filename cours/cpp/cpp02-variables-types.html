@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP02 — Variables, types & mémoire · Atelier Game Art</title>
+  <meta name="description" content="Les types C++ et Unreal (int32, float, bool, FString), const et auto, et la différence stack/heap.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Variables &amp; types</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP02 — Variables, types &amp; mémoire</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp01-introduction.html">CPP1 — Introduction</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Déclarer et initialiser une variable en C++.</li>
+                <li>Choisir le bon type Unreal (<code>int32</code>, <code>float</code>, <code>bool</code>, <code>FString</code>).</li>
+                <li>Utiliser <code>const</code> et <code>auto</code> à bon escient.</li>
+                <li>Comprendre la différence entre <b>pile (stack)</b> et <b>tas (heap)</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le C++ est <b>typé statiquement</b> et <b>strict</b>&nbsp;: chaque variable a un type fixé à la compilation, et le compilateur refuse les approximations. C'est plus exigeant qu'en C# mais cela donne contrôle et performance. Unreal ajoute par-dessus ses propres types (comme <code>int32</code> ou <code>FString</code>) pour garantir un comportement identique sur toutes les plateformes.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Déclarer une variable</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>int32 score = 0;           // un entier, initialisé à 0
+float vitesse = 600.0f;    // un nombre à virgule (le 'f' = littéral float)
+bool bEnVie = true;        // un booléen (préfixe 'b' par convention Unreal)
+FString nom = TEXT("Héros"); // une chaîne de caractères Unreal</code></pre>
+            </div>
+            <p><b>Toujours initialiser</b>&nbsp;: une variable non initialisée contient une valeur «&nbsp;poubelle&nbsp;» imprévisible (source de bugs classiques en C++).</p>
+
+            <h3>2. Les types Unreal vs C++ standard</h3>
+            <p>Unreal recommande ses propres alias pour une taille <b>garantie</b> sur toutes les plateformes&nbsp;:</p>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Usage</th><th>Type Unreal</th><th>Équivalent C++</th><th>Exemple</th></tr></thead>
+                <tbody>
+                  <tr><td>Entier 32 bits</td><td><code>int32</code></td><td><code>int</code></td><td>score, munitions</td></tr>
+                  <tr><td>Entier 8 bits positif</td><td><code>uint8</code></td><td><code>unsigned char</code></td><td>niveau (0–255)</td></tr>
+                  <tr><td>Décimal</td><td><code>float</code></td><td><code>float</code></td><td>vitesse, temps</td></tr>
+                  <tr><td>Décimal précis</td><td><code>double</code></td><td><code>double</code></td><td>coordonnées monde (UE5)</td></tr>
+                  <tr><td>Booléen</td><td><code>bool</code></td><td><code>bool</code></td><td>bEnVie, bVisible</td></tr>
+                  <tr><td>Texte modifiable</td><td><code>FString</code></td><td>—</td><td>nom, message</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Préfère <code>int32</code> à <code>int</code> dans le code Unreal. Note&nbsp;: en UE5, les vecteurs (<code>FVector</code>) utilisent des <code>double</code> pour les grands mondes.</p>
+
+            <h3>3. Les chaînes : FString, FName, FText</h3>
+            <p>Unreal a trois types de texte, chacun pour un usage&nbsp;:</p>
+            <ul>
+              <li><code>FString</code> — texte <b>modifiable</b>, pour la manipulation (concaténer, découper).</li>
+              <li><code>FName</code> — identifiant <b>immuable et rapide</b> (noms d'os, de tags), insensible à la casse.</li>
+              <li><code>FText</code> — texte <b>destiné à l'affichage</b> et à la <b>localisation</b> (traduction).</li>
+            </ul>
+            <p>Toute chaîne littérale Unreal passe par la macro <code>TEXT("...")</code> pour gérer l'Unicode&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>FString message = TEXT("Score : ") + FString::FromInt(score);
+UE_LOG(LogTemp, Log, TEXT("%s"), *message);   // le * convertit FString -> const TCHAR*</code></pre>
+            </div>
+
+            <h3>4. const et auto</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>const int32 VieMax = 100;     // const : ne changera jamais (le compilateur l'impose)
+auto degats = 25;             // auto : le compilateur déduit le type (ici int32)
+const float Pi = 3.14159f;</code></pre>
+            </div>
+            <p><code>const</code> exprime une intention (« cette valeur est fixe ») et évite des bugs. <code>auto</code> allège l'écriture quand le type est évident, mais n'en abuse pas&nbsp;: la lisibilité prime.</p>
+
+            <h3>5. Pile (stack) vs tas (heap)</h3>
+            <p>Notion clé du C++. Une variable locale ordinaire vit sur la <b>pile</b>&nbsp;: créée à l'entrée d'un bloc, détruite automatiquement à la sortie — rapide et sans souci. Les objets qui doivent <b>survivre</b> au-delà du bloc sont alloués sur le <b>tas</b> (avec <code>new</code> en C++ pur, ou via <code>NewObject</code>/<code>SpawnActor</code> dans Unreal), et leur durée de vie doit être gérée (on verra le ramasse-miettes d'Unreal en <a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 190" role="img" aria-label="La pile détruit automatiquement les variables locales, le tas survit jusqu'à libération">
+                <rect x="40" y="34" width="240" height="130" rx="10" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a"/>
+                <text x="160" y="26" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Pile (stack)</text>
+                <g class="svg-text" font-size="10.5" font-family="monospace">
+                  <rect x="60" y="48" width="200" height="22" rx="4" class="svg-surface" stroke="#313c4c"/><text x="68" y="63">int32 score = 0;</text>
+                  <rect x="60" y="74" width="200" height="22" rx="4" class="svg-surface" stroke="#313c4c"/><text x="68" y="89">float vitesse = 600;</text>
+                </g>
+                <text x="160" y="124" text-anchor="middle" class="svg-dim" font-size="9.5">Détruites automatiquement</text>
+                <text x="160" y="138" text-anchor="middle" class="svg-dim" font-size="9.5">à la fin du bloc { }</text>
+
+                <rect x="360" y="34" width="240" height="130" rx="10" fill="#ec6a9e" fill-opacity="0.08" stroke="#ec6a9e"/>
+                <text x="480" y="26" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Tas (heap)</text>
+                <g class="svg-text" font-size="10.5" font-family="monospace">
+                  <rect x="380" y="48" width="200" height="22" rx="4" class="svg-surface" stroke="#313c4c"/><text x="388" y="63">SpawnActor&lt;AEnnemi&gt;()</text>
+                  <rect x="380" y="74" width="200" height="22" rx="4" class="svg-surface" stroke="#313c4c"/><text x="388" y="89">NewObject&lt;UArme&gt;()</text>
+                </g>
+                <text x="480" y="124" text-anchor="middle" class="svg-dim" font-size="9.5">Survit jusqu'à libération</text>
+                <text x="480" y="138" text-anchor="middle" class="svg-dim" font-size="9.5">(GC Unreal — voir CPP10)</text>
+              </svg>
+              <figcaption>Les variables locales (pile) se nettoient seules&nbsp;; les objets de jeu (tas) vivent jusqu'à leur destruction.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans <code>BeginPlay()</code>, déclare <code>int32 score = 0;</code> et <code>FString nom = TEXT("Joueur");</code>.</li>
+              <li>Construis un message avec <code>FString::FromInt</code> et affiche-le via <code>UE_LOG</code>.</li>
+              <li>Ajoute une constante <code>const int32 VieMax = 100;</code> et tente de la modifier&nbsp;: observe l'erreur du compilateur.</li>
+              <li>Remplace une déclaration par <code>auto</code> et vérifie que ça compile toujours.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Valeur aléatoire ou crash intermittent.</div>
+                <div class="pi-cause"><b>Cause</b>Variable non initialisée (valeur « poubelle »).</div>
+                <div class="pi-fix"><b>Correction</b>Initialise toujours à la déclaration (<code>int32 x = 0;</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Division entière inattendue (5 / 2 = 2).</div>
+                <div class="pi-cause"><b>Cause</b>Deux entiers&nbsp;: le résultat est entier.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise des floats&nbsp;: <code>5.0f / 2.0f</code> (voir <a href="../../cours/cpp/cpp03-operateurs.html">CPP3</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Texte illisible / erreur sur une chaîne.</div>
+                <div class="pi-cause"><b>Cause</b>Chaîne littérale sans <code>TEXT()</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Entoure tout littéral texte de <code>TEXT("...")</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>UE_LOG</code> avec <code>%s</code> plante.</div>
+                <div class="pi-cause"><b>Cause</b>Tu passes un <code>FString</code> sans le déréférencer.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>*maString</code> avec <code>%s</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Déclare des variables pour un personnage&nbsp;: <code>nom</code> (FString), <code>pointsDeVie</code> (int32), <code>vitesse</code> (float), <code>bEstVivant</code> (bool).</li>
+                <li>Affiche une fiche récapitulative dans l'Output Log avec un seul <code>UE_LOG</code> formaté.</li>
+                <li>Ajoute une constante <code>VieMax</code> et calcule le pourcentage de vie (attention à la division entière&nbsp;!).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Toutes les variables sont initialisées et bien typées.</li>
+                  <li>Les chaînes utilisent <code>TEXT()</code> et l'affichage est correct.</li>
+                  <li>Le pourcentage est calculé en flottant, pas en entier.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>C++ est strictement typé&nbsp;: <b>initialise toujours</b> tes variables.</li>
+                <li>Préfère les types Unreal&nbsp;: <code>int32</code>, <code>float</code>, <code>bool</code> (préfixe <code>b</code>), <code>FString</code>.</li>
+                <li><code>FString</code> (modifiable), <code>FName</code> (identifiant rapide), <code>FText</code> (affichage/localisation)&nbsp;; <code>TEXT("...")</code> partout.</li>
+                <li><b>Pile</b> = locales auto-nettoyées&nbsp;; <b>tas</b> = objets durables (gérés par le GC, <a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a>).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>int32 / uint8</b> — entiers Unreal de taille garantie (signé 32 bits / non signé 8 bits).</p>
+              <p><b>FString / FName / FText</b> — texte modifiable / identifiant rapide / texte d'affichage localisable.</p>
+              <p><b>TEXT()</b> — macro entourant tout littéral texte Unreal (gestion Unicode).</p>
+              <p><b>Pile / Tas</b> — mémoire auto-nettoyée (locales) vs mémoire à durée de vie gérée (objets).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp03-operateurs.html">CPP3 — Opérateurs &amp; expressions</a>.</li>
+              <li><a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10 — Pointeurs &amp; mémoire</a>&nbsp;: la gestion du tas en détail.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

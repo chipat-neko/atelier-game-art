@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP05 — Boucles (for, while, range-based) · Atelier Game Art</title>
+  <meta name="description" content="Répéter du code en C++ : for, while, do-while, range-based for, break/continue, et pourquoi éviter les boucles bloquantes par frame.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Boucles</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP05 — Boucles (for, while, range-based)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp04-conditions.html">CPP4 — Conditions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Répéter du code avec <code>for</code>, <code>while</code> et <code>do-while</code>.</li>
+                <li>Parcourir une collection avec le <b>range-based for</b>.</li>
+                <li>Contrôler une boucle avec <code>break</code> et <code>continue</code>.</li>
+                <li>Comprendre pourquoi une boucle ne doit pas bloquer une frame.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Dès qu'il faut traiter «&nbsp;tous les ennemis&nbsp;», «&nbsp;chaque case d'une grille&nbsp;» ou répéter une action N fois (spawner 10 objets), on utilise une boucle. C'est l'outil de la répétition.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La boucle for</h3>
+            <p>Quand le nombre de répétitions est connu&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>for (int32 i = 0; i &lt; 10; i++)   // init ; condition ; incrément
+{
+    UE_LOG(LogTemp, Log, TEXT("Spawn n°%d"), i);
+}</code></pre>
+            </div>
+
+            <h3>2. while &amp; do-while</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>while (munitions &gt; 0)     // teste AVANT chaque tour
+{
+    Tirer();
+    munitions--;
+}
+
+do
+{
+    Action();             // exécute AU MOINS une fois, puis teste
+} while (bContinuer);</code></pre>
+            </div>
+
+            <h3>3. Le range-based for (le plus utile en jeu)</h3>
+            <p>Pour parcourir chaque élément d'un conteneur (un <code>TArray</code>, vu en <a href="../../cours/cpp/cpp11-conteneurs.html">CPP11</a>) sans gérer d'index&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>for (AActor* Ennemi : Ennemis)        // "pour chaque Ennemi dans Ennemis"
+{
+    if (Ennemi)                        // ignore les éléments nuls
+    {
+        Ennemi-&gt;Destroy();
+    }
+}
+
+// Avec référence pour modifier sur place, ou const pour lecture seule :
+for (const FString&amp; Nom : Noms)
+{
+    UE_LOG(LogTemp, Log, TEXT("%s"), *Nom);
+}</code></pre>
+            </div>
+            <p>Le <code>&amp;</code> (référence) évite de copier chaque élément&nbsp;; <code>const</code> indique qu'on ne les modifie pas (références détaillées en <a href="../../cours/cpp/cpp06-fonctions.html">CPP6</a>).</p>
+
+            <h3>4. break &amp; continue</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>for (AActor* A : Acteurs)
+{
+    if (!A) continue;            // passe au tour suivant (saute le reste)
+    if (A-&gt;ActorHasTag("Boss"))
+    {
+        Cible = A;
+        break;                  // sort immédiatement de la boucle
+    }
+}</code></pre>
+            </div>
+
+            <div class="callout danger">
+              <div class="callout-title"><span class="ico">🛑</span>Ne bloque jamais une frame</div>
+              <p>Une boucle <b>très longue</b> ou <code>while(true)</code> sans sortie s'exécute <b>entièrement dans la même frame</b> et gèle le jeu. Pour étaler un traitement dans le temps, on utilise les <b>timers</b> (<a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14</a>) ou le <code>Tick</code> (<a href="../../cours/cpp/cpp09-actors-components.html">CPP9</a>), pas une boucle qui attend.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Le range-based for visite chaque élément d'un tableau">
+                <defs><marker id="cpp05ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <text x="320" y="28" text-anchor="middle" class="svg-dim" font-size="10">for (AActor* E : Ennemis)</text>
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="60" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="105" y="80" text-anchor="middle">[0]</text>
+                  <rect x="180" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="225" y="80" text-anchor="middle">[1]</text>
+                  <rect x="300" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="345" y="80" text-anchor="middle">[2]</text>
+                  <rect x="420" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="465" y="80" text-anchor="middle">[3]</text>
+                  <rect x="540" y="55" width="60" height="40" rx="6" fill="#ec6a9e" fill-opacity="0.15" stroke="#ec6a9e"/><text x="570" y="80" text-anchor="middle">fin</text>
+                </g>
+                <g stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp05ar)">
+                  <line x1="150" y1="75" x2="178" y2="75"/><line x1="270" y1="75" x2="298" y2="75"/><line x1="390" y1="75" x2="418" y2="75"/><line x1="510" y1="75" x2="538" y2="75"/>
+                </g>
+                <text x="320" y="130" text-anchor="middle" class="svg-dim" font-size="10">Chaque élément est visité une fois, dans l'ordre, sans gérer d'index.</text>
+              </svg>
+              <figcaption>Le range-based for est la façon idiomatique de traiter «&nbsp;chaque élément&nbsp;» d'une collection.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Avec un <code>for</code>, logge les nombres de 1 à 5.</li>
+              <li>Avec un <code>while</code>, vide un stock de munitions en tirant.</li>
+              <li>Parcours un <code>TArray&lt;AActor*&gt;</code> avec un range-based for et détruis chaque élément valide.</li>
+              <li>Cherche le premier acteur taggé « Boss » avec <code>break</code>, en ignorant les nuls par <code>continue</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le jeu se fige.</div>
+                <div class="pi-cause"><b>Cause</b>Boucle infinie ou condition de sortie jamais atteinte.</div>
+                <div class="pi-fix"><b>Correction</b>Garantis la progression vers la sortie&nbsp;; pour le temps, utilise un timer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash en parcourant un tableau.</div>
+                <div class="pi-cause"><b>Cause</b>Tu modifies le tableau (ajout/suppression) pendant le range-based for.</div>
+                <div class="pi-fix"><b>Correction</b>Itère sur une copie, ou boucle à l'envers avec index pour supprimer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Dernier élément ignoré / dépassement.</div>
+                <div class="pi-cause"><b>Cause</b>Erreur de borne (<code>&lt;=</code> au lieu de <code>&lt;</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Pour un tableau de taille N, l'index va de 0 à N-1 (<code>i &lt; Num()</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Copies coûteuses dans la boucle.</div>
+                <div class="pi-cause"><b>Cause</b>Range-based for par valeur sur de gros objets.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>const Type&amp;</code> pour la lecture.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Boucle <code>for</code> qui calcule la somme des entiers de 1 à 100.</li>
+                <li>Parcours un <code>TArray</code> de PV et compte combien sont « morts » (≤ 0).</li>
+                <li>Trouve le premier ennemi à portée avec <code>break</code> et saute les nuls avec <code>continue</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune boucle ne bloque la frame.</li>
+                  <li>Le parcours du tableau utilise des références const quand c'est de la lecture.</li>
+                  <li>Pas d'erreur de borne ni de modification du conteneur pendant l'itération.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>for</code> = nombre connu&nbsp;; <code>while</code> = tant que vrai&nbsp;; <code>do-while</code> = au moins une fois.</li>
+                <li>Le <b>range-based for</b> (<code>for (auto&amp; x : conteneur)</code>) est l'outil idiomatique du parcours.</li>
+                <li><code>break</code> sort, <code>continue</code> passe au tour suivant.</li>
+                <li>Ne bloque jamais une frame&nbsp;: pour le temps, timers/Tick, pas une boucle d'attente.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Range-based for</b> — boucle <code>for (T x : conteneur)</code> qui visite chaque élément.</p>
+              <p><b>break / continue</b> — sortir de la boucle / passer immédiatement au tour suivant.</p>
+              <p><b>Borne</b> — limite d'index d'un parcours (0 à N-1 pour un tableau de taille N).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp06-fonctions.html">CPP6 — Fonctions &amp; en-têtes</a>.</li>
+              <li><a href="../../cours/cpp/cpp11-conteneurs.html">CPP11 — Conteneurs Unreal</a>&nbsp;: ce que l'on parcourt.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CPP08 — Le système de réflexion Unreal · Atelier Game Art</title>
+  <meta name="description" content="UCLASS, UPROPERTY, UFUNCTION, GENERATED_BODY, UENUM/USTRUCT : ce que la réflexion d'Unreal apporte (éditeur, GC, Blueprint, sérialisation).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cpp08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 93</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/cpp/cpp01-introduction.html">C++ (Unreal)</a><span class="sep">/</span>
+            <span>Système de réflexion</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CPP08 — Le système de réflexion Unreal</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 8 · C++ (Unreal)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/cpp/cpp07-classes-poo.html">CPP7 — Classes &amp; POO</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est la <b>réflexion</b> et ce qu'elle apporte à Unreal.</li>
+                <li>Utiliser <code>UCLASS</code>, <code>GENERATED_BODY</code>, <code>UPROPERTY</code>, <code>UFUNCTION</code>.</li>
+                <li>Exposer une propriété à l'éditeur et au Blueprint avec des spécificateurs.</li>
+                <li>Déclarer un <code>UENUM</code> et un <code>USTRUCT</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>C'est <b>le</b> concept qui distingue le C++ Unreal du C++ ordinaire. La <span class="gloss">réflexion</span> permet au moteur de «&nbsp;connaître&nbsp;» tes classes et leurs membres à l'exécution&nbsp;: il peut alors les afficher dans l'éditeur, les sérialiser (sauvegarde), les exposer au Blueprint, et les gérer dans le ramasse-miettes. Sans les macros <code>U*</code>, ton code reste invisible pour Unreal.</p>
+
+            <h3>Comment ça marche</h3>
+            <p>Avant la compilation, un outil nommé <b>UHT</b> (Unreal Header Tool) lit tes <code>.h</code>, repère les macros (<code>UCLASS</code>, <code>UPROPERTY</code>…) et <b>génère</b> du code (le fameux <code>.generated.h</code>) qui décrit tes types au moteur. C'est pour ça que <code>#include "X.generated.h"</code> doit être le dernier include et que <code>GENERATED_BODY()</code> est obligatoire.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. UCLASS &amp; GENERATED_BODY</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UCLASS()                                   // « cette classe est connue d'Unreal »
+class MONJEU_API AObjetRamassable : public AActor
+{
+    GENERATED_BODY()                       // injecte le code de réflexion généré
+public:
+    AObjetRamassable();
+};</code></pre>
+            </div>
+
+            <h3>2. UPROPERTY : exposer une variable</h3>
+            <p>Une <code>UPROPERTY</code> est une variable <b>connue d'Unreal</b>. Selon ses spécificateurs, elle apparaît dans l'éditeur, dans le Blueprint, et/ou est suivie par le GC&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Réglable dans l'éditeur (Details) ET lisible/écrivable en Blueprint
+UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+int32 Munitions = 30;
+
+// Réglable par instance dans l'éditeur, lecture seule en Blueprint
+UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stats")
+float Cadence = 0.2f;
+
+// Référence d'objet suivie par le GC (indispensable, voir CPP10)
+UPROPERTY()
+UStaticMeshComponent* Mesh;</code></pre>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Spécificateur</th><th>Effet</th></tr></thead>
+                <tbody>
+                  <tr><td><code>EditAnywhere</code></td><td>Modifiable dans le panneau Details (archétype et instances).</td></tr>
+                  <tr><td><code>VisibleAnywhere</code></td><td>Visible mais non modifiable dans l'éditeur.</td></tr>
+                  <tr><td><code>BlueprintReadWrite</code></td><td>Lisible et modifiable depuis un Blueprint.</td></tr>
+                  <tr><td><code>BlueprintReadOnly</code></td><td>Lisible seulement depuis un Blueprint.</td></tr>
+                  <tr><td><code>Category = "…"</code></td><td>Regroupe les propriétés dans l'éditeur.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3. UFUNCTION : exposer une fonction</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>// Appelable depuis un Blueprint
+UFUNCTION(BlueprintCallable, Category = "Combat")
+void Tirer();
+
+// Apparaît comme un nœud d'événement déclenchable (voir CPP14)
+UFUNCTION(BlueprintImplementableEvent)
+void OnRamasse();</code></pre>
+            </div>
+            <p>On approfondira l'exposition Blueprint (<code>BlueprintCallable</code>, événements) en <a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14</a>.</p>
+
+            <h3>4. UENUM &amp; USTRUCT</h3>
+            <div class="codeblock" data-lang="C++">
+<pre><code>UENUM(BlueprintType)                  // un enum exposé au Blueprint
+enum class EEtatIA : uint8
+{
+    Patrouille,
+    Poursuite,
+    Attaque
+};
+
+USTRUCT(BlueprintType)                // un regroupement de données exposé
+struct FStatsArme
+{
+    GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere) int32 Degats = 10;
+    UPROPERTY(EditAnywhere) float Portee = 1000.0f;
+};</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Les macros U déclenchent UHT qui génère le code de réflexion utilisé par l'éditeur, le GC et le Blueprint">
+                <defs><marker id="cpp08ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec6a9e"/></marker></defs>
+                <rect x="30" y="60" width="130" height="48" rx="8" class="svg-surface" stroke="#313c4c"/><text x="95" y="80" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">UCLASS / UPROPERTY</text><text x="95" y="98" text-anchor="middle" class="svg-dim" font-size="9.5">tes macros</text>
+                <rect x="205" y="60" width="120" height="48" rx="8" fill="#ec6a9e" fill-opacity="0.15" stroke="#ec6a9e"/><text x="265" y="80" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">UHT</text><text x="265" y="98" text-anchor="middle" class="svg-dim" font-size="9.5">génère .generated.h</text>
+                <g class="svg-text" font-size="10">
+                  <rect x="380" y="18" width="230" height="32" rx="7" class="svg-surface" stroke="#313c4c"/><text x="495" y="38" text-anchor="middle">Éditeur (panneau Details)</text>
+                  <rect x="380" y="68" width="230" height="32" rx="7" class="svg-surface" stroke="#313c4c"/><text x="495" y="88" text-anchor="middle">Garbage Collection</text>
+                  <rect x="380" y="118" width="230" height="32" rx="7" class="svg-surface" stroke="#313c4c"/><text x="495" y="138" text-anchor="middle">Blueprint &amp; sérialisation</text>
+                </g>
+                <line x1="160" y1="84" x2="203" y2="84" stroke="#ec6a9e" stroke-width="1.7" marker-end="url(#cpp08ar)"/>
+                <g stroke="#ec6a9e" stroke-width="1.5" marker-end="url(#cpp08ar)" fill="none">
+                  <path d="M325 78 C 350 60, 360 40, 378 36"/><path d="M325 84 L378 84"/><path d="M325 90 C 350 108, 360 128, 378 132"/>
+                </g>
+              </svg>
+              <figcaption>Les macros <code>U*</code> alimentent UHT, qui rend tes types visibles à l'éditeur, au GC et au Blueprint.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sur une classe Actor, ajoute <code>UPROPERTY(EditAnywhere, Category="Stats") int32 PV = 100;</code> et compile.</li>
+              <li>Place l'Actor dans la scène et modifie <code>PV</code> dans le panneau Details&nbsp;: la réflexion en action.</li>
+              <li>Ajoute <code>UFUNCTION(BlueprintCallable) void Soigner(int32 Montant);</code> et appelle-la depuis un Blueprint enfant.</li>
+              <li>Déclare un <code>UENUM(BlueprintType)</code> d'états et expose une <code>UPROPERTY</code> de ce type.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma variable n'apparaît pas dans l'éditeur.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de <code>UPROPERTY(EditAnywhere)</code> (variable C++ « nue »).</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute la macro avec le bon spécificateur.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet référencé disparaît (GC).</div>
+                <div class="pi-cause"><b>Cause</b>Pointeur d'UObject sans <code>UPROPERTY()</code>&nbsp;: invisible au GC.</div>
+                <div class="pi-fix"><b>Correction</b>Marque toute référence d'UObject avec <code>UPROPERTY()</code> (voir <a href="../../cours/cpp/cpp10-pointeurs-memoire.html">CPP10</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« GENERATED_BODY must be the first thing… ».</div>
+                <div class="pi-cause"><b>Cause</b><code>GENERATED_BODY()</code> mal placé ou manquant.</div>
+                <div class="pi-fix"><b>Correction</b>Place-le en première ligne du corps de la classe.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>UHT échoue / erreurs cryptiques.</div>
+                <div class="pi-cause"><b>Cause</b><code>.generated.h</code> pas en dernier, ou enum sans <code>: uint8</code>.</div>
+                <div class="pi-fix"><b>Correction</b><code>.generated.h</code> en dernier&nbsp;; <code>enum class … : uint8</code> pour <code>UENUM(BlueprintType)</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Une classe <code>AArme</code> avec des <code>UPROPERTY</code> exposées (munitions, cadence, dégâts) classées par Category.</li>
+                <li>Un <code>UENUM(BlueprintType)</code> de types de munitions et une <code>UPROPERTY</code> de ce type.</li>
+                <li>Une <code>UFUNCTION(BlueprintCallable)</code> <code>Recharger()</code> testable depuis l'éditeur.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les propriétés apparaissent et sont éditables dans Details.</li>
+                  <li>La fonction est appelable depuis un Blueprint.</li>
+                  <li>Aucune référence d'UObject n'est sans <code>UPROPERTY()</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>La <b>réflexion</b> rend tes types visibles au moteur (éditeur, GC, Blueprint, sérialisation).</li>
+                <li><code>UCLASS</code> + <code>GENERATED_BODY()</code>&nbsp;; <code>UPROPERTY</code> pour les variables, <code>UFUNCTION</code> pour les fonctions.</li>
+                <li>Les <b>spécificateurs</b> (<code>EditAnywhere</code>, <code>BlueprintReadWrite</code>, <code>Category</code>) règlent l'exposition.</li>
+                <li>Toute référence d'<code>UObject</code> doit être une <code>UPROPERTY()</code> (sinon le GC la détruit).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Réflexion</b> — capacité du moteur à connaître tes types et membres à l'exécution.</p>
+              <p><b>UHT (Unreal Header Tool)</b> — outil qui génère le code de réflexion avant la compilation.</p>
+              <p><b>UPROPERTY / UFUNCTION</b> — macros exposant une variable / une fonction au moteur.</p>
+              <p><b>UENUM / USTRUCT</b> — énumération / structure de données exposées à Unreal.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/cpp/cpp09-actors-components.html">CPP9 — Actors &amp; Components</a>.</li>
+              <li><a href="../../cours/cpp/cpp14-blueprint-timers.html">CPP14 — Exposer au Blueprint</a>&nbsp;: tous les spécificateurs d'exposition.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>
