@@ -15,9 +15,20 @@
     });
   }
 
-  // Mélange déterministe-léger (Fisher-Yates) — pas de dépendance à Math.random interdit.
-  // On varie l'ordre via un décalage basé sur l'index de question pour éviter un ordre figé,
-  // tout en restant stable au rechargement (pas de hasard nécessaire pédagogiquement).
+  // Hash déterministe d'une chaîne (variante djb2) → entier positif.
+  // Sert à varier l'ordre des options de façon imprévisible d'une question à
+  // l'autre, tout en restant stable au rechargement (aucun hasard).
+  function hashStr(s) {
+    var h = 5381;
+    for (var i = 0; i < s.length; i++) {
+      h = ((h << 5) + h + s.charCodeAt(i)) | 0; // h*33 + c
+    }
+    return Math.abs(h);
+  }
+
+  // Décalage circulaire des options. Le décalage est dérivé du texte de la
+  // question (et de son index), de sorte que la bonne réponse ne tombe pas
+  // toujours à la même position et reste imprévisible sans introduire de hasard.
   function rotate(arr, by) {
     var n = arr.length;
     if (n < 2) return arr.slice();
@@ -46,7 +57,9 @@
       var opts = item.a.map(function (text, i) {
         return { text: text, correct: i === (item.correct || 0) };
       });
-      opts = rotate(opts, qi + 1); // ordre varié par question, stable au rechargement
+      // Décalage dérivé du texte de la question (+ index) : varié et imprévisible,
+      // mais déterministe (même ordre à chaque rechargement).
+      opts = rotate(opts, hashStr(item.q) + qi + 1);
 
       var q = document.createElement("div");
       q.className = "quiz__q";
