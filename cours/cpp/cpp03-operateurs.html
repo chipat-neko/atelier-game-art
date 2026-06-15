@@ -193,6 +193,64 @@ int32 arrondi = FMath::RoundToInt(ratio * 100);  // utilitaires Unreal : FMath</
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que vaut 73 / 100 entre deux int32 ?","a":["0 (division entière)","0.73","1","Une erreur"],"correct":0,"explain":"Entre deux entiers, / fait une division entière : 73 / 100 = 0. Pour un ratio, on caste un opérande : (float)73 / 100 = 0.73."},
+  {"q":"Pourquoi éviter == pour comparer deux float ?","a":["L'imprécision des flottants rend l'égalité stricte fragile : on utilise FMath::IsNearlyEqual","Parce que == ne compile pas sur les float","Parce que les float n'ont pas d'égalité","Aucune raison"],"correct":0,"explain":"Les calculs flottants accumulent de minuscules erreurs : a == b peut être faux alors que les valeurs sont « égales ». FMath::IsNearlyEqual compare avec une tolérance."},
+  {"q":"Que fait l'opérateur && quand son premier opérande est faux ?","a":["Il n'évalue pas le second (court-circuit)","Il évalue quand même le second","Il lève une erreur","Il renvoie le second opérande"],"correct":0,"explain":"&& est court-circuité : si A est faux, B n'est pas évalué. Pratique pour protéger un accès, ex. Ptr != nullptr && Ptr->EstActif()."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Calcule des dégâts en flottant&nbsp;: une base de 10 multipliée par (1 + bonus critique de 0,5).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>float Base = 10.0f;
+float Bonus = 0.5f;
+float Total = Base * (1.0f + Bonus);   // 15
+UE_LOG(LogTemp, Log, TEXT("%f"), Total);</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris une condition «&nbsp;peut tirer&nbsp;» combinant deux booléens avec <code>&amp;&amp;</code> et <code>!</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>bool bAMunitions = true;
+bool bEnRechargement = false;
+bool bPeutTirer = bAMunitions &amp;&amp; !bEnRechargement;   // true</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Calcule un pourcentage de vie correct (cast + arrondi) et compare deux flottants en toute sécurité.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>int32 PV = 73, PVMax = 100;
+int32 Pourcent = FMath::RoundToInt((float)PV / PVMax * 100);   // 73
+
+float A = 0.1f + 0.2f;
+bool bEgaux = FMath::IsNearlyEqual(A, 0.3f);   // true (malgré l'imprécision)</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -243,6 +301,7 @@ int32 arrondi = FMath::RoundToInt(ratio * 100);  // utilitaires Unreal : FMath</
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

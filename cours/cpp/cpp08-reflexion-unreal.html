@@ -219,6 +219,61 @@ struct FStatsArme
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le système de réflexion (macros U*) d'Unreal ?","a":["Rendre tes types visibles au moteur : éditeur, GC, Blueprint, sérialisation","À compiler plus vite","À chiffrer le code","À remplacer le C++ standard"],"correct":0,"explain":"Sans UCLASS/UPROPERTY/UFUNCTION, ton code est invisible pour Unreal. La réflexion permet à l'éditeur d'afficher tes champs, au GC de les suivre, au Blueprint d'y accéder."},
+  {"q":"Une UPROPERTY EditAnywhere apparaît où ?","a":["Dans le panneau Details de l'éditeur (réglable par instance)","Seulement dans le code","Dans la Console","Nulle part"],"correct":0,"explain":"EditAnywhere rend la propriété modifiable dans Details (archétype et instances). VisibleAnywhere l'affiche sans la rendre modifiable."},
+  {"q":"Pourquoi un UENUM(BlueprintType) doit-il être en : uint8 ?","a":["C'est la contrainte d'Unreal pour exposer l'enum au Blueprint","Pour économiser de la mémoire uniquement","Aucune raison","Pour le rendre signé"],"correct":0,"explain":"Unreal exige enum class ... : uint8 pour un UENUM(BlueprintType). Sinon UHT échoue. C'est une règle à connaître."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Ajoute sur un Actor une <code>UPROPERTY(EditAnywhere, Category="Stats") int32 PV = 100;</code> et règle-la dans l'éditeur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+int32 PV = 100;</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Expose une fonction au Blueprint avec <code>UFUNCTION(BlueprintCallable)</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UFUNCTION(BlueprintCallable, Category = "Combat")
+void Soigner(int32 Montant);</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Déclare un <code>UENUM(BlueprintType)</code> d'états et une <code>UPROPERTY</code> de ce type, réglable dans Details.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UENUM(BlueprintType)
+enum class EEtatIA : uint8 { Patrouille, Poursuite, Attaque };
+
+UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "IA")
+EEtatIA Etat = EEtatIA::Patrouille;</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -270,6 +325,7 @@ struct FStatsArme
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

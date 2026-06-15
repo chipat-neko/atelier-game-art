@@ -212,6 +212,66 @@ GEngine-&gt;AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Touché !"));<
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que désigne le préfixe A dans AHeros ?","a":["Une classe dérivée d'AActor","Un type abstrait","Un attribut","Une variable booléenne"],"correct":0,"explain":"Les préfixes Unreal sont imposés : A = Actor, U = UObject (components…), F = struct, E = enum, I = interface, b = booléen. UHT et l'éditeur s'appuient dessus."},
+  {"q":"Comment réduire le coût d'un Tick coûteux sur des milliers d'Actors ?","a":["Le désactiver s'il est inutile, ou augmenter son TickInterval, ou préférer événements/timers","Le dupliquer","L'appeler dans le constructeur","Augmenter la résolution"],"correct":0,"explain":"Le Tick s'exécute chaque frame par Actor : on le désactive (bCanEverTick=false) quand il ne sert pas, on l'espace (TickInterval), ou on réagit à des événements plutôt que de sonder."},
+  {"q":"À quoi sert une forward declaration dans un en-tête ?","a":["Annoncer une classe sans l'inclure, pour alléger l'en-tête et accélérer la compilation","Exécuter du code plus tôt","Supprimer une classe","Exporter au Blueprint"],"correct":0,"explain":"Si le .h n'a besoin que d'un pointeur vers une classe, on la déclare en avant (class X;) et on met l'#include réel dans le .cpp : moins de dépendances, compilation plus rapide."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Désactive le Tick d'un Actor qui n'en a pas besoin.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>// Dans le constructeur
+PrimaryActorTick.bCanEverTick = false;</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Remplace un include lourd d'un <code>.h</code> par une forward declaration (l'include réel allant dans le <code>.cpp</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>// Heros.h
+class UWeaponComponent;                       // forward declaration
+UPROPERTY() TObjectPtr&lt;UWeaponComponent&gt; Arme;
+
+// Heros.cpp
+#include "WeaponComponent.h"                  // include réel ici</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets en place une catégorie de log dédiée et logge une valeur avec.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>// .h
+DECLARE_LOG_CATEGORY_EXTERN(LogJeu, Log, All);
+// .cpp
+DEFINE_LOG_CATEGORY(LogJeu);
+
+UE_LOG(LogJeu, Warning, TEXT("PV du héros : %d"), PV);</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -269,6 +329,7 @@ GEngine-&gt;AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Touché !"));<
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

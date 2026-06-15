@@ -200,6 +200,64 @@ const float Pi = 3.14159f;</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi préférer int32 à int dans le code Unreal ?","a":["int32 garantit une taille de 32 bits identique sur toutes les plateformes","int est interdit en C++","int32 est plus rapide à taper","Il n'y a aucune différence"],"correct":0,"explain":"La taille de int peut varier selon la plateforme/compilateur. Unreal fournit int32, uint8… dont la taille est garantie, ce qui évite les surprises multiplateformes."},
+  {"q":"Quel type de chaîne utiliser pour manipuler/concaténer du texte ?","a":["FString","FName","FText","int32"],"correct":0,"explain":"FString est modifiable (concaténer, formater). FName est un identifiant immuable rapide (clés), FText sert à l'affichage localisé. On choisit selon l'usage."},
+  {"q":"Que se passe-t-il avec une variable locale C++ non initialisée ?","a":["Elle contient une valeur « poubelle » imprévisible, source de bugs","Elle vaut 0 automatiquement","La compilation échoue toujours","Elle vaut null"],"correct":0,"explain":"Contrairement à C#, une variable locale non initialisée en C++ contient une valeur indéterminée. La règle : toujours initialiser à la déclaration."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare et initialise des variables pour un personnage&nbsp;: nom (<code>FString</code>), PV (<code>int32</code>), vitesse (<code>float</code>), vivant (<code>bool</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>FString Nom = TEXT("Héros");
+int32 PV = 100;
+float Vitesse = 600.0f;
+bool bEnVie = true;</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Construis un message avec <code>FString::FromInt</code> et affiche-le via <code>UE_LOG</code> (attention au <code>*</code> pour le <code>%s</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>int32 Score = 42;
+FString Message = TEXT("Score : ") + FString::FromInt(Score);
+UE_LOG(LogTemp, Log, TEXT("%s"), *Message);</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Déclare une constante <code>VieMax</code>, calcule le pourcentage de vie en flottant (attention à la division entière) et affiche-le arrondi.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>const int32 VieMax = 100;
+int32 PV = 73;
+float Ratio = (float)PV / VieMax;                 // 0.73
+int32 Pourcent = FMath::RoundToInt(Ratio * 100); // 73
+UE_LOG(LogTemp, Log, TEXT("%d %%"), Pourcent);</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -251,6 +309,7 @@ const float Pi = 3.14159f;</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

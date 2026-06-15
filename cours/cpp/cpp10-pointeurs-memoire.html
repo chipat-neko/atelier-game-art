@@ -201,6 +201,69 @@ void Attaquer()
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle référence le ramasse-miettes d'Unreal prend-il en compte ?","a":["Seulement les UPROPERTY() (et TObjectPtr)","Tous les pointeurs C++","Aucune","Seulement les variables locales"],"correct":0,"explain":"Le GC ne « voit » que les références marquées UPROPERTY(). Un pointeur d'UObject sans cette macro est ignoré : l'objet peut être détruit sous tes pieds."},
+  {"q":"À quoi sert TWeakObjectPtr ?","a":["Pointer un objet sans empêcher sa destruction (référence faible)","Empêcher la destruction d'un objet","Accélérer l'accès mémoire","Remplacer int32"],"correct":0,"explain":"Une référence faible n'empêche pas le GC de collecter l'objet (utile pour la cible d'une IA, qui peut mourir). On teste IsValid() avant de l'utiliser."},
+  {"q":"Avant de déréférencer un pointeur d'UObject, on vérifie :","a":["IsValid(Obj)","Obj == 0","sizeof(Obj)","Rien, c'est inutile"],"correct":0,"explain":"IsValid(Obj) renvoie vrai si l'objet n'est ni nul ni en cours de destruction : plus sûr qu'un simple != nullptr pour un UObject."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare une référence d'arme correctement suivie par le GC.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()
+TObjectPtr&lt;AArme&gt; ArmeEquipee;   // suivie par le GC : maintenue en vie</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Protège chaque accès à <code>ArmeEquipee</code> par <code>IsValid</code> avant d'appeler une méthode.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>if (IsValid(ArmeEquipee))
+{
+    ArmeEquipee-&gt;Tirer();
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Stocke la cible d'une IA en <code>TWeakObjectPtr</code> et gère proprement le cas où elle a été détruite.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()
+TWeakObjectPtr&lt;AActor&gt; CibleIA;
+
+void Attaquer()
+{
+    if (CibleIA.IsValid())
+    {
+        // la cible existe encore
+        CibleIA-&gt;TakeDamage(10.f, FDamageEvent(), nullptr, nullptr);
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -253,6 +316,7 @@ void Attaquer()
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

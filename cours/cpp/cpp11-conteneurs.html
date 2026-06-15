@@ -220,6 +220,70 @@ int32 Longueur = C.Len();</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel conteneur Unreal correspond à une liste dynamique indexée ?","a":["TArray","TMap","TSet","FString"],"correct":0,"explain":"TArray est la liste dynamique (Add, Num, accès par index), l'équivalent Unreal de List. TMap est une table clé-valeur, TSet un ensemble de valeurs uniques."},
+  {"q":"Que renvoie TMap::Find quand la clé est absente ?","a":["nullptr (un pointeur) — d'où le test avant déréférencement","Une valeur par défaut","Une exception","-1"],"correct":0,"explain":"Find renvoie un pointeur vers la valeur, ou nullptr si la clé n'existe pas. On teste donc : if (int32* p = Map.Find(k)) { ... *p ... }."},
+  {"q":"Pourquoi un TArray<AActor*> doit-il être une UPROPERTY() ?","a":["Pour que le GC suive ses éléments (sinon les Actors peuvent disparaître)","Pour le trier","Pour l'afficher dans la Console","Ce n'est pas nécessaire"],"correct":0,"explain":"Comme tout conteneur d'UObject, un TArray d'Actors doit être UPROPERTY() pour être vu du ramasse-miettes : sinon ses éléments ne sont pas maintenus en vie."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare un <code>TArray&lt;AActor*&gt;</code> d'ennemis, ajoute-en, et affiche leur nombre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY()
+TArray&lt;AActor*&gt; Ennemis;
+
+Ennemis.Add(NouvelEnnemi);
+UE_LOG(LogTemp, Log, TEXT("Ennemis : %d"), Ennemis.Num());</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un <code>TMap&lt;FName, int32&gt;</code> de scores, ajoute deux joueurs et lis-en un avec <code>Find</code> (en vérifiant le pointeur).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>TMap&lt;FName, int32&gt; Scores;
+Scores.Add(TEXT("Alice"), 100);
+Scores.Add(TEXT("Bob"), 75);
+
+if (int32* S = Scores.Find(TEXT("Alice")))
+{
+    UE_LOG(LogTemp, Log, TEXT("Score : %d"), *S);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Utilise un <code>TSet&lt;FName&gt;</code> de niveaux visités et vérifie qu'un doublon est ignoré.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>TSet&lt;FName&gt; Visites;
+Visites.Add(TEXT("Donjon01"));
+Visites.Add(TEXT("Donjon01"));   // ignoré
+bool bDejaVu = Visites.Contains(TEXT("Donjon01"));   // true
+UE_LOG(LogTemp, Log, TEXT("Nb niveaux : %d"), Visites.Num());   // 1</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -271,6 +335,7 @@ int32 Longueur = C.Len();</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

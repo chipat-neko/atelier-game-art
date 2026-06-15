@@ -223,6 +223,68 @@ void Log(const FString&amp; Texte);   // le compilateur choisit selon le type pa
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Où se trouvent la déclaration et la définition d'une fonction membre ?","a":["Déclaration dans le .h, définition dans le .cpp (préfixée Classe::)","Les deux dans le .h","Les deux dans le .cpp","Peu importe, c'est identique"],"correct":0,"explain":"Le .h déclare la signature (ce qui existe). Le .cpp définit le code, préfixé du nom de classe (AArme::Tirer). C'est la séparation fondamentale du C++."},
+  {"q":"Comment passer un gros objet (FString, struct) à une fonction sans le copier ?","a":["Par const référence : const FString&","Par valeur","Par pointeur nul","Avec static"],"correct":0,"explain":"Passer par valeur copierait l'objet (coûteux). const Type& le lit sur place sans copie. On réserve la référence non-const aux cas où l'on veut modifier l'argument."},
+  {"q":"Que provoque une fonction déclarée dans le .h mais jamais définie ?","a":["Une erreur d'édition de liens (« unresolved external symbol »)","Rien","Une erreur de syntaxe","Un avertissement ignoré"],"correct":0,"explain":"Le compilateur accepte la déclaration, mais l'éditeur de liens ne trouve pas le code : « unresolved external symbol ». Il faut fournir la définition dans un .cpp."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare dans un <code>.h</code> une fonction <code>int32 CalculerDegats(int32 Base) const;</code> et définis-la dans le <code>.cpp</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>// Arme.h
+int32 CalculerDegats(int32 Base) const;
+
+// Arme.cpp
+int32 AArme::CalculerDegats(int32 Base) const
+{
+    return Base * 2;
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris une fonction <code>void AppliquerDegats(int32&amp; PV, int32 Degats)</code> qui modifie le PV de l'appelant (passage par référence).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>void AppliquerDegats(int32&amp; PV, int32 Degats)
+{
+    PV -= Degats;   // modifie la variable d'origine
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée deux surcharges <code>Afficher</code> (une pour <code>int32</code>, une pour <code>const FString&amp;</code>) et une fonction avec valeur par défaut.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>void Afficher(int32 Valeur)            { UE_LOG(LogTemp, Log, TEXT("%d"), Valeur); }
+void Afficher(const FString&amp; Texte)    { UE_LOG(LogTemp, Log, TEXT("%s"), *Texte); }
+
+void Soigner(int32 Montant = 10);   // valeur par défaut : Soigner() soigne 10</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -274,6 +336,7 @@ void Log(const FString&amp; Texte);   // le compilateur choisit selon le type pa
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

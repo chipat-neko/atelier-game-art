@@ -193,6 +193,75 @@ float vitesse = bCourt ? 600.0f : 300.0f;</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que se passe-t-il si on oublie break dans un case non vide d'un switch C++ ?","a":["L'exécution « tombe » dans le case suivant (fall-through), source de bugs","Rien, break est optionnel","Le programme refuse de compiler","Tous les cas s'ignorent"],"correct":0,"explain":"En C++, sans break, l'exécution continue dans le case suivant. C'est le fall-through : presque toujours involontaire. On termine chaque case par break."},
+  {"q":"Pourquoi mettre des accolades même pour un if d'une seule ligne ?","a":["Pour éviter des bugs quand on ajoute une ligne plus tard","Parce que c'est obligatoire en C++","Pour accélérer le code","Ce n'est pas recommandé"],"correct":0,"explain":"Sans accolades, seule la première ligne dépend du if. Ajouter une 2e ligne crée un bug discret. Toujours mettre { } est une habitude sûre."},
+  {"q":"Quand préférer switch à une cascade de if ?","a":["Quand une variable prend des valeurs discrètes (souvent un enum)","Jamais, if est toujours mieux","Pour comparer des float","Pour les boucles"],"correct":0,"explain":"switch est plus lisible qu'une longue suite de if/else quand on teste une valeur discrète (un enum d'états par ex.). Il rend l'intention claire."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Écris une fonction qui logge «&nbsp;Mort&nbsp;», «&nbsp;Critique&nbsp;» ou «&nbsp;OK&nbsp;» selon les PV, avec <code>if / else if / else</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>void EvaluerVie(int32 PV)
+{
+    if (PV &lt;= 0)
+        UE_LOG(LogTemp, Log, TEXT("Mort"));
+    else if (PV &lt; 30)
+        UE_LOG(LogTemp, Log, TEXT("Critique"));
+    else
+        UE_LOG(LogTemp, Log, TEXT("OK"));
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déclare un <code>enum class EEtatIA : uint8</code> et écris un <code>switch</code> qui appelle une action par état (avec <code>break</code> et <code>default</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>enum class EEtatIA : uint8 { Patrouille, Poursuite, Attaque };
+
+void Agir(EEtatIA Etat)
+{
+    switch (Etat)
+    {
+        case EEtatIA::Patrouille: Patrouiller(); break;
+        case EEtatIA::Poursuite:  Poursuivre(); break;
+        case EEtatIA::Attaque:    Attaquer();   break;
+        default:                  Attendre();   break;
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Choisis une vitesse avec un opérateur ternaire selon un booléen <code>bCourt</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>bool bCourt = true;
+float Vitesse = bCourt ? 600.0f : 300.0f;   // 600</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -243,6 +312,7 @@ float vitesse = bCourt ? 600.0f : 300.0f;</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

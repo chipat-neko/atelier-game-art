@@ -220,6 +220,67 @@ protected:
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que signifie « le PlayerController possède un Pawn » ?","a":["Le Controller (entrées/cerveau) pilote le Pawn (le corps contrôlable)","Le Pawn contrôle le Controller","Ils sont la même classe","Le Pawn définit les règles du jeu"],"correct":0,"explain":"Le Controller reçoit les entrées et possède un Pawn pour le piloter. On peut changer de Pawn (entrer dans un véhicule) sans changer de Controller. Le GameMode, lui, fixe les règles."},
+  {"q":"Dans l'Enhanced Input, que relie un Input Mapping Context ?","a":["Des touches physiques à des Input Actions (intentions)","Deux Pawns entre eux","Le GameMode au niveau","Des matériaux à des meshes"],"correct":0,"explain":"L'Input Action est une intention abstraite (« Déplacer »). L'Input Mapping Context associe les touches réelles (ZQSD) à ces actions, et s'active pour le joueur."},
+  {"q":"Que renvoie Cast<APlayerController>(...) si la conversion échoue ?","a":["nullptr (à vérifier avant usage)","Une exception","Le pointeur d'origine","Un objet vide"],"correct":0,"explain":"Cast convertit vers un type plus précis et renvoie nullptr en cas d'échec. D'où l'usage du if (T* p = Cast<T>(...)) pour se protéger d'un déréférencement nul."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare un <code>ACharacter</code> C++ et expose des <code>UPROPERTY</code> pour un Input Mapping Context et une Input Action.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UPROPERTY(EditAnywhere, Category = "Input")
+UInputMappingContext* ContexteDefaut;
+
+UPROPERTY(EditAnywhere, Category = "Input")
+UInputAction* ActionDeplacer;</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Lie l'action «&nbsp;Déplacer&nbsp;» à une fonction dans <code>SetupPlayerInputComponent</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>if (UEnhancedInputComponent* EIC = Cast&lt;UEnhancedInputComponent&gt;(PlayerInputComponent))
+{
+    EIC-&gt;BindAction(ActionDeplacer, ETriggerEvent::Triggered, this, &amp;AHeros::Deplacer);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Implémente <code>Deplacer</code> avec <code>AddMovementInput</code> à partir d'un axe 2D.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>void AHeros::Deplacer(const FInputActionValue&amp; Value)
+{
+    const FVector2D Axe = Value.Get&lt;FVector2D&gt;();
+    AddMovementInput(GetActorForwardVector(), Axe.Y);
+    AddMovementInput(GetActorRightVector(),   Axe.X);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -272,6 +333,7 @@ protected:
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

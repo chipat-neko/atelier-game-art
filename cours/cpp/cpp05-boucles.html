@@ -206,6 +206,71 @@ for (const FString&amp; Nom : Noms)
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle boucle est idiomatique pour parcourir un TArray ?","a":["Le range-based for : for (AActor* E : Ennemis)","while (true)","goto","Une boucle do-while"],"correct":0,"explain":"Le range-based for visite chaque élément sans gérer d'index ni risquer un dépassement de borne : c'est la forme la plus claire et la plus sûre pour parcourir un conteneur."},
+  {"q":"Pourquoi passer par const Type& dans un range-based for sur de gros objets ?","a":["Pour éviter de copier chaque élément (lecture sans coût)","Pour modifier les éléments","C'est obligatoire","Pour trier la collection"],"correct":0,"explain":"Sans référence, chaque élément serait copié à chaque tour. const Type& lit l'élément sur place, sans copie : plus rapide et clair (lecture seule)."},
+  {"q":"Que risque une boucle longue ou while(true) sans sortie dans une frame ?","a":["Geler le jeu : la frame ne se termine jamais","Rien de spécial","Une fuite mémoire","Un crash de compilation"],"correct":0,"explain":"Tout s'exécute dans la même frame : si la boucle ne rend jamais la main, l'image ne s'affiche pas et le jeu se fige. Pour étaler dans le temps, on utilise timers/Tick."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Avec un <code>for</code>, calcule la somme des entiers de 1 à 100 et logge-la.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>int32 Somme = 0;
+for (int32 i = 1; i &lt;= 100; i++)
+    Somme += i;
+UE_LOG(LogTemp, Log, TEXT("%d"), Somme);   // 5050</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Parcours un <code>TArray&lt;AActor*&gt;</code> avec un range-based for et détruis chaque élément valide.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>for (AActor* E : Ennemis)
+{
+    if (IsValid(E))
+        E-&gt;Destroy();
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Cherche le premier acteur taggé «&nbsp;Boss&nbsp;» avec <code>break</code>, en ignorant les éléments nuls avec <code>continue</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>AActor* Cible = nullptr;
+for (AActor* A : Acteurs)
+{
+    if (!A) continue;
+    if (A-&gt;ActorHasTag("Boss"))
+    {
+        Cible = A;
+        break;
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -256,6 +321,7 @@ for (const FString&amp; Nom : Noms)
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

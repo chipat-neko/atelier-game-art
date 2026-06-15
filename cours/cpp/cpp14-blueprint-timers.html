@@ -202,6 +202,74 @@ GetWorldTimerManager().ClearTimer(Handle);</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel spécificateur rend une fonction C++ appelable depuis un Blueprint ?","a":["UFUNCTION(BlueprintCallable)","UPROPERTY(EditAnywhere)","UCLASS()","virtual"],"correct":0,"explain":"BlueprintCallable expose la fonction comme un nœud d'action dans le Blueprint. BlueprintPure fait de même pour une fonction de calcul sans effet de bord."},
+  {"q":"Que fait BlueprintImplementableEvent ?","a":["Déclare une fonction implémentée uniquement côté Blueprint, appelable depuis le C++","Implémente la fonction en C++","Crée une variable","Supprime le Blueprint"],"correct":0,"explain":"Le C++ déclare et appelle la fonction, mais c'est le Blueprint enfant qui fournit le corps : idéal pour le feedback (FX, sons) que les designers veulent régler."},
+  {"q":"Pourquoi conserver le FTimerHandle d'un timer ?","a":["Pour pouvoir l'arrêter plus tard avec ClearTimer","Pour le déclencher plus vite","C'est inutile","Pour le rendre BlueprintCallable"],"correct":0,"explain":"Sans garder le handle, impossible d'annuler un timer (surtout en boucle). On le stocke et on le passe à ClearTimer pour stopper la répétition."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Rends une fonction <code>Tirer()</code> appelable depuis le Blueprint.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UFUNCTION(BlueprintCallable, Category = "Combat")
+void Tirer();</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déclare un événement <code>OnTir()</code> implémentable en Blueprint et appelle-le depuis <code>Tirer()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UFUNCTION(BlueprintImplementableEvent, Category = "FX")
+void OnTir();
+
+void AArme::Tirer()
+{
+    // ... logique ...
+    OnTir();   // le Blueprint joue le son / le FX
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets en place un spawner qui appelle <code>Tic()</code> toutes les 2 s via un timer bouclé, arrêtable avec <code>ClearTimer</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>FTimerHandle Handle;
+
+void ASpawner::BeginPlay()
+{
+    Super::BeginPlay();
+    GetWorldTimerManager().SetTimer(Handle, this, &amp;ASpawner::Tic, 2.0f, true);
+}
+
+void ASpawner::Stop()
+{
+    GetWorldTimerManager().ClearTimer(Handle);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -253,6 +321,7 @@ GetWorldTimerManager().ClearTimer(Handle);</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

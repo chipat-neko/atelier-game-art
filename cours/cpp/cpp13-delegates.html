@@ -232,6 +232,69 @@ if (IDamageable* Cible = Cast&lt;IDamageable&gt;(Acteur))
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel type de delegate exposer au Blueprint pour le gameplay ?","a":["Un dynamic multicast delegate (BlueprintAssignable)","Un delegate single non dynamic","Aucun, c'est impossible","Un simple pointeur de fonction"],"correct":0,"explain":"DECLARE_DYNAMIC_MULTICAST_DELEGATE… + UPROPERTY(BlueprintAssignable) crée un événement sérialisable auquel plusieurs abonnés (C++ et Blueprint) peuvent se brancher."},
+  {"q":"Que doit être une fonction abonnée via AddDynamic ?","a":["Une UFUNCTION()","Une fonction static","Une fonction privée non marquée","Une lambda"],"correct":0,"explain":"Le dynamic delegate exige une UFUNCTION() comme cible : la réflexion doit pouvoir la retrouver par son nom. Sans la macro, AddDynamic échoue."},
+  {"q":"Quel est l'intérêt d'un delegate pour la communication ?","a":["Découpler : l'émetteur Broadcast sans connaître ses abonnés","Aller plus vite","Réduire la taille du build","Éviter les UPROPERTY"],"correct":0,"explain":"L'émetteur (ex. USante) ne référence pas l'UI, l'audio ni le score : il diffuse (Broadcast) et chacun s'abonne. Ajouter une réaction ne modifie pas l'émetteur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare un dynamic multicast delegate <code>FOnVieChangee</code> (1 paramètre) et expose-le en <code>BlueprintAssignable</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnVieChangee, int32, NouveauPV);
+
+UPROPERTY(BlueprintAssignable, Category = "Sante")
+FOnVieChangee OnVieChangee;</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déclenche l'événement dans <code>Subir</code> avec <code>Broadcast</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>void USante::Subir(int32 Degats)
+{
+    PV = FMath::Max(0, PV - Degats);
+    OnVieChangee.Broadcast(PV);   // notifie tous les abonnés
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Abonne une UI en C++ via <code>AddDynamic</code> (fonction <code>UFUNCTION</code>) et désabonne-la dans <code>EndPlay</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UFUNCTION()
+void MajBarre(int32 NouveauPV);
+
+void UBarreVieUI::Init(USante* Sante)
+{
+    if (Sante) Sante-&gt;OnVieChangee.AddDynamic(this, &amp;UBarreVieUI::MajBarre);
+}
+// EndPlay : Sante->OnVieChangee.RemoveDynamic(this, &amp;UBarreVieUI::MajBarre);</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -283,6 +346,7 @@ if (IDamageable* Cible = Cast&lt;IDamageable&gt;(Acteur))
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

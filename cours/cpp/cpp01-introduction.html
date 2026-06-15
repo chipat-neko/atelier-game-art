@@ -230,6 +230,70 @@ UE_LOG(LogTemp, Log, TEXT("Texte simple"));</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la relation entre C++ et Blueprint dans Unreal ?","a":["Ils sont complémentaires : on code les systèmes en C++ et on les assemble en Blueprint","Le Blueprint remplace totalement le C++","Le C++ est obsolète dans Unreal 5","Ils ne peuvent pas coexister dans un projet"],"correct":0,"explain":"Unreal est écrit en C++ et le Blueprint repose dessus. Les studios combinent les deux : fondations performantes en C++, assemblage et itération rapides en Blueprint."},
+  {"q":"Pourquoi l'include \"X.generated.h\" doit-il être le dernier des includes ?","a":["Il contient du code généré par l'outil de réflexion (UHT) qui dépend des autres includes","Par convention esthétique","Pour accélérer la compilation","Ce n'est pas obligatoire"],"correct":0,"explain":"UHT génère ce fichier à partir des macros U* de l'en-tête. Le placer en dernier garantit que tout ce dont il dépend est déjà déclaré, sinon la compilation échoue."},
+  {"q":"À quoi sert le Live Coding dans Unreal ?","a":["Recompiler le C++ à chaud sans fermer l'éditeur, pour itérer vite","Exécuter du Blueprint","Déboguer le réseau","Importer des assets"],"correct":0,"explain":"Le C++ doit être compilé. Le Live Coding (Ctrl+Alt+F11) recompile à chaud pendant que l'éditeur tourne, ce qui accélère beaucoup la boucle d'itération."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée une classe C++ <code>ASalutation</code> héritant d'<code>AActor</code> et affiche un message dans <code>BeginPlay()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>void ASalutation::BeginPlay()
+{
+    Super::BeginPlay();
+    UE_LOG(LogTemp, Warning, TEXT("Bonjour depuis le C++ !"));
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Affiche un message <b>différent</b> dans le constructeur et dans <code>BeginPlay()</code>, puis explique en commentaire pourquoi le constructeur s'exécute aussi dans l'éditeur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>ASalutation::ASalutation()
+{
+    // Exécuté aussi dans l'éditeur (placement de l'Actor) : pas de logique de jeu ici
+    UE_LOG(LogTemp, Log, TEXT("Constructeur"));
+}
+
+void ASalutation::BeginPlay()
+{
+    Super::BeginPlay();   // Exécuté seulement en jeu
+    UE_LOG(LogTemp, Log, TEXT("BeginPlay"));
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Affiche une valeur entière formatée avec <code>UE_LOG</code> (indice&nbsp;: <code>%d</code>), puis lance un Live Coding et observe le résultat dans l'Output Log.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>int32 Score = 42;
+UE_LOG(LogTemp, Warning, TEXT("Score : %d"), Score);</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -281,6 +345,7 @@ UE_LOG(LogTemp, Log, TEXT("Texte simple"));</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

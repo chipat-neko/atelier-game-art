@@ -212,6 +212,79 @@ Arme-&gt;Tirer();   // ...mais c'est AFusil::Tirer() qui s'exécute</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que faut-il pour redéfinir une méthode du parent dans une classe fille ?","a":["La marquer virtual au parent et override à l'enfant","Rien, c'est automatique","La rendre static","La déclarer deux fois"],"correct":0,"explain":"Le parent autorise la redéfinition avec virtual ; l'enfant la signale avec override (que le compilateur vérifie). C'est la base du polymorphisme."},
+  {"q":"Pourquoi appeler Super::BeginPlay() dans un override Unreal ?","a":["Pour conserver le comportement de la classe parente en plus du sien","Pour détruire l'objet","Ce n'est jamais utile","Pour compiler plus vite"],"correct":0,"explain":"Super désigne la classe parente. L'oublier prive l'objet de l'initialisation héritée (ici celle d'AActor), ce qui peut casser des comportements attendus."},
+  {"q":"Que signifie l'encapsulation (private + accesseurs) ?","a":["Protéger les données internes et n'exposer qu'une interface contrôlée","Rendre tout public","Supprimer les méthodes","Empêcher l'héritage"],"correct":0,"explain":"On déclare les données private et on expose des méthodes/accesseurs. Le reste du code ne peut pas modifier l'état n'importe comment : moins de bugs."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée une classe de base <code>AArme : public AActor</code> avec <code>virtual void Tirer();</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UCLASS()
+class MONJEU_API AArme : public AActor
+{
+    GENERATED_BODY()
+public:
+    virtual void Tirer();
+};</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée <code>AFusil : public AArme</code> qui redéfinit <code>Tirer()</code> avec <code>override</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>UCLASS()
+class MONJEU_API AFusil : public AArme
+{
+    GENERATED_BODY()
+public:
+    virtual void Tirer() override;
+};
+
+void AFusil::Tirer()
+{
+    UE_LOG(LogTemp, Log, TEXT("Rafale !"));
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Encapsule les munitions (privées) avec un accesseur, et manipule plusieurs armes via un pointeur de type <code>AArme*</code> (polymorphisme).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>private:
+    int32 Munitions = 30;
+public:
+    int32 GetMunitions() const { return Munitions; }
+
+// Polymorphisme : la bonne version de Tirer() s'exécute
+AArme* Arme = SpawnFusil();
+Arme-&gt;Tirer();   // AFusil::Tirer()</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -264,6 +337,7 @@ Arme-&gt;Tirer();   // ...mais c'est AFusil::Tirer() qui s'exécute</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

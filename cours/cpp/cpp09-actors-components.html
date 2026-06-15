@@ -210,6 +210,73 @@ SetLifeSpan(3.0f);            // ou : auto-destruction de CET Actor dans 3 s</co
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Où crée-t-on les components « par défaut » d'un Actor ?","a":["Dans le constructeur, avec CreateDefaultSubobject","Dans BeginPlay","Dans Tick","Dans le .h uniquement"],"correct":0,"explain":"Les components par défaut se créent dans le constructeur via CreateDefaultSubobject, puis s'organisent (RootComponent, SetupAttachment). BeginPlay sert à la logique de jeu."},
+  {"q":"Pourquoi ne PAS mettre de logique de jeu (Find, timers) dans le constructeur ?","a":["Le constructeur s'exécute aussi dans l'éditeur, pas seulement en jeu","Parce qu'il est trop lent","Parce qu'il est privé","Aucune raison"],"correct":0,"explain":"Le constructeur tourne aussi à l'ouverture de l'éditeur (pour afficher l'Actor). La logique runtime (chercher des Actors, lancer des timers) va dans BeginPlay."},
+  {"q":"Que fait Destroy(gameObject)… pardon, comment auto-détruire un Actor après 3 s ?","a":["SetLifeSpan(3.0f)","Sleep(3)","wait(3)","Destroy() dans le constructeur"],"correct":0,"explain":"SetLifeSpan(3.0f) programme la destruction de l'Actor dans 3 secondes. On peut aussi appeler Destroy() immédiatement, ou Destroy plus tard."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée un Actor avec une racine et un <code>UStaticMeshComponent</code> attaché dans le constructeur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>ACoffre::ACoffre()
+{
+    Racine = CreateDefaultSubobject&lt;USceneComponent&gt;(TEXT("Racine"));
+    RootComponent = Racine;
+
+    Mesh = CreateDefaultSubobject&lt;UStaticMeshComponent&gt;(TEXT("Mesh"));
+    Mesh-&gt;SetupAttachment(RootComponent);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Active le Tick et fais tourner l'Actor sur lui-même (multiplié par <code>DeltaTime</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>// Constructeur
+PrimaryActorTick.bCanEverTick = true;
+
+void ACoffre::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+    AddActorLocalRotation(FRotator(0, 90 * DeltaTime, 0));
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Depuis un autre Actor, fais apparaître un coffre avec <code>SpawnActor</code> puis programme sa destruction après 3 s.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C++">
+<pre><code>ACoffre* C = GetWorld()-&gt;SpawnActor&lt;ACoffre&gt;(ClasseCoffre, FVector(0, 0, 200), FRotator::ZeroRotator);
+if (C)
+{
+    C-&gt;SetLifeSpan(3.0f);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -262,6 +329,7 @@ SetLifeSpan(3.0f);            // ou : auto-destruction de CET Actor dans 3 s</co
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>
