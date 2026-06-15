@@ -202,6 +202,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que Lumen dans Unreal Engine 5 ?","a":["Un système d'illumination globale et de réflexions en temps réel (sans baking)","Un format de texture","Un éditeur de Blueprint","Un type de collision"],"correct":0,"explain":"Lumen calcule la lumière indirecte et les réflexions dynamiquement : on éclaire une scène réaliste sans cuire de lightmaps, et tout réagit aux changements en direct."},
+  {"q":"Dans quel cas privilégier l'éclairage baked (Lightmass) plutôt que Lumen ?","a":["Sur plateformes modestes/mobile, ou pour un coût fixe et maîtrisé sur scènes statiques","Pour les objets qui bougent","Jamais","Pour les personnages animés"],"correct":0,"explain":"Lumen est puissant mais coûteux. Sur du matériel limité ou pour garantir des perfs stables sur une scène statique, le baked (lightmaps précalculées) reste pertinent."},
+  {"q":"À quoi sert l'exposition (Exposure / Eye Adaptation) ?","a":["Adapter la luminosité perçue de l'image comme le ferait un œil/une caméra","Régler la résolution","Compresser les textures","Changer les UV"],"correct":0,"explain":"L'auto-exposure ajuste la luminosité selon la scène (sortir d'une grotte vers le soleil). On la règle souvent en manuel pour un rendu maîtrisé et cohérent."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Mets en place un éclairage extérieur de base&nbsp;: Directional Light (soleil), Sky Atmosphere et Sky Light.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Place une Directional Light (oriente-la pour l'heure du jour), ajoute Sky Atmosphere et SkyLight pour la lumière ambiante du ciel. Avec Lumen actif, l'éclairage indirect apparaît directement.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Observe Lumen en action&nbsp;: change la couleur d'un mur et regarde la lumière indirecte « baver » sur les surfaces voisines.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Avec Lumen (GI temps réel), une surface colorée renvoie sa teinte sur les murs proches (color bleeding), sans recalcul manuel. Bouge la lumière&nbsp;: tout s'adapte en direct, contrairement au baked.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Règle l'exposition en manuel (Exposure) via un Post Process Volume et compare à l'auto-exposure.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute un Post Process Volume, section Exposure ▸ Metering Mode = Manual, règle l'EV100. En auto, l'image « respire » selon la scène&nbsp;; en manuel, tu maîtrises exactement la luminosité — utile pour une DA cohérente.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

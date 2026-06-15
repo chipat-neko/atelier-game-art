@@ -357,6 +357,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle unité utilise Unreal, et pourquoi vérifier l'échelle à l'import ?","a":["Le centimètre (1 unité = 1 cm) : un modèle mal mis à l'échelle paraîtra géant ou minuscule","Le mètre","Le pouce","Aucune unité"],"correct":0,"explain":"Unreal travaille en centimètres. Un asset exporté en mètres peut arriver 100× trop grand. On contrôle l'échelle à l'import (et on applique les transforms côté DCC)."},
+  {"q":"Quelle est la différence entre un Static Mesh et un Skeletal Mesh ?","a":["Static Mesh = objet rigide ; Skeletal Mesh = objet déformé par un squelette (personnages animés)","Le Static Mesh est animé","Ils sont identiques","Le Skeletal Mesh ne s'affiche pas"],"correct":0,"explain":"Les props et décors sont des Static Meshes. Les personnages/créatures animés par bones sont des Skeletal Meshes, importés avec leur squelette et leurs animations."},
+  {"q":"Qu'est-ce que Quixel Bridge / Fab apporte à Unreal ?","a":["Un accès intégré à des bibliothèques d'assets (Megascans, etc.) glissables dans le projet","Un compilateur C++","Un moteur physique","Un éditeur de son"],"correct":0,"explain":"Bridge/Fab intègre les bibliothèques d'assets (dont Megascans) à l'éditeur : on télécharge et glisse des surfaces, props et plantes directement dans le projet."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Importe un Static Mesh (FBX/glTF) et vérifie son échelle par rapport au personnage du template.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Content Browser ▸ Import. Place le mesh près du Mannequin (≈ 1,8 m). Si l'échelle est fausse, corrige côté DCC (appliquer les transforms) ou ajuste l'Import Uniform Scale. Vérifie aussi la génération de collision.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Importe un set de textures et crée un matériau qui les utilise (base color, normal, ORM/roughness).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Importe les textures, crée un Material, branche Base Color (sRGB) et Normal (laisse Unreal détecter le type). Si tu as une map ORM (Occlusion/Roughness/Metallic packée), sépare les canaux R/G/B vers les bonnes entrées.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Via Bridge/Fab, ajoute un asset Megascans à ta scène et intègre-le visuellement (échelle, éclairage).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ouvre Bridge/Fab, télécharge une surface ou un prop, glisse-le dans le niveau. Ajuste l'échelle et vérifie qu'il s'accorde à ton éclairage. Attention à la cohérence de qualité avec tes propres assets.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

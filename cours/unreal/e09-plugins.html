@@ -170,6 +170,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment active-t-on une fonctionnalité optionnelle d'Unreal (ex. un système intégré) ?","a":["Via le menu Plugins (Edit ▸ Plugins), souvent suivi d'un redémarrage de l'éditeur","En écrivant du C++","En réinstallant Unreal","Dans le Content Browser"],"correct":0,"explain":"Beaucoup de fonctionnalités sont des plugins activables dans Edit ▸ Plugins. Activer/désactiver demande généralement de redémarrer l'éditeur."},
+  {"q":"Où trouve-t-on des assets et plugins tiers pour Unreal ?","a":["Sur Fab (l'ex-Marketplace) et auprès d'éditeurs tiers","Uniquement sur le disque dur","Dans les Project Settings","Dans le Profiler"],"correct":0,"explain":"Fab (qui a remplacé l'UE Marketplace) regroupe assets et plugins. On vérifie toujours compatibilité de version et licence avant intégration."},
+  {"q":"Quelle précaution avec les plugins tiers ?","a":["Vérifier compatibilité de version, maintenance et licence avant de les intégrer","Les activer tous par défaut","Ne jamais redémarrer l'éditeur","Les mettre dans Saved/"],"correct":0,"explain":"Un plugin incompatible ou abandonné peut casser le projet lors d'une mise à jour. On contrôle la version supportée, l'activité de maintenance et la licence."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Ouvre Edit ▸ Plugins, active un plugin intégré utile (ex. un plugin déjà fourni) et redémarre l'éditeur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Parcours la liste, coche un plugin (par ex. un outil d'édition fourni), accepte le redémarrage. Vérifie ensuite que ses options apparaissent dans les menus/panneaux correspondants.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Désactive les plugins inutilisés de ton projet pour alléger l'éditeur et le build.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Repère les plugins activés non nécessaires à ton projet et désactive-les (redémarrage). Moins de plugins = démarrage plus rapide, build plus léger et moins de risques d'incompatibilité.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Évalue un plugin tiers sur Fab (compatibilité version, maintenance, licence) avant une éventuelle intégration.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Vérifie&nbsp;: versions d'Unreal supportées, date de dernière mise à jour, avis, et conditions de licence (usage commercial, redistribution). Un plugin récent, maintenu et compatible avec ta version est un bon candidat.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

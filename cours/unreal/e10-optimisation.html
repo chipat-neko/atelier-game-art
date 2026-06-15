@@ -203,6 +203,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelles commandes console rapides aident à diagnostiquer les perfs ?","a":["stat fps et stat unit (temps Game/Draw/GPU par image)","print et log","quit et restart","show all"],"correct":0,"explain":"stat fps affiche les images/seconde ; stat unit décompose le temps par image en Frame, Game (CPU gameplay), Draw (CPU rendu) et GPU. On repère ainsi le goulot d'étranglement."},
+  {"q":"Si « Draw » domine dans stat unit, que faut-il regarder en priorité ?","a":["Le coût CPU du rendu : trop de draw calls / d'objets visibles","La taille des sons","Le nombre de Blueprints","La résolution des UV"],"correct":0,"explain":"Un temps Draw élevé pointe vers le CPU de rendu : trop de primitives/draw calls. On agit via instancing, fusion de meshes, occlusion culling et réduction des objets visibles."},
+  {"q":"Quel outil Unreal fournit un profilage détaillé (CPU, GPU, frames) ?","a":["Unreal Insights","Le Content Browser","Le Material Editor","Le Niagara Editor"],"correct":0,"explain":"Unreal Insights capture et analyse finement les performances (timelines CPU/GPU, événements). C'est l'outil pour aller plus loin que les commandes stat."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>En Play, tape <code>stat fps</code> puis <code>stat unit</code> et identifie si le coût dominant est Game, Draw ou GPU.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ouvre la console (touche ²/~), tape les commandes. Compare Game (gameplay CPU), Draw (rendu CPU) et GPU. Le plus grand des trois indique où concentrer l'optimisation.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Réduis le coût Draw d'une scène dense&nbsp;: active Nanite sur les meshes compatibles et/ou utilise des instances.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Active Nanite (gère le LOD automatiquement) sur la géométrie statique opaque, et regroupe les objets répétés via Instanced Static Mesh. Vérifie la baisse du temps Draw dans stat unit.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Capture une session avec Unreal Insights et repère le pic le plus coûteux d'une frame.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Lance Unreal Insights, connecte-toi à une session en Play, enregistre quelques secondes, puis analyse la timeline (CPU/GPU). Repère l'événement le plus long d'une frame et son origine&nbsp;: c'est ta priorité d'optimisation.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

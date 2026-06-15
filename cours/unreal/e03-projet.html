@@ -422,6 +422,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quels dossiers d'un projet Unreal faut-il versionner ?","a":["Content, Config, Source (et le .uproject)","Saved et Intermediate","DerivedDataCache","Binaries uniquement"],"correct":0,"explain":"Content/ (assets), Config/ (réglages), Source/ (C++) et le .uproject sont essentiels. Saved/, Intermediate/, DerivedDataCache/, Binaries/ sont régénérables et s'excluent."},
+  {"q":"Pourquoi structurer le Content Browser dès le début ?","a":["Pour rester organisé et faciliter le travail à mesure que les assets s'accumulent","Pour accélérer le rendu","Parce qu'Unreal l'exige","Pour réduire la RAM"],"correct":0,"explain":"Une arborescence claire (par type ou par feature) évite le chaos quand le projet grandit. Beaucoup d'équipes adoptent une convention de nommage (préfixes SM_, M_, BP_…)."},
+  {"q":"Que sont les Project Settings d'Unreal ?","a":["Les réglages globaux du projet (rendu, input, maps par défaut, packaging…)","Les réglages d'un seul Actor","Le code C++","Le navigateur d'assets"],"correct":0,"explain":"Project Settings centralise les options du projet : rendu, Enhanced Input, GameMode/maps par défaut, plateformes, packaging. C'est là qu'on configure les fondations."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée une arborescence Content propre (Maps, Meshes, Materials, Blueprints) et adopte des préfixes de nommage.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Organise par dossiers et préfixe&nbsp;: SM_ (Static Mesh), M_ (Material), MI_ (Material Instance), BP_ (Blueprint), T_ (Texture). Une convention partagée rend le projet lisible et maintenable.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Définis la map de démarrage et le GameMode par défaut dans les Project Settings.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Project Settings ▸ Maps &amp; Modes ▸ Editor Startup Map / Game Default Map, et Default GameMode. Ainsi le projet ouvre la bonne scène et applique tes règles de jeu au lancement.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets le projet sous Git avec un .gitignore Unreal et vérifie que les dossiers régénérables sont exclus.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Utilise un .gitignore Unreal (exclut Saved/, Intermediate/, DerivedDataCache/, Binaries/, Build/). git status ne doit montrer que Content/, Config/, Source/ et le .uproject. Pour les gros binaires, envisage Git LFS.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

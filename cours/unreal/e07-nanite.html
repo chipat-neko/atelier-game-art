@@ -217,6 +217,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que Nanite dans Unreal Engine 5 ?","a":["Un système de géométrie virtualisée qui affiche des meshes très denses avec un coût quasi indépendant du nombre de polygones","Un moteur audio","Un format de texture","Un type de lumière"],"correct":0,"explain":"Nanite streame et affiche dynamiquement le niveau de détail micro-polygonal : on importe des meshes très détaillés sans gérer de LOD manuels, avec un rendu efficace."},
+  {"q":"Quel travail Nanite rend-il souvent inutile pour les meshes compatibles ?","a":["La création manuelle de LOD","Le dépliage UV","Le texturing","L'éclairage"],"correct":0,"explain":"Nanite gère le niveau de détail automatiquement : on n'a plus besoin de fabriquer des LOD à la main pour ces meshes. Les UV et textures restent nécessaires."},
+  {"q":"Quelle est une limite actuelle de Nanite à connaître ?","a":["Il convient surtout à la géométrie opaque/rigide ; certains cas (transparence, skeletal, feuillage très fin) ont des contraintes","Il ne marche pas du tout","Il remplace les textures","Il supprime l'éclairage"],"correct":0,"explain":"Nanite excelle sur la géométrie statique opaque. Les cas comme la transparence, les skeletal meshes ou certains feuillages ont des contraintes ou un support spécifique selon la version."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Active Nanite sur un Static Mesh très détaillé et observe qu'il s'affiche sans LOD manuels.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Clic droit sur le mesh ▸ Nanite ▸ Enable (ou à l'import). Place-en plusieurs copies denses&nbsp;: le rendu reste fluide. Compare avec un mesh non-Nanite équivalent.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Active la visualisation Nanite (triangles/clusters) pour comprendre comment le détail s'adapte à la distance.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>View Mode ▸ Nanite Visualization ▸ Triangles/Clusters. Approche/éloigne la caméra&nbsp;: la densité de triangles affichés varie automatiquement. C'est la géométrie virtualisée en action.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Identifie un asset qui ne convient pas bien à Nanite et explique pourquoi.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ex.&nbsp;: une vitre transparente, un personnage skeletal, ou un feuillage à fines lamelles avec beaucoup d'alpha. Ces cas relèvent de contraintes spécifiques&nbsp;: on garde alors une approche classique (LOD, masques) selon la version d'Unreal.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

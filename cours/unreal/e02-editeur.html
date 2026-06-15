@@ -407,6 +407,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que contient le panneau World Outliner (Outliner) ?","a":["La liste hiérarchique de tous les Actors présents dans le niveau","Les fichiers du disque","Les paramètres du projet","La console de logs"],"correct":0,"explain":"L'Outliner liste les Actors du niveau et leur hiérarchie. On y sélectionne, organise (dossiers) et gère la visibilité des objets de la scène."},
+  {"q":"À quoi sert le Content Browser ?","a":["Parcourir et gérer tous les assets du projet (meshes, matériaux, Blueprints…)","Régler la physique","Afficher les FPS","Compiler le C++"],"correct":0,"explain":"Le Content Browser est l'explorateur des assets du projet. On y importe, range, recherche et glisse les assets dans le niveau."},
+  {"q":"Que fait-on dans le panneau Details d'un Actor ?","a":["Voir et régler ses propriétés et ses components","Modéliser sa géométrie","Écrire son code","Changer la version d'Unreal"],"correct":0,"explain":"Le panneau Details affiche les propriétés de l'Actor sélectionné et ses components (transform, matériaux, variables exposées). C'est l'équivalent de l'Inspector d'Unity."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Place quelques Actors dans le niveau (cube, lumière) et organise-les en dossiers dans l'Outliner.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Glisse des objets depuis le menu Place Actors. Dans l'Outliner, crée des dossiers (clic droit) pour regrouper « Lighting », « Geometry »… Une scène rangée reste lisible quand elle grossit.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Importe ou crée un asset, range-le dans le Content Browser et glisse-le dans le niveau.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Content Browser ▸ Import (ou clic droit ▸ Add) ▸ range dans un dossier dédié. Glisse l'asset dans le viewport&nbsp;: une instance apparaît, réglable dans Details. Garde une arborescence Content claire.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Maîtrise la navigation du viewport (WASD en vol, vitesse de caméra) et les gizmos de transformation (W/E/R).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Clic droit maintenu + WASD pour voler ; la molette règle la vitesse. W = déplacer, E = tourner, R = échelonner (gizmos). Maîtriser cette navigation rend tout le level design beaucoup plus rapide.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

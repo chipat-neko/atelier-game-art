@@ -321,6 +321,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Par quoi installe-t-on Unreal Engine ?","a":["L'Epic Games Launcher (onglet Unreal Engine)","Unity Hub","Le Microsoft Store uniquement","Un package npm"],"correct":0,"explain":"L'Epic Games Launcher gère les versions d'Unreal, les projets et la Marketplace/Fab. On y installe la version voulue et ses options."},
+  {"q":"Que choisit-on à la création d'un projet Unreal selon le besoin ?","a":["Un template (Blank, First Person, Third Person…) et Blueprint ou C++","La résolution d'écran","Le moteur de rendu audio","La langue de l'éditeur"],"correct":0,"explain":"Les templates donnent une base prête (caméra, contrôleur). On choisit aussi Blueprint et/ou C++ : on peut toujours ajouter du C++ ensuite."},
+  {"q":"Pourquoi Unreal est-il réputé exigeant en matériel ?","a":["Son rendu haut de gamme (Lumen, Nanite) demande un bon GPU et de la RAM","Parce qu'il est en C++","Parce qu'il ne tourne que sur Mac","C'est une légende, il est très léger"],"correct":0,"explain":"Les fonctionnalités modernes (Lumen, Nanite) et l'éditeur lourd réclament une machine correcte (GPU, RAM, SSD). On peut désactiver certaines options pour alléger."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Installe Unreal via l'Epic Games Launcher et crée un projet Third Person pour explorer une scène jouable.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Launcher ▸ Unreal Engine ▸ Install une version. New Project ▸ Games ▸ Third Person ▸ Blueprint. Lance (Play)&nbsp;: tu contrôles déjà un personnage&nbsp;— une bonne base pour expérimenter.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Repère les dossiers du projet (Content, Config, Source) et comprends lesquels versionner.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Content/ (assets), Config/ (réglages), Source/ (C++) se versionnent. Saved/, Intermediate/, DerivedDataCache/ et Binaries/ sont régénérables&nbsp;: à exclure du dépôt Git.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajuste les Scalability Settings pour faire tourner l'éditeur plus fluidement sur ta machine.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Settings ▸ Engine Scalability Settings ▸ baisse (Medium/High) les ombres, post-process, effets. Tu peux aussi désactiver Lumen pour un gros gain si ta carte peine, le temps d'apprendre.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

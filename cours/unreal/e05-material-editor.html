@@ -266,6 +266,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que le Material Editor d'Unreal ?","a":["Un éditeur de shaders à nœuds pour construire des matériaux","Un éditeur de niveaux","Un compilateur C++","Un gestionnaire d'assets"],"correct":0,"explain":"Le Material Editor relie des nœuds (textures, maths, masques) vers les entrées du matériau (Base Color, Roughness, Normal…). C'est l'équivalent du Shader Graph d'Unity."},
+  {"q":"Quel est l'intérêt d'un Material Instance ?","a":["Régler des paramètres exposés d'un Master Material sans recompiler le shader","Doubler le nombre de polygones","Créer un nouveau shader à chaque fois","Supprimer les textures"],"correct":0,"explain":"On crée un Master Material avec des paramètres (couleur, scalaires), puis des Material Instances qui ne changent que ces valeurs : rapide, économe et idéal pour les variantes."},
+  {"q":"Pourquoi exposer des paramètres (Parameter) dans un Master Material ?","a":["Pour les ajuster par instance sans toucher au graphe ni recompiler","Pour cacher le matériau","Pour réduire la résolution","Pour l'animer automatiquement"],"correct":0,"explain":"Un nœud Parameter (ScalarParameter, VectorParameter…) devient réglable dans les Material Instances. On crée ainsi des dizaines de variantes à partir d'un seul shader maître."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un matériau, branche une Base Color et une texture, et applique-le à un mesh.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Content Browser ▸ Material. Dans l'éditeur, ajoute un Texture Sample relié à Base Color, règle Roughness/Metallic. Sauvegarde et glisse le matériau sur un Static Mesh dans le niveau.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Transforme ton matériau en Master Material avec un paramètre de couleur, puis crée deux Material Instances.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Remplace la couleur fixe par un VectorParameter (clic droit ▸ Convert to Parameter). Crée des Material Instances (clic droit sur le matériau) et change la couleur dans chacune&nbsp;: deux variantes sans recompiler.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un effet simple à nœuds (ex. Fresnel sur l'Emissive, ou panner une texture) et expose son intensité en paramètre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Branche un nœud Fresnel vers Emissive Color pour un liseré lumineux, ou un Panner sur les UV d'une texture pour la faire défiler. Expose l'intensité/vitesse en ScalarParameter pour la régler par instance.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

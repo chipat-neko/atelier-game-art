@@ -187,6 +187,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que Niagara dans Unreal ?","a":["Le système de VFX/particules moderne et modulaire d'Unreal","Un moteur de rendu","Un format de modèle 3D","Un éditeur de niveaux"],"correct":0,"explain":"Niagara est l'outil de VFX d'Unreal : on construit des effets (feu, fumée, magie) via des Emitters et des modules, avec simulation CPU ou GPU."},
+  {"q":"Quelle est la structure de base d'un effet Niagara ?","a":["Un Niagara System contenant un ou plusieurs Emitters, eux-mêmes faits de modules (Spawn, Initialize, Update…)","Un seul gros script","Une texture animée uniquement","Un Blueprint obligatoire"],"correct":0,"explain":"Un System regroupe des Emitters ; chaque Emitter enchaîne des modules (émission, initialisation, mise à jour, rendu). On compose l'effet en empilant ces briques."},
+  {"q":"Quand utiliser une simulation GPU plutôt que CPU dans Niagara ?","a":["Pour de très grands nombres de particules (le GPU passe à l'échelle)","Pour quelques particules seulement","Jamais","Pour réduire la qualité"],"correct":0,"explain":"La simulation GPU gère des centaines de milliers de particules efficacement (poussière, étincelles massives). Le CPU convient aux effets modestes nécessitant des collisions précises ou des événements."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un Niagara System à partir d'un template (ex. Fountain) et place-le dans le niveau.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Content Browser ▸ Niagara System ▸ depuis un template/emitter existant. Glisse-le dans la scène&nbsp;: l'effet joue. Explore les modules de l'Emitter pour voir comment il est construit.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modifie les modules (Spawn Rate, Lifetime, vitesse, couleur dans le temps) pour transformer le template en fumée ou étincelles.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajuste Spawn Rate, Initialize Particle (Lifetime, taille, couleur), Add Velocity, et des modules « over life » (Scale/Color). Les courbes dans le temps donnent le réalisme, comme dans tout système de particules.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Passe un emitter en simulation GPU et augmente fortement le nombre de particules&nbsp;; observe l'impact sur les perfs.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans les propriétés de l'Emitter, choisis Sim Target = GPUCompute Sim (et fixe des Fixed Bounds). Monte le Spawn Rate&nbsp;: le GPU encaisse des volumes que le CPU ne pourrait pas. Surveille le GPU dans le profiler (stat GPU).</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
