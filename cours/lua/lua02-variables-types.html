@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA02 — Variables & types · Atelier Game Art</title>
+  <meta name="description" content="Les types de Lua (nil, boolean, number, string, table), le typage dynamique et la différence local vs global.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Variables &amp; types</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA02 — Variables &amp; types</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua01-introduction.html">LUA1 — Introduction</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Les types de base&nbsp;: <code>nil</code>, <code>boolean</code>, <code>number</code>, <code>string</code>, <code>table</code>.</li>
+                <li>Que Lua est <b>typé dynamiquement</b> (le type suit la valeur).</li>
+                <li>La différence cruciale entre <b>local</b> et <b>global</b>.</li>
+                <li>Inspecter un type avec <code>type()</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Lua a peu de types, mais ils sont puissants (surtout la <b>table</b>, vue en <a href="../../cours/lua/lua07-tables.html">LUA7</a>). Et la distinction <b>local/global</b> est le piège n°1 du débutant&nbsp;: l'oublier ralentit et pollue l'espace global.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les types de base</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type</th><th>Exemple</th><th>Rôle</th></tr></thead>
+                <tbody>
+                  <tr><td><code>nil</code></td><td><code>nil</code></td><td>« rien »&nbsp;: variable non définie/absence de valeur.</td></tr>
+                  <tr><td><code>boolean</code></td><td><code>true</code>, <code>false</code></td><td>Vrai/faux.</td></tr>
+                  <tr><td><code>number</code></td><td><code>42</code>, <code>3.14</code></td><td>Nombres (entiers et décimaux, même type).</td></tr>
+                  <tr><td><code>string</code></td><td><code>"Héros"</code></td><td>Texte.</td></tr>
+                  <tr><td><code>table</code></td><td><code>{1, 2, 3}</code></td><td>LA structure de données (tableau + dictionnaire).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>(Il existe aussi <code>function</code> et <code>thread</code> — les coroutines, <a href="../../cours/lua/lua11-coroutines.html">LUA11</a>.)</p>
+
+            <h3>2. Typage dynamique</h3>
+            <p>On ne déclare pas de type&nbsp;: une variable prend le type de sa valeur, et peut même changer. Pratique mais à manier avec soin&nbsp;:</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local pv = 100          -- number
+local nom = "Slime"     -- string
+local vivant = true     -- boolean
+local rien              -- nil (non initialisée)
+print(type(pv), type(nom), type(vivant), type(rien))
+-- number  string  boolean  nil</code></pre>
+            </div>
+
+            <h3>3. local vs global (essentiel !)</h3>
+            <p>Sans <code>local</code>, une variable est <b>globale</b>&nbsp;: visible partout, plus lente d'accès, et source de bugs (collisions de noms). <b>Toujours préfixer par <code>local</code></b> sauf raison précise.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local score = 0     -- ✅ local : portée limitée, rapide
+total = 0           -- ❌ global implicite : à éviter</code></pre>
+            </div>
+
+            <h3>4. nil et l'absence</h3>
+            <p><code>nil</code> signifie « pas de valeur ». Accéder à une variable jamais définie renvoie <code>nil</code> (pas une erreur). Mettre une variable à <code>nil</code> la « supprime ». On teste souvent <code>if x ~= nil then</code> (ou simplement <code>if x then</code>, vu en <a href="../../cours/lua/lua04-conditions.html">LUA4</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 140" role="img" aria-label="local limite la portée au bloc ; global est visible partout">
+                <rect x="40" y="35" width="250" height="80" rx="10" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a"/>
+                <text x="165" y="30" text-anchor="middle" class="svg-dim" font-size="10">local x</text>
+                <text x="165" y="72" text-anchor="middle" class="svg-text" font-size="10.5">visible dans le bloc</text>
+                <text x="165" y="92" text-anchor="middle" class="svg-dim" font-size="9.5">rapide, sûr</text>
+                <rect x="350" y="35" width="250" height="80" rx="10" fill="#f4b740" fill-opacity="0.08" stroke="#f4b740"/>
+                <text x="475" y="30" text-anchor="middle" class="svg-dim" font-size="10">global x</text>
+                <text x="475" y="72" text-anchor="middle" class="svg-text" font-size="10.5">visible PARTOUT</text>
+                <text x="475" y="92" text-anchor="middle" class="svg-dim" font-size="9.5">plus lent, risque de collision</text>
+              </svg>
+              <figcaption>Préfère <code>local</code>&nbsp;: portée limitée, accès plus rapide, moins de bugs.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Déclare une variable de chaque type (number, string, boolean) en <code>local</code>.</li>
+              <li>Affiche leur type avec <code>type(...)</code>.</li>
+              <li>Mets une variable à <code>nil</code> et observe qu'elle « disparaît ».</li>
+              <li>Compare l'accès à une globale vs une locale (juste pour comprendre la portée).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une variable « fuit » dans d'autres fichiers.</div>
+                <div class="pi-cause"><b>Cause</b>Oubli de <code>local</code> → variable globale.</div>
+                <div class="pi-fix"><b>Correction</b>Préfixe tes variables par <code>local</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« attempt to index a nil value ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises une variable valant <code>nil</code> (jamais définie/typo).</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie l'orthographe et l'existence (<code>if x then</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Comparaison de nombre et texte échoue.</div>
+                <div class="pi-cause"><b>Cause</b><code>"5"</code> (string) n'est pas <code>5</code> (number).</div>
+                <div class="pi-fix"><b>Correction</b>Convertis avec <code>tonumber</code>/<code>tostring</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Performances qui se dégradent.</div>
+                <div class="pi-cause"><b>Cause</b>Accès répété à des globales.</div>
+                <div class="pi-fix"><b>Correction</b>Mets en <code>local</code> (voir <a href="../../cours/lua/lua14-performance.html">LUA14</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Déclare des variables pour un personnage (nom, pv, vivant) et affiche leurs types.</li>
+                <li>Convertis un nombre en texte et inversement (<code>tostring</code>/<code>tonumber</code>).</li>
+                <li>Mets une variable à <code>nil</code> et vérifie son type ensuite.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Toutes tes variables sont <code>local</code>.</li>
+                  <li>Tu lis correctement les types avec <code>type()</code>.</li>
+                  <li>Tu comprends ce que vaut une variable non définie.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi préfixer ses variables par local ?","a":["Portée limitée, accès plus rapide et moins de risques de collision","C'est obligatoire en Lua","Pour les rendre constantes","Pour les afficher automatiquement"],"correct":0,"explain":"Sans local, la variable est globale : visible partout, plus lente et source de collisions de noms. On déclare local par défaut."},
+  {"q":"Que vaut une variable jamais définie en Lua ?","a":["nil","0","\"\" (chaîne vide)","une erreur de compilation"],"correct":0,"explain":"Accéder à une variable non définie renvoie nil (pas une erreur). nil représente l'absence de valeur ; y indexer un champ provoque l'erreur « attempt to index a nil value »."},
+  {"q":"Quelle structure de données est centrale en Lua ?","a":["La table (sert à la fois de tableau et de dictionnaire)","Le tableau fixe","La classe","Le pointeur"],"correct":0,"explain":"La table est LA structure de Lua : elle modélise listes, dictionnaires, objets, modules… On l'étudie en profondeur en LUA7."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Déclare un nombre, un texte et un booléen en <code>local</code> et affiche leurs types.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local pv = 100
+local nom = "Slime"
+local vivant = true
+print(type(pv), type(nom), type(vivant))   -- number string boolean</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Convertis un texte <code>"42"</code> en nombre, ajoute 8, et reconvertis en texte pour l'afficher.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local n = tonumber("42") + 8     -- 50 (number)
+print("Résultat : " .. tostring(n))</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Montre qu'une variable mise à <code>nil</code> « disparaît »&nbsp;: affiche son type avant et après.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local x = 10
+print(type(x))   -- number
+x = nil
+print(type(x))   -- nil</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Types de base&nbsp;: <code>nil</code>, <code>boolean</code>, <code>number</code>, <code>string</code>, <code>table</code> (+ function, thread).</li>
+                <li>Lua est <b>typé dynamiquement</b>&nbsp;: le type suit la valeur.</li>
+                <li><b>Toujours <code>local</code></b> par défaut (portée, perf, sûreté).</li>
+                <li><code>nil</code> = absence&nbsp;; <code>type()</code> donne le type ; convertis avec <code>tonumber</code>/<code>tostring</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>nil</b> — valeur représentant l'absence ; une variable non définie vaut nil.</p>
+              <p><b>local / global</b> — portée limitée (recommandé) vs visible partout (à éviter).</p>
+              <p><b>Typage dynamique</b> — le type est porté par la valeur, pas déclaré.</p>
+              <p><b>type()</b> — fonction renvoyant le type d'une valeur sous forme de texte.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua03-operateurs.html">LUA3 — Opérateurs &amp; expressions</a>.</li>
+              <li><a href="../../cours/lua/lua07-tables.html">LUA7 — Les tables</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

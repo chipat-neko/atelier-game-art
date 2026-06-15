@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA08 — Métatables &amp; POO · Atelier Game Art</title>
+  <meta name="description" content="Programmation orientée objet en Lua : métatables, __index, le pattern « classe » avec setmetatable, méthodes via le : et l'héritage simple.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Métatables &amp; POO</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA08 — Métatables &amp; POO</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua07-tables.html">LUA7 — Tables</a>, <a href="../../cours/lua/lua06-fonctions.html">LUA6 — Fonctions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est une <b>métatable</b> et le rôle de <code>__index</code>.</li>
+                <li>Le pattern «&nbsp;classe&nbsp;» avec <code>setmetatable</code> et <code>Classe.new</code>.</li>
+                <li>Définir des méthodes avec <code>function Classe:methode()</code> et <code>self</code>.</li>
+                <li>Faire un <b>héritage</b> simple entre classes.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Lua n'a pas de mot-clé <code>class</code>. La POO se construit à partir des tables et des <b>métatables</b>. C'est ainsi que fonctionnent les «&nbsp;objets&nbsp;» dans Roblox, LÖVE et la plupart des moteurs Lua.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Métatable &amp; __index</h3>
+            <p>Quand on lit une clé absente d'une table, Lua consulte sa <b>métatable</b>. Si celle-ci a un champ <code>__index</code> pointant vers une autre table, la recherche s'y poursuit&nbsp;: c'est le mécanisme d'héritage.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local base = {salut = function() print("Hello") end}
+local obj = setmetatable({}, {__index = base})
+obj.salut()   -- Hello  (trouvé via __index → base)</code></pre>
+            </div>
+
+            <h3>2. Le pattern « classe »</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local Personnage = {}
+Personnage.__index = Personnage
+
+function Personnage.new(nom, pv)
+  local self = setmetatable({}, Personnage)
+  self.nom = nom
+  self.pv = pv
+  return self
+end
+
+function Personnage:recevoir(degats)   -- : injecte self
+  self.pv = self.pv - degats
+  print(self.nom .. " : " .. self.pv .. " PV")
+end
+
+local héros = Personnage.new("Léa", 100)
+héros:recevoir(30)   -- Léa : 70 PV</code></pre>
+            </div>
+            <p>Le <code>:</code> à la déclaration <b>et</b> à l'appel ajoute automatiquement <code>self</code>. <code>Personnage.__index = Personnage</code> rend les méthodes accessibles aux instances.</p>
+
+            <h3>3. Héritage simple</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local Ennemi = setmetatable({}, {__index = Personnage})
+Ennemi.__index = Ennemi
+
+function Ennemi.new(nom, pv, butin)
+  local self = Personnage.new(nom, pv)   -- réutilise le parent
+  setmetatable(self, Ennemi)
+  self.butin = butin
+  return self
+end
+
+local gob = Ennemi.new("Gobelin", 30, "or")
+gob:recevoir(10)   -- méthode héritée de Personnage → Gobelin : 20 PV</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 540 160" role="img" aria-label="Recherche d'une clé via __index vers la classe puis le parent">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="30" y="60" width="120" height="44" rx="8" fill="#84cc16" fill-opacity="0.15" stroke="#84cc16"/><text x="90" y="86" text-anchor="middle">instance</text>
+                  <path d="M150 82 H210" stroke="#84cc16" stroke-width="2" marker-end="url(#a9)"/><text x="180" y="74" text-anchor="middle" font-size="8" class="svg-dim">__index</text>
+                  <rect x="210" y="60" width="120" height="44" rx="8" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="270" y="86" text-anchor="middle">Ennemi</text>
+                  <path d="M330 82 H390" stroke="#84cc16" stroke-width="2" marker-end="url(#a9)"/><text x="360" y="74" text-anchor="middle" font-size="8" class="svg-dim">__index</text>
+                  <rect x="390" y="60" width="120" height="44" rx="8" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="450" y="86" text-anchor="middle">Personnage</text>
+                  <defs><marker id="a9" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#84cc16"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Clé absente → Lua remonte la chaîne des <code>__index</code>.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée une «&nbsp;classe&nbsp;» <code>Personnage</code> avec <code>new</code> et <code>__index</code>.</li>
+              <li>Ajoute une méthode <code>:recevoir(degats)</code> utilisant <code>self</code>.</li>
+              <li>Crée une instance et appelle la méthode avec <code>:</code>.</li>
+              <li>Dérive <code>Ennemi</code> qui hérite de <code>Personnage</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>self</code> est <code>nil</code> dans une méthode.</div>
+                <div class="pi-cause"><b>Cause</b>Tu appelles avec <code>.</code> au lieu de <code>:</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle <code>obj:methode()</code> (le <code>:</code> passe <code>self</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Les instances ne voient pas les méthodes.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as oublié <code>Classe.__index = Classe</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute cette ligne avant <code>setmetatable</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Toutes les instances partagent la même valeur.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as mis l'état dans la classe, pas dans <code>self</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Stocke les données par instance dans <code>self</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'héritage ne remonte pas au parent.</div>
+                <div class="pi-cause"><b>Cause</b>Chaîne <code>__index</code> mal configurée.</div>
+                <div class="pi-fix"><b>Correction</b><code>setmetatable(Enfant, {__index = Parent})</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée une classe <code>Compteur</code> avec <code>new</code> et une méthode <code>:incr()</code>.</li>
+                <li>Vérifie que deux compteurs sont indépendants.</li>
+                <li>Dérive une classe <code>CompteurNomme</code> qui ajoute un nom.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu utilises <code>setmetatable</code> + <code>__index</code> correctement.</li>
+                  <li>Tes méthodes s'appellent avec <code>:</code>.</li>
+                  <li>L'état est bien stocké dans <code>self</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le champ __index d'une métatable ?","a":["Indiquer où chercher une clé absente de la table","Indexer un tableau","Trier les clés","Compter les éléments"],"correct":0,"explain":"__index dit à Lua où poursuivre la recherche quand une clé manque : c'est le socle de l'héritage en Lua."},
+  {"q":"Que fait le : dans obj:methode() ?","a":["Passe obj comme premier argument self","Rien de spécial","Crée une copie","Déclare une variable"],"correct":0,"explain":"obj:methode() équivaut à obj.methode(obj) : le : injecte automatiquement self."},
+  {"q":"Comment fait-on l'héritage entre deux « classes » Lua ?","a":["En chaînant les __index (Enfant.__index pointe vers Parent)","Avec le mot-clé extends","Impossible en Lua","Avec import"],"correct":0,"explain":"Lua n'a pas de class/extends. On chaîne les métatables : Enfant hérite via __index pointant vers Parent."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée une classe <code>Compteur</code> avec <code>new</code> et <code>:incr()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local Compteur = {}
+Compteur.__index = Compteur
+function Compteur.new() return setmetatable({n = 0}, Compteur) end
+function Compteur:incr() self.n = self.n + 1 end
+
+local c = Compteur.new()
+c:incr(); c:incr()
+print(c.n)   -- 2</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée deux compteurs et montre qu'ils sont indépendants.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local a, b = Compteur.new(), Compteur.new()
+a:incr()
+print(a.n, b.n)   -- 1  0</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Dérive <code>Joueur</code> de <code>Personnage</code> et ajoute une méthode <code>:gagnerXp(n)</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local Joueur = setmetatable({}, {__index = Personnage})
+Joueur.__index = Joueur
+function Joueur.new(nom, pv)
+  local self = Personnage.new(nom, pv)
+  setmetatable(self, Joueur)
+  self.xp = 0
+  return self
+end
+function Joueur:gagnerXp(n) self.xp = self.xp + n end</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une <b>métatable</b> + <code>__index</code> = mécanisme d'héritage de Lua.</li>
+                <li>Pattern classe&nbsp;: <code>Classe.__index = Classe</code> puis <code>setmetatable({}, Classe)</code>.</li>
+                <li><code>:</code> (déclaration et appel) injecte <code>self</code>.</li>
+                <li>L'état va dans <code>self</code>&nbsp;; les méthodes dans la classe.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>métatable</b> — table décrivant le comportement d'une autre table (opérations, recherche).</p>
+              <p><b>__index</b> — métaméthode indiquant où chercher une clé absente.</p>
+              <p><b>self</b> — l'instance courante, passée par le <code>:</code>.</p>
+              <p><b>setmetatable</b> — attache une métatable à une table.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua09-modules.html">LUA9 — Modules &amp; require</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

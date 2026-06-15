@@ -17,12 +17,14 @@
     json: ["true","false","null"],
     bash: ["cd","ls","mkdir","cp","mv","rm","echo","export","cat","git","npm","sudo","cmake","python","pip","chmod","curl","source","if","then","else","fi","for","do","done","while","in"],
     gdscript: ["extends","class_name","class","func","var","const","enum","signal","static","return","if","elif","else","for","while","match","break","continue","pass","in","and","or","not","is","as","self","super","true","false","null","await","yield","void","export","onready","tool","setget","preload","load","range","print","assert","breakpoint"],
+    lua: ["local","function","end","if","then","else","elseif","while","do","for","in","repeat","until","return","break","goto","nil","true","false","and","or","not","self","print","require","pcall","xpcall","error","assert","pairs","ipairs","setmetatable","getmetatable","coroutine","type","tostring","tonumber"],
     xml: []
   };
   var TYPES = {
     csharp: ["int","float","double","bool","string","char","byte","object","Vector2","Vector3","Vector4","Quaternion","Color","Transform","GameObject","Material","Texture2D","Mesh","Shader","Camera","Light","Rigidbody","MonoBehaviour","List","Dictionary","Array","Debug","Mathf","Time","Input"],
     cpp: ["FVector","FRotator","FLinearColor","UMaterial","UTexture","UStaticMesh","AActor","float3x3","float4x4"],
     gdscript: ["int","float","bool","String","Array","Dictionary","Vector2","Vector3","Color","Node","Node2D","Node3D","Sprite2D","CharacterBody2D","CharacterBody3D","RigidBody2D","Area2D","Timer","Resource","PackedScene","Input","Callable","StringName","NodePath","Transform2D","Transform3D"],
+    lua: ["table","string","math","os","io","coroutine","Vector3","CFrame","Instance","game","workspace","love"],
     json: [], bash: [], xml: []
   };
 
@@ -30,6 +32,7 @@
     s = (s || "").toLowerCase();
     if (/c#|csharp|cs\b/.test(s)) return "csharp";
     if (/gdscript|godot|gd\b/.test(s)) return "gdscript";
+    if (/lua|luau/.test(s)) return "lua";
     if (/hlsl|glsl|shader|cg|cpp|c\+\+/.test(s)) return "cpp";
     if (/json/.test(s)) return "json";
     if (/bash|sh|shell|console|terminal/.test(s)) return "bash";
@@ -48,7 +51,7 @@
     kw.forEach(function (k) { kwSet[k] = 1; });
     ty.forEach(function (t) { tySet[t] = 1; });
     var out = "", i = 0, n = code.length;
-    var lineComment = (lang === "bash" || lang === "gdscript") ? "#" : "//";
+    var lineComment = (lang === "lua") ? "--" : (lang === "bash" || lang === "gdscript") ? "#" : "//";
 
     while (i < n) {
       var c = code[i], c2 = code.substr(i, 2);

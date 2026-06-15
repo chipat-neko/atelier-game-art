@@ -49,6 +49,7 @@
   --piste-cpp:          #ec6a9e;
   --piste-gdscript:     #eab308;
   --piste-shaders:      #d946ef;
+  --piste-lua:          #84cc16;
 
   /* Callouts — sémantique (chaud réservé aux avertissements) */
   --c-info:     #38bdf8;  --c-info-bg:     rgba(56, 189, 248, 0.10);
@@ -134,6 +135,7 @@
   --piste-cpp:          #c83f78;
   --piste-gdscript:     #a16207;
   --piste-shaders:      #a21caf;
+  --piste-lua:          #4d7c0f;
 
   --c-info:     #0e7aa8;  --c-info-bg:     rgba(14, 122, 168, 0.08);
   --c-astuce:   #0d9488;  --c-astuce-bg:   rgba(13, 148, 136, 0.09);

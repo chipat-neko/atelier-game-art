@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA12 — Le scripting de jeu · Atelier Game Art</title>
+  <meta name="description" content="Le scripting de jeu en Lua : la boucle de jeu (update/draw), le delta time, les événements et le pattern des callbacks où le moteur appelle ton code.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua12";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Le scripting de jeu</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA12 — Le scripting de jeu</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua06-fonctions.html">LUA6 — Fonctions</a>, <a href="../../cours/lua/lua11-coroutines.html">LUA11 — Coroutines</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est la <b>boucle de jeu</b> et la séparation <code>update</code> / <code>draw</code>.</li>
+                <li>Pourquoi multiplier les vitesses par le <b>delta time</b>.</li>
+                <li>Le pattern des <b>callbacks</b>&nbsp;: le moteur appelle ton code.</li>
+                <li>Réagir à des <b>événements</b> (entrées, collisions).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Jusqu'ici tu écrivais des scripts qui s'exécutent une fois. Un jeu, lui, <b>tourne en continu</b>&nbsp;: 60 fois par seconde, il met à jour l'état puis dessine. Comprendre cette boucle est le passage obligé vers le vrai gameplay.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La boucle de jeu : update puis draw</h3>
+            <p>Une frame = deux temps&nbsp;: <b>mettre à jour</b> la logique (positions, PV, IA), puis <b>dessiner</b> l'image. On ne mélange jamais les deux&nbsp;: <code>update</code> change l'état, <code>draw</code> l'affiche sans rien modifier.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local x = 0
+
+function update(dt)
+  x = x + 100 * dt     -- logique : avancer de 100 px/s
+end
+
+function draw()
+  dessinerCercle(x, 150, 20)   -- affichage seul
+end</code></pre>
+            </div>
+
+            <h3>2. Le delta time (dt)</h3>
+            <p>Le <code>dt</code> est la durée de la frame précédente (en secondes). Sans lui, un jeu va deux fois plus vite sur une machine à 120 fps qu'à 60 fps. En multipliant par <code>dt</code>, le mouvement devient <b>indépendant du framerate</b>.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- 100 * dt → 100 px PAR SECONDE, quel que soit le framerate
+x = x + vitesse * dt</code></pre>
+            </div>
+
+            <h3>3. Le pattern callback : « ne nous appelez pas… »</h3>
+            <p>Tu ne lances pas la boucle&nbsp;: le moteur la possède et appelle tes fonctions au bon moment. Tu fournis des <b>callbacks</b> (rappel de <a href="../../cours/lua/lua06-fonctions.html">LUA6</a>&nbsp;: une fonction est une valeur qu'on passe).</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- tu DÉFINIS le comportement ; le moteur DÉCIDE quand l'appeler
+function surTouche(touche)
+  if touche == "space" then sauter() end
+end</code></pre>
+            </div>
+
+            <h3>4. Événements</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- un système d'événements simple en Lua pur
+local abonnes = {}
+local function on(nom, fn) abonnes[nom] = abonnes[nom] or {}; table.insert(abonnes[nom], fn) end
+local function emit(nom, ...) for _, fn in ipairs(abonnes[nom] or {}) do fn(...) end end
+
+on("mort", function(qui) print(qui .. " est mort") end)
+emit("mort", "Gobelin")   -- Gobelin est mort</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 150" role="img" aria-label="Boucle : entrées, update(dt), draw, répétée chaque frame">
+                <g class="svg-text" font-size="10" font-family="monospace">
+                  <rect x="20" y="55" width="100" height="34" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="70" y="76" text-anchor="middle">entrées</text>
+                  <path d="M120 72 H160" stroke="#84cc16" stroke-width="2" marker-end="url(#aj)"/>
+                  <rect x="160" y="55" width="120" height="34" rx="8" fill="#84cc16" fill-opacity="0.18" stroke="#84cc16"/><text x="220" y="76" text-anchor="middle">update(dt)</text>
+                  <path d="M280 72 H320" stroke="#84cc16" stroke-width="2" marker-end="url(#aj)"/>
+                  <rect x="320" y="55" width="100" height="34" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="370" y="76" text-anchor="middle">draw()</text>
+                  <path d="M420 72 C 490 72 490 120 220 120 C 70 120 70 95 70 89" fill="none" stroke="#84cc16" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#aj)"/>
+                  <text x="250" y="138" text-anchor="middle" font-family="sans-serif" font-size="9" class="svg-dim">≈ 60 fois par seconde</text>
+                  <defs><marker id="aj" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#84cc16"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>La boucle de jeu&nbsp;: lire les entrées, mettre à jour, dessiner — en boucle.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sépare clairement <code>update(dt)</code> (logique) et <code>draw()</code> (affichage).</li>
+              <li>Fais avancer un objet avec <code>vitesse * dt</code>.</li>
+              <li>Définis un callback d'entrée <code>surTouche</code>.</li>
+              <li>Crée un mini bus d'événements <code>on</code>/<code>emit</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le jeu va trop vite/trop lentement selon le PC.</div>
+                <div class="pi-cause"><b>Cause</b>Tu déplaces de valeurs fixes par frame, sans <code>dt</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Multiplie toujours par <code>dt</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Des bugs visuels intermittents.</div>
+                <div class="pi-cause"><b>Cause</b>Tu modifies l'état dans <code>draw</code>.</div>
+                <div class="pi-fix"><b>Correction</b><code>draw</code> ne fait qu'afficher&nbsp;; la logique va dans <code>update</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon code de jeu ne s'exécute jamais.</div>
+                <div class="pi-cause"><b>Cause</b>Tu attends d'appeler une boucle toi-même.</div>
+                <div class="pi-fix"><b>Correction</b>Définis les callbacks que le moteur attend.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Calcul lourd qui fait chuter le framerate.</div>
+                <div class="pi-cause"><b>Cause</b>Travail coûteux fait chaque frame.</div>
+                <div class="pi-fix"><b>Correction</b>Étale-le (coroutine, cache) — voir <a href="../../cours/lua/lua14-performance.html">LUA14</a>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Écris <code>update(dt)</code> qui déplace un joueur à 150 px/s.</li>
+                <li>Écris <code>draw()</code> qui n'affiche que la position.</li>
+                <li>Ajoute un bus d'événements et émets «&nbsp;score&nbsp;».</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li><code>update</code> et <code>draw</code> ont des rôles distincts.</li>
+                  <li>Tes vitesses sont en unités/seconde via <code>dt</code>.</li>
+                  <li>Tu comprends que le moteur appelle tes callbacks.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est le rôle de la fonction draw dans la boucle de jeu ?","a":["Afficher l'état, sans le modifier","Mettre à jour la logique","Lire le clavier","Charger les ressources"],"correct":0,"explain":"draw ne fait qu'afficher l'état courant. Toute la logique (déplacements, PV, IA) appartient à update."},
+  {"q":"Pourquoi multiplie-t-on les vitesses par dt ?","a":["Pour un mouvement indépendant du framerate","Pour aller plus vite","Pour économiser la mémoire","C'est une convention sans effet"],"correct":0,"explain":"dt est la durée de la frame. vitesse * dt donne un déplacement en unités/seconde, identique quel que soit le nombre de fps."},
+  {"q":"Que signifie « le moteur appelle ton code » (callbacks) ?","a":["Tu fournis des fonctions que le moteur déclenche au bon moment","Tu lances toi-même la boucle while","Le code s'exécute une seule fois","Lua compile le moteur"],"correct":0,"explain":"C'est l'inversion de contrôle : tu définis update, draw, surTouche… et c'est le moteur qui les appelle, frame après frame."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Écris <code>update(dt)</code> qui fait avancer <code>x</code> à 150 px/s.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local x = 0
+function update(dt) x = x + 150 * dt end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Sépare proprement logique et affichage pour un compteur de temps.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local temps = 0
+function update(dt) temps = temps + dt end
+function draw() afficher(string.format("Temps : %.1f s", temps)) end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Implémente un bus d'événements <code>on</code>/<code>emit</code> et réagis à «&nbsp;niveauTermine&nbsp;».</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local bus = {}
+local function on(e, fn) bus[e] = bus[e] or {}; table.insert(bus[e], fn) end
+local function emit(e, ...) for _, fn in ipairs(bus[e] or {}) do fn(...) end end
+
+on("niveauTermine", function(n) print("Niveau " .. n .. " terminé !") end)
+emit("niveauTermine", 3)</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une frame&nbsp;: <code>update</code> (logique) puis <code>draw</code> (affichage), sans mélange.</li>
+                <li>Multiplie les vitesses par <code>dt</code> pour être indépendant du framerate.</li>
+                <li>Le moteur appelle tes <b>callbacks</b> (inversion de contrôle).</li>
+                <li>Les <b>événements</b> découplent l'émetteur et les réactions.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>boucle de jeu</b> — cycle répété (entrées → update → draw) ≈ 60 fois/s.</p>
+              <p><b>delta time (dt)</b> — durée de la frame précédente.</p>
+              <p><b>callback</b> — fonction que le moteur appelle pour toi.</p>
+              <p><b>événement</b> — signal auquel des fonctions s'abonnent.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua13-integration-moteur.html">LUA13 — Intégration dans un moteur</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA14 — Performance &amp; pièges · Atelier Game Art</title>
+  <meta name="description" content="Optimiser Lua : local vs global, réutilisation de tables, ramasse-miettes (GC), piège du # sur tables à trous, et micro-optimisations utiles en jeu.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua14";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Performance &amp; pièges</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA14 — Performance &amp; pièges</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua07-tables.html">LUA7 — Tables</a>, <a href="../../cours/lua/lua12-scripting-jeu.html">LUA12 — Le scripting de jeu</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Pourquoi <code>local</code> est plus rapide que <code>global</code>.</li>
+                <li>Réduire les allocations en <b>réutilisant</b> les tables.</li>
+                <li>Le rôle du <b>ramasse-miettes</b> (GC) et comment limiter les pics.</li>
+                <li>Le piège de <code>#</code> sur les tables à trous.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un script de jeu tourne 60 fois par seconde. Une allocation inutile par frame = des milliers par minute, donc des saccades quand le GC passe. Quelques réflexes simples suffisent à garder un framerate stable.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. local vs global</h3>
+            <p>Une variable <b>globale</b> est une entrée dans une table (<code>_G</code>)&nbsp;: chaque accès est une recherche par clé. Une variable <b>locale</b> vit dans un registre&nbsp;: l'accès est quasi instantané. En boucle chaude, mettre en cache les fonctions globales en locales aide.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local sqrt = math.sqrt      -- cache local d'une fonction très appelée
+local function dist(x, y) return sqrt(x*x + y*y) end</code></pre>
+            </div>
+
+            <h3>2. Réutiliser les tables (limiter les allocations)</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- ❌ alloue une table neuve à CHAQUE frame
+function update(dt)
+  local v = {x = 0, y = 0}    -- déchet à ramasser
+end
+
+-- ✅ réutilise une table existante
+local v = {x = 0, y = 0}
+function update(dt)
+  v.x, v.y = 0, 0             -- on réécrit, on ne réalloue pas
+end</code></pre>
+            </div>
+
+            <h3>3. Le ramasse-miettes (GC)</h3>
+            <p>Lua libère automatiquement la mémoire des valeurs <b>inaccessibles</b>. C'est pratique, mais un gros pic d'allocations provoque une pause GC visible (micro-freeze). On le maîtrise via <code>collectgarbage("step")</code> ou en allouant moins. Mesure d'abord, optimise ensuite.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>print(collectgarbage("count") .. " Ko utilisés")   -- surveiller la mémoire
+collectgarbage("collect")                          -- forcer un cycle (debug)</code></pre>
+            </div>
+
+            <h3>4. Le piège du # sur les tables à trous</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local t = {1, 2, nil, 4}
+print(#t)   -- 4 OU 2 : indéterminé si trou ! (rappel LUA5)</code></pre>
+            </div>
+            <p>Sur une séquence avec un <code>nil</code> au milieu, <code>#</code> n'est pas fiable. Garde des séquences <b>denses</b>, ou tiens un compteur explicite.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 130" role="img" aria-label="Allouer à chaque frame crée des déchets que le GC doit ramasser">
+                <g class="svg-text" font-size="10" font-family="sans-serif">
+                  <rect x="30" y="40" width="220" height="60" rx="10" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444"/><text x="140" y="35" text-anchor="middle" class="svg-dim">alloc/frame</text><text x="140" y="68" text-anchor="middle" font-family="monospace" font-size="10">{} {} {} …</text><text x="140" y="88" text-anchor="middle" font-size="9" class="svg-dim">→ pauses GC</text>
+                  <rect x="310" y="40" width="220" height="60" rx="10" fill="#22c55e" fill-opacity="0.08" stroke="#22c55e"/><text x="420" y="35" text-anchor="middle" class="svg-dim">réutilisation</text><text x="420" y="68" text-anchor="middle" font-family="monospace" font-size="10">une table réécrite</text><text x="420" y="88" text-anchor="middle" font-size="9" class="svg-dim">→ framerate stable</text>
+                </g>
+              </svg>
+              <figcaption>Moins d'allocations par frame = moins de pauses GC.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Mets en cache <code>math.sqrt</code> en local et compare.</li>
+              <li>Transforme une allocation par frame en réutilisation.</li>
+              <li>Surveille la mémoire avec <code>collectgarbage("count")</code>.</li>
+              <li>Reproduis le piège du <code>#</code> sur une table à trou.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Micro-freezes réguliers.</div>
+                <div class="pi-cause"><b>Cause</b>Trop d'allocations par frame → pauses GC.</div>
+                <div class="pi-fix"><b>Correction</b>Réutilise les tables&nbsp;; alloue hors boucle chaude.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Optimisation qui ne change rien.</div>
+                <div class="pi-cause"><b>Cause</b>Tu optimises sans mesurer.</div>
+                <div class="pi-fix"><b>Correction</b>Profile d'abord&nbsp;; cible le vrai goulot.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>#t</code> donne une taille fausse.</div>
+                <div class="pi-cause"><b>Cause</b>Trou (<code>nil</code>) dans la séquence.</div>
+                <div class="pi-fix"><b>Correction</b>Séquence dense ou compteur explicite.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Fuite de mémoire qui grossit.</div>
+                <div class="pi-cause"><b>Cause</b>Référence gardée (table globale, abonnement non retiré).</div>
+                <div class="pi-fix"><b>Correction</b>Libère les références&nbsp;; désabonne les événements.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Réécris une fonction <code>update</code> pour supprimer son allocation par frame.</li>
+                <li>Mets en cache une fonction globale fréquente en local.</li>
+                <li>Affiche la mémoire avant/après un cycle GC.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune table allouée inutilement dans la boucle chaude.</li>
+                  <li>Tu mesures avant d'optimiser.</li>
+                  <li>Tu évites <code>#</code> sur des tables à trous.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi une variable locale est-elle plus rapide qu'une globale ?","a":["La globale est une recherche par clé dans une table ; la locale vit dans un registre","Les globales sont chiffrées","Aucune différence réelle","La locale est mise en cache disque"],"correct":0,"explain":"Un accès global passe par la table _G (recherche par clé) ; un accès local utilise un registre, bien plus rapide. D'où l'intérêt de cacher les globales chaudes en locales."},
+  {"q":"Quel réflexe limite les pauses du ramasse-miettes ?","a":["Réutiliser les tables au lieu d'en allouer une par frame","Allouer plus pour anticiper","Désactiver toutes les fonctions","Mettre tout en global"],"correct":0,"explain":"Moins d'allocations par frame = moins de déchets = moins de pauses GC. Réutiliser une table (la réécrire) évite d'en créer une neuve à chaque frame."},
+  {"q":"Que vaut #t sur la table {1, 2, nil, 4} ?","a":["Indéterminé (2 ou 4) à cause du trou","Toujours 4","Toujours 3","Toujours 2"],"correct":0,"explain":"# n'est fiable que sur une séquence dense (sans nil au milieu). Avec un trou, le résultat est indéterminé : garde une séquence dense ou un compteur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Mets en cache <code>math.floor</code> en local dans une fonction.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local floor = math.floor
+local function pct(v, max) return floor(v / max * 100) end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Supprime l'allocation par frame d'un vecteur de vélocité.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local vel = {x = 0, y = 0}        -- alloué une seule fois
+function update(dt, dx, dy)
+  vel.x, vel.y = dx, dy           -- réécriture, pas de nouvelle table
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Implémente un «&nbsp;pool&nbsp;» de projectiles réutilisables.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local pool, actifs = {}, {}
+local function obtenir()
+  local p = table.remove(pool) or {x = 0, y = 0}   -- recycle ou crée
+  table.insert(actifs, p)
+  return p
+end
+local function liberer(p)
+  table.insert(pool, p)   -- remis dans le pool plutôt que jeté au GC
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>local</code> &gt; <code>global</code> en boucle chaude (cache les globales).</li>
+                <li><b>Réutilise</b> les tables au lieu d'en allouer une par frame.</li>
+                <li>Le GC peut causer des micro-freezes&nbsp;: mesure, puis réduis les déchets.</li>
+                <li><code>#</code> n'est fiable que sur une séquence <b>dense</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>ramasse-miettes (GC)</b> — libère automatiquement la mémoire inaccessible.</p>
+              <p><b>allocation</b> — création d'une nouvelle valeur (table, chaîne) en mémoire.</p>
+              <p><b>pool d'objets</b> — réserve d'objets recyclés pour éviter d'allouer/jeter sans cesse.</p>
+              <p><b>_G</b> — table contenant toutes les variables globales.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua15-bonnes-pratiques.html">LUA15 — Bonnes pratiques &amp; mini-projet</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

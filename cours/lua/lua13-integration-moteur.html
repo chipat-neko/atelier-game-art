@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA13 — Intégration dans un moteur · Atelier Game Art</title>
+  <meta name="description" content="Lua embarqué dans les moteurs : Roblox (Luau, Instances et services), LÖVE (love.*), Defold ; comprendre le pont entre le code Lua et l'API du moteur.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua13";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Intégration dans un moteur</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA13 — Intégration dans un moteur</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua12-scripting-jeu.html">LUA12 — Le scripting de jeu</a>, <a href="../../cours/lua/lua09-modules.html">LUA9 — Modules</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce que signifie «&nbsp;Lua <b>embarqué</b>&nbsp;» et le pont moteur ↔ Lua.</li>
+                <li>La structure d'un projet <b>Roblox</b> (Luau, Instances, services, <code>:Connect</code>).</li>
+                <li>La structure d'un jeu <b>LÖVE</b> (<code>love.load/update/draw</code>).</li>
+                <li>Le principe de <b>Defold</b> et des autres hôtes Lua.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Lua est rarement utilisé seul&nbsp;: il est <b>embarqué</b> dans un moteur écrit en C/C++. Le moteur expose une API (dessin, physique, audio) que tu pilotes depuis Lua. Chaque hôte a ses conventions&nbsp;; les reconnaître t'évite de réapprendre à zéro.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le pont moteur ↔ Lua</h3>
+            <p>Le moteur (C++) appelle ton Lua au bon moment, et ton Lua appelle l'API du moteur. Les <b>objets du moteur</b> (un sprite, un Part) arrivent côté Lua sous forme de tables/userdata munies de méthodes&nbsp;: tu manipules des références, pas des copies.</p>
+
+            <h3>2. Roblox / Luau</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local Players = game:GetService("Players")
+local ServerStorage = game:GetService("ServerStorage")
+
+local function onJoin(player)
+  local arme = ServerStorage.Epee:Clone()   -- Instance du moteur
+  arme.Parent = player.Backpack
+  print(player.Name .. " équipé")
+end
+
+Players.PlayerAdded:Connect(onJoin)</code></pre>
+            </div>
+            <p>Roblox = <b>Luau</b> (Lua typé optionnellement). On obtient des fonctionnalités via <code>game:GetService</code>, on agit sur des <b>Instances</b> (arbre d'objets) et on s'abonne aux <b>événements</b> avec <code>:Connect</code>. Scripts <code>Server</code> vs <code>LocalScript</code> séparent serveur et client.</p>
+
+            <h3>3. LÖVE (love2d)</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>function love.load()
+  perso = love.graphics.newImage("hero.png")
+  x = 100
+end
+function love.update(dt) x = x + 80 * dt end
+function love.draw() love.graphics.draw(perso, x, 200) end
+function love.keypressed(k) if k == "escape" then love.event.quit() end end</code></pre>
+            </div>
+            <p>LÖVE est minimaliste&nbsp;: tu remplis les callbacks <code>love.*</code>. Tout le reste est du Lua pur (tes modules, tes tables).</p>
+
+            <h3>4. Defold &amp; autres hôtes</h3>
+            <p>Defold structure le jeu en <b>game objects</b> + <b>scripts</b> attachés (callbacks <code>init</code>, <code>update</code>, <code>on_message</code>, <code>on_input</code>). On retrouve la même idée partout&nbsp;: des callbacks + une API moteur. Lua embarque aussi dans Solar2D, des plugins (Neovim), des serveurs (OpenResty)…</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 160" role="img" aria-label="Le moteur en C++ embarque l'interpréteur Lua et expose son API">
+                <g class="svg-text" font-size="11" font-family="sans-serif">
+                  <rect x="30" y="30" width="500" height="100" rx="12" fill="none" stroke="#84cc16" stroke-dasharray="5 4"/><text x="50" y="50" class="svg-dim" font-size="10">Moteur (C/C++)</text>
+                  <rect x="60" y="62" width="200" height="50" rx="8" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="160" y="92" text-anchor="middle">API moteur (dessin, physique…)</text>
+                  <rect x="300" y="62" width="200" height="50" rx="8" fill="#84cc16" fill-opacity="0.18" stroke="#84cc16"/><text x="400" y="92" text-anchor="middle">ton code Lua</text>
+                  <path d="M300 78 H260" stroke="#84cc16" stroke-width="2" marker-end="url(#ai)"/><text x="280" y="72" text-anchor="middle" font-size="8" class="svg-dim">appelle l'API</text>
+                  <path d="M260 100 H300" stroke="#84cc16" stroke-width="2" marker-end="url(#ai)"/><text x="280" y="114" text-anchor="middle" font-size="8" class="svg-dim">callbacks</text>
+                  <defs><marker id="ai" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#84cc16"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Lua est embarqué&nbsp;: il pilote l'API du moteur, qui en retour appelle ses callbacks.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Écris un script Roblox qui équipe chaque joueur à l'arrivée.</li>
+              <li>Écris un squelette LÖVE complet (load/update/draw/keypressed).</li>
+              <li>Repère, dans chaque cas, ce qui vient du moteur et ce qui est du Lua pur.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Code copié d'un moteur qui échoue dans un autre.</div>
+                <div class="pi-cause"><b>Cause</b>L'API moteur diffère (love.* ≠ game:GetService).</div>
+                <div class="pi-fix"><b>Correction</b>Sépare ton Lua pur (réutilisable) de l'API moteur.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Dans Roblox, mon code client touche au serveur.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion <code>LocalScript</code> / <code>Script</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Respecte la frontière client/serveur (RemoteEvents).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Du Luau typé ne tourne pas hors Roblox.</div>
+                <div class="pi-cause"><b>Cause</b>Luau ≠ Lua standard (types, syntaxe étendue).</div>
+                <div class="pi-fix"><b>Correction</b>Garde la logique portable en Lua standard.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ressource introuvable (image/son).</div>
+                <div class="pi-cause"><b>Cause</b>Chemin relatif au mauvais dossier du projet moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Suis l'arborescence imposée par le moteur.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Liste 3 fonctions appelées par le moteur dans LÖVE.</li>
+                <li>Écris un callback Roblox branché sur <code>PlayerAdded</code>.</li>
+                <li>Identifie quelle partie de ton code serait réutilisable d'un moteur à l'autre.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu distingues l'API moteur du Lua pur.</li>
+                  <li>Tu sais qu'un moteur appelle des callbacks.</li>
+                  <li>Tu connais au moins deux hôtes Lua (Roblox, LÖVE).</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que signifie « Lua embarqué » dans un moteur ?","a":["L'interpréteur Lua est intégré au moteur (C/C++), qui expose une API","Lua remplace le moteur","Le jeu est écrit 100% en Lua sans moteur","Lua est compilé en C++"],"correct":0,"explain":"Le moteur écrit en C/C++ embarque l'interpréteur Lua et expose une API. Ton Lua pilote l'API ; le moteur appelle tes callbacks."},
+  {"q":"Comment réagit-on à un événement dans Roblox/Luau ?","a":["Event:Connect(fonction)","import Event","require(Event)","Event.loop()"],"correct":0,"explain":"Roblox utilise des signaux : Event:Connect(fn) abonne ta fonction, appelée à chaque déclenchement."},
+  {"q":"Quel trio de callbacks structure un jeu LÖVE ?","a":["love.load, love.update, love.draw","start, tick, render","main, loop, exit","init, run, stop"],"correct":0,"explain":"LÖVE appelle love.load une fois, puis love.update(dt) et love.draw à chaque frame. Le reste est du Lua pur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Écris un squelette LÖVE minimal qui affiche un texte.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>function love.draw()
+  love.graphics.print("Bonjour LÖVE !", 100, 100)
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Script Roblox&nbsp;: donne 100 pièces à chaque joueur qui rejoint.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local Players = game:GetService("Players")
+Players.PlayerAdded:Connect(function(player)
+  local stats = Instance.new("IntValue")
+  stats.Name = "Pieces"
+  stats.Value = 100
+  stats.Parent = player
+end)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Conçois un module de logique de score réutilisable, indépendant du moteur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>-- score.lua : aucun appel à love.* ni game.* → portable
+local M = {valeur = 0}
+function M.ajouter(n) M.valeur = M.valeur + n end
+function M.reset() M.valeur = 0 end
+return M
+-- Le code moteur (LÖVE ou Roblox) se contente d'appeler M.ajouter().</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Lua est <b>embarqué</b>&nbsp;: le moteur expose une API, ton Lua la pilote.</li>
+                <li>Roblox = Luau&nbsp;: services, Instances, <code>:Connect</code>, client/serveur.</li>
+                <li>LÖVE&nbsp;: callbacks <code>love.load/update/draw</code> + Lua pur.</li>
+                <li>Garde ta <b>logique de jeu portable</b> (Lua pur), isolée de l'API moteur.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>embarqué</b> — Lua intégré à un programme hôte (le moteur) qui l'exécute.</p>
+              <p><b>Luau</b> — dialecte de Lua de Roblox (types optionnels, extensions).</p>
+              <p><b>Instance</b> — objet de l'arbre Roblox (Part, Script, Value…).</p>
+              <p><b>API moteur</b> — ensemble de fonctions exposées par le moteur (love.*, game:*).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua14-performance.html">LUA14 — Performance &amp; pièges</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

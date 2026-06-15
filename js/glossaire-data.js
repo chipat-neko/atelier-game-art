@@ -477,3 +477,38 @@ window.GLOSSAIRE = window.GLOSSAIRE.concat([
   { terme: "Overdraw (shader)", def: "Réexécution du fragment sur des pixels superposés (transparents, particules), qui multiplie le coût de rendu.", alias: [], src: "sh14" },
   { terme: "Branche dynamique", def: "Condition (if) qui varie par pixel ; peut diverger et coûter cher. On préfère step/lerp/min/max.", alias: [], src: "sh14" }
 ]);
+
+/* --- Piste 11 : Lua (scripting de jeu) --- */
+window.GLOSSAIRE = window.GLOSSAIRE.concat([
+  { terme: "Lua", def: "Langage de script léger et embarqué, très utilisé dans le jeu vidéo (Roblox/Luau, LÖVE, Defold). Conçu pour piloter un moteur écrit en C/C++.", alias: ["Luau"], src: "lua01" },
+  { terme: "nil", def: "Valeur Lua représentant « rien » / l'absence de valeur. Une variable non définie vaut nil ; assigner nil supprime une clé d'une table.", alias: [], src: "lua02" },
+  { terme: "Typage dynamique (Lua)", def: "En Lua, le type est porté par la valeur, pas par la variable : une même variable peut contenir successivement un number, une string, une table.", alias: [], src: "lua02" },
+  { terme: "local vs global", def: "Une variable local est limitée à sa portée et plus rapide d'accès ; sans local, elle devient globale (entrée de _G), risquant collisions et fuites. On déclare local par défaut.", alias: ["_G"], src: "lua02" },
+  { terme: "Concaténation (..)", def: "Opérateur Lua pour coller des chaînes (et convertir les nombres au passage). À ne pas confondre avec + (arithmétique).", alias: ["..", "opérateur point-point"], src: "lua03" },
+  { terme: "~=", def: "Opérateur « différent de » en Lua (et non !=). L'égalité s'écrit ==.", alias: ["différent de"], src: "lua03" },
+  { terme: "Opérateur de longueur (#)", def: "# donne la longueur d'une chaîne ou d'une séquence dense. Non fiable sur une table à trou (nil au milieu).", alias: ["#"], src: "lua03" },
+  { terme: "truthy / falsy (Lua)", def: "En Lua, seuls false et nil sont « faux » ; tout le reste est vrai, y compris 0 et la chaîne vide — un piège fréquent.", alias: ["truthy", "falsy"], src: "lua04" },
+  { terme: "ipairs / pairs", def: "Itérateurs de tables : ipairs parcourt la séquence ordonnée 1..n (s'arrête au premier trou) ; pairs parcourt toutes les clés, sans ordre garanti.", alias: ["ipairs", "pairs"], src: "lua05" },
+  { terme: "repeat … until", def: "Boucle Lua dont la condition est testée APRÈS le corps : elle s'exécute donc au moins une fois. until arrête quand la condition devient vraie.", alias: [], src: "lua05" },
+  { terme: "Retours multiples", def: "Une fonction Lua peut renvoyer plusieurs valeurs (return a, b) que l'on récupère avec local x, y = f().", alias: [], src: "lua06" },
+  { terme: "varargs (...)", def: "Nombre variable d'arguments d'une fonction Lua, capturés par ... et souvent transformés en table avec {...}.", alias: ["..."], src: "lua06" },
+  { terme: "Table", def: "Unique structure de données de Lua : sert à la fois de tableau (séquence indexée à partir de 1) et de dictionnaire (clés nommées). Les tables sont des références.", alias: ["table Lua"], src: "lua07" },
+  { terme: "Séquence", def: "Table Lua indexée de 1 à n sans trou. Condition pour que # et ipairs soient fiables.", alias: [], src: "lua07" },
+  { terme: "Métatable", def: "Table décrivant le comportement d'une autre table (recherche de clés, opérateurs). Socle de la POO en Lua.", alias: ["metatable"], src: "lua08" },
+  { terme: "__index", def: "Métaméthode indiquant où poursuivre la recherche d'une clé absente. En chaînant les __index, on obtient l'héritage en Lua.", alias: ["metamethod"], src: "lua08" },
+  { terme: "self (Lua)", def: "Instance courante, passée automatiquement par l'appel par méthode obj:methode(). Déclarer une méthode avec : injecte aussi self.", alias: [], src: "lua08" },
+  { terme: "setmetatable", def: "Attache une métatable à une table. Base du pattern classe : setmetatable(instance, Classe) avec Classe.__index = Classe.", alias: [], src: "lua08" },
+  { terme: "Module (Lua)", def: "Fichier Lua qui expose une table de fonctions/données et la retourne (return M). Chargé avec require.", alias: [], src: "lua09" },
+  { terme: "require", def: "Charge un module Lua (une seule fois, puis cache dans package.loaded) et renvoie sa table. Le point sépare les dossiers, sans l'extension .lua.", alias: ["package.loaded"], src: "lua09" },
+  { terme: "pcall / xpcall", def: "Appel protégé : pcall(f, ...) exécute f sans planter, renvoyant true+résultats ou false+message. xpcall ajoute un gestionnaire (trace).", alias: ["pcall", "xpcall", "appel protégé"], src: "lua10" },
+  { terme: "assert (Lua)", def: "Vérifie une précondition : renvoie sa valeur si elle est vraie, sinon lève une erreur avec le message fourni.", alias: [], src: "lua10" },
+  { terme: "Coroutine", def: "Fonction Lua que l'on peut suspendre (yield) et reprendre (resume). Coopérative (une à la fois), idéale pour étaler une logique dans le temps.", alias: ["coroutine.yield", "coroutine.resume"], src: "lua11" },
+  { terme: "Boucle de jeu", def: "Cycle répété ≈ 60 fois/s : lire les entrées, mettre à jour la logique (update) puis dessiner (draw). update change l'état, draw ne fait qu'afficher.", alias: ["update/draw"], src: "lua12" },
+  { terme: "Delta time (dt)", def: "Durée de la frame précédente. Multiplier les vitesses par dt rend le mouvement indépendant du framerate.", alias: ["dt"], src: "lua12" },
+  { terme: "Callback", def: "Fonction que le moteur appelle pour toi au bon moment (update, draw, événements). Inversion de contrôle : « ne nous appelez pas, on vous appellera ».", alias: [], src: "lua12" },
+  { terme: "Lua embarqué", def: "Interpréteur Lua intégré à un programme hôte (moteur en C/C++) qui expose une API. Le code Lua pilote l'API ; l'hôte appelle ses callbacks.", alias: ["embedded Lua"], src: "lua13" },
+  { terme: ":Connect (Roblox)", def: "Abonne une fonction à un événement Roblox (Event:Connect(fn)) ; elle est appelée à chaque déclenchement.", alias: ["Instance", "service Roblox"], src: "lua13" },
+  { terme: "Ramasse-miettes (GC)", def: "Mécanisme qui libère automatiquement la mémoire des valeurs inaccessibles. Trop d'allocations par frame provoquent des pauses GC (micro-freezes).", alias: ["GC", "garbage collector"], src: "lua14" },
+  { terme: "Pool d'objets", def: "Réserve d'objets recyclés (projectiles, ennemis) pour éviter d'allouer/jeter sans cesse et limiter le travail du ramasse-miettes.", alias: ["object pool"], src: "lua14" },
+  { terme: "Machine à états", def: "Modèle où le jeu est dans un état parmi plusieurs (menu, partie, pause…) avec des transitions définies, souvent via une table de transitions plutôt qu'une cascade de if.", alias: ["table de transitions"], src: "lua15" }
+]);

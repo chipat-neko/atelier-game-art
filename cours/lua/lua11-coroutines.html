@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA11 — Coroutines · Atelier Game Art</title>
+  <meta name="description" content="Coroutines Lua : create, resume, yield, status. Mettre en pause et reprendre une fonction — idéal pour séquences, dialogues et IA pas à pas.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Coroutines</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA11 — Coroutines</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua06-fonctions.html">LUA6 — Fonctions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est une <b>coroutine</b> et en quoi elle diffère d'un thread.</li>
+                <li>Utiliser <code>create</code>, <code>resume</code>, <code>yield</code>, <code>status</code>.</li>
+                <li>Mettre en pause une fonction et la reprendre plus tard.</li>
+                <li>Pourquoi c'est parfait pour les séquences (dialogues, IA, timers).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Une coroutine permet d'écrire une logique <b>étalée dans le temps</b> de façon linéaire&nbsp;: «&nbsp;avance, attends 1 s, parle, attends, ferme&nbsp;». Sans coroutine, il faudrait une machine à états compliquée. C'est la base des moteurs comme LÖVE et de nombreux systèmes Roblox.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. create / resume / yield</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local co = coroutine.create(function(a)
+  print("départ", a)
+  local b = coroutine.yield(a + 1)   -- met en pause, renvoie a+1
+  print("repris avec", b)
+  return "fini"
+end)
+
+print(coroutine.resume(co, 10))   -- départ 10  →  true  11
+print(coroutine.resume(co, 99))   -- repris avec 99  →  true  fini</code></pre>
+            </div>
+            <p><code>yield</code> suspend la coroutine et renvoie une valeur à <code>resume</code>. Le <code>resume</code> suivant reprend <b>là où on s'était arrêté</b>, en injectant ses arguments comme résultat du <code>yield</code>.</p>
+
+            <h3>2. status</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>print(coroutine.status(co))   -- "suspended", "running", "dead"…</code></pre>
+            </div>
+            <p>Une coroutine «&nbsp;morte&nbsp;» (terminée) ne peut plus être reprise&nbsp;: <code>resume</code> renvoie alors <code>false</code>.</p>
+
+            <h3>3. Cas d'usage : attendre des « frames »</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local function sequenceDialogue()
+  dire("Bonjour !")
+  coroutine.yield(1.0)     -- attendre 1 seconde (le moteur gère le délai)
+  dire("Comment vas-tu ?")
+  coroutine.yield(1.5)
+  fermerDialogue()
+end
+
+local dlg = coroutine.create(sequenceDialogue)
+-- À chaque frame, le moteur fait resume(dlg) après le délai demandé.</code></pre>
+            </div>
+            <p>C'est le motif des «&nbsp;wait()&nbsp;» dans Roblox ou des coroutines de LÖVE&nbsp;: écrire une séquence comme si le temps était linéaire.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 130" role="img" aria-label="resume reprend, yield suspend, en alternance">
+                <g class="svg-text" font-size="10" font-family="monospace">
+                  <rect x="30" y="50" width="120" height="34" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="90" y="71" text-anchor="middle">resume →</text>
+                  <rect x="220" y="20" width="120" height="34" rx="8" fill="#84cc16" fill-opacity="0.2" stroke="#84cc16"/><text x="280" y="41" text-anchor="middle">corps</text>
+                  <rect x="410" y="50" width="120" height="34" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="470" y="71" text-anchor="middle">← yield</text>
+                  <path d="M150 60 L220 44" stroke="#84cc16" stroke-width="2" marker-end="url(#ac)"/>
+                  <path d="M340 44 L410 60" stroke="#84cc16" stroke-width="2" marker-end="url(#ac)"/>
+                  <text x="280" y="100" text-anchor="middle" font-family="sans-serif" font-size="9" class="svg-dim">on reprend exactement là où yield a suspendu</text>
+                  <defs><marker id="ac" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#84cc16"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption><code>resume</code> ↔ <code>yield</code>&nbsp;: une exécution coopérative que l'on met en pause.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée une coroutine avec <code>coroutine.create</code>.</li>
+              <li>Lance-la avec <code>resume</code> et observe la valeur de <code>yield</code>.</li>
+              <li>Reprends-la avec un nouvel argument.</li>
+              <li>Vérifie son <code>status</code> avant et après la fin.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>resume</code> renvoie <code>false, "cannot resume dead coroutine"</code>.</div>
+                <div class="pi-cause"><b>Cause</b>La coroutine est terminée.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie <code>status</code> avant&nbsp;; recrée-la si besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>yield</code> hors d'une coroutine plante.</div>
+                <div class="pi-cause"><b>Cause</b><code>yield</code> n'est valide que dans une coroutine en cours.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle la fonction via <code>resume</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une erreur dans la coroutine est silencieuse.</div>
+                <div class="pi-cause"><b>Cause</b><code>resume</code> renvoie <code>false, err</code> au lieu de planter.</div>
+                <div class="pi-fix"><b>Correction</b>Lis la 1re valeur de <code>resume</code> et journalise l'erreur.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Confusion coroutine / thread parallèle.</div>
+                <div class="pi-cause"><b>Cause</b>Les coroutines sont <b>coopératives</b>, pas parallèles.</div>
+                <div class="pi-fix"><b>Correction</b>Une seule s'exécute à la fois&nbsp;; elle rend la main à <code>yield</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Écris une coroutine qui produit 1, puis 2, puis 3 via <code>yield</code>.</li>
+                <li>Récupère chaque valeur avec des <code>resume</code> successifs.</li>
+                <li>Affiche le <code>status</code> une fois la coroutine «&nbsp;dead&nbsp;».</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu enchaînes <code>resume</code> et <code>yield</code> correctement.</li>
+                  <li>Tu lis le booléen renvoyé par <code>resume</code>.</li>
+                  <li>Tu distingues coroutine (coopérative) et thread.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait coroutine.yield ?","a":["Suspend la coroutine et rend la main à resume","Termine définitivement la coroutine","Crée un nouveau thread parallèle","Lance une erreur"],"correct":0,"explain":"yield met la coroutine en pause et renvoie une valeur à resume. Le prochain resume reprend juste après le yield."},
+  {"q":"Les coroutines Lua s'exécutent…","a":["De façon coopérative (une à la fois)","En parallèle sur plusieurs cœurs","De façon préemptive","En arrière-plan automatiquement"],"correct":0,"explain":"Les coroutines sont coopératives : une seule tourne à la fois et cède explicitement la main via yield. Ce n'est pas du parallélisme."},
+  {"q":"Que se passe-t-il si on resume une coroutine « dead » ?","a":["resume renvoie false avec un message d'erreur","Elle redémarre du début","Le programme plante","Elle se met en pause"],"correct":0,"explain":"Une coroutine terminée est « dead » : resume renvoie false et un message « cannot resume dead coroutine »."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Coroutine qui yield 1, 2, 3 à chaque reprise.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local co = coroutine.create(function()
+  for i = 1, 3 do coroutine.yield(i) end
+end)
+print(coroutine.resume(co))   -- true 1
+print(coroutine.resume(co))   -- true 2
+print(coroutine.resume(co))   -- true 3</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Affiche le <code>status</code> avant le premier <code>resume</code> et après la fin.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local co = coroutine.create(function() coroutine.yield() end)
+print(coroutine.status(co))   -- suspended
+coroutine.resume(co)
+coroutine.resume(co)
+print(coroutine.status(co))   -- dead</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Écris un «&nbsp;générateur&nbsp;» de nombres pairs avec <code>coroutine.wrap</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local pairs2 = coroutine.wrap(function()
+  local n = 0
+  while true do n = n + 2; coroutine.yield(n) end
+end)
+print(pairs2(), pairs2(), pairs2())   -- 2  4  6
+-- coroutine.wrap renvoie une fonction qui resume automatiquement.</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>create</code> fabrique, <code>resume</code> lance/reprend, <code>yield</code> suspend.</li>
+                <li>Le <code>resume</code> suivant reprend juste après le <code>yield</code>.</li>
+                <li>Coopératif&nbsp;: une seule coroutine tourne à la fois (pas de parallélisme).</li>
+                <li>Parfait pour séquences temporelles (dialogues, IA, timers).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>coroutine</b> — fonction qu'on peut suspendre et reprendre.</p>
+              <p><b>yield</b> — suspend la coroutine et renvoie une valeur.</p>
+              <p><b>resume</b> — lance ou reprend une coroutine.</p>
+              <p><b>coroutine.wrap</b> — renvoie une fonction qui reprend la coroutine automatiquement.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua12-scripting-jeu.html">LUA12 — Le scripting de jeu</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA03 — Opérateurs & expressions · Atelier Game Art</title>
+  <meta name="description" content="Opérateurs Lua : arithmétique, comparaison (== ~=), logique (and/or/not), concaténation (..) et longueur (#).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Opérateurs</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA03 — Opérateurs &amp; expressions</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua02-variables-types.html">LUA2 — Variables &amp; types</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Les opérateurs arithmétiques et la comparaison (<code>==</code>, <code>~=</code>).</li>
+                <li>La logique <code>and</code> / <code>or</code> / <code>not</code> (et l'astuce <code>a or b</code>).</li>
+                <li>La <b>concaténation</b> de chaînes (<code>..</code>).</li>
+                <li>L'opérateur de <b>longueur</b> (<code>#</code>).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les expressions sont la base de toute logique. Lua a deux particularités à connaître&nbsp;: «&nbsp;différent de&nbsp;» s'écrit <code>~=</code> (pas <code>!=</code>), et la concaténation utilise <code>..</code> (pas <code>+</code>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Arithmétique &amp; comparaison</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local a, b = 7, 2
+print(a + b, a - b, a * b, a / b)   -- 9  5  14  3.5  (/ donne un décimal)
+print(a % b)                        -- 1  (modulo)
+print(a ^ b)                        -- 49 (puissance)
+
+print(a == b)   -- false   (égal)
+print(a ~= b)   -- true    (DIFFÉRENT : ~= et non !=)
+print(a &gt; b, a &lt;= b)</code></pre>
+            </div>
+            <p>Attention&nbsp;: en Lua, <code>/</code> renvoie un décimal (7/2 = 3.5). Pour une division entière, on utilise <code>//</code> (Lua 5.3+) ou <code>math.floor(a/b)</code>.</p>
+
+            <h3>2. Logique : and / or / not</h3>
+            <p>Lua n'a pas <code>&amp;&amp;</code>/<code>||</code>/<code>!</code> mais les mots <code>and</code>, <code>or</code>, <code>not</code>. Subtilité&nbsp;: ils renvoient une <b>valeur</b>, pas seulement un booléen. Seuls <code>false</code> et <code>nil</code> sont «&nbsp;faux&nbsp;»&nbsp;; tout le reste (même <code>0</code> et <code>""</code>) est «&nbsp;vrai&nbsp;».</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local peut_tirer = a_des_munitions and not en_rechargement
+local nom = nomJoueur or "Anonyme"   -- valeur par défaut si nomJoueur est nil/false</code></pre>
+            </div>
+            <p>L'idiome <code>x = a or valeurParDefaut</code> est très courant pour donner une valeur de repli.</p>
+
+            <h3>3. Concaténation (..)</h3>
+            <p>On colle des chaînes avec <code>..</code> (deux points). Les nombres sont convertis automatiquement&nbsp;:</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local nom = "Héros"
+local score = 120
+print(nom .. " : " .. score .. " pts")   -- Héros : 120 pts</code></pre>
+            </div>
+
+            <h3>4. Longueur (#)</h3>
+            <p>L'opérateur <code>#</code> donne la longueur d'une chaîne ou d'une séquence (table-tableau, <a href="../../cours/lua/lua07-tables.html">LUA7</a>)&nbsp;:</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>print(#"Bonjour")     -- 7
+local liste = {10, 20, 30}
+print(#liste)         -- 3</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 130" role="img" aria-label="Particularités Lua : ~= pour différent, .. pour concaténer, # pour longueur">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="30" y="40" width="180" height="50" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="120" y="62" text-anchor="middle">a ~= b</text><text x="120" y="80" text-anchor="middle" font-family="sans-serif" font-size="9" class="svg-dim">« différent » (pas !=)</text>
+                  <rect x="230" y="40" width="180" height="50" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="320" y="62" text-anchor="middle">"a" .. "b"</text><text x="320" y="80" text-anchor="middle" font-family="sans-serif" font-size="9" class="svg-dim">concaténer (pas +)</text>
+                  <rect x="430" y="40" width="180" height="50" rx="8" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="520" y="62" text-anchor="middle">#liste</text><text x="520" y="80" text-anchor="middle" font-family="sans-serif" font-size="9" class="svg-dim">longueur</text>
+                </g>
+              </svg>
+              <figcaption>Trois spécificités Lua à mémoriser&nbsp;: <code>~=</code>, <code>..</code> et <code>#</code>.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Calcule somme, produit, reste (<code>%</code>) et puissance (<code>^</code>).</li>
+              <li>Teste l'égalité et la différence (<code>==</code>, <code>~=</code>).</li>
+              <li>Compose une phrase avec <code>..</code> mêlant texte et nombres.</li>
+              <li>Donne une valeur par défaut avec <code>x = a or "défaut"</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« unexpected symbol near ! ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu as écrit <code>!=</code> au lieu de <code>~=</code>.</div>
+                <div class="pi-fix"><b>Correction</b>« différent » s'écrit <code>~=</code> en Lua.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« attempt to concatenate » / texte + nombre échoue.</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises <code>+</code> pour coller des chaînes.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>..</code> pour concaténer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon <code>if</code> traite <code>0</code> comme faux.</div>
+                <div class="pi-cause"><b>Cause</b>Réflexe d'autres langages&nbsp;: en Lua, <code>0</code> est VRAI.</div>
+                <div class="pi-fix"><b>Correction</b>Seuls <code>false</code> et <code>nil</code> sont faux (voir <a href="../../cours/lua/lua04-conditions.html">LUA4</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Division qui donne un décimal inattendu.</div>
+                <div class="pi-cause"><b>Cause</b><code>/</code> renvoie toujours un décimal en Lua.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>//</code> ou <code>math.floor</code> pour l'entier.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Calcule un score total (base + bonus) et affiche-le dans une phrase avec <code>..</code>.</li>
+                <li>Teste «&nbsp;peut tirer&nbsp;» avec <code>and</code>/<code>not</code>.</li>
+                <li>Donne un nom par défaut avec <code>or</code> si la variable est <code>nil</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu utilises <code>~=</code> et <code>..</code> correctement.</li>
+                  <li>L'idiome <code>or</code> fournit bien une valeur par défaut.</li>
+                  <li>Tu sais que seuls <code>nil</code>/<code>false</code> sont faux.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment écrit-on « différent de » en Lua ?","a":["~=","!=","<>","not="],"correct":0,"explain":"Lua utilise ~= pour la différence (et == pour l'égalité). Écrire != provoque une erreur de syntaxe."},
+  {"q":"Comment concatène-t-on deux chaînes ?","a":["Avec l'opérateur .. (deux points)","Avec +","Avec &","Avec concat()"],"correct":0,"explain":"En Lua, .. concatène les chaînes (et convertit les nombres au passage). + sert uniquement à l'arithmétique."},
+  {"q":"Quelles valeurs sont considérées comme « fausses » en Lua ?","a":["Seulement false et nil","false, nil et 0","La chaîne vide aussi","Tout sauf true"],"correct":0,"explain":"En Lua, seuls false et nil sont faux. 0 et la chaîne vide \"\" sont VRAIS — un piège fréquent venant d'autres langages."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Affiche une phrase combinant un nom et un score avec <code>..</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local nom, score = "Héros", 120
+print(nom .. " a marqué " .. score .. " points")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Utilise <code>or</code> pour fournir un nom par défaut quand la variable vaut <code>nil</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local saisi = nil
+local nom = saisi or "Anonyme"
+print(nom)   -- Anonyme</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Calcule un pourcentage de vie entier (attention à la division) et affiche-le.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local pv, pvMax = 73, 100
+local pourcent = math.floor(pv / pvMax * 100)   -- 73
+print(pourcent .. " %")</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>« Différent » = <code>~=</code>&nbsp;; <code>/</code> donne un décimal (<code>//</code>/<code>math.floor</code> pour l'entier).</li>
+                <li><b>Concaténer</b> = <code>..</code> (pas <code>+</code>)&nbsp;; <b>longueur</b> = <code>#</code>.</li>
+                <li><code>and</code>/<code>or</code>/<code>not</code> renvoient une valeur&nbsp;; idiome <code>x = a or défaut</code>.</li>
+                <li>Seuls <code>false</code> et <code>nil</code> sont faux (<code>0</code> et <code>""</code> sont vrais).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>~=</b> — opérateur « différent de » en Lua.</p>
+              <p><b>.. (concaténation)</b> — colle des chaînes (convertit les nombres).</p>
+              <p><b>#</b> — opérateur de longueur (chaîne ou séquence).</p>
+              <p><b>truthy/falsy</b> — en Lua, seuls false et nil sont faux ; tout le reste est vrai.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua04-conditions.html">LUA4 — Conditions</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

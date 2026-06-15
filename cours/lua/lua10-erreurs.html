@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA10 — Gestion des erreurs · Atelier Game Art</title>
+  <meta name="description" content="Gérer les erreurs en Lua : error, assert, pcall et xpcall pour exécuter du code risqué sans planter le jeu.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Gestion des erreurs</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA10 — Gestion des erreurs</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua06-fonctions.html">LUA6 — Fonctions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Lever une erreur avec <code>error</code> et valider avec <code>assert</code>.</li>
+                <li>Exécuter du code risqué sans planter grâce à <code>pcall</code>.</li>
+                <li>Récupérer le message d'erreur et réagir proprement.</li>
+                <li>Utiliser <code>xpcall</code> pour une trace détaillée.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Dans un jeu, une erreur non gérée fige tout. <code>pcall</code> («&nbsp;protected call&nbsp;») permet d'isoler un bout de code risqué (chargement de sauvegarde, script de mod) et de continuer même s'il échoue.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. error &amp; assert</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local function diviser(a, b)
+  if b == 0 then
+    error("division par zéro")
+  end
+  return a / b
+end
+
+-- assert : lève une erreur si la condition est fausse
+local fichier = assert(ouvrir("save.dat"), "sauvegarde introuvable")</code></pre>
+            </div>
+            <p><code>assert(v, msg)</code> renvoie <code>v</code> s'il est vrai, sinon lève une erreur avec <code>msg</code>. Idéal pour valider des préconditions.</p>
+
+            <h3>2. pcall : appel protégé</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local ok, resultat = pcall(diviser, 10, 0)
+if ok then
+  print("Résultat : " .. resultat)
+else
+  print("Erreur attrapée : " .. resultat)   -- resultat = message d'erreur
+end
+-- Le jeu continue, pas de crash.</code></pre>
+            </div>
+            <p><code>pcall(f, ...)</code> renvoie <code>true, retours…</code> si tout va bien, ou <code>false, message</code> en cas d'erreur. Le programme ne plante pas.</p>
+
+            <h3>3. xpcall &amp; trace</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local function gestionnaire(err)
+  return "LOG : " .. err .. "\n" .. debug.traceback()
+end
+
+local ok, info = xpcall(function()
+  error("boom")
+end, gestionnaire)
+print(ok, info)</code></pre>
+            </div>
+            <p><code>xpcall</code> est comme <code>pcall</code> mais ajoute un <b>gestionnaire</b> qui s'exécute au moment de l'erreur (utile pour capturer la pile avec <code>debug.traceback</code>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 130" role="img" aria-label="pcall renvoie ok+résultat ou false+message">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="200" y="20" width="160" height="34" rx="8" fill="#84cc16" fill-opacity="0.15" stroke="#84cc16"/><text x="280" y="42" text-anchor="middle">pcall(f, ...)</text>
+                  <path d="M260 54 L160 95" stroke="#22c55e" stroke-width="2" marker-end="url(#aok)"/>
+                  <path d="M300 54 L400 95" stroke="#ef4444" stroke-width="2" marker-end="url(#aerr)"/>
+                  <rect x="50" y="95" width="200" height="30" rx="8" fill="none" stroke="#22c55e"/><text x="150" y="115" text-anchor="middle" font-size="10">true, résultat…</text>
+                  <rect x="310" y="95" width="200" height="30" rx="8" fill="none" stroke="#ef4444"/><text x="410" y="115" text-anchor="middle" font-size="10">false, message</text>
+                  <defs>
+                    <marker id="aok" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#22c55e"/></marker>
+                    <marker id="aerr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#ef4444"/></marker>
+                  </defs>
+                </g>
+              </svg>
+              <figcaption><code>pcall</code> transforme une erreur en valeur de retour&nbsp;: pas de crash.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Écris <code>diviser(a, b)</code> qui lève une erreur si <code>b == 0</code>.</li>
+              <li>Appelle-la via <code>pcall</code> et gère le cas d'échec.</li>
+              <li>Valide une précondition avec <code>assert</code>.</li>
+              <li>Ajoute une trace avec <code>xpcall</code> + <code>debug.traceback</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le jeu plante malgré le code « protégé ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu as appelé <code>f()</code> avant de la passer à <code>pcall</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Passe la fonction&nbsp;: <code>pcall(f, arg)</code>, pas <code>pcall(f(arg))</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je perds le résultat de la fonction.</div>
+                <div class="pi-cause"><b>Cause</b>Tu oublies que <code>pcall</code> ajoute <code>ok</code> en première valeur.</div>
+                <div class="pi-fix"><b>Correction</b><code>local ok, res = pcall(...)</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreurs avalées silencieusement.</div>
+                <div class="pi-cause"><b>Cause</b>Tu ignores le <code>false</code> de <code>pcall</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Journalise le message quand <code>ok</code> est faux.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>assert</code> masque la vraie cause.</div>
+                <div class="pi-cause"><b>Cause</b>Message d'assert trop vague.</div>
+                <div class="pi-fix"><b>Correction</b>Donne un message explicite en 2e argument.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Protège un chargement de «&nbsp;sauvegarde&nbsp;» avec <code>pcall</code>.</li>
+                <li>Affiche un message clair si l'opération échoue.</li>
+                <li>Valide un argument non nul avec <code>assert</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu passes la fonction (et ses args) à <code>pcall</code>, sans l'appeler avant.</li>
+                  <li>Tu lis <code>ok</code> et le message d'erreur.</li>
+                  <li>Le programme continue après un échec.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que renvoie pcall quand la fonction réussit ?","a":["true, suivi des valeurs de retour","Seulement le résultat","false, nil","Rien"],"correct":0,"explain":"pcall renvoie true puis les retours de la fonction si elle réussit, ou false puis le message d'erreur sinon."},
+  {"q":"Comment passe-t-on des arguments à la fonction via pcall ?","a":["pcall(f, arg1, arg2)","pcall(f(arg1, arg2))","pcall(f, {args})","Impossible"],"correct":0,"explain":"On passe la fonction PUIS ses arguments : pcall(f, arg1, arg2). Écrire pcall(f(arg)) appelle f tout de suite, hors protection."},
+  {"q":"À quoi sert assert(v, msg) ?","a":["Renvoyer v s'il est vrai, sinon lever une erreur avec msg","Afficher v","Toujours planter","Comparer deux valeurs"],"correct":0,"explain":"assert valide une précondition : il renvoie v si truthy, sinon lève une erreur portant le message msg."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Protège un appel qui peut lever une erreur et affiche le message.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local ok, err = pcall(function() error("oops") end)
+if not ok then print("Attrapé : " .. err) end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris <code>racine(n)</code> qui refuse les négatifs via <code>assert</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local function racine(n)
+  assert(n &gt;= 0, "n doit être positif")
+  return math.sqrt(n)
+end
+local ok, res = pcall(racine, -4)
+print(ok, res)   -- false  ...: n doit être positif</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Charge une «&nbsp;config&nbsp;» avec valeur de repli si le chargement échoue.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local function chargerConfig() error("fichier manquant") end
+local ok, config = pcall(chargerConfig)
+if not ok then
+  config = {volume = 50, plein_ecran = false}   -- repli
+end
+print(config.volume)   -- 50</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>error(msg)</code> lève&nbsp;; <code>assert(v, msg)</code> valide une précondition.</li>
+                <li><code>pcall(f, ...)</code> isole le code risqué&nbsp;: <code>true, res</code> ou <code>false, msg</code>.</li>
+                <li>Passe la fonction à <code>pcall</code>, ne l'appelle pas avant.</li>
+                <li><code>xpcall</code> + <code>debug.traceback</code> pour une trace complète.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>error</b> — lève une erreur (interrompt le flux courant).</p>
+              <p><b>assert</b> — vérifie une condition, lève une erreur sinon.</p>
+              <p><b>pcall</b> — « protected call » : exécute sans laisser l'erreur planter le programme.</p>
+              <p><b>xpcall</b> — pcall avec un gestionnaire d'erreur (pour la trace).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua11-coroutines.html">LUA11 — Coroutines</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

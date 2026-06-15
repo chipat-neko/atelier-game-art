@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA09 — Modules &amp; require · Atelier Game Art</title>
+  <meta name="description" content="Organiser son code Lua en modules : retourner une table, charger avec require, cache des modules, et bonnes pratiques d'arborescence.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Modules</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA09 — Modules &amp; require</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua08-metatables-poo.html">LUA8 — Métatables &amp; POO</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Écrire un module qui <b>retourne une table</b>.</li>
+                <li>Le charger avec <code>require</code>.</li>
+                <li>Comprendre que <code>require</code> met en <b>cache</b> (un seul chargement).</li>
+                <li>Organiser un projet Lua en fichiers.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu, ce n'est pas un seul fichier. On découpe en modules&nbsp;: <code>player.lua</code>, <code>enemy.lua</code>, <code>utils.lua</code>… <code>require</code> permet de les assembler proprement, sans variables globales partout.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un module = un fichier qui retourne une table</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- fichier : mathutils.lua
+local M = {}
+
+function M.clamp(x, mini, maxi)
+  if x &lt; mini then return mini end
+  if x &gt; maxi then return maxi end
+  return x
+end
+
+return M   -- on RENVOIE la table du module</code></pre>
+            </div>
+
+            <h3>2. Charger avec require</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- fichier : main.lua
+local mu = require("mathutils")   -- sans l'extension .lua
+print(mu.clamp(150, 0, 100))      -- 100</code></pre>
+            </div>
+            <p>On nomme le module par son chemin de fichier (le point sert de séparateur de dossier&nbsp;: <code>require("jeu.player")</code> → <code>jeu/player.lua</code>).</p>
+
+            <h3>3. Le cache de require</h3>
+            <p><code>require</code> ne charge un module <b>qu'une seule fois</b>&nbsp;: les appels suivants renvoient la même table (mise en cache dans <code>package.loaded</code>). C'est voulu — les modules sont des singletons partagés.</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local a = require("config")
+local b = require("config")
+print(a == b)   -- true : même table</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 150" role="img" aria-label="main.lua require player.lua et enemy.lua qui retournent leur table">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="210" y="20" width="140" height="36" rx="8" fill="#84cc16" fill-opacity="0.15" stroke="#84cc16"/><text x="280" y="43" text-anchor="middle">main.lua</text>
+                  <path d="M260 56 L150 100" stroke="#84cc16" stroke-width="2" marker-end="url(#a10)"/>
+                  <path d="M300 56 L410 100" stroke="#84cc16" stroke-width="2" marker-end="url(#a10)"/>
+                  <rect x="70" y="100" width="150" height="36" rx="8" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="145" y="123" text-anchor="middle">player.lua → M</text>
+                  <rect x="350" y="100" width="150" height="36" rx="8" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="425" y="123" text-anchor="middle">enemy.lua → M</text>
+                  <defs><marker id="a10" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#84cc16"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Chaque module retourne sa table&nbsp;; <code>require</code> les assemble.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée <code>mathutils.lua</code> avec une table locale <code>M</code> et <code>return M</code>.</li>
+              <li>Ajoute une fonction <code>M.clamp</code>.</li>
+              <li>Charge-le depuis <code>main.lua</code> avec <code>require</code>.</li>
+              <li>Vérifie que deux <code>require</code> renvoient la même table.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>require</code> renvoie <code>true</code> au lieu du module.</div>
+                <div class="pi-cause"><b>Cause</b>Le fichier ne fait pas <code>return M</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Termine le module par <code>return</code> de sa table.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« module not found ».</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais chemin ou extension <code>.lua</code> incluse.</div>
+                <div class="pi-fix"><b>Correction</b><code>require("dossier.fichier")</code> sans <code>.lua</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes modifications d'un module ne sont pas reprises.</div>
+                <div class="pi-cause"><b>Cause</b>Le module est en cache.</div>
+                <div class="pi-fix"><b>Correction</b>Recharge le jeu, ou vide <code>package.loaded[nom]</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Variables qui fuient entre fichiers.</div>
+                <div class="pi-cause"><b>Cause</b>Tu déclares en global au lieu de la table du module.</div>
+                <div class="pi-fix"><b>Correction</b>Tout passe par <code>local M</code> + champs de <code>M</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Écris un module <code>vecteur</code> avec <code>longueur(x, y)</code>.</li>
+                <li>Charge-le et calcule la longueur de <code>(3, 4)</code>.</li>
+                <li>Explique pourquoi deux <code>require</code> renvoient la même table.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Ton module se termine par <code>return</code> de sa table.</li>
+                  <li>Tu charges avec <code>require</code> sans l'extension.</li>
+                  <li>Tu n'utilises aucune variable globale.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que doit faire la dernière ligne d'un module Lua ?","a":["return de la table du module","print du module","Rien de spécial","Déclarer une globale"],"correct":0,"explain":"Un module retourne typiquement sa table (return M). C'est cette valeur que require renvoie à l'appelant."},
+  {"q":"Combien de fois require charge-t-il réellement un module donné ?","a":["Une seule fois (puis cache)","À chaque appel","Jamais","Deux fois"],"correct":0,"explain":"require met le résultat en cache dans package.loaded : les appels suivants renvoient la même table sans réexécuter le fichier."},
+  {"q":"Comme écrit-on require pour le fichier jeu/player.lua ?","a":["require(\"jeu.player\")","require(\"jeu/player.lua\")","require(\"player\")","import jeu.player"],"correct":0,"explain":"Le point sert de séparateur de dossier et l'extension .lua est omise : require(\"jeu.player\")."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Écris un module <code>saluts</code> avec une fonction <code>bonjour(nom)</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>-- saluts.lua
+local M = {}
+function M.bonjour(nom) return "Bonjour " .. nom end
+return M</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Module <code>vecteur</code> avec <code>longueur(x, y)</code> (théorème de Pythagore).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>-- vecteur.lua
+local M = {}
+function M.longueur(x, y) return math.sqrt(x*x + y*y) end
+return M
+
+-- main.lua
+local v = require("vecteur")
+print(v.longueur(3, 4))   -- 5.0</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un module <code>compteurGlobal</code> qui garde un état entre deux <code>require</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>-- compteurGlobal.lua
+local M = {total = 0}
+function M.ajouter(n) M.total = M.total + n end
+return M
+-- Grâce au cache, tous les require partagent la même table M.</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un module = un fichier qui <b>retourne une table</b>.</li>
+                <li><code>require("dossier.fichier")</code> charge sans l'extension <code>.lua</code>.</li>
+                <li><code>require</code> met en <b>cache</b>&nbsp;: chargement unique, table partagée.</li>
+                <li>Évite les globales&nbsp;: tout passe par la table du module.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>module</b> — fichier Lua qui expose une table de fonctions/données.</p>
+              <p><b>require</b> — charge un module (une seule fois) et renvoie sa table.</p>
+              <p><b>package.loaded</b> — cache interne des modules déjà chargés.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua10-erreurs.html">LUA10 — Gestion des erreurs (pcall)</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

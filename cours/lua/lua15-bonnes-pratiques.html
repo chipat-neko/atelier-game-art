@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA15 — Bonnes pratiques &amp; mini-projet · Atelier Game Art</title>
+  <meta name="description" content="Conventions Lua, organisation en modules, gestion d'état, débogage (print/inspect) et mini-projet récapitulatif : une petite machine à états de jeu.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua15";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Bonnes pratiques &amp; mini-projet</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA15 — Bonnes pratiques &amp; mini-projet</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>idéalement les leçons <a href="../../cours/lua/lua07-tables.html">LUA7</a> à <a href="../../cours/lua/lua14-performance.html">LUA14</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Les <b>conventions</b> Lua (nommage, <code>local</code> partout, modules).</li>
+                <li>Gérer l'<b>état</b> d'un jeu proprement (machine à états).</li>
+                <li>Déboguer avec <code>print</code> et un petit <code>inspect</code> de table.</li>
+                <li>Assembler tout le cours dans un <b>mini-projet</b> récapitulatif.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Savoir écrire du Lua ne suffit pas&nbsp;: il faut écrire du Lua <b>maintenable</b>. Cette leçon condense les réflexes pros et les met en œuvre dans un petit projet complet.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Conventions</h3>
+            <ul>
+              <li><b><code>local</code> par défaut</b>&nbsp;: réserve les globales aux rares cas voulus.</li>
+              <li>Nommage&nbsp;: <code>snake_case</code> ou <code>camelCase</code> — choisis-en un et tiens-t'y.</li>
+              <li>Un <b>module par responsabilité</b> qui retourne une table (rappel <a href="../../cours/lua/lua09-modules.html">LUA9</a>).</li>
+              <li>Valide les entrées tôt avec <code>assert</code> (rappel <a href="../../cours/lua/lua10-erreurs.html">LUA10</a>).</li>
+            </ul>
+
+            <h3>2. Gestion d'état : la machine à états</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local Jeu = {etat = "menu"}
+
+local transitions = {
+  menu  = function() Jeu.etat = "partie" end,
+  partie = function() Jeu.etat = "pause" end,
+  pause = function() Jeu.etat = "partie" end,
+}
+
+function Jeu.action()
+  local t = transitions[Jeu.etat]   -- table-switch : pas de if/elseif géant
+  if t then t() end
+end</code></pre>
+            </div>
+            <p>Une table de transitions remplace une cascade de <code>if/elseif</code> et reste lisible quand les états se multiplient.</p>
+
+            <h3>3. Déboguer : print &amp; inspect</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local function inspect(t, indent)
+  indent = indent or ""
+  for k, v in pairs(t) do
+    if type(v) == "table" then
+      print(indent .. tostring(k) .. ":")
+      inspect(v, indent .. "  ")
+    else
+      print(indent .. tostring(k) .. " = " .. tostring(v))
+    end
+  end
+end
+
+inspect({nom = "Léa", stats = {pv = 100, mana = 30}})</code></pre>
+            </div>
+
+            <h3>4. Mini-projet : un combat au tour par tour</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- combat.lua : assemble classes (LUA8), modules (LUA9) et erreurs (LUA10)
+local Combattant = {}
+Combattant.__index = Combattant
+
+function Combattant.new(nom, pv, attaque)
+  return setmetatable({nom = nom, pv = pv, attaque = attaque}, Combattant)
+end
+
+function Combattant:frapper(cible)
+  assert(cible, "cible manquante")
+  cible.pv = math.max(0, cible.pv - self.attaque)
+  print(string.format("%s frappe %s (%d PV restants)", self.nom, cible.nom, cible.pv))
+end
+
+function Combattant:estVivant() return self.pv &gt; 0 end
+
+local heros  = Combattant.new("Héros", 100, 18)
+local gobelin = Combattant.new("Gobelin", 40, 9)
+
+local tour = 1
+while heros:estVivant() and gobelin:estVivant() do
+  print("-- Tour " .. tour)
+  heros:frapper(gobelin)
+  if gobelin:estVivant() then gobelin:frapper(heros) end
+  tour = tour + 1
+end
+
+print((heros:estVivant() and heros.nom or gobelin.nom) .. " remporte le combat !")</code></pre>
+            </div>
+            <p>Ce projet réunit&nbsp;: tables, classes via métatables, méthodes avec <code>self</code>, <code>string.format</code>, <code>assert</code>, boucle <code>while</code> et le ternaire <code>and/or</code>. C'est l'aboutissement de la piste.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 130" role="img" aria-label="Machine à états : menu, partie, pause">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="40" y="50" width="120" height="40" rx="20" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="100" y="74" text-anchor="middle">menu</text>
+                  <rect x="220" y="50" width="120" height="40" rx="20" fill="#84cc16" fill-opacity="0.18" stroke="#84cc16"/><text x="280" y="74" text-anchor="middle">partie</text>
+                  <rect x="400" y="50" width="120" height="40" rx="20" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="460" y="74" text-anchor="middle">pause</text>
+                  <path d="M160 70 H220" stroke="#84cc16" stroke-width="2" marker-end="url(#am)"/>
+                  <path d="M340 70 H400" stroke="#84cc16" stroke-width="2" marker-end="url(#am)"/>
+                  <path d="M400 80 C 360 105 320 105 340 84" fill="none" stroke="#84cc16" stroke-width="1.5" marker-end="url(#am)"/>
+                  <defs><marker id="am" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 Z" fill="#84cc16"/></marker></defs>
+                </g>
+              </svg>
+              <figcaption>Une machine à états pilotée par une table de transitions.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Convertis une cascade de <code>if/elseif</code> d'états en table de transitions.</li>
+              <li>Écris un <code>inspect</code> récursif pour visualiser une table.</li>
+              <li>Assemble le mini-projet de combat et fais-le tourner mentalement.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Variables qui fuient entre fichiers.</div>
+                <div class="pi-cause"><b>Cause</b>Globales par oubli de <code>local</code>.</div>
+                <div class="pi-fix"><b>Correction</b><code>local</code> par défaut&nbsp;; expose via la table du module.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Logique d'états illisible.</div>
+                <div class="pi-cause"><b>Cause</b>Cascade de <code>if/elseif</code> qui enfle.</div>
+                <div class="pi-fix"><b>Correction</b>Table de transitions (machine à états).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>print(table)</code> affiche <code>table: 0x…</code>.</div>
+                <div class="pi-cause"><b>Cause</b><code>print</code> n'explore pas le contenu.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un <code>inspect</code> récursif.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Bug difficile à reproduire.</div>
+                <div class="pi-cause"><b>Cause</b>État global muté un peu partout.</div>
+                <div class="pi-fix"><b>Correction</b>Centralise l'état&nbsp;; passe-le en argument.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Ajoute un état <code>game_over</code> à la machine à états.</li>
+                <li>Étends le combat avec un sort qui soigne (réutilise <code>:frapper</code> comme modèle).</li>
+                <li>Range le tout en deux modules&nbsp;: <code>combattant.lua</code> et <code>main.lua</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune variable globale involontaire.</li>
+                  <li>La machine à états reste lisible quand tu ajoutes un état.</li>
+                  <li>Ton mini-projet combine classes, modules et gestion d'erreurs.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi remplacer une cascade de if/elseif d'états par une table de transitions ?","a":["Plus lisible et extensible quand les états se multiplient","C'est plus lent mais joli","Lua interdit les if","Pour utiliser plus de mémoire"],"correct":0,"explain":"Une table de transitions (table-switch) reste claire et facile à étendre, là où une longue cascade de if/elseif devient vite illisible."},
+  {"q":"Quelle est la convention de portée recommandée en Lua ?","a":["local par défaut, globales réservées aux cas voulus","Tout en global","Tout en majuscules","Aucune, c'est libre"],"correct":0,"explain":"On déclare local par défaut : cela évite les collisions, les fuites entre fichiers et améliore les performances. On expose ce qu'il faut via la table du module."},
+  {"q":"Pourquoi écrire une fonction inspect plutôt qu'un simple print(t) ?","a":["print affiche l'adresse de la table, pas son contenu","print est interdit sur les tables","inspect est plus rapide à l'exécution","Aucune raison"],"correct":0,"explain":"print(table) montre seulement « table: 0x… ». Une fonction inspect parcourt récursivement les paires clé/valeur pour révéler le contenu réel."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée une machine à états à 3 états avec une table de transitions.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local etat = "menu"
+local suivant = {menu = "partie", partie = "pause", pause = "partie"}
+local function avancer() etat = suivant[etat] or etat end
+avancer(); print(etat)   -- partie</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris un <code>inspect</code> qui affiche une table imbriquée.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local function inspect(t, p)
+  p = p or ""
+  for k, v in pairs(t) do
+    if type(v) == "table" then print(p..k..":"); inspect(v, p.."  ")
+    else print(p..k.." = "..tostring(v)) end
+  end
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Reprends le mini-projet de combat et ajoute un sort de soin limité à 3 usages.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>function Combattant:soigner(montant)
+  self.soins = self.soins or 3
+  if self.soins &lt;= 0 then print(self.nom.." n'a plus de soin") return end
+  self.soins = self.soins - 1
+  self.pv = math.min(100, self.pv + montant)
+  print(string.format("%s se soigne (%d PV, %d restants)", self.nom, self.pv, self.soins))
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>local</code> par défaut&nbsp;; un module par responsabilité.</li>
+                <li>Machine à états via table de transitions &gt; cascade de <code>if</code>.</li>
+                <li>Débogue avec un <code>inspect</code> récursif, pas un simple <code>print</code>.</li>
+                <li>Un vrai projet combine tables, métatables, modules et gestion d'erreurs.</li>
+              </ul>
+            </div>
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎓</span>Piste Lua terminée&nbsp;!</div>
+              <p>Tu maîtrises désormais Lua de bout en bout&nbsp;: types, tables, fonctions, POO par métatables, modules, erreurs, coroutines, scripting de jeu, intégration moteur et performance. Pour continuer&nbsp;:</p>
+              <ul>
+                <li>Retour au <a href="../../index.html">programme complet</a> pour explorer une autre piste.</li>
+                <li>Piste voisine&nbsp;: <a href="../../cours/csharp/cs01-introduction.html">Programmation C# (Unity)</a> ou <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a>.</li>
+                <li>Mets en pratique dans <b>LÖVE</b> (love2d) ou <b>Roblox Studio</b> avec ton mini-projet.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>machine à états</b> — modèle où le jeu est dans un état parmi plusieurs, avec des transitions définies.</p>
+              <p><b>table de transitions</b> — table associant chaque état à son action/état suivant.</p>
+              <p><b>inspect</b> — fonction de débogage qui affiche récursivement le contenu d'une table.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../index.html">Programme complet</a> — choisis ta prochaine piste.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

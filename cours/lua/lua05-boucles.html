@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA05 — Boucles · Atelier Game Art</title>
+  <meta name="description" content="Boucles Lua : numeric for, while, repeat...until, et la boucle générique for ... in ipairs/pairs. break pour sortir.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Boucles</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA05 — Boucles</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua04-conditions.html">LUA4 — Conditions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>La boucle numérique <code>for i = a, b, pas do … end</code>.</li>
+                <li>Les boucles <code>while</code> et <code>repeat … until</code>.</li>
+                <li>Parcourir une table avec <code>ipairs</code> et <code>pairs</code>.</li>
+                <li>Sortir d'une boucle avec <code>break</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Répéter une action — appliquer des dégâts à tous les ennemis, parcourir un inventaire, faire avancer une animation — c'est le cœur du gameplay. Lua propose plusieurs boucles, chacune adaptée à un cas.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Boucle numérique</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>for i = 1, 5 do        -- de 1 à 5 inclus
+  print("Tour " .. i)
+end
+
+for i = 10, 0, -2 do   -- pas négatif : 10, 8, 6, 4, 2, 0
+  print(i)
+end</code></pre>
+            </div>
+            <p>Forme&nbsp;: <code>for variable = début, fin, pas do</code>. Le pas est optionnel (1 par défaut) et la borne de fin est <b>incluse</b>.</p>
+
+            <h3>2. while et repeat…until</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local munitions = 3
+while munitions &gt; 0 do
+  print("Tir ! reste " .. munitions)
+  munitions = munitions - 1
+end
+
+local essais = 0
+repeat
+  essais = essais + 1
+until essais &gt;= 3      -- s'exécute AU MOINS une fois</code></pre>
+            </div>
+            <p><code>while</code> teste <b>avant</b>&nbsp;; <code>repeat … until</code> teste <b>après</b> (le corps s'exécute toujours au moins une fois). Note&nbsp;: <code>until</code> arrête quand la condition devient <b>vraie</b>.</p>
+
+            <h3>3. Parcourir une table : ipairs / pairs</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local fruits = {"pomme", "kiwi", "mangue"}
+for index, valeur in ipairs(fruits) do      -- séquence ordonnée 1..n
+  print(index, valeur)
+end
+
+local joueur = {nom = "Léa", pv = 100}
+for cle, valeur in pairs(joueur) do          -- toutes les clés (ordre non garanti)
+  print(cle, valeur)
+end</code></pre>
+            </div>
+            <p><code>ipairs</code> = séquences indexées 1..n (s'arrête au premier trou). <code>pairs</code> = toutes les clés, y compris nommées (voir <a href="../../cours/lua/lua07-tables.html">LUA7</a>).</p>
+
+            <h3>4. break</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>for _, e in ipairs(ennemis) do
+  if e.boss then
+    print("Boss trouvé !")
+    break               -- sort de la boucle
+  end
+end</code></pre>
+            </div>
+            <p>Note&nbsp;: Lua n'a pas de <code>continue</code>. On l'imite avec un <code>if</code> ou un <code>goto</code> (rarement utile).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 600 150" role="img" aria-label="while teste avant, repeat teste après">
+                <g class="svg-text" font-size="11" font-family="sans-serif">
+                  <rect x="30" y="40" width="250" height="70" rx="10" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="155" y="35" text-anchor="middle" class="svg-dim">while : test AVANT</text><text x="155" y="70" text-anchor="middle" font-family="monospace">while c do … end</text><text x="155" y="92" text-anchor="middle" class="svg-dim" font-size="9">peut ne jamais s'exécuter</text>
+                  <rect x="320" y="40" width="250" height="70" rx="10" fill="#84cc16" fill-opacity="0.1" stroke="#84cc16"/><text x="445" y="35" text-anchor="middle" class="svg-dim">repeat : test APRÈS</text><text x="445" y="70" text-anchor="middle" font-family="monospace">repeat … until c</text><text x="445" y="92" text-anchor="middle" class="svg-dim" font-size="9">s'exécute ≥ 1 fois</text>
+                </g>
+              </svg>
+              <figcaption>Choisis la boucle selon le moment du test.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Compte de 1 à 5 avec une boucle numérique.</li>
+              <li>Vide un stock de munitions avec <code>while</code>.</li>
+              <li>Parcours une liste avec <code>ipairs</code> et une table nommée avec <code>pairs</code>.</li>
+              <li>Arrête une recherche dès qu'un élément est trouvé avec <code>break</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Boucle infinie qui fige le jeu.</div>
+                <div class="pi-cause"><b>Cause</b>La condition d'arrêt n'évolue jamais.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie que la variable testée change dans le corps.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>ipairs</code> saute des éléments.</div>
+                <div class="pi-cause"><b>Cause</b>La table a un «&nbsp;trou&nbsp;» (clé manquante) — <code>ipairs</code> s'arrête au trou.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>pairs</code> ou garde une séquence dense.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'ordre de <code>pairs</code> change à chaque exécution.</div>
+                <div class="pi-cause"><b>Cause</b><code>pairs</code> ne garantit aucun ordre.</div>
+                <div class="pi-fix"><b>Correction</b>Pour un ordre fixe, utilise <code>ipairs</code> sur une séquence.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je cherche <code>continue</code> et il n'existe pas.</div>
+                <div class="pi-cause"><b>Cause</b>Lua n'a pas de <code>continue</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Encadre la suite dans un <code>if</code>, ou utilise <code>goto</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Affiche la table de multiplication de 7 avec une boucle numérique.</li>
+                <li>Parcours un inventaire (liste) avec <code>ipairs</code> et affiche chaque objet.</li>
+                <li>Cherche un objet précis et stoppe la recherche avec <code>break</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Ta boucle numérique respecte la borne incluse.</li>
+                  <li>Tu choisis <code>ipairs</code> vs <code>pairs</code> à bon escient.</li>
+                  <li>Aucune boucle infinie&nbsp;: la condition d'arrêt évolue.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Dans for i = 1, 5 do, jusqu'où va i ?","a":["Jusqu'à 5 inclus","Jusqu'à 4 (exclu)","Jusqu'à 6","Indéfini"],"correct":0,"explain":"La boucle numérique de Lua inclut la borne de fin : i prend les valeurs 1, 2, 3, 4 et 5."},
+  {"q":"Quelle boucle s'exécute toujours au moins une fois ?","a":["repeat ... until","while","for","Aucune"],"correct":0,"explain":"repeat ... until teste la condition APRÈS le corps : il s'exécute donc au moins une fois. while teste avant."},
+  {"q":"Pour parcourir une table avec des clés nommées, on utilise…","a":["pairs","ipairs","next() seulement","for numérique"],"correct":0,"explain":"pairs parcourt toutes les clés (nommées comprises), sans ordre garanti. ipairs ne suit que la séquence 1..n."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Affiche les nombres pairs de 2 à 10 avec un pas de 2.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>for i = 2, 10, 2 do
+  print(i)
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Calcule la somme des éléments d'une liste avec <code>ipairs</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local scores = {10, 25, 5, 40}
+local total = 0
+for _, v in ipairs(scores) do
+  total = total + v
+end
+print(total)   -- 80</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Cherche le premier ennemi «&nbsp;boss&nbsp;» dans une liste et arrête-toi avec <code>break</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local ennemis = {
+  {nom = "gobelin", boss = false},
+  {nom = "dragon",  boss = true},
+}
+for _, e in ipairs(ennemis) do
+  if e.boss then
+    print("Boss : " .. e.nom)
+    break
+  end
+end</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>for i = a, b, pas do … end</code>&nbsp;: borne de fin <b>incluse</b>.</li>
+                <li><code>while</code> teste avant&nbsp;; <code>repeat … until</code> teste après (≥ 1 passage).</li>
+                <li><code>ipairs</code> = séquence 1..n&nbsp;; <code>pairs</code> = toutes les clés (sans ordre).</li>
+                <li><code>break</code> sort&nbsp;; pas de <code>continue</code> natif en Lua.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>ipairs</b> — itère la séquence indexée 1..n d'une table.</p>
+              <p><b>pairs</b> — itère toutes les paires clé/valeur, sans ordre garanti.</p>
+              <p><b>break</b> — sort immédiatement de la boucle.</p>
+              <p><b>repeat…until</b> — boucle dont le test est en fin de corps.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua06-fonctions.html">LUA6 — Fonctions</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

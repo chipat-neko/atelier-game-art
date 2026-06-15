@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA07 — Tables · Atelier Game Art</title>
+  <meta name="description" content="Les tables Lua : structure de données universelle. Tableaux (séquences), dictionnaires (clés nommées), imbrication, table.insert/remove, #.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Tables</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA07 — Tables</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/lua/lua06-fonctions.html">LUA6 — Fonctions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Que la <b>table</b> est la seule structure de données de Lua.</li>
+                <li>L'utiliser comme tableau (séquence) <b>et</b> comme dictionnaire (clés nommées).</li>
+                <li>Ajouter/retirer avec <code>table.insert</code> / <code>table.remove</code>.</li>
+                <li>Imbriquer des tables pour modéliser un objet de jeu.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>En Lua, <b>tout ce qui est structuré est une table</b>&nbsp;: inventaires, ennemis, configurations, et même les «&nbsp;objets&nbsp;» (POO, <a href="../../cours/lua/lua08-metatables-poo.html">LUA8</a>). Maîtriser les tables, c'est maîtriser Lua.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Table comme tableau (séquence)</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local inventaire = {"épée", "potion", "clé"}
+print(inventaire[1])   -- épée  (indices commencent à 1 !)
+print(#inventaire)     -- 3</code></pre>
+            </div>
+            <p>⚠️ Rappel majeur&nbsp;: les indices Lua commencent à <b>1</b>, pas à 0.</p>
+
+            <h3>2. Table comme dictionnaire</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local joueur = {
+  nom = "Léa",
+  pv = 100,
+  niveau = 5,
+}
+print(joueur.nom)        -- Léa  (notation point)
+print(joueur["pv"])      -- 100  (notation crochet, équivalente)
+joueur.pv = 80           -- modifier
+joueur.xp = 0            -- ajouter une clé</code></pre>
+            </div>
+
+            <h3>3. insert / remove</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local sac = {}
+table.insert(sac, "torche")     -- ajoute à la fin
+table.insert(sac, "corde")
+table.insert(sac, 1, "carte")   -- insère en position 1
+table.remove(sac, 2)            -- retire l'élément 2
+print(#sac)                     -- 2</code></pre>
+            </div>
+
+            <h3>4. Imbrication (modéliser un objet de jeu)</h3>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>local ennemi = {
+  nom = "Gobelin",
+  pv = 30,
+  position = {x = 12, y = 4},
+  loot = {"or", "dague"},
+}
+print(ennemi.position.x)   -- 12
+print(ennemi.loot[2])      -- dague</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 560 170" role="img" aria-label="Une table peut servir de tableau ou de dictionnaire">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <text x="120" y="25" text-anchor="middle" font-family="sans-serif" class="svg-dim">séquence (1..n)</text>
+                  <rect x="40" y="35" width="50" height="34" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="65" y="57" text-anchor="middle">[1]</text>
+                  <rect x="90" y="35" width="50" height="34" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="115" y="57" text-anchor="middle">[2]</text>
+                  <rect x="140" y="35" width="50" height="34" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="165" y="57" text-anchor="middle">[3]</text>
+                  <text x="400" y="25" text-anchor="middle" font-family="sans-serif" class="svg-dim">dictionnaire (clés)</text>
+                  <rect x="300" y="35" width="200" height="34" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="400" y="57" text-anchor="middle">nom = "Léa"</text>
+                  <rect x="300" y="73" width="200" height="34" fill="#84cc16" fill-opacity="0.12" stroke="#84cc16"/><text x="400" y="95" text-anchor="middle">pv = 100</text>
+                  <text x="280" y="150" text-anchor="middle" font-family="sans-serif" class="svg-dim" font-size="10">Une seule structure : la table {}</text>
+                </g>
+              </svg>
+              <figcaption>La table unifie tableau et dictionnaire.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un inventaire (séquence) et affiche le 1er élément.</li>
+              <li>Crée un joueur (dictionnaire) et lis/modifie ses champs.</li>
+              <li>Ajoute et retire des objets avec <code>table.insert</code>/<code>remove</code>.</li>
+              <li>Imbrique une position <code>{x, y}</code> dans un ennemi.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>t[0]</code> est <code>nil</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Les séquences Lua commencent à 1.</div>
+                <div class="pi-fix"><b>Correction</b>Accède à <code>t[1]</code> pour le premier élément.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>#t</code> renvoie un nombre faux.</div>
+                <div class="pi-cause"><b>Cause</b>La table a un trou (<code>nil</code> au milieu).</div>
+                <div class="pi-fix"><b>Correction</b>Garde une séquence dense&nbsp;; <code>table.remove</code> décale proprement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Deux variables modifient «&nbsp;la même&nbsp;» table.</div>
+                <div class="pi-cause"><b>Cause</b>Les tables sont des <b>références</b>.</div>
+                <div class="pi-fix"><b>Correction</b>Copie explicitement si tu veux deux tables distinctes.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>joueur.x</code> est <code>nil</code> alors que la clé existe.</div>
+                <div class="pi-cause"><b>Cause</b>Faute de casse ou clé non-identifiant.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>t["ma clé"]</code> pour les clés à espaces/chiffres.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un inventaire et ajoute 3 objets avec <code>table.insert</code>.</li>
+                <li>Crée un ennemi avec une position imbriquée et affiche <code>ennemi.position.x</code>.</li>
+                <li>Retire un objet et vérifie <code>#inventaire</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu accèdes correctement aux indices à partir de 1.</li>
+                  <li>Tu sais lire une table imbriquée (<code>a.b.c</code>).</li>
+                  <li>Tu comprends que les tables sont des références.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quel indice commence une séquence (tableau) en Lua ?","a":["1","0","-1","Au choix"],"correct":0,"explain":"Les séquences Lua sont indexées à partir de 1. t[1] est le premier élément ; t[0] vaut nil."},
+  {"q":"Combien de structures de données natives Lua possède-t-il ?","a":["Une seule : la table","Trois : liste, map, set","Deux : array et object","Autant que de types"],"correct":0,"explain":"Lua n'a qu'une structure : la table. Elle sert à la fois de tableau, de dictionnaire, d'objet, etc."},
+  {"q":"Quand on copie une table dans une autre variable, on copie…","a":["La référence (les deux pointent vers la même table)","Une copie indépendante","Seulement les clés","Rien"],"correct":0,"explain":"Les tables sont des références. b = a fait pointer b sur la même table : modifier l'une modifie l'autre."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée une table <code>couleurs</code> et affiche le deuxième élément.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local couleurs = {"rouge", "vert", "bleu"}
+print(couleurs[2])   -- vert</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modélise un objet «&nbsp;potion&nbsp;» avec nom, soin et rareté, puis affiche le soin.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local potion = {nom = "Élixir", soin = 50, rarete = "rare"}
+print(potion.nom .. " soigne " .. potion.soin)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Gère un inventaire&nbsp;: ajoute 3 objets, insère-en un en tête, retire le dernier.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local inv = {}
+table.insert(inv, "épée")
+table.insert(inv, "bouclier")
+table.insert(inv, "potion")
+table.insert(inv, 1, "carte")     -- en tête
+table.remove(inv)                 -- retire le dernier
+for i, obj in ipairs(inv) do print(i, obj) end</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>La <b>table</b> est l'unique structure&nbsp;: tableau + dictionnaire en un.</li>
+                <li>Les indices de séquence commencent à <b>1</b>.</li>
+                <li><code>table.insert</code> / <code>table.remove</code> pour gérer une liste&nbsp;; <code>#</code> pour la taille.</li>
+                <li>Les tables sont des <b>références</b> (attention aux copies).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>table</b> — unique structure de données de Lua (tableau + dictionnaire).</p>
+              <p><b>séquence</b> — table indexée 1..n sans trou.</p>
+              <p><b>référence</b> — une table n'est pas copiée par affectation ; les deux variables pointent dessus.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua08-metatables-poo.html">LUA8 — Métatables &amp; POO</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

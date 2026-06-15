@@ -248,6 +248,32 @@ window.SITE_DATA = {
         { id:"sh14", fichier:"sh14-performance.html",         titre:"Performance des shaders",             niveau:"Avancé",        duree:"40 min", desc:"Coût par pixel, overdraw, branches dynamiques, instructions, half vs float, variantes de shader.", motscles:["performance","overdraw","branche","instructions","half","float","variante","coût pixel"] },
         { id:"sh15", fichier:"sh15-bonnes-pratiques.html",    titre:"Bonnes pratiques, debug & mini-projet",niveau:"Avancé",        duree:"45 min", desc:"Déboguer un shader (visualiser des valeurs), lisibilité, réutilisation, et mini-projet récapitulatif.", motscles:["bonnes pratiques","debug","shader","visualiser","réutilisation","mini-projet","organisation"] }
       ]
+    },
+    {
+      id: "lua",
+      titre: "Programmation Lua (scripting de jeu)",
+      kicker: "Piste 11",
+      couleur: "var(--piste-lua)",
+      dossier: "cours/lua/",
+      icone: "scroll",
+      desc: "Apprendre Lua, le langage de script léger des jeux (Roblox/Luau, LÖVE, Defold) : variables, tables, fonctions, métatables & POO, modules, erreurs, coroutines, scripting de jeu et bonnes pratiques.",
+      lecons: [
+        { id:"lua01", fichier:"lua01-introduction.html",      titre:"Introduction à Lua",                  niveau:"Débutant",      duree:"35 min", desc:"Qu'est-ce que Lua, pourquoi un langage embarqué léger, où on l'utilise (Roblox, LÖVE, Defold), print et premier script.", motscles:["Lua","scripting","embarqué","Roblox","LÖVE","Defold","print","léger"] },
+        { id:"lua02", fichier:"lua02-variables-types.html",   titre:"Variables & types",                   niveau:"Débutant",      duree:"35 min", desc:"nil, boolean, number, string, table ; typage dynamique, local vs global, déclaration et affectation.", motscles:["variable","type","nil","boolean","number","string","local","global"] },
+        { id:"lua03", fichier:"lua03-operateurs.html",        titre:"Opérateurs & expressions",            niveau:"Débutant",      duree:"30 min", desc:"Arithmétique, comparaison (== ~=), logique (and/or/not), concaténation (..), longueur (#).", motscles:["opérateur","concaténation","..","and","or","not","longueur","#","comparaison"] },
+        { id:"lua04", fichier:"lua04-conditions.html",        titre:"Conditions (if/elseif)",              niveau:"Débutant",      duree:"35 min", desc:"if / elseif / else, valeurs vraies/fausses (nil et false), et remplacer le switch par une table.", motscles:["if","elseif","else","condition","truthy","nil","false","table-switch"] },
+        { id:"lua05", fichier:"lua05-boucles.html",           titre:"Boucles (for, while, ipairs/pairs)",  niveau:"Débutant",      duree:"35 min", desc:"for numérique, while, repeat-until, for générique avec ipairs et pairs, break.", motscles:["boucle","for","while","repeat","ipairs","pairs","break","itération"] },
+        { id:"lua06", fichier:"lua06-fonctions.html",         titre:"Fonctions",                           niveau:"Intermédiaire", duree:"40 min", desc:"function, valeurs de retour multiples, varargs (...), fonctions anonymes et closures.", motscles:["fonction","function","retour multiple","varargs","closure","anonyme","return"] },
+        { id:"lua07", fichier:"lua07-tables.html",            titre:"Les tables (cœur de Lua)",            niveau:"Intermédiaire", duree:"45 min", desc:"La table : tableau ET dictionnaire, indices, clés, tables imbriquées, parcours et manipulation.", motscles:["table","tableau","dictionnaire","clé","index","imbriqué","insert","remove"] },
+        { id:"lua08", fichier:"lua08-metatables-poo.html",    titre:"Métatables & POO",                    niveau:"Avancé",        duree:"45 min", desc:"Métatables et métaméthodes (__index…), construire des classes et de l'héritage en Lua.", motscles:["métatable","metamethod","__index","POO","classe","héritage","self","setmetatable"] },
+        { id:"lua09", fichier:"lua09-modules.html",           titre:"Modules & require",                   niveau:"Intermédiaire", duree:"40 min", desc:"Organiser le code en modules : retourner une table, require, portée et réutilisation.", motscles:["module","require","table","portée","réutilisation","organisation","return"] },
+        { id:"lua10", fichier:"lua10-erreurs.html",           titre:"Gestion des erreurs (pcall)",         niveau:"Avancé",        duree:"40 min", desc:"error, pcall/xpcall, vérifications nil, assert, et gérer proprement les cas d'échec.", motscles:["erreur","error","pcall","xpcall","assert","nil","sécurité","robustesse"] },
+        { id:"lua11", fichier:"lua11-coroutines.html",        titre:"Coroutines",                          niveau:"Avancé",        duree:"40 min", desc:"coroutine.create/resume/yield, étaler une logique dans le temps, séquences et états.", motscles:["coroutine","create","resume","yield","async","séquence","temps","état"] },
+        { id:"lua12", fichier:"lua12-scripting-jeu.html",     titre:"Le scripting de jeu",                 niveau:"Intermédiaire", duree:"45 min", desc:"Boucle de jeu (update/draw), événements et callbacks, où Lua s'insère dans un moteur.", motscles:["scripting","boucle de jeu","update","draw","événement","callback","moteur"] },
+        { id:"lua13", fichier:"lua13-integration-moteur.html",titre:"Intégration dans un moteur",          niveau:"Avancé",        duree:"45 min", desc:"Lua embarqué : Roblox (Luau, Instances/services), LÖVE (love.*), Defold ; le pont moteur ↔ Lua.", motscles:["Roblox","Luau","LÖVE","Defold","embarqué","API moteur","Instance","pont"] },
+        { id:"lua14", fichier:"lua14-performance.html",       titre:"Performance & pièges",                niveau:"Avancé",        duree:"40 min", desc:"local vs global, réutilisation de tables, ramasse-miettes, # sur tables à trous, micro-optimisations utiles.", motscles:["performance","local","global","table","GC","ramasse-miettes","piège","optimisation"] },
+        { id:"lua15", fichier:"lua15-bonnes-pratiques.html",  titre:"Bonnes pratiques & mini-projet",      niveau:"Avancé",        duree:"45 min", desc:"Conventions, modules, gestion d'état, débogage (print/inspect) et mini-projet récapitulatif.", motscles:["bonnes pratiques","convention","module","état","debug","mini-projet","organisation"] }
+      ]
     }
   ]
 };

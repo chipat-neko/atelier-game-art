@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUA01 — Introduction à Lua · Atelier Game Art</title>
+  <meta name="description" content="Qu'est-ce que Lua, pourquoi un langage de script léger et embarqué, où on l'utilise (Roblox, LÖVE, Defold) et premier script.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="lua01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 138</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/lua/lua01-introduction.html">Lua</a><span class="sep">/</span>
+            <span>Introduction</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>LUA01 — Introduction à Lua</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 11 · Lua</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>aucune expérience requise. Utile&nbsp;: avoir vu un autre langage (C#, GDScript) aide, mais ce n'est pas nécessaire.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est <span class="gloss">Lua</span> et pourquoi c'est un langage <b>embarqué</b> léger.</li>
+                <li>Où Lua est utilisé dans le jeu (Roblox/Luau, LÖVE, Defold…).</li>
+                <li>Écrire et exécuter un premier script (<code>print</code>).</li>
+                <li>Reconnaître la syntaxe de base (commentaires, instructions).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Lua est <b>partout</b> dans le jeu vidéo&nbsp;: c'est le langage de <b>Roblox</b> (sous le nom Luau), du moteur <b>LÖVE</b> (love2d), de <b>Defold</b>, et il sert de langage de script embarqué dans d'innombrables jeux (mods, configuration, logique). Léger, rapide et simple, il s'apprend très vite — un excellent 4ᵉ langage après C#, C++ et GDScript.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un langage de script embarqué</h3>
+            <p>Lua n'est (presque) jamais utilisé seul&nbsp;: il est <b>embarqué</b> dans un programme hôte (un moteur de jeu) écrit en C/C++. L'hôte expose des fonctions (déplacer un objet, jouer un son), et tu écris la <b>logique</b> en Lua. Cette séparation — moteur rapide en C, logique souple en Lua — est très répandue car elle combine performance et flexibilité (on modifie le Lua sans recompiler le moteur).</p>
+
+            <h3>2. Où on le rencontre</h3>
+            <ul>
+              <li><b>Roblox</b>&nbsp;: utilise <b>Luau</b> (un Lua étendu, typé en option). Des millions de jeux y sont scriptés en Luau.</li>
+              <li><b>LÖVE (love2d)</b>&nbsp;: framework 2D où tout se code en Lua (<code>love.load</code>, <code>love.update</code>, <code>love.draw</code>).</li>
+              <li><b>Defold</b>&nbsp;: moteur 2D/3D scripté en Lua.</li>
+              <li>Et de nombreux jeux/outils l'embarquent pour les mods et la configuration.</li>
+            </ul>
+
+            <h3>3. Premier script</h3>
+            <p>L'instruction de base&nbsp;: <code>print</code>, qui affiche dans la console/sortie&nbsp;:</p>
+            <div class="codeblock" data-lang="Lua">
+<pre><code>-- ceci est un commentaire (deux tirets)
+print("Bonjour Lua !")        -- affiche : Bonjour Lua !
+
+--[[ commentaire
+     sur plusieurs lignes ]]
+local message = "Salut"
+print(message)</code></pre>
+            </div>
+            <p>Pas de point-virgule obligatoire, pas d'accolades pour les blocs (on utilise des mots-clés comme <code>end</code>, vu plus loin). Les commentaires&nbsp;: <code>--</code> (ligne) et <code>--[[ ]]</code> (bloc).</p>
+
+            <h3>4. Comment l'exécuter</h3>
+            <p>Selon le contexte&nbsp;: dans Roblox Studio (un Script dans l'explorateur), dans un projet LÖVE (<code>main.lua</code>), ou via l'interpréteur <code>lua</code> en ligne de commande pour s'entraîner. Lua est <b>interprété</b>&nbsp;: pas de compilation longue, itération immédiate.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Moteur hôte en C/C++ qui expose une API ; logique du jeu écrite en Lua">
+                <defs><marker id="lua01ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#84cc16"/></marker></defs>
+                <rect x="40" y="55" width="200" height="50" rx="8" class="svg-surface" stroke="#313c4c"/>
+                <text x="140" y="76" text-anchor="middle" class="svg-text" font-weight="700">Moteur hôte (C/C++)</text>
+                <text x="140" y="93" text-anchor="middle" class="svg-dim" font-size="10">rapide, expose une API</text>
+                <rect x="400" y="55" width="200" height="50" rx="8" fill="#84cc16" fill-opacity="0.15" stroke="#84cc16"/>
+                <text x="500" y="76" text-anchor="middle" class="svg-text" font-weight="700">Scripts Lua</text>
+                <text x="500" y="93" text-anchor="middle" class="svg-dim" font-size="10">logique de jeu, souple</text>
+                <line x1="240" y1="72" x2="398" y2="72" stroke="#84cc16" stroke-width="1.7" marker-end="url(#lua01ar)"/>
+                <line x1="398" y1="90" x2="242" y2="90" stroke="#84cc16" stroke-width="1.7" marker-end="url(#lua01ar)"/>
+                <text x="320" y="66" text-anchor="middle" class="svg-dim" font-size="9">expose des fonctions →</text>
+                <text x="320" y="104" text-anchor="middle" class="svg-dim" font-size="9">← appelle &amp; réagit</text>
+              </svg>
+              <figcaption>Lua est embarqué&nbsp;: le moteur (C/C++) fait le gros œuvre, Lua porte la logique modifiable à chaud.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Choisis un environnement&nbsp;: Roblox Studio, un projet LÖVE, ou l'interpréteur <code>lua</code> en ligne.</li>
+              <li>Écris <code>print("Bonjour Lua !")</code> et exécute.</li>
+              <li>Ajoute un commentaire de ligne (<code>--</code>) et un bloc (<code>--[[ ]]</code>).</li>
+              <li>Stocke un texte dans une variable <code>local</code> et affiche-la.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon <code>print</code> n'affiche rien.</div>
+                <div class="pi-cause"><b>Cause</b>La sortie/console n'est pas ouverte (Output dans Roblox, terminal pour LÖVE).</div>
+                <div class="pi-fix"><b>Correction</b>Ouvre la fenêtre Output/console de ton environnement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« unexpected symbol » au lancement.</div>
+                <div class="pi-cause"><b>Cause</b>Syntaxe d'un autre langage (accolades, point-virgule obligatoire…).</div>
+                <div class="pi-fix"><b>Correction</b>En Lua&nbsp;: pas d'accolades pour les blocs, commentaires en <code>--</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon script Roblox ne s'exécute pas.</div>
+                <div class="pi-cause"><b>Cause</b>Mauvais type de script ou mauvais emplacement.</div>
+                <div class="pi-fix"><b>Correction</b>Place un Script au bon endroit (renvoi <a href="../../cours/lua/lua13-integration-moteur.html">LUA13</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Confusion Lua / Luau.</div>
+                <div class="pi-cause"><b>Cause</b>Luau (Roblox) ajoute le typage optionnel et des extensions.</div>
+                <div class="pi-fix"><b>Correction</b>Les bases sont identiques&nbsp;; on les apprend, Luau ajoute des options par-dessus.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Affiche ton prénom puis une seconde ligne avec un autre <code>print</code>.</li>
+                <li>Ajoute un commentaire de ligne et un commentaire de bloc.</li>
+                <li>Stocke un nombre et un texte dans des variables et affiche-les.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les deux lignes s'affichent dans la sortie.</li>
+                  <li>Tes commentaires n'apparaissent pas à l'exécution.</li>
+                  <li>Tu sais relancer ton script rapidement.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que signifie « Lua est un langage embarqué » ?","a":["Il s'exécute dans un programme hôte (moteur) qui lui expose une API, plutôt que seul","Il est écrit en assembleur","Il ne fonctionne que sur mobile","Il remplace le moteur"],"correct":0,"explain":"Lua est conçu pour être intégré à un hôte (souvent en C/C++). Le moteur fait le gros œuvre et expose des fonctions ; on écrit la logique de jeu en Lua, modifiable sans recompiler."},
+  {"q":"Quel environnement utilise Lua (sous le nom Luau) ?","a":["Roblox","Unity","Unreal","Blender"],"correct":0,"explain":"Roblox script en Luau, un Lua étendu avec typage optionnel. LÖVE et Defold utilisent aussi Lua. Unity (C#) et Unreal (C++/Blueprint) non."},
+  {"q":"Comment écrit-on un commentaire de ligne en Lua ?","a":["Avec -- (deux tirets)","Avec // ","Avec #","Avec /* */"],"correct":0,"explain":"En Lua, -- commence un commentaire de ligne et --[[ ]] délimite un commentaire de bloc. Pas de // ni de #."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Affiche un message de bienvenue et un nombre dans la sortie de ton environnement.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>print("Bienvenue dans Lua !")
+print(2025)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Stocke ton prénom et ton score dans des variables <code>local</code> et affiche une phrase combinée.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <div class="codeblock" data-lang="Lua">
+<pre><code>local nom = "Héros"
+local score = 120
+print(nom .. " a " .. score .. " points")   -- .. concatène (vu en LUA3)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Identifie, pour un environnement de ton choix (Roblox, LÖVE, Defold), où l'on écrit le code et comment on le lance.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Roblox&nbsp;: un <em>Script</em> dans l'explorateur (Studio), lancé avec Play. LÖVE&nbsp;: un <code>main.lua</code> avec love.load/update/draw, lancé via l'exécutable LÖVE. Defold&nbsp;: des fichiers <code>.script</code> attachés aux objets. Le détail viendra en LUA13.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Lua est un langage de script <b>léger et embarqué</b>&nbsp;: le moteur expose une API, tu écris la logique.</li>
+                <li>Très utilisé dans le jeu&nbsp;: <b>Roblox (Luau)</b>, <b>LÖVE</b>, <b>Defold</b>, mods…</li>
+                <li><code>print</code> affiche&nbsp;; commentaires <code>--</code> et <code>--[[ ]]</code>&nbsp;; pas d'accolades.</li>
+                <li>Interprété&nbsp;: itération immédiate, sans compilation longue.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Lua</b> — langage de script léger, conçu pour être embarqué dans un programme hôte.</p>
+              <p><b>Embarqué (embedded)</b> — intégré à un moteur/programme qui l'exécute et lui expose une API.</p>
+              <p><b>Luau</b> — variante de Lua utilisée par Roblox (typage optionnel, extensions).</p>
+              <p><b>print</b> — affiche un message dans la sortie/console.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/lua/lua02-variables-types.html">LUA2 — Variables &amp; types</a>.</li>
+              <li><a href="../../cours/lua/lua13-integration-moteur.html">LUA13 — Intégration moteur</a> (Roblox/LÖVE/Defold).</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>
