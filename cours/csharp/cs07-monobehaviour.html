@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS7 — Le cycle de vie MonoBehaviour · Atelier Game Art</title>
+  <meta name="description" content="Le cycle de vie d'un script Unity : Awake, Start, Update, FixedUpdate, LateUpdate, OnEnable/OnDisable, et Time.deltaTime pour un mouvement indépendant du framerate.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Cycle MonoBehaviour</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS7 — Le cycle de vie MonoBehaviour</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs06-methodes.html">CS6 — Méthodes</a> et <a href="../../cours/csharp/cs01-introduction.html">CS1</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Connaître les méthodes que Unity appelle&nbsp;: <b>Awake, Start, Update, FixedUpdate, LateUpdate</b>.</li>
+                <li>Savoir <b>quoi mettre où</b> (init dans Awake/Start, logique par image dans Update).</li>
+                <li>Utiliser <code>Time.deltaTime</code> pour un mouvement <b>indépendant du framerate</b>.</li>
+                <li>Distinguer <b>Update</b> (logique) et <b>FixedUpdate</b> (physique).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tu n'appelles jamais <code>Start()</code> ni <code>Update()</code> toi-même&nbsp;: c'est <b>Unity</b> qui les appelle automatiquement, à des moments précis du <span class="term">cycle de vie</span> du script. Comprendre <em>quand</em> chaque méthode tourne, c'est savoir où placer ton code — et éviter des bugs classiques comme «&nbsp;ma variable est <code>null</code> au démarrage&nbsp;» ou «&nbsp;mon mouvement va deux fois plus vite sur un PC rapide&nbsp;».</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les méthodes d'événement principales</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Méthode</th><th>Quand Unity l'appelle</th><th>À y mettre</th></tr></thead>
+                <tbody>
+                  <tr><td><code>Awake()</code></td><td>Une fois, à la création de l'objet (avant tout)</td><td>Initialiser ses <em>propres</em> références (GetComponent sur soi).</td></tr>
+                  <tr><td><code>OnEnable()</code></td><td>Chaque fois que l'objet/script est activé</td><td>S'abonner à des événements (<a href="../../cours/csharp/cs13-evenements.html">CS13</a>).</td></tr>
+                  <tr><td><code>Start()</code></td><td>Une fois, avant la première Update (après tous les Awake)</td><td>Init dépendant des autres objets (déjà prêts).</td></tr>
+                  <tr><td><code>Update()</code></td><td><b>Chaque image</b> (frame)</td><td>Entrées, logique de jeu, déplacements simples.</td></tr>
+                  <tr><td><code>FixedUpdate()</code></td><td>À <b>intervalle fixe</b> (indépendant du framerate)</td><td>Tout ce qui touche la <b>physique</b> (Rigidbody).</td></tr>
+                  <tr><td><code>LateUpdate()</code></td><td>Chaque image, <b>après</b> tous les Update</td><td>Caméra qui suit le joueur (après son déplacement).</td></tr>
+                  <tr><td><code>OnDisable()</code> / <code>OnDestroy()</code></td><td>Désactivation / destruction</td><td>Se désabonner, nettoyer.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>2. Awake vs Start : l'ordre qui sauve des bugs</h3>
+            <p>Unity appelle <b>tous</b> les <code>Awake()</code> de la scène <b>avant</b> n'importe quel <code>Start()</code>. Conséquence pratique&nbsp;: dans <code>Awake</code>, initialise ce qui te concerne <em>toi</em>&nbsp;; dans <code>Start</code>, accède aux <em>autres</em> objets (ils ont déjà fait leur Awake, donc sont prêts). C'est la cause n°1 d'un <code>NullReferenceException</code> au lancement&nbsp;: chercher un autre script dans Awake alors qu'il n'est pas encore initialisé.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 220" role="img" aria-label="Cycle de vie d'un MonoBehaviour : Awake, OnEnable, Start, puis boucle FixedUpdate/Update/LateUpdate, puis OnDisable/OnDestroy">
+                <defs><marker id="cs7ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <g class="svg-text" font-size="10.5" font-family="monospace">
+                  <rect x="20" y="20" width="100" height="30" rx="6" fill="#a855f7" fill-opacity="0.14" stroke="#a855f7"/><text x="70" y="40" text-anchor="middle">Awake</text>
+                  <rect x="20" y="60" width="100" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="70" y="80" text-anchor="middle">OnEnable</text>
+                  <rect x="20" y="100" width="100" height="30" rx="6" fill="#a855f7" fill-opacity="0.14" stroke="#a855f7"/><text x="70" y="120" text-anchor="middle">Start</text>
+                  <text x="70" y="148" text-anchor="middle" class="svg-dim" font-size="9">init (1 fois)</text>
+
+                  <rect x="240" y="40" width="170" height="120" rx="10" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a"/>
+                  <text x="325" y="34" text-anchor="middle" class="svg-dim" font-size="10">boucle de jeu (chaque frame)</text>
+                  <rect x="258" y="52" width="134" height="26" rx="5" class="svg-surface" stroke="#313c4c"/><text x="325" y="70" text-anchor="middle">FixedUpdate (physique)</text>
+                  <rect x="258" y="84" width="134" height="26" rx="5" fill="#5ad19a" fill-opacity="0.16" stroke="#5ad19a"/><text x="325" y="102" text-anchor="middle">Update (logique)</text>
+                  <rect x="258" y="116" width="134" height="26" rx="5" class="svg-surface" stroke="#313c4c"/><text x="325" y="134" text-anchor="middle">LateUpdate (caméra)</text>
+
+                  <rect x="500" y="80" width="120" height="30" rx="6" fill="#f87171" fill-opacity="0.14" stroke="#f87171"/><text x="560" y="100" text-anchor="middle">OnDisable</text>
+                  <rect x="500" y="120" width="120" height="30" rx="6" fill="#f87171" fill-opacity="0.14" stroke="#f87171"/><text x="560" y="140" text-anchor="middle">OnDestroy</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.6" fill="none" marker-end="url(#cs7ar)">
+                  <line x1="70" y1="50" x2="70" y2="58"/><line x1="70" y1="90" x2="70" y2="98"/>
+                  <path d="M120 115 C 180 115, 200 100, 238 100"/>
+                  <path d="M410 100 C 450 100, 470 95, 498 95"/>
+                </g>
+                <path d="M325 142 C 325 180, 325 180, 325 160" stroke="#5ad19a" stroke-width="1.4" fill="none"/>
+                <text x="430" y="180" text-anchor="middle" class="svg-dim" font-size="9">la boucle se répète chaque frame jusqu'à la destruction</text>
+              </svg>
+              <figcaption>Le cycle&nbsp;: <b>Awake → OnEnable → Start</b> (une fois), puis la <b>boucle</b> FixedUpdate/Update/LateUpdate chaque frame, et enfin OnDisable/OnDestroy.</figcaption>
+            </figure>
+
+            <h3>3. Time.deltaTime : un mouvement régulier</h3>
+            <p><code>Update()</code> est appelée à chaque image&nbsp;: sur un PC à 120&nbsp;fps, deux fois plus souvent qu'à 60&nbsp;fps. Si tu déplaces «&nbsp;de 5 par image&nbsp;», l'objet ira <b>deux fois plus vite</b> sur la machine rapide&nbsp;! La solution&nbsp;: multiplier par <span class="term">Time.deltaTime</span> (le temps écoulé depuis l'image précédente), pour raisonner «&nbsp;par seconde&nbsp;»&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public float vitesse = 5f;   // unités PAR SECONDE
+
+void Update()
+{
+    // avance de 'vitesse' unités par seconde, quel que soit le framerate
+    transform.Translate(Vector3.forward * vitesse * Time.deltaTime);
+}</code></pre>
+            </div>
+            <p><b>Règle</b>&nbsp;: tout ce qui bouge/évolue dans <code>Update</code> se multiplie par <code>Time.deltaTime</code>. (On détaille le mouvement en <a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a>.)</p>
+
+            <h3>4. Update vs FixedUpdate</h3>
+            <p><code>Update</code> suit le framerate (variable)&nbsp;; <code>FixedUpdate</code> tourne à intervalle <b>fixe</b> (par défaut 50×/s), synchronisé avec le moteur physique. <b>Règle</b>&nbsp;: la <b>physique</b> (forces, vélocité d'un <code>Rigidbody</code>) va dans <code>FixedUpdate</code>&nbsp;; la <b>lecture des entrées</b> et la logique vont dans <code>Update</code> (renvoi <a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a>).</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un script avec un <code>Debug.Log</code> dans <code>Awake</code>, <code>Start</code> et <code>Update</code>. Attache-le, Play&nbsp;: observe l'ordre (Awake → Start, puis Update en boucle).</li>
+              <li>Ajoute un champ <code>public float vitesse = 90f;</code> et dans <code>Update()</code> fais tourner l'objet&nbsp;: <code>transform.Rotate(Vector3.up * vitesse * Time.deltaTime);</code>.</li>
+              <li>Enlève <code>* Time.deltaTime</code> et compare la vitesse de rotation&nbsp;: tu verras qu'elle dépend du framerate (incohérent).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>NullReferenceException</code> au tout début du jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Tu accèdes à un autre objet/script dans <code>Awake</code>, avant qu'il soit prêt.</div>
+                <div class="pi-fix"><b>Correction</b>Déplace cet accès dans <code>Start</code> (tous les Awake sont alors finis).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet va plus/moins vite selon la machine.</div>
+                <div class="pi-cause"><b>Cause</b>Mouvement dans Update sans <code>Time.deltaTime</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Multiplie par <code>Time.deltaTime</code> et raisonne « par seconde ».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma physique (Rigidbody) saccade ou réagit mal.</div>
+                <div class="pi-cause"><b>Cause</b>Tu appliques des forces dans <code>Update</code> au lieu de <code>FixedUpdate</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Mets le code physique dans <code>FixedUpdate</code> (renvoi <a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La caméra qui suit le joueur tremble.</div>
+                <div class="pi-cause"><b>Cause</b>Tu bouges la caméra dans <code>Update</code>, parfois avant le joueur.</div>
+                <div class="pi-fix"><b>Correction</b>Suis le joueur dans <code>LateUpdate</code> (après son déplacement).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Fais tourner un cube sur lui-même à vitesse constante, framerate-indépendante (Time.deltaTime).</li>
+                <li>Ajoute un compteur de temps&nbsp;: dans <code>Update</code>, <code>tempsEcoule += Time.deltaTime;</code> et affiche-le toutes les secondes (avec un test).</li>
+                <li>Mets des Debug.Log dans Awake/Start/Update/LateUpdate et décris l'ordre observé.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La rotation est identique quel que soit le framerate.</li>
+                  <li>Tu sais expliquer ce qui va dans Awake, Start, Update, FixedUpdate, LateUpdate.</li>
+                  <li>Tu comprends pourquoi <code>Time.deltaTime</code> est indispensable.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Unity appelle ces méthodes pour toi&nbsp;: <b>Awake → OnEnable → Start</b> (une fois), puis <b>Update/FixedUpdate/LateUpdate</b> chaque frame.</li>
+                <li><b>Awake</b> = init de soi&nbsp;; <b>Start</b> = accès aux autres (déjà prêts).</li>
+                <li>Tout mouvement dans Update se multiplie par <b><code>Time.deltaTime</code></b> (par seconde).</li>
+                <li><b>Physique</b> → FixedUpdate&nbsp;; <b>caméra qui suit</b> → LateUpdate.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Cycle de vie (MonoBehaviour)</b> — suite ordonnée de méthodes qu'Unity appelle automatiquement.</p>
+              <p><b>Time.deltaTime</b> — temps écoulé depuis l'image précédente&nbsp;; rend le mouvement indépendant du framerate.</p>
+              <p><b>FixedUpdate</b> — méthode appelée à intervalle fixe, pour le code physique.</p>
+              <p><b>LateUpdate</b> — méthode appelée après tous les Update (caméra de suivi).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs11-gameobjects-components.html">CS11 — GameObjects &amp; Components</a>&nbsp;: agir sur la scène depuis ces méthodes.</li>
+              <li><a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12 — Entrées &amp; mouvement</a>&nbsp;: Update vs FixedUpdate en pratique.</li>
+              <li><a href="../../cours/csharp/cs14-coroutines.html">CS14 — Coroutines</a>&nbsp;: étaler une action dans le temps.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

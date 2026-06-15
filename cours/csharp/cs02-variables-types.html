@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS2 — Variables & types · Atelier Game Art</title>
+  <meta name="description" content="Les variables et types en C# pour Unity : int, float, bool, string, var, conventions de nommage, [SerializeField] et exposition dans l'Inspector.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Variables &amp; types</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS2 — Variables &amp; types</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs01-introduction.html">CS1 — Introduction &amp; premier script</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Déclarer une <b>variable</b> et comprendre la notion de <b>type</b>.</li>
+                <li>Utiliser les types essentiels&nbsp;: <code>int</code>, <code>float</code>, <code>bool</code>, <code>string</code> (et <code>var</code>).</li>
+                <li>Respecter les <b>conventions de nommage</b> du C#.</li>
+                <li>Exposer une variable dans l'<b>Inspector</b> avec <code>public</code> ou <code>[SerializeField]</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu manipule sans cesse des <b>données</b>&nbsp;: points de vie, vitesse, score, nom du joueur, «&nbsp;est-il en vie ?&nbsp;». Une <span class="term">variable</span> est une <b>boîte étiquetée</b> qui stocke une de ces valeurs et qu'on peut lire et modifier. Bien choisir son <b>type</b> (entier, nombre à virgule, vrai/faux, texte) évite des bugs subtils — comme une division d'entiers qui donne 0, ou une vitesse «&nbsp;collée&nbsp;» parce qu'on a oublié le suffixe <code>f</code>.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Déclarer une variable</h3>
+            <p>La forme de base&nbsp;: <code>type nom = valeur;</code></p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>int pointsDeVie = 100;      // un entier
+float vitesse = 5.5f;       // un nombre à virgule (note le 'f' !)
+bool estEnVie = true;       // vrai ou faux
+string nomJoueur = "Léa";   // du texte (entre guillemets doubles)</code></pre>
+            </div>
+            <p>Le <span class="term">type</span> précise <b>quelle sorte de donnée</b> la boîte contient. Le C# est <b>typé</b>&nbsp;: une variable <code>int</code> ne contiendra <em>que</em> des entiers — y mettre du texte provoque une erreur de compilation. C'est une sécurité&nbsp;: le compilateur attrape tes étourderies avant le jeu.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Une variable est une boîte avec un type, un nom et une valeur">
+                <g class="svg-text" font-size="12">
+                  <rect x="180" y="50" width="280" height="60" rx="10" class="svg-surface" stroke="#a855f7" stroke-width="1.6"/>
+                  <line x1="320" y1="50" x2="320" y2="110" stroke="#313c4c"/>
+                  <text x="250" y="44" text-anchor="middle" class="svg-dim">nom (étiquette)</text>
+                  <text x="250" y="86" text-anchor="middle" font-weight="700" font-family="monospace">pointsDeVie</text>
+                  <text x="390" y="44" text-anchor="middle" class="svg-dim">valeur</text>
+                  <text x="390" y="86" text-anchor="middle" font-weight="700" font-family="monospace" fill="#a855f7">100</text>
+                  <text x="320" y="130" text-anchor="middle" class="svg-dim" font-size="11">type : <tspan font-family="monospace" fill="#56c7ff">int</tspan> (entiers uniquement)</text>
+                </g>
+              </svg>
+              <figcaption>Une variable = un <b>type</b> (ce qu'elle accepte) + un <b>nom</b> (pour la retrouver) + une <b>valeur</b> (modifiable).</figcaption>
+            </figure>
+
+            <h3>2. Les types essentiels</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type</th><th>Contient</th><th>Exemple</th><th>Usage jeu</th></tr></thead>
+                <tbody>
+                  <tr><td><code>int</code></td><td>Nombre entier</td><td><code>3</code>, <code>-7</code>, <code>0</code></td><td>Score, munitions, niveau</td></tr>
+                  <tr><td><code>float</code></td><td>Nombre à virgule (suffixe <code>f</code>)</td><td><code>5.5f</code>, <code>0.1f</code></td><td>Vitesse, temps, distance</td></tr>
+                  <tr><td><code>bool</code></td><td>Vrai ou faux</td><td><code>true</code>, <code>false</code></td><td>«&nbsp;est en vie&nbsp;», «&nbsp;porte ouverte&nbsp;»</td></tr>
+                  <tr><td><code>string</code></td><td>Texte</td><td><code>"Game Over"</code></td><td>Noms, dialogues, UI</td></tr>
+                  <tr><td><code>Vector3</code></td><td>Position/direction 3D (x,y,z)</td><td><code>transform.position</code></td><td>Position, déplacement (Unity)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Le <code>float</code> exige le suffixe <b><code>f</code></b> (sinon C# pense que <code>5.5</code> est un <code>double</code>, un type plus précis qu'Unity n'utilise pas par défaut → erreur ou avertissement). Le <code>Vector3</code> est un type d'Unity très courant (positions), vu en pratique dès <a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>/<a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a>.</p>
+
+            <h3>3. <code>var</code> : laisser C# deviner le type</h3>
+            <p>Le mot-clé <code>var</code> demande au compilateur de <b>déduire</b> le type à partir de la valeur&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>var score = 0;          // C# en déduit : int
+var nom = "Boss";       // C# en déduit : string</code></pre>
+            </div>
+            <p><code>var</code> est pratique quand le type est évident, mais reste <b>fortement typé</b> (ce n'est PAS du «&nbsp;sans type&nbsp;»). En débutant, écris le type explicitement&nbsp;: c'est plus clair.</p>
+
+            <h3>4. Conventions de nommage</h3>
+            <ul>
+              <li>Les variables «&nbsp;locales&nbsp;» et les champs privés&nbsp;: <b>camelCase</b> (<code>pointsDeVie</code>, <code>vitesseMax</code>).</li>
+              <li>Pas d'espaces ni d'accents, pas de chiffre en première position. Choisis des noms <b>parlants</b>&nbsp;: <code>vitesse</code> vaut mieux que <code>v</code>.</li>
+              <li>Un nom = une intention claire. Du code lisible se relit comme une phrase.</li>
+            </ul>
+
+            <h3>5. Exposer une variable dans l'Inspector</h3>
+            <p>Énorme avantage d'Unity&nbsp;: tu peux <b>régler une variable depuis l'éditeur</b>, sans toucher au code. Deux façons&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>using UnityEngine;
+
+public class Joueur : MonoBehaviour
+{
+    public float vitesse = 5f;          // public → visible ET modifiable dans l'Inspector
+    [SerializeField] private int vie = 100;   // privé MAIS exposé à l'Inspector (recommandé)
+    private bool estInvincible = false; // privé, NON visible dans l'Inspector
+
+    void Start()
+    {
+        Debug.Log("Vitesse = " + vitesse + ", Vie = " + vie);
+    }
+}</code></pre>
+            </div>
+            <p>Préfère <code>[SerializeField] private</code> à <code>public</code>&nbsp;: tu gardes le réglage dans l'Inspector <b>tout en protégeant</b> la variable contre des modifications accidentelles par d'autres scripts (principe d'<b>encapsulation</b>, voir <a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>). Détail crucial&nbsp;: une valeur réglée dans l'Inspector <b>écrase</b> la valeur du code — l'Inspector «&nbsp;gagne&nbsp;».</p>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un script <code>Joueur</code>, colle le code ci-dessus, sauvegarde.</li>
+              <li>Attache-le à un GameObject&nbsp;: dans l'Inspector, tu vois maintenant les champs <em>Vitesse</em> et <em>Vie</em> (mais pas <em>estInvincible</em>).</li>
+              <li>Change <em>Vitesse</em> à <code>10</code> dans l'Inspector, Play&nbsp;: la Console affiche 10 — la valeur de l'Inspector a écrasé le <code>5</code> du code.</li>
+              <li>Ajoute une variable <code>string nomJoueur = "Inconnu";</code> en <code>[SerializeField] private</code>, sauvegarde, et règle-la dans l'Inspector.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreur « Literal of type double cannot be implicitly converted to float ».</div>
+                <div class="pi-cause"><b>Cause</b>Un <code>float</code> sans le suffixe <code>f</code> (ex. <code>float v = 5.5;</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute le <code>f</code>&nbsp;: <code>float v = 5.5f;</code></div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je modifie la valeur dans le code mais rien ne change en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>La variable est <code>public</code>/<code>[SerializeField]</code> et l'Inspector écrase la valeur du code.</div>
+                <div class="pi-fix"><b>Correction</b>Change la valeur <b>dans l'Inspector</b> (ou clique les ⋮ ▸ Reset pour revenir au code).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma variable n'apparaît pas dans l'Inspector.</div>
+                <div class="pi-cause"><b>Cause</b>Elle est <code>private</code> sans <code>[SerializeField]</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute <code>[SerializeField]</code> devant, ou passe-la <code>public</code> (moins recommandé).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>10 / 3</code> me donne <code>3</code> au lieu de <code>3.33</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Division de deux <code>int</code> → résultat entier (tronqué). Voir <a href="../../cours/csharp/cs03-operateurs.html">CS3</a>.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise des <code>float</code>&nbsp;: <code>10f / 3f</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un script <code>FichePerso</code> avec&nbsp;: un <code>string</code> nom, un <code>int</code> niveau, un <code>float</code> vitesse, un <code>bool</code> estVivant — tous en <code>[SerializeField] private</code>.</li>
+                <li>Dans <code>Start()</code>, affiche une phrase récapitulative avec <code>Debug.Log</code> (ex. « Léa, niveau 3 »).</li>
+                <li>Règle chaque champ dans l'Inspector et vérifie l'affichage au Play.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les quatre variables ont le bon type et apparaissent dans l'Inspector.</li>
+                  <li>Le message reflète les valeurs réglées dans l'Inspector (pas celles du code).</li>
+                  <li>Tu sais expliquer pourquoi un <code>float</code> a besoin du suffixe <code>f</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une variable = <b>type + nom + valeur</b>&nbsp;; le C# est <b>typé</b> (chaque boîte n'accepte qu'une sorte de donnée).</li>
+                <li>Essentiels&nbsp;: <code>int</code>, <code>float</code> (suffixe <code>f</code>&nbsp;!), <code>bool</code>, <code>string</code>, <code>Vector3</code>.</li>
+                <li>Nommage en <b>camelCase</b>, noms parlants.</li>
+                <li><code>[SerializeField] private</code> = réglable dans l'Inspector <b>et</b> protégé&nbsp;; l'Inspector écrase la valeur du code.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Variable</b> — boîte nommée qui stocke une valeur modifiable.</p>
+              <p><b>Type</b> — nature de la donnée d'une variable (int, float, bool, string…).</p>
+              <p><b>[SerializeField]</b> — attribut qui expose une variable privée dans l'Inspector sans la rendre publique.</p>
+              <p><b>var</b> — mot-clé laissant C# déduire le type à partir de la valeur (toujours fortement typé).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs03-operateurs.html">CS3 — Opérateurs &amp; expressions</a>&nbsp;: calculer avec ces variables.</li>
+              <li><a href="../../cours/csharp/cs08-classes-poo.html">CS8 — Classes &amp; POO</a>&nbsp;: champs, propriétés et encapsulation.</li>
+              <li><a href="../../cours/unity/u02-editeur.html">U2 — Éditeur Unity</a>&nbsp;: l'Inspector où apparaissent tes variables.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

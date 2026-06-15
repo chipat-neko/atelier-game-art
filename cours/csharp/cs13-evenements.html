@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS13 — Événements & communication · Atelier Game Art</title>
+  <meta name="description" content="Faire communiquer des scripts sans tout coupler : delegates, Action, événements C#, UnityEvent et le patron observateur.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs13";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Événements &amp; communication</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS13 — Événements &amp; communication entre scripts</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs09-heritage-interfaces.html">CS9 — Héritage &amp; interfaces</a> et <a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre le <b>couplage</b> et pourquoi on cherche à le réduire.</li>
+                <li>Utiliser un <code>delegate</code> / <code>Action</code> pour passer un comportement.</li>
+                <li>Déclarer et déclencher un <b>événement C#</b> (<code>event Action</code>).</li>
+                <li>Connaître l'alternative <b>UnityEvent</b> (branchée dans l'Inspector).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Quand le joueur meurt, il faut prévenir l'UI (afficher «&nbsp;Game Over&nbsp;»), le son (jouer un jingle), le score (l'enregistrer), le spawner (arrêter)… Si le script <code>Joueur</code> appelle directement chacun de ces scripts, il devient un nœud qui connaît tout le monde&nbsp;: c'est du <b>couplage fort</b>, difficile à maintenir. Les <b>événements</b> inversent la logique&nbsp;: le Joueur <em>annonce</em> «&nbsp;je suis mort&nbsp;», et qui veut réagir s'abonne. C'est le patron <span class="gloss">observateur</span>.</p>
+
+            <h3>Le couplage, concrètement</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>// ❌ Couplage fort : le Joueur doit connaître TOUS les autres scripts
+void Mourir()
+{
+    ui.AfficherGameOver();
+    audio.JouerJingle();
+    score.Enregistrer();
+    spawner.Arreter();      // ajouter une réaction = modifier ce code à chaque fois
+}</code></pre>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Delegate &amp; Action : une variable qui contient une méthode</h3>
+            <p>Un <code>delegate</code> est un <b>type qui référence une méthode</b>. <code>System.Action</code> est un delegate prêt à l'emploi (sans valeur de retour)&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>using System;
+
+Action saluer = () =&gt; Debug.Log("Bonjour");
+saluer();                          // appelle la méthode stockée
+
+Action&lt;int&gt; afficher = n =&gt; Debug.Log("PV : " + n);
+afficher(100);                     // Action&lt;int&gt; = prend un int</code></pre>
+            </div>
+            <p>On peut <b>cumuler</b> plusieurs méthodes dans une Action avec <code>+=</code> (multicast)&nbsp;: les appeler toutes d'un coup. C'est la base de l'événement.</p>
+
+            <h3>2. L'événement C# : annoncer, s'abonner</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public class Joueur : MonoBehaviour
+{
+    // L'ÉVÉNEMENT : "quelque chose s'est produit", les autres peuvent s'y abonner
+    public event Action OnMort;
+
+    public void Mourir()
+    {
+        Debug.Log("Le joueur meurt");
+        OnMort?.Invoke();   // déclenche → tous les abonnés réagissent (?. = si non-null)
+    }
+}</code></pre>
+            </div>
+            <p>Et côté <b>abonnés</b>, chacun s'inscrit/désinscrit&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public class UIGameOver : MonoBehaviour
+{
+    public Joueur joueur;   // référence (Inspector)
+
+    void OnEnable()  { joueur.OnMort += Afficher; }   // s'abonner
+    void OnDisable() { joueur.OnMort -= Afficher; }   // SE DÉSABONNER (important !)
+
+    void Afficher() { Debug.Log("GAME OVER"); }
+}</code></pre>
+            </div>
+            <p>Le mot-clé <code>event</code> protège l'événement&nbsp;: de l'extérieur on peut seulement <code>+=</code>/<code>-=</code>, pas le remplacer ni le déclencher. <b>Toujours se désabonner</b> dans <code>OnDisable</code>/<code>OnDestroy</code> pour éviter les fuites et les appels sur objets détruits.</p>
+
+            <h3>3. Passer des données avec l'événement</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public event Action&lt;int&gt; OnVieChangee;   // transporte la nouvelle valeur
+
+void Subir(int degats)
+{
+    pv -= degats;
+    OnVieChangee?.Invoke(pv);            // l'UI met à jour la barre de vie
+}</code></pre>
+            </div>
+
+            <h3>4. UnityEvent : brancher dans l'Inspector</h3>
+            <p>Alternative «&nbsp;visuelle&nbsp;»&nbsp;: un <code>UnityEvent</code> se câble dans l'Inspector (comme le bouton UI). Pratique pour les designers, sans code côté abonné&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>using UnityEngine.Events;
+
+public UnityEvent surMort;   // apparaît dans l'Inspector
+// ... puis dans le code : surMort.Invoke();</code></pre>
+            </div>
+            <p><b>Quand choisir&nbsp;?</b> <code>event Action</code> = communication code-à-code, rapide, typée. <code>UnityEvent</code> = câblage dans l'éditeur, flexible pour le level design. <code>SendMessage</code> existe mais est lent et fragile (par nom de méthode) — à éviter.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Le Joueur déclenche OnMort, plusieurs abonnés réagissent">
+                <defs><marker id="cs13ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <rect x="40" y="78" width="150" height="50" rx="8" fill="#a855f7" fill-opacity="0.16" stroke="#a855f7"/>
+                <text x="115" y="100" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Joueur</text>
+                <text x="115" y="117" text-anchor="middle" class="svg-dim" font-size="10">OnMort.Invoke()</text>
+                <g class="svg-text" font-size="11">
+                  <rect x="430" y="22" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="44" text-anchor="middle">UI : « Game Over »</text>
+                  <rect x="430" y="82" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="104" text-anchor="middle">Audio : jingle</text>
+                  <rect x="430" y="142" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="164" text-anchor="middle">Score : enregistrer</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.7" marker-end="url(#cs13ar)" fill="none">
+                  <path d="M190 95 C 300 70, 340 45, 428 40"/>
+                  <path d="M190 103 C 300 103, 340 100, 428 100"/>
+                  <path d="M190 111 C 300 135, 340 158, 428 160"/>
+                </g>
+                <text x="305" y="192" text-anchor="middle" class="svg-dim" font-size="10">Le Joueur ne connaît pas ses abonnés. Chacun s'abonne (+=) et réagit à sa façon.</text>
+              </svg>
+              <figcaption>Patron observateur&nbsp;: l'émetteur <em>annonce</em>, les abonnés <em>réagissent</em>. Ajouter une réaction ne touche pas le Joueur.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans <code>Joueur</code>, déclare <code>public event Action OnMort;</code> et déclenche-le dans <code>Mourir()</code> avec <code>OnMort?.Invoke();</code>.</li>
+              <li>Crée <code>UIGameOver</code> qui référence le Joueur, s'abonne dans <code>OnEnable</code>, se désabonne dans <code>OnDisable</code>, et logge « GAME OVER ».</li>
+              <li>Ajoute un 2ᵉ abonné (un script Audio) sans toucher au Joueur&nbsp;: tu constates le découplage.</li>
+              <li>Variante typée&nbsp;: <code>event Action&lt;int&gt; OnVieChangee</code> pour mettre à jour une barre de vie.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>NullReferenceException</code> au déclenchement.</div>
+                <div class="pi-cause"><b>Cause</b>Aucun abonné&nbsp;: l'événement vaut <code>null</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Déclenche avec l'opérateur conditionnel&nbsp;: <code>OnMort?.Invoke();</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreur « MissingReference » ou réactions en double.</div>
+                <div class="pi-cause"><b>Cause</b>Abonnement jamais retiré (objet détruit ou réactivé).</div>
+                <div class="pi-fix"><b>Correction</b>Désabonne-toi (<code>-=</code>) dans OnDisable/OnDestroy, symétrique de l'abonnement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« cannot access event outside the class ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu tentes d'<code>Invoke</code> l'event depuis un autre script.</div>
+                <div class="pi-fix"><b>Correction</b>Seule la classe propriétaire déclenche&nbsp;; expose plutôt une méthode publique.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Communication «&nbsp;par nom&nbsp;» qui casse en silence.</div>
+                <div class="pi-cause"><b>Cause</b>Usage de <code>SendMessage("...")</code> (fragile, non typé, lent).</div>
+                <div class="pi-fix"><b>Correction</b>Préfère <code>event Action</code> ou <code>UnityEvent</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un système de vie qui déclenche <code>OnVieChangee(int)</code> et <code>OnMort()</code>.</li>
+                <li>Une UI qui s'abonne pour mettre à jour une barre de vie et afficher Game Over.</li>
+                <li>Un 2ᵉ abonné (audio ou score) ajouté sans modifier le script de vie.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'émetteur ne référence aucun abonné (découplage réel).</li>
+                  <li>Chaque abonnement (<code>+=</code>) a son désabonnement (<code>-=</code>).</li>
+                  <li>Le déclenchement utilise <code>?.Invoke()</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les événements <b>réduisent le couplage</b>&nbsp;: l'émetteur annonce, les abonnés réagissent (observateur).</li>
+                <li><code>Action</code>/<code>delegate</code> = une variable contenant une (des) méthode(s)&nbsp;; <code>event</code> la protège.</li>
+                <li>Déclenche avec <code>OnX?.Invoke()</code>&nbsp;; abonne avec <code>+=</code>, <b>désabonne</b> avec <code>-=</code>.</li>
+                <li><code>UnityEvent</code> pour câbler dans l'Inspector&nbsp;; évite <code>SendMessage</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>delegate / Action</b> — type référençant une ou plusieurs méthodes, appelables ensemble.</p>
+              <p><b>event</b> — delegate protégé&nbsp;: l'extérieur ne peut que s'abonner/se désabonner.</p>
+              <p><b>Observateur (observer)</b> — patron où des abonnés réagissent à un émetteur sans qu'il les connaisse.</p>
+              <p><b>UnityEvent</b> — événement sérialisé, câblable dans l'Inspector.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs09-heritage-interfaces.html">CS9 — Interfaces</a>&nbsp;: une autre façon de découpler.</li>
+              <li><a href="../../cours/csharp/cs15-bonnes-pratiques.html">CS15 — Bonnes pratiques</a>&nbsp;: organiser un projet avec des événements.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

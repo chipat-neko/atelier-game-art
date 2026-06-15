@@ -45,6 +45,7 @@
   --piste-comparaison:  #4ade80;
   --piste-blender:      #e0a14b;
   --piste-godot:        #4f9bd9;
+  --piste-csharp:       #a855f7;
 
   /* Callouts — sémantique (chaud réservé aux avertissements) */
   --c-info:     #38bdf8;  --c-info-bg:     rgba(56, 189, 248, 0.10);
@@ -126,6 +127,7 @@
   --piste-comparaison:  #1f9e57;
   --piste-blender:      #b8761a;
   --piste-godot:        #2f76a8;
+  --piste-csharp:       #7c3aed;
 
   --c-info:     #0e7aa8;  --c-info-bg:     rgba(14, 122, 168, 0.08);
   --c-astuce:   #0d9488;  --c-astuce-bg:   rgba(13, 148, 136, 0.09);

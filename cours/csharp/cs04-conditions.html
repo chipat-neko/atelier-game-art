@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS4 — Conditions (if, switch) · Atelier Game Art</title>
+  <meta name="description" content="Les conditions en C# pour Unity : if / else if / else, l'opérateur ternaire, le switch, et les erreurs classiques (== vs =).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Conditions</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS4 — Conditions (if, switch)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs03-operateurs.html">CS3 — Opérateurs</a> (les booléens).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Brancher ton code avec <code>if</code> / <code>else if</code> / <code>else</code>.</li>
+                <li>Écrire un choix court avec l'<b>opérateur ternaire</b>.</li>
+                <li>Gérer plusieurs cas nets avec <code>switch</code>.</li>
+                <li>Éviter les pièges (accolades, <code>==</code> vs <code>=</code>, ordre des conditions).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu prend sans arrêt des <b>décisions</b>&nbsp;: «&nbsp;si la vie atteint 0, alors mort&nbsp;», «&nbsp;si la touche Espace est pressée, alors saute&nbsp;». La <span class="term">condition</span> est le mécanisme qui exécute un bloc de code <em>seulement si</em> un test (un <code>bool</code>, voir <a href="../../cours/csharp/cs03-operateurs.html">CS3</a>) est vrai. C'est le cœur de toute logique de gameplay.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. if / else if / else</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>if (vie &lt;= 0)
+{
+    Debug.Log("Game Over");
+}
+else if (vie &lt; 30)
+{
+    Debug.Log("Attention, vie basse !");
+}
+else
+{
+    Debug.Log("Tout va bien.");
+}</code></pre>
+            </div>
+            <p>Lecture&nbsp;: si la première condition est vraie, on exécute son bloc <b>et on s'arrête</b>&nbsp;; sinon on teste la suivante (<code>else if</code>)&nbsp;; le <code>else</code> final attrape «&nbsp;tous les autres cas&nbsp;». L'<b>ordre compte</b>&nbsp;: une condition large placée trop tôt «&nbsp;avale&nbsp;» les cas plus précis (place le plus spécifique d'abord).</p>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Mets toujours les accolades</div>
+              <p>C# autorise <code>if (x) faireUnTruc();</code> sans accolades, mais c'est une source de bugs (on ajoute une 2ᵉ ligne en croyant qu'elle est dans le <code>if</code>). <b>Garde les <code>{ }</code></b> même pour une seule instruction.</p>
+            </div>
+
+            <h3>2. Tester un booléen directement</h3>
+            <p>Une condition attend un <code>bool</code>. Inutile d'écrire <code>== true</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>if (estEnVie)        { /* ... */ }   // au lieu de : if (estEnVie == true)
+if (!estEnVie)       { /* ... */ }   // « si PAS en vie »
+if (aMunitions &amp;&amp; !enRechargement) { Tirer(); }   // conditions combinées</code></pre>
+            </div>
+
+            <h3>3. L'opérateur ternaire (choix court)</h3>
+            <p>Pour choisir <b>une valeur</b> selon une condition, le ternaire <code>condition ? siVrai : siFaux</code> condense un <code>if/else</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>string etat = (vie &gt; 0) ? "Vivant" : "Mort";
+float vitesse = estAccroupi ? 2f : 5f;</code></pre>
+            </div>
+            <p>Pratique pour les cas simples&nbsp;; au-delà, un <code>if/else</code> reste plus lisible.</p>
+
+            <h3>4. switch : plusieurs cas nets</h3>
+            <p>Quand on compare <b>une même variable</b> à plusieurs valeurs précises, <code>switch</code> est plus clair qu'une cascade de <code>if</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>switch (etatJeu)
+{
+    case "Menu":
+        AfficherMenu();
+        break;          // break OBLIGATOIRE pour sortir du case
+    case "EnJeu":
+        Jouer();
+        break;
+    case "Pause":
+        MettreEnPause();
+        break;
+    default:            // tous les autres cas
+        Debug.Log("État inconnu");
+        break;
+}</code></pre>
+            </div>
+            <p>Chaque <code>case</code> se termine par <code>break;</code> (sinon erreur en C#). Le <code>default</code> couvre le reste. Le <code>switch</code> marche sur les <code>int</code>, <code>string</code>, <code>enum</code> (énumérations — un type «&nbsp;liste de valeurs nommées&nbsp;», très utilisé pour les états de jeu).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Arbre de décision d'un if/else if/else selon la vie">
+                <g class="svg-text" font-size="11">
+                  <rect x="250" y="14" width="140" height="34" rx="8" class="svg-surface" stroke="#313c4c"/><text x="320" y="36" text-anchor="middle" font-weight="700">vie &lt;= 0 ?</text>
+                  <rect x="40" y="80" width="150" height="34" rx="8" fill="#f87171" fill-opacity="0.14" stroke="#f87171"/><text x="115" y="102" text-anchor="middle">Game Over</text>
+                  <rect x="245" y="80" width="150" height="34" rx="8" class="svg-surface" stroke="#313c4c"/><text x="320" y="102" text-anchor="middle" font-weight="700">vie &lt; 30 ?</text>
+                  <rect x="120" y="150" width="150" height="34" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="195" y="172" text-anchor="middle">Vie basse !</text>
+                  <rect x="430" y="150" width="150" height="34" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="505" y="172" text-anchor="middle">Tout va bien</text>
+                  <text x="190" y="74" fill="#f87171" font-size="10">vrai</text>
+                  <text x="390" y="74" class="svg-dim" font-size="10">faux</text>
+                  <text x="250" y="144" fill="#e0a14b" font-size="10">vrai</text>
+                  <text x="420" y="144" class="svg-dim" font-size="10">faux (else)</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.6" fill="none">
+                  <path d="M280 48 L120 78"/><path d="M360 48 L320 78"/>
+                  <path d="M290 114 L210 148"/><path d="M380 114 L490 148"/>
+                </g>
+              </svg>
+              <figcaption>Un <code>if / else if / else</code> est un arbre de décision&nbsp;: dès qu'une branche est vraie, on l'exécute et on ignore le reste.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un script avec <code>[SerializeField] private int vie = 100;</code>.</li>
+              <li>Dans <code>Start()</code>, écris la cascade <code>if/else if/else</code> ci-dessus pour afficher l'état selon la vie.</li>
+              <li>Règle <em>vie</em> à 0, puis 20, puis 80 dans l'Inspector et relance à chaque fois&nbsp;: vérifie le bon message.</li>
+              <li>Remplace l'affichage de l'état par un <b>ternaire</b> et compare la lisibilité.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Plusieurs messages s'affichent alors qu'un seul devrait.</div>
+                <div class="pi-cause"><b>Cause</b>Tu as enchaîné des <code>if</code> séparés au lieu d'un <code>if / else if</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Relie-les avec <code>else if</code> pour qu'un seul bloc s'exécute.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le cas «&nbsp;vie basse&nbsp;» ne se déclenche jamais.</div>
+                <div class="pi-cause"><b>Cause</b>Une condition plus large est testée avant (ordre des branches).</div>
+                <div class="pi-fix"><b>Correction</b>Place le cas le plus <b>spécifique</b> en premier.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Control cannot fall through from one case label » dans un switch.</div>
+                <div class="pi-cause"><b>Cause</b><code>break;</code> oublié à la fin d'un <code>case</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Termine chaque <code>case</code> par <code>break;</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une instruction censée être conditionnée s'exécute toujours.</div>
+                <div class="pi-cause"><b>Cause</b><code>if</code> sans accolades&nbsp;: seule la 1ʳᵉ ligne est dans le <code>if</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Entoure le bloc de <code>{ }</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un système de «&nbsp;grade&nbsp;» selon un <code>int score</code> : ≥90 « S », ≥75 « A », ≥50 « B », sinon « C ». Affiche le grade.</li>
+                <li>Réécris-le avec un <code>switch</code> sur un <code>int niveau</code> (1, 2, 3, default).</li>
+                <li>Ajoute un ternaire qui choisit un message « Victoire ! » / « Réessaie » selon un <code>bool aGagne</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Chaque tranche de score donne le bon grade (ordre correct).</li>
+                  <li>Ton switch a un <code>break;</code> par case et un <code>default</code>.</li>
+                  <li>Le ternaire produit le bon message.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>if / else if / else</code> = arbre de décision&nbsp;; <b>une seule</b> branche s'exécute&nbsp;; l'<b>ordre</b> compte.</li>
+                <li>Teste un <code>bool</code> directement (<code>if (estEnVie)</code>, <code>if (!x)</code>) ; garde les <b>accolades</b>.</li>
+                <li>Le <b>ternaire</b> <code>c ? a : b</code> choisit une valeur courte.</li>
+                <li><code>switch</code> pour plusieurs cas nets d'une même variable&nbsp;; <code>break;</code> obligatoire, <code>default</code> pour le reste.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Condition</b> — test (booléen) qui décide si un bloc de code s'exécute.</p>
+              <p><b>Opérateur ternaire</b> — <code>condition ? valeurSiVrai : valeurSiFaux</code>, un if/else condensé en expression.</p>
+              <p><b>switch</b> — structure comparant une variable à plusieurs valeurs (cases) avec un default.</p>
+              <p><b>enum</b> — type «&nbsp;liste de valeurs nommées&nbsp;» (ex. états de jeu), idéal avec switch.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs05-boucles.html">CS5 — Boucles</a>&nbsp;: répéter du code.</li>
+              <li><a href="../../cours/csharp/cs07-monobehaviour.html">CS7 — MonoBehaviour</a>&nbsp;: où placer ces conditions (Update).</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

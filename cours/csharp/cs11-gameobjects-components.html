@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS11 — Manipuler GameObjects & Components · Atelier Game Art</title>
+  <meta name="description" content="Agir sur la scène depuis un script Unity : GetComponent, transform, Instantiate, Destroy, tags et layers, et bien référencer les objets.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>GameObjects &amp; Components</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS11 — Manipuler GameObjects &amp; Components</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs08-classes-poo.html">CS8 — Classes</a>, <a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a> et <a href="../../cours/unity/u02-editeur.html">U2 — Éditeur</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Accéder à un autre Component avec <code>GetComponent&lt;T&gt;()</code>.</li>
+                <li>Lire/modifier la position via <code>transform</code>.</li>
+                <li>Créer et détruire des objets&nbsp;: <code>Instantiate</code>, <code>Destroy</code>.</li>
+                <li>Référencer proprement des objets (Inspector vs <code>Find</code>) et utiliser tags/layers.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Jusqu'ici, tes scripts vivaient «&nbsp;en vase clos&nbsp;». Le vrai gameplay émerge quand un script <b>agit sur la scène</b>&nbsp;: déplacer un objet, lui retirer de la vie via son script, faire apparaître un projectile, détruire un ennemi. Tout cela passe par les <span class="gloss">GameObject</span>s et leurs <span class="gloss">Component</span>s (rappel <a href="../../cours/unity/u02-editeur.html">U2</a>). Cette leçon est le pont entre le C# et le moteur.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. transform : la position de l'objet</h3>
+            <p>Tout script attaché accède à <code>transform</code> (le Component Transform de son propre objet), qui porte position, rotation et échelle&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>transform.position = new Vector3(0f, 5f, 0f);   // téléporter
+transform.Translate(Vector3.up * 2f);           // déplacer relativement
+transform.Rotate(Vector3.up * 90f);             // tourner de 90°
+Debug.Log(transform.position.y);                // lire la hauteur</code></pre>
+            </div>
+            <p><code>Vector3</code> (x, y, z) est le type des positions/directions (vu en <a href="../../cours/csharp/cs02-variables-types.html">CS2</a>). Raccourcis utiles&nbsp;: <code>Vector3.up</code>, <code>Vector3.forward</code>, <code>Vector3.zero</code>.</p>
+
+            <h3>2. GetComponent : accéder à un autre Component</h3>
+            <p>Pour agir sur un autre Component du <b>même objet</b> (ou d'un autre), on le récupère avec <code>GetComponent&lt;Type&gt;()</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>// Récupérer le Rigidbody de mon objet
+Rigidbody rb = GetComponent&lt;Rigidbody&gt;();
+rb.linearVelocity = Vector3.forward * 5f;
+
+// Récupérer le script d'un AUTRE objet (via une référence) :
+Ennemi e = autreObjet.GetComponent&lt;Ennemi&gt;();
+if (e != null) e.SubirDegats(10);    // null-check : et s'il n'a pas ce script ?</code></pre>
+            </div>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Mets GetComponent en cache</div>
+              <p><code>GetComponent</code> a un coût&nbsp;: ne l'appelle <b>pas dans <code>Update</code></b> à chaque frame. Récupère la référence <b>une fois</b> dans <code>Awake</code>/<code>Start</code> et stocke-la dans un champ (renvoi <a href="../../cours/csharp/cs15-bonnes-pratiques.html">CS15</a>).</p>
+            </div>
+
+            <h3>3. Instantiate &amp; Destroy : créer et détruire</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public GameObject prefabProjectile;   // glissé depuis le Project dans l'Inspector
+
+void Tirer()
+{
+    // crée une COPIE du prefab à la position/rotation données
+    GameObject balle = Instantiate(prefabProjectile, transform.position, transform.rotation);
+    Destroy(balle, 3f);   // détruit la balle après 3 secondes
+}
+
+void OnDejaTouche()
+{
+    Destroy(gameObject);  // 'gameObject' = l'objet qui porte CE script
+}</code></pre>
+            </div>
+            <p><code>Instantiate</code> clone un <span class="gloss">Prefab</span> (un modèle d'objet réutilisable). <code>Destroy(gameObject)</code> détruit l'objet courant&nbsp;; <code>Destroy(obj, delai)</code> attend avant de détruire.</p>
+
+            <h3>4. Référencer un objet&nbsp;: Inspector vs Find</h3>
+            <p>Pour qu'un script connaisse un autre objet, deux voies&nbsp;:</p>
+            <ul>
+              <li><b>Référence sérialisée (recommandé)</b>&nbsp;: un champ <code>[SerializeField] private Transform cible;</code> que tu <b>glisses</b> dans l'Inspector. Rapide, sûr, explicite.</li>
+              <li><b>Recherche à l'exécution</b>&nbsp;: <code>GameObject.FindWithTag("Player")</code> ou <code>GameObject.Find("Nom")</code>. Pratique mais <b>lent</b> et fragile (dépend du nom) — à éviter dans Update.</li>
+            </ul>
+            <p>Les <b>tags</b> (étiquettes) et <b>layers</b> (couches) classent les objets. On compare un tag avec <code>CompareTag("Enemy")</code> (plus sûr que <code>== "Enemy"</code>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Un script accède à transform et via GetComponent à d'autres Components de l'objet">
+                <defs><marker id="cs11ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <rect x="40" y="40" width="150" height="90" rx="10" fill="#7aa2f7" fill-opacity="0.1" stroke="#7aa2f7"/>
+                <text x="115" y="34" text-anchor="middle" class="svg-dim" font-size="10">GameObject "Joueur"</text>
+                <g class="svg-text" font-size="10.5" font-family="monospace">
+                  <rect x="55" y="50" width="120" height="22" rx="4" class="svg-surface" stroke="#313c4c"/><text x="62" y="65">Transform</text>
+                  <rect x="55" y="76" width="120" height="22" rx="4" class="svg-surface" stroke="#313c4c"/><text x="62" y="91">Rigidbody</text>
+                  <rect x="55" y="102" width="120" height="22" rx="4" fill="#a855f7" fill-opacity="0.16" stroke="#a855f7"/><text x="62" y="117">Deplacement (script)</text>
+                </g>
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="360" y="44" width="250" height="26" rx="5" class="svg-surface" stroke="#313c4c"/><text x="370" y="62">transform.position = ...</text>
+                  <rect x="360" y="80" width="250" height="26" rx="5" class="svg-surface" stroke="#313c4c"/><text x="370" y="98">GetComponent&lt;Rigidbody&gt;()</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.6" marker-end="url(#cs11ar)">
+                  <path d="M175 113 C 250 90, 290 70, 358 60"/>
+                  <path d="M175 113 C 250 100, 290 95, 358 93"/>
+                </g>
+                <text x="320" y="150" text-anchor="middle" class="svg-dim" font-size="10">Le script agit sur les autres Components de son objet (et d'autres via des références).</text>
+              </svg>
+              <figcaption>Depuis un script&nbsp;: <code>transform</code> donne sa position&nbsp;; <code>GetComponent&lt;T&gt;()</code> donne accès aux autres Components.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un script <code>Deplacement</code> sur un cube&nbsp;: dans <code>Update</code>, <code>transform.Translate(Vector3.right * 2f * Time.deltaTime);</code> — le cube glisse.</li>
+              <li>Crée un Prefab «&nbsp;Balle&nbsp;» (un petit objet). Dans un autre script, expose <code>public GameObject prefabBalle;</code>, glisse le prefab dans l'Inspector, et fais <code>Instantiate(prefabBalle, transform.position, Quaternion.identity);</code> au Start.</li>
+              <li>Ajoute <code>Destroy(gameObject, 5f);</code> sur la balle pour qu'elle disparaisse.</li>
+              <li>Référence un autre objet via <code>[SerializeField] private Transform cible;</code> (glissé dans l'Inspector) et fais ton cube regarder la cible&nbsp;: <code>transform.LookAt(cible);</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>NullReferenceException</code> sur un GetComponent.</div>
+                <div class="pi-cause"><b>Cause</b>L'objet n'a pas ce Component&nbsp;: <code>GetComponent</code> renvoie <code>null</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie le résultat (<code>if (rb != null)</code>) ou assure-toi que le Component est bien là.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon Instantiate ne crée rien / erreur de référence.</div>
+                <div class="pi-cause"><b>Cause</b>Le champ <code>prefab</code> n'a pas été assigné dans l'Inspector (vaut null).</div>
+                <div class="pi-fix"><b>Correction</b>Glisse le prefab dans le champ de l'Inspector.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon jeu rame avec beaucoup d'objets.</div>
+                <div class="pi-cause"><b>Cause</b><code>GetComponent</code>/<code>Find</code> appelés à chaque frame dans Update.</div>
+                <div class="pi-fix"><b>Correction</b>Mets ces références en cache dans Awake/Start (renvoi <a href="../../cours/csharp/cs15-bonnes-pratiques.html">CS15</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« MissingReferenceException » après destruction.</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises un objet déjà détruit par <code>Destroy</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie qu'il existe encore (<code>if (obj != null)</code>) avant de l'utiliser.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un script qui, au clic (ou au Start), instancie un prefab et le détruit après 2 s.</li>
+                <li>Un script «&nbsp;ennemi&nbsp;» qui récupère le <code>Rigidbody</code> en cache (Awake) et l'utilise.</li>
+                <li>Une référence à une cible glissée dans l'Inspector&nbsp;; ton objet la regarde (<code>LookAt</code>) en continu.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'instanciation et la destruction fonctionnent sans erreur null.</li>
+                  <li>Tu mets <code>GetComponent</code> en cache plutôt que dans Update.</li>
+                  <li>Tu références par l'Inspector plutôt que par <code>Find</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>transform</code> = position/rotation/échelle de l'objet&nbsp;; <code>Vector3</code> pour les coordonnées.</li>
+                <li><code>GetComponent&lt;T&gt;()</code> accède aux autres Components — <b>mets-le en cache</b>, jamais dans Update.</li>
+                <li><code>Instantiate(prefab, pos, rot)</code> crée&nbsp;; <code>Destroy(obj[, delai])</code> détruit (<code>gameObject</code> = l'objet courant).</li>
+                <li>Référence via l'<b>Inspector</b> (recommandé) plutôt que <code>Find</code>&nbsp;; compare un tag avec <code>CompareTag</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>transform</b> — Component portant position, rotation et échelle d'un objet.</p>
+              <p><b>GetComponent&lt;T&gt;()</b> — récupère un Component d'un type donné sur un objet.</p>
+              <p><b>Instantiate / Destroy</b> — créer une copie d'un objet/prefab&nbsp;/ le détruire.</p>
+              <p><b>Référence sérialisée</b> — champ exposé dans l'Inspector où l'on glisse un objet.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12 — Entrées &amp; mouvement</a>&nbsp;: déplacer le joueur au clavier.</li>
+              <li><a href="../../cours/unity/u05-import-assets.html">U5 — Import d'assets</a>&nbsp;: les prefabs qu'on instancie.</li>
+              <li><a href="../../cours/csharp/cs15-bonnes-pratiques.html">CS15 — Bonnes pratiques</a>&nbsp;: cache de références, perfs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

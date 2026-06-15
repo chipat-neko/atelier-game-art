@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS1 — Introduction au C# & premier script · Atelier Game Art</title>
+  <meta name="description" content="Débuter le C# dans Unity : ce qu'est un script, le MonoBehaviour, créer et attacher un script, l'éditeur de code et le cycle compiler/jouer.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Introduction &amp; premier script</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS1 — Introduction au C# &amp; premier script</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>Aucune notion de code requise. Pour pratiquer, il faut Unity installé (renvoi <a href="../../cours/unity/u01-installation.html">U1</a>) et savoir te repérer dans l'éditeur (renvoi <a href="../../cours/unity/u02-editeur.html">U2</a>).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Expliquer ce qu'est le <b>C#</b> et ce que fait un <b>script</b> dans Unity.</li>
+                <li>Comprendre qu'un script est un <b>Component</b> via la classe <b>MonoBehaviour</b>.</li>
+                <li>Créer un script, l'ouvrir dans l'éditeur de code, et l'<b>attacher</b> à un GameObject.</li>
+                <li>Écrire ta première ligne (<code>Debug.Log</code>) et comprendre le cycle <b>écrire → compiler → jouer</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les pistes précédentes t'ont appris à fabriquer ce qu'on <b>voit</b> (modèles, textures, lumière). Le code, lui, fabrique ce qui <b>se passe</b>&nbsp;: un personnage qui saute, un ennemi qui poursuit, un score qui monte. Sans code, un jeu n'est qu'un décor figé. En Unity, on programme en <b>C#</b> (prononcé «&nbsp;C sharp&nbsp;»), un langage moderne, lisible et très demandé sur le marché du jeu vidéo. Cette leçon pose la toute première brique&nbsp;: faire exécuter <em>ta</em> ligne de code par le moteur.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. C# et .NET, en deux mots</h3>
+            <p>Le <span class="term">C#</span> est un langage de programmation créé par Microsoft. Unity l'utilise comme <b>langage de script</b>&nbsp;: tu écris des instructions en C#, Unity les <b>compile</b> (les traduit en quelque chose que la machine exécute) et les fait tourner pendant le jeu. Tu n'as pas besoin de connaître les rouages de .NET pour commencer&nbsp;: retiens juste que C# est un langage <b>typé</b> (chaque donnée a un type, voir <a href="../../cours/csharp/cs02-variables-types.html">CS2</a>) et <b>orienté objet</b> (tout s'organise en «&nbsp;classes&nbsp;», voir <a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>).</p>
+
+            <h3>2. Un script = un Component (MonoBehaviour)</h3>
+            <p>Rappel de <a href="../../cours/unity/u02-editeur.html">U2</a>&nbsp;: dans Unity, un <span class="gloss">GameObject</span> tient ses comportements de ses <span class="gloss">Component</span>s. <b>Un script est un type de Component que tu écris toi-même.</b> Pour qu'Unity le reconnaisse comme tel, ta classe doit <b>hériter</b> de <span class="term">MonoBehaviour</span> (la classe de base de tous les scripts Unity). C'est ce qui te donne accès aux fonctions spéciales appelées automatiquement par le moteur — comme <code>Start()</code> et <code>Update()</code> (détaillées en <a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>).</p>
+
+            <h3>3. Anatomie d'un script par défaut</h3>
+            <p>Quand tu crées un script nommé <code>MonObjet</code>, Unity génère ceci&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>using UnityEngine;            // donne accès aux outils d'Unity (Debug, Transform...)
+
+public class MonObjet : MonoBehaviour   // ma classe EST un MonoBehaviour
+{
+    // Appelée UNE fois, au démarrage de l'objet
+    void Start()
+    {
+        Debug.Log("Bonjour depuis Unity !");
+    }
+
+    // Appelée à CHAQUE image (frame)
+    void Update()
+    {
+
+    }
+}</code></pre>
+            </div>
+            <p>Décortiquons&nbsp;:</p>
+            <ul>
+              <li><code>using UnityEngine;</code> — une <b>directive</b> qui importe la boîte à outils d'Unity. Sans elle, <code>Debug</code> et <code>MonoBehaviour</code> seraient inconnus.</li>
+              <li><code>public class MonObjet : MonoBehaviour</code> — déclare une <b>classe</b> nommée <code>MonObjet</code> qui hérite de <code>MonoBehaviour</code> (le «&nbsp;: MonoBehaviour&nbsp;» = héritage, voir <a href="../../cours/csharp/cs09-heritage-interfaces.html">CS9</a>).</li>
+              <li><code>void Start()</code> et <code>void Update()</code> — des <b>méthodes</b> (voir <a href="../../cours/csharp/cs06-methodes.html">CS6</a>). Unity les appelle tout seul aux bons moments. <code>void</code> signifie «&nbsp;ne renvoie rien&nbsp;».</li>
+              <li>Les <b>accolades</b> <code>{ }</code> délimitent un bloc&nbsp;; chaque instruction se termine par un <b>point-virgule</b> <code>;</code>.</li>
+              <li><code>Debug.Log("…")</code> affiche un message dans la <b>Console</b> d'Unity — ton premier outil de diagnostic.</li>
+            </ul>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Règle d'or du nommage</div>
+              <p>Le <b>nom du fichier</b> (<code>MonObjet.cs</code>) doit être <b>exactement identique</b> au nom de la classe (<code>MonObjet</code>). Sinon, Unity refuse d'attacher le script. Le C# est aussi <b>sensible à la casse</b>&nbsp;: <code>Start</code> ≠ <code>start</code>.</p>
+            </div>
+
+            <h3>4. Le cycle écrire → compiler → jouer</h3>
+            <p>À chaque fois que tu modifies et sauvegardes un script, Unity le <b>recompile</b> en arrière-plan (une petite roue tourne en bas à droite). S'il y a une <b>erreur de syntaxe</b>, elle s'affiche en rouge dans la Console et <b>le jeu ne se lancera pas</b> tant qu'elle n'est pas corrigée. Quand tout compile, tu appuies sur <b>Play</b> (▶) et ton code s'exécute.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Cycle : écrire le code, sauvegarder, Unity compile, attacher au GameObject, Play exécute">
+                <defs><marker id="cs1ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="14" y="66" width="112" height="50" rx="8" class="svg-surface" stroke="#313c4c"/><text x="70" y="88" text-anchor="middle" font-weight="700">Écrire (.cs)</text><text x="70" y="105" text-anchor="middle" class="svg-dim">éditeur de code</text>
+                  <rect x="150" y="66" width="112" height="50" rx="8" fill="#a855f7" fill-opacity="0.14" stroke="#a855f7"/><text x="206" y="88" text-anchor="middle" font-weight="700">Compiler</text><text x="206" y="105" text-anchor="middle" class="svg-dim">Unity (auto)</text>
+                  <rect x="286" y="66" width="120" height="50" rx="8" class="svg-surface" stroke="#313c4c"/><text x="346" y="88" text-anchor="middle" font-weight="700">Attacher</text><text x="346" y="105" text-anchor="middle" class="svg-dim">au GameObject</text>
+                  <rect x="430" y="66" width="100" height="50" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="480" y="88" text-anchor="middle" font-weight="700">Play ▶</text><text x="480" y="105" text-anchor="middle" class="svg-dim">ça s'exécute</text>
+                  <rect x="554" y="66" width="74" height="50" rx="8" class="svg-surface" stroke="#313c4c"/><text x="591" y="88" text-anchor="middle" font-weight="700">Console</text><text x="591" y="105" text-anchor="middle" class="svg-dim">Debug.Log</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.8" marker-end="url(#cs1ar)">
+                  <line x1="126" y1="91" x2="148" y2="91"/><line x1="262" y1="91" x2="284" y2="91"/><line x1="406" y1="91" x2="428" y2="91"/><line x1="530" y1="91" x2="552" y2="91"/>
+                </g>
+                <text x="320" y="150" text-anchor="middle" class="svg-dim" font-size="11">Une erreur de compilation (rouge dans la Console) bloque le Play tant qu'elle n'est pas corrigée.</text>
+              </svg>
+              <figcaption>Le cycle de base&nbsp;: on écrit, Unity compile, on attache le script à un objet, et Play exécute le code (résultats visibles dans la Console).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans la fenêtre <span class="menu-path">Project</span>, clic droit dans un dossier <code>Scripts</code> ▸ <span class="menu-path">Create<span class="arrow">▸</span>C# Script</span>. Nomme-le immédiatement <code>HelloWorld</code> (le renommer plus tard est source d'erreurs).</li>
+              <li>Double-clique le script&nbsp;: il s'ouvre dans ton <b>éditeur de code</b> (Visual Studio, Rider ou VS Code — installé avec Unity ou via les modules, renvoi <a href="../../cours/unity/u01-installation.html">U1</a>).</li>
+              <li>Dans <code>Start()</code>, écris&nbsp;: <code>Debug.Log("Mon premier script !");</code> puis <b>sauvegarde</b> (<span class="kbd">Ctrl</span>+<span class="kbd">S</span>).</li>
+              <li>Reviens dans Unity&nbsp;: attends la fin de la compilation (la roue en bas à droite). Si la Console affiche une erreur rouge, relis ta ligne (point-virgule, guillemets, casse).</li>
+              <li><b>Attache</b> le script&nbsp;: glisse-le depuis le Project sur un GameObject (ou sélectionne l'objet ▸ <span class="menu-path">Add Component</span> ▸ tape «&nbsp;HelloWorld&nbsp;»).</li>
+              <li>Ouvre la <span class="menu-path">Console</span> (Window ▸ General ▸ Console), appuie sur <b>Play</b> ▸ ton message s'affiche&nbsp;! Tu viens d'exécuter ton premier code.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Can't add script component… the script class cannot be found. »</div>
+                <div class="pi-cause"><b>Cause</b>Le nom du fichier ne correspond pas au nom de la classe (ex. fichier renommé après création).</div>
+                <div class="pi-fix"><b>Correction</b>Mets le <code>nom du fichier</code> et le <code>public class …</code> strictement identiques.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le bouton Play est grisé / « All compiler errors must be fixed ».</div>
+                <div class="pi-cause"><b>Cause</b>Une erreur de syntaxe (point-virgule oublié, accolade manquante, faute de casse).</div>
+                <div class="pi-fix"><b>Correction</b>Double-clique l'erreur rouge dans la Console&nbsp;: elle t'emmène à la ligne fautive.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Rien ne s'affiche dans la Console au Play.</div>
+                <div class="pi-cause"><b>Cause</b>Script non attaché à un objet actif, ou message écrit hors de <code>Start()</code>/<code>Update()</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie que le script est bien un Component de l'objet (visible dans l'Inspector) et que l'objet est actif.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes modifs de code ne changent rien en jeu.</div>
+                <div class="pi-cause"><b>Cause</b>Script non sauvegardé, ou modifié pendant le mode Play (les changements en Play sont annulés à l'arrêt).</div>
+                <div class="pi-fix"><b>Correction</b>Sauvegarde (<span class="kbd">Ctrl</span>+<span class="kbd">S</span>), laisse compiler, et édite hors du mode Play.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un script <code>HelloWorld</code>, attache-le à un objet, affiche un message au démarrage avec <code>Debug.Log</code>.</li>
+                <li>Ajoute un second <code>Debug.Log("…")</code> dans <code>Update()</code> et observe&nbsp;: il s'affiche en boucle (une fois par image). Comprends pourquoi.</li>
+                <li>Provoque volontairement une erreur (retire un point-virgule), lis le message rouge, puis corrige.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Ton message s'affiche dans la Console au Play.</li>
+                  <li>Tu sais expliquer la différence Start (une fois) vs Update (chaque image).</li>
+                  <li>Tu sais lire une erreur de compilation et la corriger.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>On programme Unity en <b>C#</b>&nbsp;; un <b>script</b> = un <b>Component</b> que tu écris, via la classe <b>MonoBehaviour</b>.</li>
+                <li>Le <b>nom du fichier</b> = le <b>nom de la classe</b>&nbsp;; le C# est <b>sensible à la casse</b>&nbsp;; chaque instruction finit par <code>;</code>.</li>
+                <li><code>Start()</code> s'exécute une fois, <code>Update()</code> à chaque image&nbsp;; <code>Debug.Log</code> affiche dans la Console.</li>
+                <li>Cycle&nbsp;: écrire → sauvegarder → Unity compile → attacher à un objet → Play.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>C#</b> — langage de programmation utilisé par Unity pour scripter le comportement du jeu.</p>
+              <p><b>Script</b> — fichier de code (.cs) qui devient un Component une fois attaché à un GameObject.</p>
+              <p><b>MonoBehaviour</b> — classe de base dont héritent les scripts Unity&nbsp;; donne accès aux méthodes appelées par le moteur.</p>
+              <p><b>Compilation</b> — traduction du code C# en instructions exécutables&nbsp;; une erreur bloque le Play.</p>
+              <p><b>Debug.Log</b> — instruction qui affiche un message dans la Console d'Unity.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs02-variables-types.html">CS2 — Variables &amp; types</a>&nbsp;: stocker des données.</li>
+              <li><a href="../../cours/unity/u02-editeur.html">U2 — Éditeur Unity</a>&nbsp;: le modèle GameObject + Components.</li>
+              <li><a href="../../cours/csharp/cs07-monobehaviour.html">CS7 — Le cycle MonoBehaviour</a>&nbsp;: toutes les méthodes appelées par Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

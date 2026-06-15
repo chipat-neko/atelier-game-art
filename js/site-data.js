@@ -144,6 +144,32 @@ window.SITE_DATA = {
         { id:"c02", fichier:"c02-transfert-assets.html", titre:"Transférer des assets entre moteurs", niveau:"Intermédiaire", duree:"35 min", desc:"Conventions d'échelle et d'axes, formats, pièges fréquents depuis Blender vers Unity/Unreal.", motscles:["transfert asset","échelle","axes","unité","FBX","Blender","convention","pipeline inter-moteur"] },
         { id:"c03", fichier:"c03-choisir-moteur.html",  titre:"Choisir son moteur",                niveau:"Débutant",      duree:"25 min", desc:"Selon le type de projet et son profil : critères de décision concrets.", motscles:["choisir moteur","décision","projet","profil","critère","Unity ou Unreal"] }
       ]
+    },
+    {
+      id: "csharp",
+      titre: "Programmation C# (Unity)",
+      kicker: "Piste 7",
+      couleur: "var(--piste-csharp)",
+      dossier: "cours/csharp/",
+      icone: "code",
+      desc: "Apprendre le C# dans le contexte de Unity : du premier script aux concepts avancés (variables, POO, collections, cycle MonoBehaviour, events, coroutines, bonnes pratiques).",
+      lecons: [
+        { id:"cs01", fichier:"cs01-introduction.html",          titre:"Introduction au C# & premier script", niveau:"Débutant",      duree:"35 min", desc:"Qu'est-ce qu'un script, MonoBehaviour, créer et attacher un script, l'éditeur de code, le cycle compiler/jouer.", motscles:["C#","script","MonoBehaviour","Unity","Visual Studio","compiler","Debug.Log","premier script"] },
+        { id:"cs02", fichier:"cs02-variables-types.html",       titre:"Variables & types",                   niveau:"Débutant",      duree:"35 min", desc:"int, float, bool, string, var ; déclaration, affectation, [SerializeField] et exposition dans l'Inspector.", motscles:["variable","type","int","float","bool","string","var","SerializeField","Inspector","public"] },
+        { id:"cs03", fichier:"cs03-operateurs.html",            titre:"Opérateurs & expressions",            niveau:"Débutant",      duree:"30 min", desc:"Arithmétique, comparaison, logique, affectation composée, conversions et casts entre types.", motscles:["opérateur","arithmétique","comparaison","logique","cast","conversion","expression","modulo"] },
+        { id:"cs04", fichier:"cs04-conditions.html",            titre:"Conditions (if, switch)",             niveau:"Débutant",      duree:"35 min", desc:"if / else if / else, opérateur ternaire, switch, et erreurs classiques (== vs =).", motscles:["if","else","switch","condition","ternaire","booléen","branchement"] },
+        { id:"cs05", fichier:"cs05-boucles.html",               titre:"Boucles (for, while, foreach)",       niveau:"Débutant",      duree:"35 min", desc:"for, while, do-while, foreach, break/continue, et pourquoi éviter les boucles infinies en jeu.", motscles:["boucle","for","while","foreach","do-while","break","continue","itération"] },
+        { id:"cs06", fichier:"cs06-methodes.html",              titre:"Méthodes (fonctions)",                niveau:"Intermédiaire", duree:"40 min", desc:"Déclarer une méthode, paramètres, valeur de retour, surcharge, portée, et découper son code.", motscles:["méthode","fonction","paramètre","return","surcharge","void","portée","scope"] },
+        { id:"cs07", fichier:"cs07-monobehaviour.html",         titre:"Le cycle de vie MonoBehaviour",       niveau:"Intermédiaire", duree:"45 min", desc:"Awake, Start, Update, FixedUpdate, LateUpdate, OnEnable/Disable ; Time.deltaTime et l'ordre d'exécution.", motscles:["MonoBehaviour","Awake","Start","Update","FixedUpdate","LateUpdate","deltaTime","cycle de vie"] },
+        { id:"cs08", fichier:"cs08-classes-poo.html",           titre:"Classes & objets (POO)",              niveau:"Intermédiaire", duree:"45 min", desc:"class, champs, méthodes, constructeurs, encapsulation (public/private), propriétés, instances vs static.", motscles:["classe","objet","POO","constructeur","encapsulation","propriété","static","instance"] },
+        { id:"cs09", fichier:"cs09-heritage-interfaces.html",   titre:"Héritage, interfaces & polymorphisme",niveau:"Avancé",        duree:"45 min", desc:"Héritage, base, virtual/override/abstract, interfaces, polymorphisme — et leur usage en jeu.", motscles:["héritage","interface","polymorphisme","virtual","override","abstract","base","IDamageable"] },
+        { id:"cs10", fichier:"cs10-collections.html",           titre:"Collections (List, Dictionary, tableaux)", niveau:"Intermédiaire", duree:"40 min", desc:"Tableaux, List<T>, Dictionary<K,V>, parcours avec foreach, ajouter/retirer, et choix de la bonne collection.", motscles:["collection","tableau","array","List","Dictionary","générique","foreach","index"] },
+        { id:"cs11", fichier:"cs11-gameobjects-components.html",titre:"Manipuler GameObjects & Components",  niveau:"Intermédiaire", duree:"45 min", desc:"GetComponent, transform, Instantiate, Destroy, tags et layers, références dans l'Inspector vs Find.", motscles:["GameObject","Component","GetComponent","Instantiate","Destroy","transform","tag","référence"] },
+        { id:"cs12", fichier:"cs12-entrees-mouvement.html",     titre:"Entrées & mouvement",                 niveau:"Intermédiaire", duree:"45 min", desc:"Lire le clavier/souris (Input System), déplacer un objet, Translate vs Rigidbody, deltaTime et physique.", motscles:["Input","clavier","souris","mouvement","Translate","Rigidbody","velocity","deltaTime"] },
+        { id:"cs13", fichier:"cs13-evenements.html",            titre:"Événements & communication",          niveau:"Avancé",        duree:"45 min", desc:"delegates, Action, events C#, UnityEvent ; communiquer entre scripts sans tout coupler.", motscles:["event","delegate","Action","UnityEvent","communication","découplage","observateur","callback"] },
+        { id:"cs14", fichier:"cs14-coroutines.html",            titre:"Coroutines & gestion du temps",       niveau:"Avancé",        duree:"40 min", desc:"IEnumerator, yield, WaitForSeconds, StartCoroutine, Invoke ; étaler une action dans le temps.", motscles:["coroutine","IEnumerator","yield","WaitForSeconds","StartCoroutine","Invoke","temps","async"] },
+        { id:"cs15", fichier:"cs15-bonnes-pratiques.html",      titre:"Bonnes pratiques, perfs & organisation",niveau:"Avancé",        duree:"45 min", desc:"Null checks, cache de références, éviter GetComponent dans Update, ScriptableObjects, débogage et structure du code.", motscles:["bonnes pratiques","performance","null","cache","ScriptableObject","debug","Garbage Collection","organisation"] }
+      ]
     }
   ]
 };

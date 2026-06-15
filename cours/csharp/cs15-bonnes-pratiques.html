@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS15 — Bonnes pratiques, perfs & organisation · Atelier Game Art</title>
+  <meta name="description" content="Écrire un code Unity propre et performant : conventions, SerializeField, responsabilité unique, cache de références, pooling et organisation du projet. Mini-projet récapitulatif.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs15";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Bonnes pratiques</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS15 — Bonnes pratiques, performances &amp; organisation</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>idéalement toute la piste, surtout <a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>, <a href="../../cours/csharp/cs13-evenements.html">CS13</a> et <a href="../../cours/csharp/cs14-coroutines.html">CS14</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Appliquer les <b>conventions C#/Unity</b> (nommage, <code>SerializeField</code>).</li>
+                <li>Respecter la <b>responsabilité unique</b> (un script = un rôle).</li>
+                <li>Éviter les pièges de <b>performance</b> (Update, allocations, GetComponent/Find).</li>
+                <li>Organiser un projet et réaliser un <b>mini-projet récapitulatif</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu qui «&nbsp;marche&nbsp;» mais dont le code est un plat de spaghettis devient vite impossible à faire évoluer&nbsp;: chaque ajout casse autre chose, les bugs se multiplient, les perfs s'effondrent. Cette dernière leçon rassemble les réflexes qui font la différence entre un script jetable et un projet maintenable — puis tu mets tout en pratique dans un mini-jeu.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Conventions de nommage</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public class JoueurController : MonoBehaviour   // PascalCase pour classes/méthodes
+{
+    public float VitesseMax = 5f;               // PascalCase pour public
+    [SerializeField] private int pointsDeVie;   // camelCase pour private
+    private const int MAX_VIE = 100;            // constantes en MAJUSCULES
+
+    private void AppliquerDegats(int montant) { }  // PascalCase, verbe d'action
+}</code></pre>
+            </div>
+            <p>Des noms <b>clairs et cohérents</b> valent mieux que des commentaires&nbsp;: <code>vitesseDeplacement</code> plutôt que <code>v</code>.</p>
+
+            <h3>2. SerializeField plutôt que public</h3>
+            <p>Pour régler une valeur dans l'Inspector <b>sans</b> casser l'encapsulation (<a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>), expose le champ avec <code>[SerializeField] private</code> au lieu de <code>public</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private float vitesse = 5f;   // visible dans l'Inspector, protégé du code externe
+[Header("Combat")]                              // titre de section dans l'Inspector
+[SerializeField, Range(0, 100)] private int degats = 10;  // curseur borné</code></pre>
+            </div>
+
+            <h3>3. Responsabilité unique</h3>
+            <p>Un script qui gère à la fois le déplacement, la vie, l'UI, le son et la sauvegarde est ingérable. <b>Découpe</b>&nbsp;: <code>Deplacement</code>, <code>Sante</code>, <code>InventaireUI</code>… Chacun fait une chose, et ils communiquent par <b>événements</b> (<a href="../../cours/csharp/cs13-evenements.html">CS13</a>) ou références sérialisées.</p>
+
+            <h3>4. Performances : les réflexes essentiels</h3>
+            <ul>
+              <li><b>Cache</b> les <code>GetComponent</code> dans <code>Awake</code>/<code>Start</code> — jamais dans <code>Update</code> (<a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>).</li>
+              <li><b>Évite</b> <code>GameObject.Find</code> et <code>Camera.main</code> répétés en boucle&nbsp;: stocke la référence.</li>
+              <li><b>Pas d'allocations</b> par frame&nbsp;: pas de <code>new</code> inutile, pas de <code>string</code> concaténées dans Update (elles font travailler le ramasse-miettes → micro-freezes).</li>
+              <li><b>Object pooling</b>&nbsp;: au lieu d'<code>Instantiate</code>/<code>Destroy</code> en boucle (balles, ennemis), <b>réutilise</b> un pool d'objets désactivés/réactivés.</li>
+              <li><b>Désactive</b> ce qui n'a rien à faire&nbsp;: un Update vide a quand même un coût × milliers d'objets.</li>
+            </ul>
+
+            <div class="codeblock" data-lang="C#">
+<pre><code>// ❌ alloue une chaîne à chaque frame → pression sur le GC
+void Update() { label.text = "Score : " + score; }
+
+// ✅ ne met à jour QUE quand ça change (via un événement, CS13)
+void OnScoreChange(int s) { label.text = "Score : " + s; }</code></pre>
+            </div>
+
+            <h3>5. Organisation du projet</h3>
+            <p>Range tes assets&nbsp;: <code>Scripts/</code>, <code>Prefabs/</code>, <code>Materials/</code>, <code>Scenes/</code>, <code>Audio/</code>… Un script par fichier, nommé comme sa classe. Pour les données partagées (stats d'armes, niveaux), regarde les <span class="gloss">ScriptableObject</span> — des assets de données réutilisables, sans GameObject.</p>
+
+            <h3>6. Déboguer proprement</h3>
+            <p><code>Debug.Log</code> pour comprendre le flux, mais <b>nettoie-les</b> avant de livrer (ils coûtent en perf). Utilise les points d'arrêt de l'IDE, et <code>Debug.DrawRay</code>/<code>Gizmos</code> pour visualiser dans la Scene.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Un GameManager central coordonne des scripts à responsabilité unique via événements">
+                <rect x="245" y="20" width="150" height="40" rx="8" fill="#a855f7" fill-opacity="0.16" stroke="#a855f7"/>
+                <text x="320" y="45" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">GameManager</text>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="30" y="120" width="130" height="38" rx="7" class="svg-surface" stroke="#313c4c"/><text x="95" y="143" text-anchor="middle">Deplacement</text>
+                  <rect x="180" y="120" width="130" height="38" rx="7" class="svg-surface" stroke="#313c4c"/><text x="245" y="143" text-anchor="middle">Sante</text>
+                  <rect x="330" y="120" width="130" height="38" rx="7" class="svg-surface" stroke="#313c4c"/><text x="395" y="143" text-anchor="middle">UI / Score</text>
+                  <rect x="480" y="120" width="130" height="38" rx="7" class="svg-surface" stroke="#313c4c"/><text x="545" y="143" text-anchor="middle">Audio</text>
+                </g>
+                <g stroke="#5ad19a" stroke-width="1.5" stroke-dasharray="4 3">
+                  <line x1="280" y1="60" x2="95" y2="120"/><line x1="305" y1="60" x2="245" y2="120"/>
+                  <line x1="335" y1="60" x2="395" y2="120"/><line x1="360" y1="60" x2="545" y2="120"/>
+                </g>
+                <text x="320" y="100" text-anchor="middle" class="svg-dim" font-size="9.5">communication par événements (CS13)</text>
+              </svg>
+              <figcaption>Chaque script a un seul rôle&nbsp;; ils se coordonnent par événements plutôt que de tout connaître les uns des autres.</figcaption>
+            </figure>
+
+            <h2>🏁 Mini-projet récapitulatif</h2>
+            <p>Réalise un petit «&nbsp;survival&nbsp;» qui mobilise toute la piste&nbsp;:</p>
+            <ol>
+              <li><b>Joueur</b> déplaçable au clavier via Rigidbody (<a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a>), avec un script <code>Sante</code> séparé (<a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>).</li>
+              <li><b>Ennemis</b> instanciés par un spawner en coroutine, toutes les 2 s (<a href="../../cours/csharp/cs14-coroutines.html">CS14</a>, <a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>), stockés dans une <code>List</code> (<a href="../../cours/csharp/cs10-collections.html">CS10</a>).</li>
+              <li>Une <b>interface</b> <code>IDamageable</code> implémentée par le joueur et les ennemis (<a href="../../cours/csharp/cs09-heritage-interfaces.html">CS9</a>).</li>
+              <li>Un <b>événement</b> <code>OnScoreChange</code> qui met à jour l'UI sans couplage (<a href="../../cours/csharp/cs13-evenements.html">CS13</a>).</li>
+              <li>Un <b>menu pause</b> via <code>Time.timeScale</code> et un Game Over via <code>OnMort</code>.</li>
+              <li>Applique les bonnes pratiques&nbsp;: <code>SerializeField</code>, références en cache, scripts à responsabilité unique, dossiers rangés.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Micro-saccades régulières (stutters).</div>
+                <div class="pi-cause"><b>Cause</b>Allocations par frame (strings, <code>new</code>, Find) → ramasse-miettes.</div>
+                <div class="pi-fix"><b>Correction</b>Cache les références, n'alloue qu'au besoin, mets à jour l'UI sur événement.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un «&nbsp;script à tout faire&nbsp;» impossible à modifier.</div>
+                <div class="pi-cause"><b>Cause</b>Violation de la responsabilité unique.</div>
+                <div class="pi-fix"><b>Correction</b>Découpe en plusieurs scripts qui communiquent par événements.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Chute de FPS quand beaucoup de projectiles.</div>
+                <div class="pi-cause"><b>Cause</b><code>Instantiate</code>/<code>Destroy</code> en continu.</div>
+                <div class="pi-fix"><b>Correction</b>Mets en place un object pool (réutiliser au lieu de recréer).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Inspector pollué de champs <code>public</code> modifiables par erreur.</div>
+                <div class="pi-cause"><b>Cause</b><code>public</code> utilisé juste pour voir le champ dans l'éditeur.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>[SerializeField] private</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Réalise le mini-projet «&nbsp;survival&nbsp;» ci-dessus, ou au minimum les points 1 à 4.</li>
+                <li>Passe ton code en revue&nbsp;: chaque script a-t-il un seul rôle&nbsp;? Y a-t-il un GetComponent/Find dans un Update&nbsp;?</li>
+                <li>Remplace une boucle <code>Instantiate</code>/<code>Destroy</code> par un petit pool d'objets réutilisés.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucun <code>GetComponent</code>/<code>Find</code> dans un Update.</li>
+                  <li>Les scripts ont des rôles distincts et communiquent par événements.</li>
+                  <li>Les réglages passent par <code>[SerializeField]</code>, le projet est rangé en dossiers.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Nomme clairement&nbsp;; expose avec <code>[SerializeField] private</code>, pas <code>public</code>.</li>
+                <li>Un script = un rôle&nbsp;; ils communiquent par événements (faible couplage).</li>
+                <li>Perf&nbsp;: cache les références, évite les allocations/Find par frame, pense au pooling.</li>
+                <li>Range le projet, nettoie les <code>Debug.Log</code>, et teste régulièrement.</li>
+              </ul>
+            </div>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">🎓</span>Bravo — fin de la piste C# !</div>
+              <p>Tu maîtrises désormais les fondations du C# pour Unity&nbsp;: types, logique, POO, cycle de vie, communication et perfs. La suite&nbsp;: pratiquer sur de vrais petits jeux, et relier ce code à la piste <a href="../../cours/unity/u01-installation.html">Unity</a>. À toi de jouer&nbsp;!</p>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>SerializeField</b> — attribut exposant un champ privé dans l'Inspector.</p>
+              <p><b>Responsabilité unique</b> — principe&nbsp;: chaque script/classe n'a qu'un seul rôle.</p>
+              <p><b>Object pooling</b> — réutiliser des objets désactivés au lieu d'en créer/détruire sans cesse.</p>
+              <p><b>ScriptableObject</b> — asset de données réutilisable, indépendant d'un GameObject.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u01-installation.html">Piste Unity</a>&nbsp;: appliquer ce code dans le moteur.</li>
+              <li><a href="../../cours/comparaison/c01-unity-vs-unreal.html">Piste Comparaison</a>&nbsp;: situer Unity/C# face aux autres moteurs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

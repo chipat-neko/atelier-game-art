@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS3 — Opérateurs & expressions · Atelier Game Art</title>
+  <meta name="description" content="Les opérateurs en C# : arithmétique, comparaison, logique, affectation composée, conversions et casts entre types, avec les pièges classiques en jeu.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Opérateurs &amp; expressions</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS3 — Opérateurs &amp; expressions</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>30 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs02-variables-types.html">CS2 — Variables &amp; types</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Calculer avec les opérateurs <b>arithmétiques</b> (et le piège de la division d'entiers).</li>
+                <li>Comparer des valeurs (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>…) et combiner avec la <b>logique</b> (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>).</li>
+                <li>Utiliser l'<b>affectation composée</b> (<code>+=</code>, <code>++</code>…).</li>
+                <li>Faire des <b>conversions</b> et <b>casts</b> entre types.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Une <span class="term">expression</span> est un calcul qui produit une valeur&nbsp;: <code>vie - degats</code>, <code>score &gt; recordPrecedent</code>. Les opérateurs sont les briques de toute logique de jeu&nbsp;: infliger des dégâts, vérifier une condition de victoire, faire avancer un objet. Deux pièges célèbres y vivent (la division d'entiers et le <code>==</code>/<code>=</code>)&nbsp;: les connaître t'épargne des heures.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Opérateurs arithmétiques</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>int a = 10, b = 3;
+int somme   = a + b;   // 13
+int diff    = a - b;   // 7
+int produit = a * b;   // 30
+int quotient = a / b;  // 3  ← division d'ENTIERS : la partie décimale est jetée !
+int reste   = a % b;   // 1  ← modulo : le reste de la division (10 = 3*3 + 1)</code></pre>
+            </div>
+            <p>Le <span class="term">modulo</span> <code>%</code> est précieux en jeu&nbsp;: <code>compteur % 2 == 0</code> teste la parité, et il sert à «&nbsp;boucler&nbsp;» un index (revenir à 0 après le dernier). Le <b>piège</b>&nbsp;: <code>10 / 3</code> entre deux <code>int</code> donne <code>3</code>, pas <code>3.33</code>. Pour une vraie division, au moins un opérande doit être <code>float</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>float precis = 10f / 3f;     // 3.333...
+float aussi  = (float)a / b; // on convertit a en float d'abord</code></pre>
+            </div>
+
+            <h3>2. Affectation et affectation composée</h3>
+            <p><code>=</code> est l'<b>affectation</b> (mettre une valeur dans une boîte). Les versions composées raccourcissent «&nbsp;modifie-toi avec…&nbsp;»&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>score += 10;   // équivaut à : score = score + 10;
+vie   -= 25;   // vie = vie - 25;
+mult  *= 2;    // mult = mult * 2;
+compteur++;    // ajoute 1 (incrément)
+compteur--;    // retire 1 (décrément)</code></pre>
+            </div>
+
+            <h3>3. Comparaison et logique (résultats booléens)</h3>
+            <p>Les opérateurs de comparaison renvoient un <code>bool</code> (<code>true</code>/<code>false</code>) — la base des conditions (<a href="../../cours/csharp/cs04-conditions.html">CS4</a>)&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>bool gagne   = score &gt;= 100;     // supérieur ou égal
+bool mort    = vie == 0;         // ÉGALITÉ : deux signes = !
+bool different = nom != "Boss";  // différent de
+bool vivant  = !mort;            // NON logique : inverse le booléen
+
+// Combiner plusieurs conditions :
+bool peutTirer = aMunitions &amp;&amp; !estEnRechargement;  // ET : les deux doivent être vrais
+bool gameOver  = vie &lt;= 0 || tempsEcoule;            // OU : au moins un vrai</code></pre>
+            </div>
+            <p>Distinction <b>vitale</b>&nbsp;: <code>==</code> <b>compare</b> (test d'égalité), <code>=</code> <b>affecte</b> (range une valeur). Écrire <code>if (vie = 0)</code> au lieu de <code>if (vie == 0)</code> est une faute classique (heureusement, le compilateur C# la refuse souvent). Le <code>&amp;&amp;</code> et le <code>||</code> sont «&nbsp;paresseux&nbsp;»&nbsp;: si le premier opérande suffit à décider, le second n'est pas évalué (utile et performant).</p>
+
+            <h3>4. Conversions et casts</h3>
+            <ul>
+              <li><b>Implicite</b> (sans risque de perte)&nbsp;: <code>float f = monInt;</code> — un <code>int</code> rentre dans un <code>float</code> automatiquement.</li>
+              <li><b>Explicite (cast)</b> (risque de perte → tu dois le demander)&nbsp;: <code>int i = (int)monFloat;</code> — la partie décimale est <b>tronquée</b> (<code>(int)3.9f</code> donne <code>3</code>, pas 4).</li>
+              <li><b>Texte ⇄ nombre</b>&nbsp;: <code>int.Parse("42")</code> (texte → entier), <code>monInt.ToString()</code> (entier → texte). Pour Mathf et l'arrondi, voir <a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a> (<code>Mathf.RoundToInt</code>).</li>
+            </ul>
+            <div class="codeblock" data-lang="C#">
+<pre><code>float f = 3.9f;
+int tronque = (int)f;          // 3  (tronqué, pas arrondi)
+int arrondi = Mathf.RoundToInt(f); // 4 (Mathf vient d'Unity)
+string txt = "Vie : " + tronque;   // concaténation : "Vie : 3"</code></pre>
+            </div>
+            <p>Le <code>+</code> avec une <code>string</code> fait de la <b>concaténation</b> (colle du texte) — c'est ce qu'on a utilisé dans les <code>Debug.Log</code>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Conversion int vers float automatique, float vers int explicite avec troncature">
+                <defs><marker id="cs3ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <g class="svg-text" font-size="12" font-family="monospace">
+                  <rect x="40" y="40" width="120" height="40" rx="8" fill="#56c7ff" fill-opacity="0.14" stroke="#56c7ff"/><text x="100" y="65" text-anchor="middle">int 3</text>
+                  <rect x="260" y="40" width="120" height="40" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="320" y="65" text-anchor="middle">float 3.0</text>
+                  <rect x="480" y="40" width="120" height="40" rx="8" fill="#56c7ff" fill-opacity="0.14" stroke="#56c7ff"/><text x="540" y="65" text-anchor="middle">int 3</text>
+                </g>
+                <g class="svg-text" font-size="10">
+                  <text x="210" y="34" text-anchor="middle" fill="#4ade80">implicite (auto)</text>
+                  <text x="430" y="34" text-anchor="middle" fill="#f87171">(int) cast → tronque</text>
+                  <text x="430" y="100" text-anchor="middle" class="svg-dim">3.9f → 3 (décimale jetée)</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.8" marker-end="url(#cs3ar)">
+                  <line x1="160" y1="60" x2="258" y2="60"/><line x1="380" y1="60" x2="478" y2="60"/>
+                </g>
+              </svg>
+              <figcaption><code>int → float</code> est automatique (aucune perte)&nbsp;; <code>float → int</code> exige un cast <code>(int)</code> et <b>tronque</b> la décimale.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans un script, déclare <code>int vie = 100;</code> et <code>int degats = 30;</code>. Dans <code>Start()</code>, fais <code>vie -= degats;</code> puis <code>Debug.Log("Vie : " + vie);</code>.</li>
+              <li>Teste la division&nbsp;: affiche <code>7 / 2</code> (int) puis <code>7f / 2f</code> (float) et compare les résultats dans la Console.</li>
+              <li>Calcule un booléen&nbsp;: <code>bool estMort = vie &lt;= 0;</code> et affiche-le.</li>
+              <li>Convertis&nbsp;: <code>float t = 4.7f;</code> puis affiche <code>(int)t</code> et <code>Mathf.RoundToInt(t)</code> pour voir la différence troncature/arrondi.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une moyenne ou un ratio donne toujours un nombre rond bizarre.</div>
+                <div class="pi-cause"><b>Cause</b>Division entre deux <code>int</code> → résultat tronqué.</div>
+                <div class="pi-fix"><b>Correction</b>Convertis au moins un opérande en <code>float</code> (<code>(float)a / b</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma condition d'égalité ne se comporte pas comme prévu.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion <code>=</code> (affecter) et <code>==</code> (comparer).</div>
+                <div class="pi-fix"><b>Correction</b>Pour tester l'égalité, utilise toujours <code>==</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Comparer deux <code>float</code> avec <code>==</code> échoue parfois alors qu'ils « devraient » être égaux.</div>
+                <div class="pi-cause"><b>Cause</b>Les <code>float</code> ont des imprécisions (ex. <code>0.1f + 0.2f</code> ≠ exactement <code>0.3f</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Compare avec une tolérance&nbsp;: <code>Mathf.Abs(a - b) &lt; 0.001f</code>, ou <code>Mathf.Approximately(a, b)</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Cannot implicitly convert type 'float' to 'int' ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu ranges un <code>float</code> dans un <code>int</code> sans cast (perte possible).</div>
+                <div class="pi-fix"><b>Correction</b>Fais un cast explicite <code>(int)</code> ou <code>Mathf.RoundToInt(...)</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Simule une attaque&nbsp;: <code>vie</code> commence à 100, applique 3 coups de 25 avec <code>-=</code>, affiche la vie après chaque coup.</li>
+                <li>Calcule le pourcentage de vie restante (attention au type&nbsp;!) et affiche-le.</li>
+                <li>Écris un booléen <code>peutAgir = estVivant &amp;&amp; !estEtourdi;</code> et teste-le avec différentes valeurs.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le pourcentage de vie est correct (tu as géré la division float).</li>
+                  <li>Tu n'as confondu ni <code>=</code>/<code>==</code>, ni division entière/flottante.</li>
+                  <li>Tu sais quand un cast est nécessaire.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Arithmétique&nbsp;: <code>+ - * / %</code>&nbsp;; <b>division d'<code>int</code> = tronquée</b> (passe en <code>float</code> pour un vrai ratio).</li>
+                <li>Affectation composée&nbsp;: <code>+= -= *= ++ --</code>.</li>
+                <li>Comparaison <code>==</code> (≠ <code>=</code>) et logique <code>&amp;&amp; || !</code> renvoient des <code>bool</code>.</li>
+                <li>Conversions&nbsp;: <code>int→float</code> auto&nbsp;; <code>float→int</code> via cast <code>(int)</code> (tronque) ou <code>Mathf.RoundToInt</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Expression</b> — calcul qui produit une valeur (ex. <code>vie - degats</code>).</p>
+              <p><b>Modulo (%)</b> — reste d'une division entière&nbsp;; sert à tester la parité ou à boucler un index.</p>
+              <p><b>Cast</b> — conversion explicite d'un type vers un autre (ex. <code>(int)monFloat</code>).</p>
+              <p><b>Concaténation</b> — collage de texte avec l'opérateur <code>+</code> sur des <code>string</code>.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs04-conditions.html">CS4 — Conditions</a>&nbsp;: utiliser ces booléens pour brancher.</li>
+              <li><a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12 — Entrées &amp; mouvement</a>&nbsp;: Mathf et les calculs de déplacement.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

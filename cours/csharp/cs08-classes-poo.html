@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS8 — Classes & objets (POO) · Atelier Game Art</title>
+  <meta name="description" content="La programmation orientée objet en C# pour Unity : classes, champs, méthodes, constructeurs, encapsulation, propriétés, instances et membres static.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Classes &amp; POO</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS8 — Classes &amp; objets (POO)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs06-methodes.html">CS6 — Méthodes</a> et <a href="../../cours/csharp/cs02-variables-types.html">CS2 — Variables</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Définir une <b>classe</b> avec ses <b>champs</b> et <b>méthodes</b>.</li>
+                <li>Créer des <b>objets</b> (instances) et un <b>constructeur</b>.</li>
+                <li>Appliquer l'<b>encapsulation</b> (<code>public</code>/<code>private</code>, propriétés).</li>
+                <li>Distinguer une classe normale d'un <b>MonoBehaviour</b>, et un membre <b>static</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La <span class="term">programmation orientée objet</span> (POO) organise le code en <b>classes</b>&nbsp;: des «&nbsp;moules&nbsp;» qui regroupent des <b>données</b> (champs) et des <b>actions</b> (méthodes) qui vont ensemble. Un <code>Ennemi</code> a une vie, une vitesse, et sait <code>Attaquer()</code>. C'est la façon dont tout code Unity est structuré (chaque script <em>est</em> une classe). Maîtriser la POO, c'est passer de scripts fourre-tout à un code clair et réutilisable.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Classe = moule, objet = exemplaire</h3>
+            <p>Une <span class="term">classe</span> décrit ce qu'<em>est</em> et ce que <em>sait faire</em> une catégorie de choses. Un <span class="term">objet</span> (ou <b>instance</b>) est un exemplaire concret créé à partir de ce moule. La classe <code>Ennemi</code> est le plan&nbsp;; «&nbsp;cet ennemi-ci à 30 PV&nbsp;» est un objet.</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>// Une classe « normale » (PAS un MonoBehaviour) — un simple modèle de données
+public class Ennemi
+{
+    public string nom;        // champ
+    public int vie;           // champ
+
+    public void Attaquer()    // méthode
+    {
+        Debug.Log(nom + " attaque !");
+    }
+}</code></pre>
+            </div>
+            <p>On crée des objets avec le mot-clé <code>new</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>Ennemi gobelin = new Ennemi();   // un objet
+gobelin.nom = "Gobelin";
+gobelin.vie = 30;
+gobelin.Attaquer();              // "Gobelin attaque !"
+
+Ennemi dragon = new Ennemi();    // un AUTRE objet, indépendant
+dragon.nom = "Dragon";
+dragon.vie = 500;</code></pre>
+            </div>
+
+            <h3>2. Constructeur : initialiser à la création</h3>
+            <p>Un <span class="term">constructeur</span> est une méthode spéciale (même nom que la classe, sans type de retour) appelée par <code>new</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public class Ennemi
+{
+    public string nom;
+    public int vie;
+
+    public Ennemi(string nomInitial, int vieInitiale)  // constructeur
+    {
+        nom = nomInitial;
+        vie = vieInitiale;
+    }
+}
+
+// Création en une ligne :
+Ennemi gobelin = new Ennemi("Gobelin", 30);</code></pre>
+            </div>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Les MonoBehaviour ne s'instancient pas avec <code>new</code></div>
+              <p>Un script Unity (qui hérite de <code>MonoBehaviour</code>) n'est <b>jamais</b> créé avec <code>new</code>&nbsp;: il est ajouté comme Component (Add Component) ou via <code>Instantiate</code>/<code>AddComponent</code> (<a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>), et n'a pas de constructeur — c'est <code>Awake</code>/<code>Start</code> qui jouent ce rôle. <code>new</code> est pour tes classes «&nbsp;normales&nbsp;» (données, logique pure).</p>
+            </div>
+
+            <h3>3. Encapsulation : <code>public</code> vs <code>private</code></h3>
+            <p>L'<span class="term">encapsulation</span> consiste à <b>protéger</b> les données d'une classe&nbsp;: <code>private</code> = accessible seulement <em>dans</em> la classe&nbsp;; <code>public</code> = accessible de partout. Bonne pratique&nbsp;: champs <code>private</code>, et on expose des <b>méthodes</b> ou des <b>propriétés</b> contrôlées pour y toucher.</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public class Compte
+{
+    private int pieces = 0;              // protégé
+
+    public void Ajouter(int montant)
+    {
+        if (montant &gt; 0) pieces += montant;   // on contrôle ce qui entre
+    }
+
+    public int Pieces =&gt; pieces;         // propriété en lecture seule (raccourci)
+}</code></pre>
+            </div>
+            <p>Une <span class="term">propriété</span> ressemble à un champ vu de l'extérieur mais cache du code (un <code>get</code>/<code>set</code>). <code>public int Pieces =&gt; pieces;</code> expose la valeur <b>en lecture seule</b>&nbsp;: on peut la lire, pas l'écrire directement.</p>
+
+            <h3>4. Membres static : partagés par la classe</h3>
+            <p>Un membre <code>static</code> appartient à la <b>classe entière</b>, pas à un objet précis&nbsp;: il existe en un seul exemplaire. Utile pour des constantes ou un compteur global&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public class Ennemi
+{
+    public static int nombreVivants = 0;  // partagé par TOUS les ennemis
+
+    public Ennemi() { nombreVivants++; }  // chaque création incrémente
+}
+// Accès via la CLASSE, pas un objet :  Debug.Log(Ennemi.nombreVivants);</code></pre>
+            </div>
+            <p>À utiliser avec parcimonie&nbsp;: le <code>static</code> crée un état global, source de couplage si on en abuse (on en reparle en <a href="../../cours/csharp/cs15-bonnes-pratiques.html">CS15</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Une classe Ennemi (moule) et deux objets instanciés avec des valeurs différentes">
+                <defs><marker id="cs8ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <rect x="40" y="50" width="170" height="80" rx="10" fill="#a855f7" fill-opacity="0.12" stroke="#a855f7" stroke-width="1.6"/>
+                <text x="125" y="74" text-anchor="middle" class="svg-text" font-weight="800">class Ennemi</text>
+                <text x="125" y="94" text-anchor="middle" class="svg-dim" font-size="10" font-family="monospace">nom, vie</text>
+                <text x="125" y="110" text-anchor="middle" class="svg-dim" font-size="10" font-family="monospace">Attaquer()</text>
+                <text x="125" y="146" text-anchor="middle" class="svg-dim" font-size="10">le moule</text>
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="370" y="36" width="230" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="382" y="56">gobelin</text><text x="382" y="74" class="svg-dim" font-size="10">nom="Gobelin", vie=30</text>
+                  <rect x="370" y="98" width="230" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="382" y="118">dragon</text><text x="382" y="136" class="svg-dim" font-size="10">nom="Dragon", vie=500</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.7" marker-end="url(#cs8ar)">
+                  <path d="M210 80 C 300 65, 320 58, 368 58"/>
+                  <path d="M210 100 C 300 115, 320 120, 368 120"/>
+                </g>
+                <text x="290" y="22" text-anchor="middle" class="svg-dim" font-size="10">new Ennemi(...) → des objets indépendants</text>
+              </svg>
+              <figcaption>La <b>classe</b> est le moule&nbsp;; chaque <code>new</code> produit un <b>objet</b> indépendant avec ses propres valeurs.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée une classe <code>Item</code> (PAS un MonoBehaviour) avec <code>nom</code> (string), <code>prix</code> (int), et un constructeur.</li>
+              <li>Dans un script attaché (MonoBehaviour), crée deux <code>Item</code> avec <code>new</code> et affiche leurs infos.</li>
+              <li>Passe le champ <code>prix</code> en <code>private</code> et expose-le via une propriété en lecture seule&nbsp;; ajoute une méthode <code>AppliquerReduction(int pourcent)</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>NullReferenceException</code> en utilisant un objet.</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises une variable d'objet jamais initialisée avec <code>new</code> (elle vaut <code>null</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Crée l'objet (<code>x = new MaClasse();</code>) avant de l'utiliser.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« MonoBehaviour … you can't use new ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu fais <code>new</code> sur une classe qui hérite de MonoBehaviour.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute-la via Add Component / AddComponent (<a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>), pas <code>new</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Modifier un objet change aussi un autre.</div>
+                <div class="pi-cause"><b>Cause</b>Deux variables pointent vers le <b>même</b> objet (les classes sont des références).</div>
+                <div class="pi-fix"><b>Correction</b>Crée un nouvel objet avec <code>new</code> si tu veux une copie indépendante.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« an object reference is required for the non-static field ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu accèdes à un membre d'instance via la classe (ou inversement pour un static).</div>
+                <div class="pi-fix"><b>Correction</b>Membre d'instance → via un objet&nbsp;; membre <code>static</code> → via la classe.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée une classe <code>Arme</code> avec <code>nom</code>, <code>degats</code> (privés), un constructeur, et une méthode <code>Decrire()</code>.</li>
+                <li>Expose <code>degats</code> en lecture seule via une propriété&nbsp;; ajoute une méthode <code>Ameliorer(int bonus)</code>.</li>
+                <li>Ajoute un <code>static int nombreArmes</code> incrémenté à chaque création&nbsp;; affiche-le après avoir créé 3 armes.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tes objets sont créés avec <code>new</code> et indépendants.</li>
+                  <li>Les champs sensibles sont <code>private</code>, exposés par propriété/méthode.</li>
+                  <li>Le compteur <code>static</code> reflète le nombre d'objets créés.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une <b>classe</b> = moule (champs + méthodes)&nbsp;; un <b>objet</b> = instance créée avec <code>new</code>.</li>
+                <li>Le <b>constructeur</b> initialise à la création&nbsp;; les <b>MonoBehaviour</b> n'utilisent pas <code>new</code> (Add Component).</li>
+                <li><b>Encapsulation</b>&nbsp;: champs <code>private</code>, accès contrôlé par méthodes/propriétés.</li>
+                <li>Un membre <code>static</code> appartient à la classe (partagé), à utiliser avec parcimonie.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>POO</b> — organisation du code en classes regroupant données et comportements.</p>
+              <p><b>Classe / objet (instance)</b> — le moule / un exemplaire concret créé avec <code>new</code>.</p>
+              <p><b>Constructeur</b> — méthode spéciale appelée à la création d'un objet.</p>
+              <p><b>Encapsulation</b> — protection des données (private) avec un accès contrôlé (propriétés/méthodes).</p>
+              <p><b>static</b> — membre appartenant à la classe entière, pas à un objet.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs09-heritage-interfaces.html">CS9 — Héritage &amp; interfaces</a>&nbsp;: réutiliser et spécialiser des classes.</li>
+              <li><a href="../../cours/csharp/cs11-gameobjects-components.html">CS11 — GameObjects &amp; Components</a>&nbsp;: les scripts sont des classes attachées.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

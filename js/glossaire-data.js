@@ -332,3 +332,40 @@ window.GLOSSAIRE = window.GLOSSAIRE.concat([
   { terme: "MultiMeshInstance3D", def: "Node Godot dessinant de nombreuses copies d'un mesh en très peu de draw calls (instancing) ; idéal pour la végétation.", alias: ["MultiMesh"], src: "g11" },
   { terme: "Visibility Range", def: "Distances d'apparition/disparition d'un node Godot, servant au LOD et au masquage du lointain.", alias: [], src: "g11" }
 ]);
+
+/* === Termes Programmation C# / Unity (Piste 7) === */
+window.GLOSSAIRE = window.GLOSSAIRE.concat([
+  { terme: "Variable", def: "Emplacement nommé en mémoire qui stocke une valeur (nombre, texte, objet…) d'un type donné, modifiable pendant l'exécution.", alias: [], src: "cs02" },
+  { terme: "Type", def: "Nature d'une donnée en C# (int, float, bool, string, ou une classe). Détermine les valeurs et opérations possibles.", alias: ["type de données"], src: "cs02" },
+  { terme: "Opérateur", def: "Symbole effectuant une opération : arithmétique (+ - * / %), comparaison (== < >), logique (&& || !) ou affectation (=, +=).", alias: [], src: "cs03" },
+  { terme: "Cast", def: "Conversion explicite d'une valeur d'un type vers un autre, ex. (int)maValeur pour passer d'un float à un int (tronque).", alias: ["conversion de type"], src: "cs03" },
+  { terme: "Condition (if/switch)", def: "Structure qui exécute du code selon qu'une expression booléenne est vraie ou fausse (if/else) ou selon une valeur (switch).", alias: ["if", "switch"], src: "cs04" },
+  { terme: "Boucle", def: "Structure répétant un bloc de code : for (nombre connu), while (tant que vrai), foreach (chaque élément d'une collection).", alias: ["for", "while", "foreach"], src: "cs05" },
+  { terme: "Méthode", def: "Bloc de code nommé et réutilisable, pouvant prendre des paramètres et renvoyer une valeur ; brique de base de l'organisation du code.", alias: ["fonction"], src: "cs06" },
+  { terme: "MonoBehaviour", def: "Classe de base de tout script Unity attaché à un GameObject ; fournit le cycle de vie (Awake, Start, Update…) et l'accès au moteur.", alias: [], src: "cs07" },
+  { terme: "Time.deltaTime", def: "Durée (en secondes) de la frame précédente. Multiplier un déplacement par deltaTime le rend indépendant du framerate.", alias: ["deltaTime"], src: "cs07" },
+  { terme: "FixedUpdate", def: "Méthode Unity appelée à intervalle fixe, dédiée au code physique (Rigidbody) ; utilise Time.fixedDeltaTime.", alias: [], src: "cs07" },
+  { terme: "Classe", def: "Modèle (plan) définissant des données (champs) et des comportements (méthodes) ; on en crée des instances (objets).", alias: ["class"], src: "cs08" },
+  { terme: "Instance", def: "Objet concret créé à partir d'une classe, avec ses propres valeurs de champs (par opposition à un membre static, partagé).", alias: ["objet"], src: "cs08" },
+  { terme: "Encapsulation", def: "Principe POO consistant à protéger les données d'une classe (private) et à n'exposer qu'une interface contrôlée (public/propriétés).", alias: [], src: "cs08" },
+  { terme: "Héritage", def: "Mécanisme POO où une classe (enfant) réutilise et spécialise une autre (parent) via « : Parent » ; redéfinition avec virtual/override.", alias: [], src: "cs09" },
+  { terme: "Interface", def: "Contrat listant des membres qu'une classe s'engage à implémenter (ex. IDamageable) ; permet le polymorphisme sans héritage commun.", alias: ["IDamageable"], src: "cs09" },
+  { terme: "Polymorphisme", def: "Capacité de traiter des objets de types différents via un type commun (classe parente ou interface), chacun réagissant à sa façon.", alias: [], src: "cs09" },
+  { terme: "Collection", def: "Structure regroupant plusieurs valeurs : tableau (taille fixe), List<T> (dynamique), Dictionary<K,V> (paires clé-valeur).", alias: ["List", "Dictionary", "tableau"], src: "cs10" },
+  { terme: "GetComponent", def: "Méthode récupérant un Component d'un type donné sur un GameObject (ex. GetComponent<Rigidbody>()) ; à mettre en cache, pas dans Update.", alias: [], src: "cs11" },
+  { terme: "transform", def: "Component présent sur tout GameObject, portant sa position, sa rotation et son échelle (Vector3) dans la scène.", alias: ["Transform"], src: "cs11" },
+  { terme: "Instantiate", def: "Fonction Unity créant une copie d'un objet ou d'un prefab à l'exécution, à une position et rotation données.", alias: [], src: "cs11" },
+  { terme: "Destroy", def: "Fonction Unity supprimant un GameObject ou un Component, immédiatement ou après un délai.", alias: [], src: "cs11" },
+  { terme: "Rigidbody", def: "Component de physique d'Unity gérant masse, gravité et collisions ; on le pilote dans FixedUpdate (vélocité, forces).", alias: [], src: "cs12" },
+  { terme: "Input", def: "Classe Unity (ancien système) pour lire le clavier, la souris et les manettes : GetKey, GetKeyDown, GetAxis.", alias: [], src: "cs12" },
+  { terme: "Delegate", def: "Type C# référençant une ou plusieurs méthodes (ex. Action) ; on peut les stocker, les passer et les appeler ensemble.", alias: ["Action"], src: "cs13" },
+  { terme: "Événement (event)", def: "Delegate protégé permettant à des abonnés de réagir (+=/-=) à une annonce, sans que l'émetteur les connaisse.", alias: ["event"], src: "cs13" },
+  { terme: "Observateur", def: "Patron de conception où un émetteur annonce un changement et où des abonnés y réagissent, réduisant le couplage entre scripts.", alias: ["observer", "patron observateur"], src: "cs13" },
+  { terme: "UnityEvent", def: "Événement sérialisé d'Unity, câblable dans l'Inspector (comme les boutons UI), pratique pour relier des actions sans code.", alias: [], src: "cs13" },
+  { terme: "Coroutine", def: "Méthode Unity (IEnumerator) pouvant se suspendre avec yield return et reprendre plus tard, pour étaler une action dans le temps sans bloquer le jeu.", alias: ["IEnumerator"], src: "cs14" },
+  { terme: "WaitForSeconds", def: "Instruction de coroutine suspendant l'exécution pendant un nombre de secondes (temps de jeu) ; WaitForSecondsRealtime ignore Time.timeScale.", alias: [], src: "cs14" },
+  { terme: "Time.timeScale", def: "Facteur de vitesse du temps de jeu : 1 = normal, 0 = pause (gèle deltaTime et WaitForSeconds). Sert aux menus pause.", alias: ["timeScale"], src: "cs14" },
+  { terme: "SerializeField", def: "Attribut [SerializeField] exposant un champ private dans l'Inspector sans casser l'encapsulation ; préférable à public.", alias: [], src: "cs15" },
+  { terme: "Object pooling", def: "Technique d'optimisation réutilisant des objets désactivés plutôt que de les Instantiate/Destroy en boucle, pour réduire les saccades.", alias: ["pooling", "pool d'objets"], src: "cs15" },
+  { terme: "ScriptableObject", def: "Asset de données Unity réutilisable et indépendant d'un GameObject ; idéal pour des stats partagées (armes, niveaux, réglages).", alias: [], src: "cs15" }
+]);

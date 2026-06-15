@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS12 — Entrées & mouvement · Atelier Game Art</title>
+  <meta name="description" content="Lire le clavier et la souris et déplacer un objet dans Unity : Input, transform.Translate vs Rigidbody, Time.deltaTime et FixedUpdate.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs12";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Entrées &amp; mouvement</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS12 — Entrées &amp; mouvement</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs07-monobehaviour.html">CS7 — MonoBehaviour</a> et <a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Lire le <b>clavier</b> et la <b>souris</b> avec la classe <code>Input</code>.</li>
+                <li>Déplacer un objet avec <code>transform.Translate</code> (et <code>Time.deltaTime</code>).</li>
+                <li>Bouger via la <b>physique</b> (<code>Rigidbody</code>) dans <code>FixedUpdate</code>.</li>
+                <li>Distinguer «&nbsp;touche pressée&nbsp;» (continu) et «&nbsp;vient d'être pressée&nbsp;» (instant).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le contrôle du joueur, c'est le premier «&nbsp;ça marche&nbsp;!&nbsp;» d'un débutant&nbsp;: lire une touche, faire avancer un personnage. On combine ici tout le cours&nbsp;: variables (vitesse), Update vs FixedUpdate (<a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>), transform/Rigidbody (<a href="../../cours/csharp/cs11-gameobjects-components.html">CS11</a>) et <code>Time.deltaTime</code>.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Deux systèmes d'entrées</div>
+              <p>Unity propose l'ancien <code>Input</code> (simple, idéal pour apprendre — utilisé ici) et le nouveau <b>Input System</b> (package, plus puissant pour les manettes/remapping). Pour débuter, la classe <code>Input</code> suffit&nbsp;; il faut juste que le projet l'autorise (Project Settings ▸ Player ▸ Active Input Handling = <em>Both</em> ou <em>Input Manager</em>).</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Lire le clavier</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>void Update()
+{
+    if (Input.GetKey(KeyCode.Space))        // VRAI tant que Espace est maintenue
+        Debug.Log("Espace maintenue");
+
+    if (Input.GetKeyDown(KeyCode.Space))    // VRAI seulement à l'instant du clic
+        Debug.Log("Saut !");                // → idéal pour sauter/tirer
+
+    // Axes : -1 à +1 (flèches / ZQSD / WASD), lissés
+    float h = Input.GetAxis("Horizontal");  // gauche/droite
+    float v = Input.GetAxis("Vertical");    // avant/arrière
+}</code></pre>
+            </div>
+            <p><b>Distinction clé</b>&nbsp;: <code>GetKey</code> est vrai <em>tant que</em> la touche est tenue (mouvement continu)&nbsp;; <code>GetKeyDown</code> est vrai <em>seulement la frame</em> où elle est enfoncée (action ponctuelle&nbsp;: saut, tir). <code>GetAxis</code> renvoie une valeur de -1 à 1 (pratique pour le déplacement).</p>
+
+            <h3>2. Déplacer avec transform (simple)</h3>
+            <p>On lit l'entrée dans <code>Update</code> et on déplace en multipliant par <code>vitesse * Time.deltaTime</code> (<a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>)&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public float vitesse = 5f;
+
+void Update()
+{
+    float h = Input.GetAxis("Horizontal");
+    float v = Input.GetAxis("Vertical");
+
+    Vector3 direction = new Vector3(h, 0f, v);   // un vecteur de déplacement
+    transform.Translate(direction * vitesse * Time.deltaTime);
+}</code></pre>
+            </div>
+            <p>Ce mouvement «&nbsp;direct&nbsp;» ignore la physique (l'objet traverse les murs). Parfait pour un prototype ou un objet sans collision.</p>
+
+            <h3>3. Déplacer avec la physique (Rigidbody)</h3>
+            <p>Pour un personnage qui <b>respecte les collisions et la gravité</b>, on ajoute un <code>Rigidbody</code> et on agit sur lui dans <code>FixedUpdate</code> (rappel <a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>&nbsp;: la physique va dans FixedUpdate)&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>public float vitesse = 5f;
+private Rigidbody rb;
+private Vector3 input;
+
+void Awake()
+{
+    rb = GetComponent&lt;Rigidbody&gt;();   // mise en cache (CS11/CS15)
+}
+
+void Update()  // lire les entrées ici (réactif)
+{
+    input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+}
+
+void FixedUpdate()  // appliquer la physique ici
+{
+    rb.MovePosition(rb.position + input * vitesse * Time.fixedDeltaTime);
+}</code></pre>
+            </div>
+            <p>On <b>lit</b> l'entrée dans Update (le plus réactif) et on <b>applique</b> le mouvement physique dans FixedUpdate. Pour un saut&nbsp;: <code>rb.AddForce(Vector3.up * forceSaut, ForceMode.Impulse);</code> quand <code>GetKeyDown(Space)</code> et que le personnage touche le sol.</p>
+
+            <h3>4. La souris</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>if (Input.GetMouseButtonDown(0))   // 0 = clic gauche, 1 = droit
+    Debug.Log("Clic !");
+
+float sourisX = Input.GetAxis("Mouse X");   // déplacement souris (caméra/visée)</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Update lit l'entrée, FixedUpdate applique le mouvement physique">
+                <defs><marker id="cs12ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="30" y="56" width="150" height="48" rx="8" class="svg-surface" stroke="#313c4c"/><text x="105" y="78" text-anchor="middle" font-weight="700">Clavier / Souris</text><text x="105" y="95" text-anchor="middle" class="svg-dim">Input.GetAxis…</text>
+                  <rect x="230" y="56" width="160" height="48" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="310" y="78" text-anchor="middle" font-weight="700">Update</text><text x="310" y="95" text-anchor="middle" class="svg-dim">lit l'entrée (réactif)</text>
+                  <rect x="440" y="56" width="170" height="48" rx="8" fill="#a855f7" fill-opacity="0.14" stroke="#a855f7"/><text x="525" y="78" text-anchor="middle" font-weight="700">FixedUpdate</text><text x="525" y="95" text-anchor="middle" class="svg-dim">applique la physique</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.8" marker-end="url(#cs12ar)">
+                  <line x1="180" y1="80" x2="228" y2="80"/><line x1="390" y1="80" x2="438" y2="80"/>
+                </g>
+                <text x="320" y="135" text-anchor="middle" class="svg-dim" font-size="10">Mouvement direct → transform.Translate (Update). Mouvement physique → Rigidbody (FixedUpdate).</text>
+              </svg>
+              <figcaption>On <b>lit</b> les entrées dans Update&nbsp;; pour la physique, on <b>applique</b> le mouvement au Rigidbody dans FixedUpdate.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un sol (plane) et un cube. Sur le cube, ajoute un <code>Rigidbody</code>.</li>
+              <li>Crée un script <code>Joueur</code>&nbsp;: déplace le cube avec <code>GetAxis</code> (version transform OU Rigidbody). Règle <em>vitesse</em> dans l'Inspector.</li>
+              <li>Ajoute un saut&nbsp;: si <code>GetKeyDown(KeyCode.Space)</code>, applique une force vers le haut au Rigidbody.</li>
+              <li>Vérifie que la vitesse est cohérente quel que soit le framerate (Time.deltaTime / fixedDeltaTime).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« InvalidOperationException … Input System » ou <code>Input</code> ne marche pas.</div>
+                <div class="pi-cause"><b>Cause</b>Le projet est en «&nbsp;Input System (New)&nbsp;» seul&nbsp;; l'ancienne classe <code>Input</code> est désactivée.</div>
+                <div class="pi-fix"><b>Correction</b>Project Settings ▸ Player ▸ Active Input Handling = <em>Both</em>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon saut se déclenche plusieurs fois / en continu.</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises <code>GetKey</code> (continu) au lieu de <code>GetKeyDown</code> (instant).</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>GetKeyDown</code> pour les actions ponctuelles.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon personnage traverse les murs.</div>
+                <div class="pi-cause"><b>Cause</b>Tu bouges via <code>transform</code> (ignore la physique) au lieu d'un Rigidbody.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un Rigidbody + colliders et bouge dans FixedUpdate.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le mouvement physique est saccadé.</div>
+                <div class="pi-cause"><b>Cause</b>Code physique dans Update au lieu de FixedUpdate.</div>
+                <div class="pi-fix"><b>Correction</b>Applique les forces/MovePosition dans FixedUpdate (renvoi <a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Déplace un cube au clavier (ZQSD/flèches) à vitesse réglable, framerate-indépendant.</li>
+                <li>Ajoute un saut avec <code>GetKeyDown(Space)</code> + une force (Rigidbody).</li>
+                <li>Affiche « Tir ! » au clic gauche (<code>GetMouseButtonDown(0)</code>).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le déplacement est fluide et cohérent quel que soit le framerate.</li>
+                  <li>Le saut se déclenche une seule fois par appui.</li>
+                  <li>Tu lis l'entrée dans Update et appliques la physique dans FixedUpdate.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>Input.GetKey</code> (maintenu) vs <code>GetKeyDown</code> (instant) ; <code>GetAxis</code> renvoie -1 à 1.</li>
+                <li>Mouvement simple&nbsp;: <code>transform.Translate(dir * vitesse * Time.deltaTime)</code>.</li>
+                <li>Mouvement physique&nbsp;: <b>lire</b> dans Update, <b>appliquer</b> au <code>Rigidbody</code> dans <code>FixedUpdate</code>.</li>
+                <li>Active <em>Both</em> dans Active Input Handling si <code>Input</code> ne répond pas.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Input</b> — classe Unity (ancien système) pour lire clavier, souris, manette.</p>
+              <p><b>GetKey / GetKeyDown</b> — touche maintenue (continu) / vient d'être pressée (instant).</p>
+              <p><b>GetAxis</b> — entrée d'axe lissée renvoyant une valeur de -1 à +1.</p>
+              <p><b>Rigidbody</b> — Component de physique&nbsp;; on le pilote dans FixedUpdate.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs07-monobehaviour.html">CS7 — MonoBehaviour</a>&nbsp;: Update vs FixedUpdate.</li>
+              <li><a href="../../cours/csharp/cs14-coroutines.html">CS14 — Coroutines</a>&nbsp;: un dash temporisé, par exemple.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

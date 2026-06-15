@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS5 — Boucles (for, while, foreach) · Atelier Game Art</title>
+  <meta name="description" content="Les boucles en C# pour Unity : for, while, do-while, foreach, break/continue, et pourquoi éviter les boucles infinies pendant une frame.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Boucles</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS5 — Boucles (for, while, foreach)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs04-conditions.html">CS4 — Conditions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Répéter un bloc avec <code>for</code>, <code>while</code>, <code>do-while</code>.</li>
+                <li>Parcourir une collection avec <code>foreach</code>.</li>
+                <li>Contrôler le flux avec <code>break</code> et <code>continue</code>.</li>
+                <li>Éviter la <b>boucle infinie</b> qui gèle Unity.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Dès qu'on doit répéter une action — faire apparaître 10 ennemis, parcourir tous les objets ramassés, additionner des dégâts — on utilise une <span class="term">boucle</span>. C'est ce qui évite de copier-coller 10 fois la même ligne. Mais attention&nbsp;: une boucle qui ne se termine jamais <b>fige Unity</b> (le jeu et l'éditeur «&nbsp;plantent&nbsp;» dans la même frame). On apprend donc aussi à les borner.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La boucle for : « répète N fois »</h3>
+            <p>Le <code>for</code> regroupe trois choses&nbsp;: un compteur de départ, une condition de continuation, et une mise à jour&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>for (int i = 0; i &lt; 10; i++)
+{
+    Debug.Log("Ennemi numéro " + i);   // affiche 0 à 9
+}
+// 1) int i = 0   → initialisation (une fois)
+// 2) i &lt; 10      → condition testée AVANT chaque tour
+// 3) i++         → exécutée APRÈS chaque tour</code></pre>
+            </div>
+            <p>Le compteur <code>i</code> commence souvent à <b>0</b> (les index commencent à 0 en programmation, voir <a href="../../cours/csharp/cs10-collections.html">CS10</a>). <code>i &lt; 10</code> fait donc 10 tours (0,1,…,9).</p>
+
+            <h3>2. while : « tant que »</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>int munitions = 5;
+while (munitions &gt; 0)
+{
+    Tirer();
+    munitions--;        // INDISPENSABLE : sans ça, boucle infinie !
+}</code></pre>
+            </div>
+            <p>Le <code>while</code> répète <b>tant que</b> sa condition est vraie. Il faut que quelque chose, dans le bloc, fasse <b>évoluer</b> la condition vers «&nbsp;faux&nbsp;» — sinon la boucle tourne pour toujours. Le <code>do-while</code> est identique mais teste la condition <b>après</b> le bloc (donc s'exécute au moins une fois).</p>
+
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>La boucle infinie gèle Unity</div>
+              <p>Une boucle <code>while</code>/<code>for</code> s'exécute <b>entièrement dans la frame courante</b>. Si elle ne se termine pas, Unity se fige (parfois il faut tuer le processus). Pour étaler une répétition <b>dans le temps</b> (un tour par frame/seconde), on n'utilise PAS une boucle mais <code>Update()</code> (<a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>) ou une <b>coroutine</b> (<a href="../../cours/csharp/cs14-coroutines.html">CS14</a>).</p>
+            </div>
+
+            <h3>3. foreach : parcourir une collection</h3>
+            <p>Pour passer sur <b>chaque élément</b> d'un tableau ou d'une liste (<a href="../../cours/csharp/cs10-collections.html">CS10</a>), <code>foreach</code> est le plus simple et lisible&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>foreach (string nom in noms)   // « pour chaque nom dans noms »
+{
+    Debug.Log(nom);
+}</code></pre>
+            </div>
+            <p>Pas de compteur à gérer&nbsp;: <code>foreach</code> te donne directement chaque élément. (À noter&nbsp;: on ne modifie pas la collection <em>pendant</em> qu'on la parcourt en foreach — sinon erreur.)</p>
+
+            <h3>4. break et continue</h3>
+            <ul>
+              <li><code>break;</code> — <b>sort</b> immédiatement de la boucle (ex. on a trouvé ce qu'on cherchait).</li>
+              <li><code>continue;</code> — <b>saute</b> le reste du tour courant et passe au suivant.</li>
+            </ul>
+            <div class="codeblock" data-lang="C#">
+<pre><code>for (int i = 0; i &lt; ennemis.Length; i++)
+{
+    if (ennemis[i] == null) continue;   // ignore les cases vides
+    if (ennemis[i].estBoss) { Debug.Log("Boss trouvé !"); break; }  // stop
+}</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Cycle d'une boucle for : init, test condition, corps, mise à jour, retour au test">
+                <defs><marker id="cs5ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="20" y="64" width="90" height="38" rx="8" class="svg-surface" stroke="#313c4c"/><text x="65" y="87" text-anchor="middle">i = 0</text>
+                  <rect x="150" y="64" width="110" height="38" rx="8" fill="#a855f7" fill-opacity="0.14" stroke="#a855f7"/><text x="205" y="87" text-anchor="middle">i &lt; 10 ?</text>
+                  <rect x="300" y="64" width="110" height="38" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="355" y="87" text-anchor="middle">corps</text>
+                  <rect x="450" y="64" width="90" height="38" rx="8" class="svg-surface" stroke="#313c4c"/><text x="495" y="87" text-anchor="middle">i++</text>
+                  <rect x="560" y="64" width="70" height="38" rx="8" fill="#f87171" fill-opacity="0.14" stroke="#f87171"/><text x="595" y="87" text-anchor="middle">fin</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.6" fill="none" marker-end="url(#cs5ar)">
+                  <line x1="110" y1="83" x2="148" y2="83"/>
+                  <line x1="260" y1="83" x2="298" y2="83"/>
+                  <line x1="410" y1="83" x2="448" y2="83"/>
+                  <path d="M495 102 L495 130 L205 130 L205 104"/>
+                  <line x1="260" y1="73" x2="558" y2="73"/>
+                </g>
+                <text x="430" y="64" class="svg-dim" font-size="9">condition fausse → sortie</text>
+                <text x="350" y="148" class="svg-dim" font-size="10">après le corps, on incrémente puis on RE-teste la condition (la flèche du bas)</text>
+              </svg>
+              <figcaption>Le cycle d'une boucle&nbsp;: tant que la condition est vraie, on exécute le corps puis on met à jour le compteur et on re-teste.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans <code>Start()</code>, écris un <code>for</code> qui affiche «&nbsp;Vague 1&nbsp;» à «&nbsp;Vague 5&nbsp;».</li>
+              <li>Crée un <code>int munitions = 3;</code> et une boucle <code>while</code> qui «&nbsp;tire&nbsp;» (affiche) jusqu'à épuisement — n'oublie pas <code>munitions--</code>.</li>
+              <li>Ajoute un <code>if</code> dans le for qui <code>continue;</code> sur les nombres pairs (avec <code>i % 2 == 0</code>) pour n'afficher que les impairs.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Unity se fige complètement quand je lance.</div>
+                <div class="pi-cause"><b>Cause</b>Boucle infinie&nbsp;: la condition ne devient jamais fausse (oubli de <code>i++</code> ou <code>munitions--</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Assure-toi que le corps fait évoluer la condition&nbsp;; pour étaler dans le temps, utilise Update/coroutine.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« IndexOutOfRangeException » dans une boucle.</div>
+                <div class="pi-cause"><b>Cause</b>Tu dépasses la taille (ex. <code>i &lt;= length</code> au lieu de <code>i &lt; length</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Les index vont de 0 à <code>length - 1</code> : utilise <code>i &lt; collection.Length</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Collection was modified » pendant un foreach.</div>
+                <div class="pi-cause"><b>Cause</b>Tu ajoutes/retires des éléments pendant le foreach.</div>
+                <div class="pi-fix"><b>Correction</b>Parcours avec un <code>for</code> à l'envers, ou collecte d'abord puis modifie après.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je veux faire « un tour par seconde » mais tout se passe en une frame.</div>
+                <div class="pi-cause"><b>Cause</b>Une boucle s'exécute entièrement dans la frame courante.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise une coroutine avec <code>yield return new WaitForSeconds(1f);</code> (<a href="../../cours/csharp/cs14-coroutines.html">CS14</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Avec un <code>for</code>, calcule la somme des entiers de 1 à 100 et affiche-la.</li>
+                <li>Avec un <code>while</code>, simule un compte à rebours de 5 à 1 (affiché), puis « Go ! ».</li>
+                <li>Avec <code>break</code>, parcours un tableau de scores et arrête-toi dès qu'un score dépasse 1000.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>La somme 1→100 vaut 5050.</li>
+                  <li>Aucune boucle ne fige Unity (toutes se terminent).</li>
+                  <li>Tu sais quand préférer <code>for</code>, <code>while</code> ou <code>foreach</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>for</code> = « répète N fois » (init&nbsp;; condition&nbsp;; mise à jour). Les index commencent à <b>0</b>.</li>
+                <li><code>while</code> = « tant que » — fais évoluer la condition, sinon <b>boucle infinie</b>.</li>
+                <li><code>foreach</code> = parcourir une collection sans gérer d'index.</li>
+                <li><code>break</code> sort, <code>continue</code> saute au tour suivant&nbsp;; pour étaler dans le temps → Update/coroutine.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Boucle</b> — structure qui répète un bloc de code.</p>
+              <p><b>Itération</b> — un tour de boucle.</p>
+              <p><b>Boucle infinie</b> — boucle dont la condition ne devient jamais fausse&nbsp;; fige le programme.</p>
+              <p><b>break / continue</b> — sortir de la boucle / sauter au tour suivant.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs10-collections.html">CS10 — Collections</a>&nbsp;: ce qu'on parcourt avec foreach.</li>
+              <li><a href="../../cours/csharp/cs14-coroutines.html">CS14 — Coroutines</a>&nbsp;: répéter dans le temps sans figer.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

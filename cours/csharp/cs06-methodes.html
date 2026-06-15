@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS6 — Méthodes (fonctions) · Atelier Game Art</title>
+  <meta name="description" content="Les méthodes en C# pour Unity : déclarer une fonction, paramètres, valeur de retour, surcharge, portée, et découper son code proprement.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Méthodes</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS6 — Méthodes (fonctions)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs02-variables-types.html">CS2 — Variables</a> et <a href="../../cours/csharp/cs04-conditions.html">CS4 — Conditions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Déclarer et <b>appeler</b> une méthode (fonction).</li>
+                <li>Passer des <b>paramètres</b> et renvoyer une <b>valeur</b> (<code>return</code>).</li>
+                <li>Comprendre <code>void</code>, la <b>portée</b> des variables, et la <b>surcharge</b>.</li>
+                <li>Découper ton code en petites méthodes lisibles.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Une <span class="term">méthode</span> est un <b>bloc de code nommé</b> qu'on peut appeler autant de fois qu'on veut. Tu en utilises déjà&nbsp;: <code>Start()</code>, <code>Update()</code>, <code>Debug.Log(...)</code>. Écrire <em>tes</em> méthodes, c'est&nbsp;: éviter de répéter, donner un nom clair à une action (<code>InfligerDegats()</code>), et garder un code rangé. C'est la base de tout code maintenable.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Déclarer et appeler</h3>
+            <div class="codeblock" data-lang="C#">
+<pre><code>void Sauter()              // 'void' = ne renvoie rien
+{
+    Debug.Log("Le joueur saute !");
+}
+
+void Start()
+{
+    Sauter();              // APPEL : on exécute la méthode
+    Sauter();              // on peut l'appeler autant de fois qu'on veut
+}</code></pre>
+            </div>
+            <p>Définir une méthode ne l'exécute pas&nbsp;: il faut l'<b>appeler</b> par son nom suivi de <code>()</code>. <code>Start</code>/<code>Update</code> sont juste des méthodes qu'<b>Unity</b> appelle pour toi (<a href="../../cours/csharp/cs07-monobehaviour.html">CS7</a>).</p>
+
+            <h3>2. Paramètres : donner des informations</h3>
+            <p>Les <span class="term">paramètres</span> (entre parenthèses) permettent de passer des valeurs à la méthode&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>void InfligerDegats(int montant)
+{
+    vie -= montant;
+    Debug.Log("Subit " + montant + " dégâts. Vie : " + vie);
+}
+
+// Appels avec des arguments différents :
+InfligerDegats(10);
+InfligerDegats(25);</code></pre>
+            </div>
+            <p>On peut avoir plusieurs paramètres séparés par des virgules&nbsp;: <code>void Soigner(int montant, bool effetVisuel)</code>.</p>
+
+            <h3>3. Valeur de retour : récupérer un résultat</h3>
+            <p>Si la méthode <b>calcule</b> quelque chose, on déclare le <b>type de retour</b> (au lieu de <code>void</code>) et on utilise <code>return</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>int CalculerScore(int ennemis, int bonus)
+{
+    int total = ennemis * 100 + bonus;
+    return total;          // renvoie la valeur ET sort de la méthode
+}
+
+void Start()
+{
+    int monScore = CalculerScore(5, 50);   // récupère 550
+    Debug.Log("Score : " + monScore);
+}
+
+// Une méthode qui renvoie un booléen se lit comme une question :
+bool EstMort()
+{
+    return vie &lt;= 0;
+}</code></pre>
+            </div>
+            <p><code>return</code> renvoie la valeur <b>et</b> termine immédiatement la méthode (le code après est ignoré). C'est aussi utile pour sortir tôt&nbsp;: <code>if (estInvincible) return;</code> au début d'une méthode de dégâts.</p>
+
+            <h3>4. Portée (scope) des variables</h3>
+            <p>Une variable déclarée <b>dans</b> une méthode (variable <em>locale</em>) n'existe que là&nbsp;: les autres méthodes ne la voient pas. Pour une donnée partagée par toute la classe (vie, vitesse…), on la déclare <b>au niveau de la classe</b> (un <span class="gloss">champ</span>, voir <a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Appel d'une méthode : on passe des arguments, elle s'exécute et renvoie une valeur">
+                <defs><marker id="cs6ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#a855f7"/></marker></defs>
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="30" y="64" width="200" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="130" y="82" text-anchor="middle">CalculerScore(5, 50)</text><text x="130" y="99" text-anchor="middle" class="svg-dim" font-size="9">appel + arguments</text>
+                  <rect x="290" y="56" width="180" height="60" rx="8" fill="#a855f7" fill-opacity="0.12" stroke="#a855f7"/><text x="380" y="80" text-anchor="middle" font-weight="700">méthode</text><text x="380" y="98" text-anchor="middle" class="svg-dim" font-size="9">total = 5*100+50</text>
+                  <rect x="530" y="64" width="90" height="44" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="575" y="90" text-anchor="middle" font-weight="700">550</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.7" marker-end="url(#cs6ar)">
+                  <line x1="230" y1="86" x2="288" y2="86"/>
+                  <line x1="470" y1="86" x2="528" y2="86"/>
+                </g>
+                <text x="500" y="64" class="svg-dim" font-size="9">return</text>
+                <text x="320" y="140" text-anchor="middle" class="svg-dim" font-size="10">On passe des arguments → la méthode calcule → elle renvoie un résultat qu'on récupère.</text>
+              </svg>
+              <figcaption>Une méthode reçoit des <b>arguments</b>, fait son travail, et peut <b>renvoyer</b> une valeur via <code>return</code>.</figcaption>
+            </figure>
+
+            <h3>5. Surcharge (overload)</h3>
+            <p>On peut avoir plusieurs méthodes du <b>même nom</b> si leurs paramètres diffèrent&nbsp;: C# choisit la bonne selon les arguments. C'est la <span class="term">surcharge</span>.</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>void Tirer() { /* tir par défaut */ }
+void Tirer(int nombre) { /* tirer 'nombre' projectiles */ }
+// Tirer();  et  Tirer(3);  appellent deux versions différentes.</code></pre>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée une méthode <code>void InfligerDegats(int montant)</code> qui réduit un champ <code>vie</code> et l'affiche.</li>
+              <li>Crée une méthode <code>bool EstMort()</code> qui renvoie <code>vie &lt;= 0</code>.</li>
+              <li>Dans <code>Start()</code>, appelle <code>InfligerDegats(60)</code> deux fois, puis <code>if (EstMort()) Debug.Log("Mort");</code>.</li>
+              <li>Refactorise&nbsp;: déplace l'affichage dans une méthode <code>AfficherVie()</code> appelée à chaque changement.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma méthode ne fait rien.</div>
+                <div class="pi-cause"><b>Cause</b>Tu l'as définie mais jamais <b>appelée</b>.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle-la (<code>MaMethode();</code>) depuis Start/Update ou une autre méthode.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« not all code paths return a value ».</div>
+                <div class="pi-cause"><b>Cause</b>Une méthode avec type de retour (≠ void) où un chemin n'a pas de <code>return</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Assure-toi que <b>tous</b> les chemins (if/else) renvoient une valeur.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« The name 'x' does not exist in the current context ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises une variable locale en dehors de sa méthode (problème de portée).</div>
+                <div class="pi-fix"><b>Correction</b>Déclare-la comme champ de la classe si plusieurs méthodes en ont besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le code après mon <code>return</code> ne s'exécute jamais.</div>
+                <div class="pi-cause"><b>Cause</b>C'est normal&nbsp;: <code>return</code> termine la méthode.</div>
+                <div class="pi-fix"><b>Correction</b>Place le code utile <b>avant</b> le <code>return</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Écris <code>int Additionner(int a, int b)</code> et affiche <code>Additionner(7, 8)</code>.</li>
+                <li>Écris <code>bool PeutAcheter(int prix, int argent)</code> qui renvoie <code>argent &gt;= prix</code>.</li>
+                <li>Surcharge une méthode <code>Soigner()</code> (soin par défaut) et <code>Soigner(int montant)</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tes méthodes renvoient les bonnes valeurs et sont appelées.</li>
+                  <li>Tu distingues paramètre (déclaration) et argument (appel).</li>
+                  <li>Ton code est découpé en méthodes au nom clair.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Une méthode = un bloc nommé&nbsp;; <b>définir ≠ appeler</b> (il faut l'appeler avec <code>()</code>).</li>
+                <li>Les <b>paramètres</b> reçoivent des valeurs&nbsp;; <code>void</code> = pas de retour, sinon <code>return valeur;</code>.</li>
+                <li>Une variable <b>locale</b> n'existe que dans sa méthode (portée)&nbsp;; partage via un champ de classe.</li>
+                <li><b>Surcharge</b>&nbsp;: même nom, paramètres différents. Découpe ton code en petites méthodes.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Méthode (fonction)</b> — bloc de code nommé, appelable, qui peut prendre des paramètres et renvoyer une valeur.</p>
+              <p><b>Paramètre / argument</b> — variable d'entrée d'une méthode (paramètre = déclaration, argument = valeur passée à l'appel).</p>
+              <p><b>return</b> — renvoie une valeur et termine la méthode.</p>
+              <p><b>Portée (scope)</b> — zone où une variable existe et est accessible.</p>
+              <p><b>Surcharge</b> — plusieurs méthodes de même nom différenciées par leurs paramètres.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs07-monobehaviour.html">CS7 — MonoBehaviour</a>&nbsp;: les méthodes qu'Unity appelle pour toi.</li>
+              <li><a href="../../cours/csharp/cs08-classes-poo.html">CS8 — Classes &amp; POO</a>&nbsp;: méthodes et champs regroupés en objets.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

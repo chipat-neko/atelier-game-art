@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS10 — Collections (List, Dictionary, tableaux) · Atelier Game Art</title>
+  <meta name="description" content="Les collections en C# pour Unity : tableaux, List<T>, Dictionary<K,V>, parcours avec foreach, ajout/retrait et choix de la bonne structure.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="cs10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 78</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/csharp/cs01-introduction.html">C# (Unity)</a><span class="sep">/</span>
+            <span>Collections</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>CS10 — Collections (List, Dictionary, tableaux)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 7 · C# (Unity)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/csharp/cs05-boucles.html">CS5 — Boucles</a> (foreach) et <a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser un <b>tableau</b> (taille fixe) et accéder par <b>index</b>.</li>
+                <li>Utiliser une <b>List&lt;T&gt;</b> (taille dynamique)&nbsp;: <code>Add</code>, <code>Remove</code>, <code>Count</code>.</li>
+                <li>Utiliser un <b>Dictionary&lt;K,V&gt;</b> (recherche par clé).</li>
+                <li>Choisir la bonne collection selon le besoin.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu manipule des <b>groupes</b> de choses&nbsp;: tous les ennemis actifs, l'inventaire, les scores du leaderboard. Une <span class="term">collection</span> stocke plusieurs valeurs dans une seule variable et permet de les parcourir (foreach, <a href="../../cours/csharp/cs05-boucles.html">CS5</a>). Choisir la bonne — tableau, liste, dictionnaire — change la simplicité et la performance de ton code.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le tableau (array) : taille fixe</h3>
+            <p>Un <span class="term">tableau</span> contient un nombre <b>fixé à la création</b> d'éléments du même type, accessibles par <b>index</b> (de 0 à <code>Length - 1</code>)&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>int[] scores = new int[3];   // 3 cases, valent 0 par défaut
+scores[0] = 50;              // accès par index (commence à 0 !)
+scores[1] = 90;
+
+string[] noms = { "Léa", "Max", "Zoé" };   // création + valeurs
+Debug.Log(noms[2]);          // "Zoé"
+Debug.Log(noms.Length);      // 3</code></pre>
+            </div>
+            <p>On ne peut pas ajouter/retirer d'élément (taille figée). Pour une collection qui grandit, on utilise une <code>List</code>.</p>
+
+            <h3>2. List&lt;T&gt; : taille dynamique</h3>
+            <p>La <span class="term">List</span> est une collection qui s'agrandit/se rétrécit à volonté. Le <code>&lt;T&gt;</code> précise le type des éléments (générique). Il faut <code>using System.Collections.Generic;</code> en haut du fichier&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>using System.Collections.Generic;
+
+List&lt;string&gt; ennemis = new List&lt;string&gt;();
+ennemis.Add("Gobelin");        // ajouter
+ennemis.Add("Orc");
+ennemis.Remove("Gobelin");     // retirer par valeur
+Debug.Log(ennemis.Count);      // 1   (Count, PAS Length)
+Debug.Log(ennemis[0]);         // "Orc"  (accès par index aussi)
+
+foreach (string e in ennemis)  // parcourir
+{
+    Debug.Log(e);
+}</code></pre>
+            </div>
+            <p>Note&nbsp;: la List utilise <code>.Count</code> (pas <code>.Length</code>), <code>Add</code>/<code>Remove</code>/<code>Clear</code>/<code>Contains</code>. C'est la collection «&nbsp;par défaut&nbsp;» pour la plupart des cas en jeu.</p>
+
+            <h3>3. Dictionary&lt;K,V&gt; : recherche par clé</h3>
+            <p>Un <span class="term">Dictionary</span> associe une <b>clé</b> unique à une <b>valeur</b> — comme un répertoire (nom → numéro). Idéal pour un inventaire (objet → quantité)&nbsp;:</p>
+            <div class="codeblock" data-lang="C#">
+<pre><code>Dictionary&lt;string, int&gt; inventaire = new Dictionary&lt;string, int&gt;();
+inventaire["potion"] = 3;      // ajouter / mettre à jour par clé
+inventaire["clé"] = 1;
+
+if (inventaire.ContainsKey("potion"))
+    Debug.Log("Potions : " + inventaire["potion"]);   // accès direct par clé
+
+foreach (var paire in inventaire)
+    Debug.Log(paire.Key + " x" + paire.Value);</code></pre>
+            </div>
+            <p>L'intérêt&nbsp;: retrouver une valeur <b>instantanément</b> par sa clé, sans parcourir toute la collection.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 190" role="img" aria-label="Tableau indexé 0,1,2 vs Dictionary clé vers valeur">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <text x="150" y="28" text-anchor="middle" font-family="var(--font-head)" font-weight="700">Tableau / List (par index)</text>
+                  <rect x="40" y="44" width="66" height="40" rx="5" class="svg-surface" stroke="#313c4c"/><text x="73" y="68" text-anchor="middle">"Léa"</text><text x="73" y="98" text-anchor="middle" class="svg-dim" font-size="9">[0]</text>
+                  <rect x="116" y="44" width="66" height="40" rx="5" class="svg-surface" stroke="#313c4c"/><text x="149" y="68" text-anchor="middle">"Max"</text><text x="149" y="98" text-anchor="middle" class="svg-dim" font-size="9">[1]</text>
+                  <rect x="192" y="44" width="66" height="40" rx="5" class="svg-surface" stroke="#313c4c"/><text x="225" y="68" text-anchor="middle">"Zoé"</text><text x="225" y="98" text-anchor="middle" class="svg-dim" font-size="9">[2]</text>
+
+                  <text x="470" y="28" text-anchor="middle" font-family="var(--font-head)" font-weight="700">Dictionary (clé → valeur)</text>
+                  <rect x="360" y="44" width="100" height="32" rx="5" fill="#a855f7" fill-opacity="0.12" stroke="#a855f7"/><text x="410" y="65" text-anchor="middle">"potion"</text>
+                  <rect x="500" y="44" width="70" height="32" rx="5" class="svg-surface" stroke="#313c4c"/><text x="535" y="65" text-anchor="middle">3</text>
+                  <rect x="360" y="86" width="100" height="32" rx="5" fill="#a855f7" fill-opacity="0.12" stroke="#a855f7"/><text x="410" y="107" text-anchor="middle">"clé"</text>
+                  <rect x="500" y="86" width="70" height="32" rx="5" class="svg-surface" stroke="#313c4c"/><text x="535" y="107" text-anchor="middle">1</text>
+                </g>
+                <g stroke="#a855f7" stroke-width="1.5"><line x1="460" y1="60" x2="498" y2="60"/><line x1="460" y1="102" x2="498" y2="102"/></g>
+                <text x="320" y="160" text-anchor="middle" class="svg-dim" font-size="10">Index = position (0,1,2…) · Clé = identifiant que tu choisis (texte, id…)</text>
+              </svg>
+              <figcaption>Tableau/List&nbsp;: accès par <b>position</b> (index). Dictionary&nbsp;: accès par <b>clé</b> que tu choisis — parfait pour les lookups.</figcaption>
+            </figure>
+
+            <h3>4. Quelle collection choisir&nbsp;?</h3>
+            <ul>
+              <li><b>Tableau</b>&nbsp;: nombre d'éléments connu et fixe, accès par position (ex. les 4 coins d'un quad).</li>
+              <li><b>List&lt;T&gt;</b>&nbsp;: cas général — ça grandit/rétrécit (ennemis vivants, projectiles). <b>Le réflexe par défaut.</b></li>
+              <li><b>Dictionary&lt;K,V&gt;</b>&nbsp;: retrouver vite par identifiant (inventaire, table de scores par nom).</li>
+            </ul>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un script, ajoute <code>using System.Collections.Generic;</code>.</li>
+              <li>Déclare une <code>List&lt;string&gt; ennemis</code>, ajoute 3 noms, retire-en un, affiche le <code>Count</code> puis parcours-la en foreach.</li>
+              <li>Crée un <code>Dictionary&lt;string, int&gt; inventaire</code>, ajoute « potion »→3, « bombe »→2, affiche la quantité de potions.</li>
+              <li>Vérifie avec <code>ContainsKey</code> avant d'accéder à une clé qui pourrait ne pas exister.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« The type or namespace name 'List' could not be found ».</div>
+                <div class="pi-cause"><b>Cause</b><code>using System.Collections.Generic;</code> manquant.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute cette ligne en haut du fichier.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>IndexOutOfRangeException</code> / <code>ArgumentOutOfRange</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Index hors limites (les index vont de 0 à <code>Count-1</code> / <code>Length-1</code>).</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie l'index&nbsp;; parcours avec <code>i &lt; Count</code> ou un foreach.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>KeyNotFoundException</code> sur un Dictionary.</div>
+                <div class="pi-cause"><b>Cause</b>Accès à une clé absente.</div>
+                <div class="pi-fix"><b>Correction</b>Teste avec <code>ContainsKey</code> ou <code>TryGetValue</code> avant l'accès.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Collection was modified » pendant un foreach.</div>
+                <div class="pi-cause"><b>Cause</b>Tu fais <code>Add</code>/<code>Remove</code> en plein foreach.</div>
+                <div class="pi-fix"><b>Correction</b>Parcours avec un <code>for</code> à l'envers, ou collecte puis modifie après la boucle.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Gère une liste de projectiles&nbsp;: ajoute-en 5, retire le premier, affiche le nombre restant.</li>
+                <li>Crée un inventaire en Dictionary&nbsp;: ajoute des objets, incrémente la quantité d'un objet existant (<code>inventaire["potion"]++;</code>).</li>
+                <li>Calcule la somme d'un <code>int[] scores</code> avec un foreach.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu utilises <code>.Count</code> (List) vs <code>.Length</code> (tableau) correctement.</li>
+                  <li>Aucune exception d'index ou de clé.</li>
+                  <li>Tu sais justifier le choix List vs Dictionary vs tableau.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Tableau</b> = taille fixe, accès par index (0 → Length-1).</li>
+                <li><b>List&lt;T&gt;</b> = dynamique (<code>Add</code>/<code>Remove</code>/<code>Count</code>) — le choix par défaut&nbsp;; nécessite <code>using System.Collections.Generic;</code>.</li>
+                <li><b>Dictionary&lt;K,V&gt;</b> = accès rapide par <b>clé</b> (inventaire, lookups)&nbsp;; teste avec <code>ContainsKey</code>.</li>
+                <li>On parcourt avec <b>foreach</b>&nbsp;; ne modifie pas une collection pendant son foreach.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Collection</b> — structure stockant plusieurs valeurs (tableau, List, Dictionary…).</p>
+              <p><b>Index</b> — position d'un élément (commence à 0).</p>
+              <p><b>List&lt;T&gt;</b> — collection dynamique générique (taille variable).</p>
+              <p><b>Dictionary&lt;K,V&gt;</b> — collection associant des clés uniques à des valeurs.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/csharp/cs05-boucles.html">CS5 — Boucles</a>&nbsp;: foreach et for pour parcourir.</li>
+              <li><a href="../../cours/csharp/cs11-gameobjects-components.html">CS11 — GameObjects</a>&nbsp;: listes d'objets de la scène.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>
