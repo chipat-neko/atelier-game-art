@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD06 — Fonctions (func) · Atelier Game Art</title>
+  <meta name="description" content="Déclarer des fonctions en GDScript : func, paramètres, valeurs par défaut, return, typage et découpage du code.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Fonctions</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD06 — Fonctions (func)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd02-variables-types.html">GD2</a> et <a href="../../cours/gdscript/gd05-boucles.html">GD5</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Déclarer une fonction avec <code>func</code>.</li>
+                <li>Passer des paramètres et fournir des valeurs par défaut.</li>
+                <li>Renvoyer une valeur avec <code>return</code>.</li>
+                <li>Typer les paramètres et le retour pour plus de sûreté.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les fonctions découpent ton code en morceaux nommés et réutilisables. Tu en as déjà rencontré (<code>_ready</code>, <code>_process</code>)&nbsp;: ce sont des fonctions que le moteur appelle. Apprends à créer les tiennes.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Déclarer une fonction</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>func tirer():
+    print("Pan !")
+
+func _ready():
+    tirer()           # on appelle la fonction</code></pre>
+            </div>
+
+            <h3>2. Paramètres &amp; valeur de retour</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>func calculer_degats(base, multiplicateur):
+    return base * multiplicateur     # renvoie une valeur
+
+func _ready():
+    var d = calculer_degats(10, 3)   # d = 30
+    print(d)</code></pre>
+            </div>
+
+            <h3>3. Typer paramètres &amp; retour (recommandé)</h3>
+            <p>Comme pour les variables (<a href="../../cours/gdscript/gd02-variables-types.html">GD2</a>), on peut typer&nbsp;: la flèche <code>-&gt;</code> indique le type de retour&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>func calculer_degats(base: int, multiplicateur: float = 1.0) -&gt; int:
+    return int(base * multiplicateur)
+
+func saluer(nom: String) -&gt; void:    # 'void' : ne renvoie rien
+    print("Bonjour ", nom)</code></pre>
+            </div>
+            <p>Le <code>multiplicateur: float = 1.0</code> est une <b>valeur par défaut</b>&nbsp;: l'appelant peut l'omettre.</p>
+
+            <h3>4. Passage : valeur vs référence</h3>
+            <p>Les types simples (<code>int</code>, <code>float</code>, <code>bool</code>, <code>String</code>, <code>Vector2</code>) sont passés <b>par valeur</b> (copie). Les objets et conteneurs (<code>Array</code>, <code>Dictionary</code>, nodes) sont passés <b>par référence</b>&nbsp;: la fonction modifie l'original.</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>func ajouter_objet(inventaire: Array, objet: String) -&gt; void:
+    inventaire.append(objet)   # modifie le tableau de l'appelant (référence)
+
+var sac = []
+ajouter_objet(sac, "potion")
+print(sac)                     # ["potion"]</code></pre>
+            </div>
+
+            <h3>5. Découper pour clarifier</h3>
+            <p>Une bonne fonction fait <b>une chose</b> et porte un nom clair. Au lieu d'un gros <code>_process</code> illisible, découpe en <code>gerer_entrees()</code>, <code>appliquer_mouvement()</code>, <code>verifier_collisions()</code>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Une fonction prend des entrées, exécute, et renvoie une sortie">
+                <defs><marker id="gd06ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="40" y="55" width="150" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="115" y="74" text-anchor="middle">base, multi</text><text x="115" y="91" text-anchor="middle" class="svg-dim">paramètres</text>
+                  <rect x="245" y="55" width="180" height="44" rx="8" fill="#eab308" fill-opacity="0.15" stroke="#eab308"/><text x="335" y="74" text-anchor="middle" font-weight="700">calculer_degats()</text><text x="335" y="91" text-anchor="middle" class="svg-dim">corps</text>
+                  <rect x="480" y="55" width="120" height="44" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="540" y="74" text-anchor="middle">return 30</text><text x="540" y="91" text-anchor="middle" class="svg-dim">sortie</text>
+                </g>
+                <g stroke="#eab308" stroke-width="1.7" marker-end="url(#gd06ar)">
+                  <line x1="190" y1="77" x2="243" y2="77"/><line x1="425" y1="77" x2="478" y2="77"/>
+                </g>
+              </svg>
+              <figcaption>Une fonction&nbsp;: des paramètres en entrée, un corps, une valeur de retour.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Écris <code>func calculer_score(base: int, multi: int = 1) -&gt; int</code> et appelle-la.</li>
+              <li>Écris <code>func soigner(montant: int = 10) -&gt; void</code> avec valeur par défaut.</li>
+              <li>Écris une fonction qui ajoute un objet à un <code>Array</code> (passage par référence).</li>
+              <li>Découpe un <code>_process</code> en plusieurs petites fonctions nommées.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Function expects N arguments ».</div>
+                <div class="pi-cause"><b>Cause</b>Nombre d'arguments incorrect à l'appel.</div>
+                <div class="pi-fix"><b>Correction</b>Respecte la signature&nbsp;; utilise des valeurs par défaut si besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>return</code> renvoie <code>null</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Chemin de code sans <code>return</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Assure un <code>return</code> sur tous les chemins (ou type <code>-&gt; void</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un Array passé est modifié à mon insu.</div>
+                <div class="pi-cause"><b>Cause</b>Les conteneurs sont passés par référence.</div>
+                <div class="pi-fix"><b>Correction</b>Passe une copie (<code>.duplicate()</code>) si tu ne veux pas le modifier.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Type de retour incohérent non détecté.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de type de retour déclaré.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute <code>-&gt; Type</code> pour activer la vérification.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Une fonction typée <code>calculer_degats</code> avec un multiplicateur par défaut.</li>
+                <li>Une fonction qui remplit un <code>Array</code> via référence.</li>
+                <li>Refactore un gros bloc en 2–3 fonctions à rôle unique.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Paramètres et retour typés.</li>
+                  <li>Les valeurs par défaut fonctionnent.</li>
+                  <li>Le code est découpé en fonctions claires.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>func nom(params):</code> déclare une fonction&nbsp;; <code>return</code> renvoie une valeur.</li>
+                <li>Type les paramètres et le retour (<code>param: Type</code>, <code>-&gt; Type</code>).</li>
+                <li>Types simples par valeur&nbsp;; conteneurs/objets par référence.</li>
+                <li>Une fonction = une chose, un nom clair.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>func</b> — mot-clé déclarant une fonction en GDScript.</p>
+              <p><b>Valeur par défaut</b> — paramètre optionnel (<code>x: int = 0</code>).</p>
+              <p><b>-&gt; Type</b> — type de retour déclaré d'une fonction.</p>
+              <p><b>Passage par référence</b> — Array/Dictionary/objets&nbsp;: la fonction modifie l'original.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd07-cycle-node.html">GD7 — Le cycle de vie des nodes</a>.</li>
+              <li><a href="../../cours/gdscript/gd08-classes-poo.html">GD8 — Classes &amp; POO</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

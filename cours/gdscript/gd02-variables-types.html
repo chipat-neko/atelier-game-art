@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD02 — Variables & types · Atelier Game Art</title>
+  <meta name="description" content="Les variables GDScript : var, const, types (int, float, bool, String, Vector2), typage statique optionnel et inférence.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Variables &amp; types</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD02 — Variables &amp; types</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd01-introduction.html">GD1 — Introduction</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Déclarer une variable avec <code>var</code> et une constante avec <code>const</code>.</li>
+                <li>Connaître les types de base&nbsp;: <code>int</code>, <code>float</code>, <code>bool</code>, <code>String</code>, <code>Vector2</code>.</li>
+                <li>Utiliser le <b>typage statique optionnel</b> et l'<b>inférence</b>.</li>
+                <li>Exposer une variable dans l'éditeur avec <code>@export</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les variables stockent l'état du jeu&nbsp;: vie, score, vitesse, position. GDScript est <b>dynamiquement typé par défaut</b> (souple) mais permet un <b>typage statique optionnel</b> qui rend le code plus sûr et plus rapide — une force à adopter dès le début.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. var et const</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var score = 0                # variable : peut changer
+var nom = "Héros"
+var en_vie = true
+
+const VIE_MAX = 100          # constante : ne changera jamais (MAJUSCULES par convention)</code></pre>
+            </div>
+
+            <h3>2. Les types de base</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Type</th><th>Pour</th><th>Exemple</th></tr></thead>
+                <tbody>
+                  <tr><td><code>int</code></td><td>Entier</td><td><code>var pv = 100</code></td></tr>
+                  <tr><td><code>float</code></td><td>Décimal</td><td><code>var vitesse = 300.0</code></td></tr>
+                  <tr><td><code>bool</code></td><td>Vrai/faux</td><td><code>var en_vie = true</code></td></tr>
+                  <tr><td><code>String</code></td><td>Texte</td><td><code>var nom = "Boss"</code></td></tr>
+                  <tr><td><code>Vector2</code></td><td>Position 2D (x, y)</td><td><code>var pos = Vector2(10, 5)</code></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Pour la 3D, <code>Vector3</code> (x, y, z). Ces types <i>vecteur</i> sont au cœur du gameplay (positions, directions, vitesses).</p>
+
+            <h3>3. Typage statique optionnel</h3>
+            <p>On peut <b>préciser le type</b> avec <code>: Type</code>. Le moteur vérifie alors la cohérence (erreur si tu mets un texte dans un <code>int</code>) et le code tourne plus vite&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var pv: int = 100            # typé explicitement
+var vitesse: float = 300.0
+var nom: String = "Héros"
+
+var degats := 25            # ':=' : INFÉRENCE — le type (int) est déduit de la valeur</code></pre>
+            </div>
+            <p>Le <code>:=</code> (« deux-points égal ») laisse Godot <b>déduire</b> le type tout en le verrouillant. <b>Recommandation</b>&nbsp;: type tes variables — on y reviendra en <a href="../../cours/gdscript/gd15-bonnes-pratiques.html">GD15</a>.</p>
+
+            <h3>4. Exposer une variable : @export</h3>
+            <p>L'<b>annotation</b> <code>@export</code> rend une variable réglable dans l'<b>Inspector</b> de Godot, sans toucher au code&nbsp;: parfait pour ajuster une vitesse, une couleur, etc. (détaillé en <a href="../../cours/gdscript/gd13-ressources-export.html">GD13</a>)&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node
+
+@export var vitesse: float = 300.0   # apparaît dans l'Inspector
+@export var nom_ennemi: String = "Slime"
+
+func _ready():
+    print("Vitesse réglée : ", vitesse)</code></pre>
+            </div>
+
+            <h3>5. Conversion &amp; affichage</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var texte = str(score)       # convertir en String
+var nombre = int("42")       # convertir en int
+var f = float(3)             # 3.0
+print("PV : %d / %d" % [pv, VIE_MAX])   # formatage avec une liste de valeurs</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Typage dynamique souple versus typage statique sûr et rapide">
+                <rect x="40" y="40" width="250" height="80" rx="10" fill="#f4b740" fill-opacity="0.08" stroke="#f4b740"/>
+                <text x="165" y="34" text-anchor="middle" class="svg-dim" font-size="10">var x = 5  (dynamique)</text>
+                <text x="165" y="72" text-anchor="middle" class="svg-text" font-size="10.5">souple</text>
+                <text x="165" y="92" text-anchor="middle" class="svg-dim" font-size="9.5">erreurs au runtime</text>
+
+                <rect x="350" y="40" width="250" height="80" rx="10" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a"/>
+                <text x="475" y="34" text-anchor="middle" class="svg-dim" font-size="10">var x: int = 5  (statique)</text>
+                <text x="475" y="72" text-anchor="middle" class="svg-text" font-size="10.5">sûr &amp; rapide</text>
+                <text x="475" y="92" text-anchor="middle" class="svg-dim" font-size="9.5">erreurs détectées tôt</text>
+              </svg>
+              <figcaption>Le typage statique optionnel attrape les erreurs plus tôt et accélère l'exécution&nbsp;: adopte-le.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Déclare des variables typées pour un personnage&nbsp;: <code>nom: String</code>, <code>pv: int</code>, <code>vitesse: float</code>, <code>en_vie: bool</code>.</li>
+              <li>Ajoute <code>const VIE_MAX = 100</code> et tente de la modifier&nbsp;: observe l'erreur.</li>
+              <li>Expose <code>vitesse</code> avec <code>@export</code> et règle-la dans l'Inspector.</li>
+              <li>Affiche une fiche récap formatée avec <code>%</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Division qui « perd » les décimales.</div>
+                <div class="pi-cause"><b>Cause</b>Deux <code>int</code>&nbsp;: la division est entière (voir <a href="../../cours/gdscript/gd03-operateurs.html">GD3</a>).</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un <code>float</code> (<code>100.0</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Invalid operands String and int ».</div>
+                <div class="pi-cause"><b>Cause</b>Concaténer texte et nombre sans conversion.</div>
+                <div class="pi-fix"><b>Correction</b>Convertis avec <code>str(n)</code> ou utilise <code>%</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma variable @export n'apparaît pas.</div>
+                <div class="pi-cause"><b>Cause</b>Annotation mal écrite ou script non rechargé.</div>
+                <div class="pi-fix"><b>Correction</b>Écris <code>@export var ...</code> en début de classe&nbsp;; resélectionne le node.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Type incohérent non détecté.</div>
+                <div class="pi-cause"><b>Cause</b>Variable non typée (dynamique).</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute <code>: Type</code> pour activer la vérification.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée des variables typées pour un ennemi (nom, pv, vitesse, agressif).</li>
+                <li>Expose deux d'entre elles avec <code>@export</code> et règle-les dans l'Inspector.</li>
+                <li>Calcule et affiche le pourcentage de vie (attention aux types&nbsp;!).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Toutes les variables sont typées et initialisées.</li>
+                  <li>Les <code>@export</code> apparaissent et fonctionnent dans l'Inspector.</li>
+                  <li>Le pourcentage est calculé en flottant.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>var</code> pour une variable, <code>const</code> pour une constante (MAJUSCULES).</li>
+                <li>Types clés&nbsp;: <code>int</code>, <code>float</code>, <code>bool</code>, <code>String</code>, <code>Vector2</code>/<code>Vector3</code>.</li>
+                <li><b>Type tes variables</b> (<code>: Type</code> ou inférence <code>:=</code>)&nbsp;: plus sûr et plus rapide.</li>
+                <li><code>@export</code> expose une variable dans l'Inspector.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Typage statique optionnel</b> — préciser le type d'une variable (<code>: int</code>) pour plus de sûreté/perf.</p>
+              <p><b>Inférence (:=)</b> — Godot déduit et verrouille le type à partir de la valeur.</p>
+              <p><b>@export</b> — annotation exposant une variable dans l'Inspector.</p>
+              <p><b>Vector2 / Vector3</b> — types de position/direction en 2D / 3D.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd03-operateurs.html">GD3 — Opérateurs &amp; expressions</a>.</li>
+              <li><a href="../../cours/gdscript/gd13-ressources-export.html">GD13 — Ressources &amp; @export</a>&nbsp;: exposer en profondeur.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD09 — Nodes, scènes & instanciation · Atelier Game Art</title>
+  <meta name="description" content="L'arbre de nodes de Godot : get_node et $, NodePath, @onready, instancier une scène (PackedScene), add_child et queue_free.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Nodes &amp; scènes</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD09 — Nodes, scènes &amp; instanciation</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd07-cycle-node.html">GD7</a> et <a href="../../cours/gdscript/gd08-classes-poo.html">GD8</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre l'<b>arbre de nodes</b> et les chemins (<code>NodePath</code>).</li>
+                <li>Référencer un node avec <code>$</code> / <code>get_node</code> et <code>@onready</code>.</li>
+                <li>Instancier une scène (<code>PackedScene</code>) et l'ajouter avec <code>add_child</code>.</li>
+                <li>Supprimer un node proprement avec <code>queue_free</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tout dans Godot est <b>node</b> et <b>scène</b>. Faire communiquer un script avec les autres nodes (récupérer le sprite, la barre de vie) et faire apparaître des objets (un ennemi, un projectile) est la base du gameplay. Une <span class="gloss">scène</span> réutilisable est l'équivalent du prefab d'Unity.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'arbre de nodes &amp; les chemins</h3>
+            <p>Une scène est un arbre. Depuis un script, on désigne un autre node par son <b>chemin</b> relatif&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var barre = get_node("UI/BarreVie")   # chemin depuis ce node
+var barre2 = $UI/BarreVie             # $ = raccourci de get_node
+var parent = get_parent()             # le node parent</code></pre>
+            </div>
+            <p>Le <code>$</code> est la forme courte et lisible. Les chemins suivent la hiérarchie de l'éditeur (comme des dossiers).</p>
+
+            <h3>2. @onready : récupérer une référence au bon moment</h3>
+            <p>On ne peut référencer un enfant qu'une fois la scène prête. L'annotation <code>@onready</code> assigne la variable <b>juste avant <code>_ready</code></b>, proprement&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>@onready var sprite: Sprite2D = $Sprite2D
+@onready var barre_vie = $UI/BarreVie
+
+func _ready():
+    sprite.modulate = Color.RED       # déjà assigné, prêt à l'emploi</code></pre>
+            </div>
+
+            <h3>3. Instancier une scène</h3>
+            <p>On crée une scène réutilisable (ex.&nbsp;: <code>ennemi.tscn</code>), on la <b>charge</b> puis on l'<b>instancie</b> à l'exécution&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>const ENNEMI = preload("res://ennemi.tscn")   # charge à la compilation (rapide)
+
+func faire_apparaitre():
+    var e = ENNEMI.instantiate()              # crée une instance de la scène
+    e.position = Vector2(100, 50)
+    add_child(e)                              # l'ajoute à l'arbre (sinon invisible)</code></pre>
+            </div>
+            <p><code>preload</code> charge la ressource au démarrage (rapide)&nbsp;; <code>load</code> charge à l'exécution. <code>instantiate()</code> crée une copie, et <code>add_child</code> l'insère dans la scène.</p>
+
+            <h3>4. Supprimer un node : queue_free</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>queue_free()              # supprime CE node en fin de frame (sûr)
+mon_ennemi.queue_free()   # supprime un autre node</code></pre>
+            </div>
+            <p>Utilise <code>queue_free()</code> plutôt que <code>free()</code>&nbsp;: la suppression est différée en fin de frame, ce qui évite les crashs si le node est encore utilisé.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 180" role="img" aria-label="Arbre de nodes avec chemins relatifs, et instanciation d'une scène ajoutée à l'arbre">
+                <g class="svg-text" font-size="10.5" font-family="monospace">
+                  <rect x="240" y="20" width="160" height="28" rx="6" fill="#eab308" fill-opacity="0.15" stroke="#eab308"/><text x="320" y="39" text-anchor="middle">Main (Node2D)</text>
+                  <rect x="120" y="76" width="120" height="28" rx="6" class="svg-surface" stroke="#313c4c"/><text x="180" y="95" text-anchor="middle">Joueur</text>
+                  <rect x="270" y="76" width="120" height="28" rx="6" class="svg-surface" stroke="#313c4c"/><text x="330" y="95" text-anchor="middle">UI</text>
+                  <rect x="270" y="124" width="120" height="28" rx="6" class="svg-surface" stroke="#313c4c"/><text x="330" y="143" text-anchor="middle">BarreVie</text>
+                  <rect x="430" y="76" width="170" height="28" rx="6" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="515" y="95" text-anchor="middle">+ Ennemi (instancié)</text>
+                </g>
+                <g stroke="#7aa2f7" stroke-width="1.5" fill="none">
+                  <line x1="300" y1="48" x2="180" y2="74"/><line x1="330" y1="48" x2="330" y2="74"/><line x1="330" y1="104" x2="330" y2="122"/>
+                </g>
+                <line x1="360" y1="48" x2="515" y2="74" stroke="#5ad19a" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <text x="320" y="172" text-anchor="middle" class="svg-dim" font-size="10">$UI/BarreVie désigne un node par son chemin ; instantiate() + add_child() ajoute un node à l'arbre.</text>
+              </svg>
+              <figcaption>Les nodes forment un arbre&nbsp;; on les référence par chemin, et on y greffe des scènes instanciées.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Référence un enfant <code>Sprite2D</code> avec <code>@onready var sprite = $Sprite2D</code> et change sa couleur.</li>
+              <li>Crée une scène <code>ennemi.tscn</code>, fais <code>const ENNEMI = preload(...)</code>.</li>
+              <li>Dans une fonction, <code>instantiate()</code> l'ennemi, place-le et <code>add_child(e)</code>.</li>
+              <li>Détruis-le plus tard avec <code>queue_free()</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'objet instancié n'apparaît pas.</div>
+                <div class="pi-cause"><b>Cause</b><code>add_child</code> oublié&nbsp;: il n'est pas dans l'arbre.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle <code>add_child(instance)</code> après <code>instantiate()</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Node not found: UI/BarreVie ».</div>
+                <div class="pi-cause"><b>Cause</b>Chemin incorrect ou node renommé.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie la hiérarchie&nbsp;; glisse le node dans le script pour générer le chemin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b><code>$Sprite</code> vaut <code>null</code> dans <code>_ready</code>.</div>
+                <div class="pi-cause"><b>Cause</b>Référence prise trop tôt (avant que l'enfant existe).</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>@onready</code> pour assigner au bon moment.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash après suppression d'un node.</div>
+                <div class="pi-cause"><b>Cause</b><code>free()</code> immédiat alors que le node est encore utilisé.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>queue_free()</code> (suppression différée).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un spawner qui instancie une scène d'ennemi et l'ajoute à l'arbre.</li>
+                <li>Une référence <code>@onready</code> à une barre de vie mise à jour au Start.</li>
+                <li>Auto-destruction de l'ennemi via <code>queue_free()</code> après une action.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'instanciation et l'ajout à l'arbre fonctionnent.</li>
+                  <li>Les références passent par <code>@onready</code> + <code>$</code>.</li>
+                  <li>La suppression utilise <code>queue_free()</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les nodes forment un <b>arbre</b>&nbsp;; on les référence par chemin avec <code>$</code> / <code>get_node</code>.</li>
+                <li><code>@onready</code> assigne une référence juste avant <code>_ready</code> (sûr).</li>
+                <li><code>preload</code> + <code>instantiate()</code> + <code>add_child()</code> pour faire apparaître une scène.</li>
+                <li><code>queue_free()</code> pour supprimer proprement (différé).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>NodePath / $</b> — chemin désignant un node dans l'arbre&nbsp;; <code>$</code> = raccourci de <code>get_node</code>.</p>
+              <p><b>@onready</b> — assigne une variable juste avant <code>_ready</code>.</p>
+              <p><b>PackedScene</b> — scène sauvegardée (.tscn) réutilisable par instanciation (≈ prefab).</p>
+              <p><b>instantiate / add_child / queue_free</b> — créer une instance / l'ajouter à l'arbre / la supprimer.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd10-signaux.html">GD10 — Signaux &amp; communication</a>.</li>
+              <li><a href="../../cours/godot/g02-editeur.html">Piste Godot — éditeur</a>&nbsp;: l'arbre de nodes côté contenu.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

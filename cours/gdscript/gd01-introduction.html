@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD01 — Introduction à GDScript & premier script · Atelier Game Art</title>
+  <meta name="description" content="Qu'est-ce que GDScript, attacher un script à un node, _ready, print et le cycle éditer/jouer dans Godot.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Introduction</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD01 — Introduction à GDScript &amp; premier script</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>aucune expérience de la programmation requise. Avoir installé Godot aide (voir la <a href="../../cours/godot/g01-installation.html">piste Godot</a>).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est <b>GDScript</b> et pourquoi il est idéal pour Godot.</li>
+                <li>Attacher un script à un <span class="gloss">node</span>.</li>
+                <li>Utiliser <code>_ready()</code> et <code>print()</code>.</li>
+                <li>Comprendre le cycle <b>éditer → jouer</b> et l'importance de l'indentation.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>GDScript est le langage <b>natif</b> de Godot&nbsp;: conçu pour le moteur, proche de Python (lisible, sans accolades), il s'apprend vite et s'intègre parfaitement aux nodes et aux scènes. C'est la porte d'entrée idéale vers la programmation de jeu&nbsp;: peu de cérémonie, résultat immédiat.</p>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>GDScript ou C# ?</div>
+              <p>Godot supporte aussi le C# (.NET) et le C++ (GDExtension). Mais <b>GDScript</b> est le plus simple, le plus intégré et le mieux documenté pour débuter — c'est celui qu'on apprend ici. Les concepts (variables, POO, signaux) se transposent ensuite à n'importe quel langage.</p>
+            </div>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Script = comportement attaché à un node</h3>
+            <p>Dans Godot, une scène est un <b>arbre de nodes</b> (rappel <a href="../../cours/godot/g02-editeur.html">G2</a>). Un <b>script</b> ajoute du <em>comportement</em> à un node&nbsp;: clic droit sur un node ▸ <b>Attach Script</b>. Godot génère un squelette&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node          # ce script ÉTEND le node auquel il est attaché
+
+# Appelé une fois, quand le node entre dans la scène
+func _ready():
+    print("Bonjour depuis GDScript !")
+
+# Appelé à chaque frame (delta = temps écoulé depuis la dernière frame)
+func _process(delta):
+    pass              # 'pass' = ne rien faire (placeholder)</code></pre>
+            </div>
+            <p>Le mot-clé <code>extends</code> indique de quel type de node ton script hérite (ici <code>Node</code>)&nbsp;: ton script <b>devient</b> ce node, avec tous ses pouvoirs. On approfondira l'héritage en <a href="../../cours/gdscript/gd08-classes-poo.html">GD8</a>.</p>
+
+            <h3>2. print() : ton premier outil</h3>
+            <p><code>print()</code> écrit dans le panneau <b>Output</b> en bas de l'éditeur — l'équivalent du <code>Debug.Log</code> d'Unity&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>print("Score : ", 42)            # affiche : Score : 42
+print("PV restants : %d" % pv)   # formatage avec %d (entier), %s (texte), %f (flottant)</code></pre>
+            </div>
+
+            <h3>3. L'indentation fait la structure</h3>
+            <p>Point crucial venant de Python&nbsp;: en GDScript, <b>l'indentation définit les blocs</b> (pas d'accolades). Tout ce qui est indenté sous <code>func _ready():</code> appartient à cette fonction. Utilise des <b>tabulations</b> (ou des espaces) de façon cohérente&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>func _ready():
+    var nom = "Héros"        # indenté → DANS la fonction
+    print(nom)               # indenté → DANS la fonction
+# cette ligne n'est plus indentée → HORS de la fonction</code></pre>
+            </div>
+
+            <h3>4. Le cycle éditer → jouer</h3>
+            <p>GDScript est <b>interprété</b> par le moteur&nbsp;: pas de compilation longue. Tu modifies le script, tu appuies sur <b>F5</b> (jouer le projet) ou <b>F6</b> (jouer la scène courante), et le résultat apparaît immédiatement. Cette boucle rapide est l'un des grands plaisirs de Godot.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Un script attaché à un node ajoute du comportement, puis on joue la scène">
+                <defs><marker id="gd01ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker></defs>
+                <g class="svg-text" font-size="11">
+                  <rect x="30" y="58" width="130" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="95" y="78" text-anchor="middle" font-weight="700">Node</text><text x="95" y="95" text-anchor="middle" class="svg-dim">dans la scène</text>
+                  <rect x="205" y="58" width="140" height="46" rx="8" fill="#eab308" fill-opacity="0.15" stroke="#eab308"/><text x="275" y="78" text-anchor="middle" font-weight="700">+ Script</text><text x="275" y="95" text-anchor="middle" class="svg-dim">extends Node</text>
+                  <rect x="390" y="58" width="100" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="440" y="78" text-anchor="middle" font-weight="700">F5/F6</text><text x="440" y="95" text-anchor="middle" class="svg-dim">jouer</text>
+                  <rect x="525" y="58" width="100" height="46" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="575" y="78" text-anchor="middle" font-weight="700">Output</text><text x="575" y="95" text-anchor="middle" class="svg-dim">print()</text>
+                </g>
+                <g stroke="#eab308" stroke-width="1.7" marker-end="url(#gd01ar)">
+                  <line x1="160" y1="81" x2="203" y2="81"/><line x1="345" y1="81" x2="388" y2="81"/><line x1="490" y1="81" x2="523" y2="81"/>
+                </g>
+                <text x="320" y="135" text-anchor="middle" class="svg-dim" font-size="10">Attache un script, joue, observe — boucle d'itération immédiate (pas de compilation).</text>
+              </svg>
+              <figcaption>Un script donne du comportement à un node&nbsp;; on joue et on observe instantanément.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée une scène avec un node racine <code>Node</code> (ou <code>Node2D</code>).</li>
+              <li>Clic droit ▸ <b>Attach Script</b>, garde le nom proposé, clique sur Create.</li>
+              <li>Dans <code>_ready()</code>, ajoute <code>print("Mon premier script !")</code>.</li>
+              <li>Appuie sur <b>F6</b> pour jouer la scène et observe le message dans le panneau Output.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Indentation error » / « Expected indented block ».</div>
+                <div class="pi-cause"><b>Cause</b>Mélange d'espaces et de tabulations, ou bloc non indenté.</div>
+                <div class="pi-fix"><b>Correction</b>Indente de façon cohérente sous chaque <code>func ...:</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon script ne fait rien.</div>
+                <div class="pi-cause"><b>Cause</b>Script non attaché à un node présent dans la scène jouée.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie l'icône de script sur le node et joue la bonne scène.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Function _ready expects 0 arguments ».</div>
+                <div class="pi-cause"><b>Cause</b>Mauvaise signature d'une fonction du moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Respecte les signatures&nbsp;: <code>_ready()</code>, <code>_process(delta)</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Rien dans l'Output.</div>
+                <div class="pi-cause"><b>Cause</b>Le panneau Output est masqué.</div>
+                <div class="pi-fix"><b>Correction</b>Ouvre l'onglet <b>Output</b> en bas de l'éditeur.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Attache un script à un node et affiche ton prénom dans <code>_ready()</code>.</li>
+                <li>Ajoute un <code>_process(delta)</code> qui affiche <code>delta</code> (tu verras des petits nombres défiler).</li>
+                <li>Formate un message avec <code>%d</code> pour afficher un score fictif.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le script s'exécute sans erreur d'indentation.</li>
+                  <li>Les messages apparaissent dans l'Output au bon moment.</li>
+                  <li>Tu sais relancer la scène avec F6.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>GDScript est le langage natif de Godot, proche de Python, interprété (itération immédiate).</li>
+                <li>Un script <code>extends</code> un node et lui ajoute du comportement.</li>
+                <li><code>_ready()</code> au démarrage, <code>_process(delta)</code> chaque frame&nbsp;; <code>print()</code> pour déboguer.</li>
+                <li>L'<b>indentation</b> définit les blocs&nbsp;: sois cohérent.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>GDScript</b> — langage de script natif de Godot, proche de Python.</p>
+              <p><b>Node</b> — brique de base d'une scène Godot, à laquelle on attache un script.</p>
+              <p><b>extends</b> — mot-clé indiquant le type de node dont le script hérite.</p>
+              <p><b>_ready / _process</b> — fonctions appelées au démarrage / à chaque frame.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd02-variables-types.html">GD2 — Variables &amp; types</a>&nbsp;: la suite logique.</li>
+              <li><a href="../../cours/godot/g02-editeur.html">Piste Godot</a>&nbsp;: l'éditeur et l'arbre de nodes côté contenu.</li>
+              <li><a href="../../cours/csharp/cs01-introduction.html">CS1 — Introduction au C#</a>&nbsp;: comparer avec Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD08 — Classes & objets (POO) · Atelier Game Art</title>
+  <meta name="description" content="La POO en GDScript : class_name, extends, héritage, membres, _init, super et classes internes.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Classes &amp; POO</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD08 — Classes &amp; objets (POO)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd06-fonctions.html">GD6 — Fonctions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre qu'un script EST une classe (<code>extends</code>).</li>
+                <li>Nommer une classe avec <code>class_name</code> pour la réutiliser.</li>
+                <li>Hériter, redéfinir une fonction et appeler <code>super</code>.</li>
+                <li>Initialiser un objet avec <code>_init</code> et créer des classes internes.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>La POO structure le code autour d'<b>objets</b> qui regroupent données et comportements. Dans Godot, chaque script est <b>déjà</b> une classe&nbsp;: comprendre la POO te permet de créer tes propres types (un <code>Ennemi</code>, une <code>Arme</code>) et de réutiliser du comportement par héritage.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un script EST une classe</h3>
+            <p>Le <code>extends</code> du haut indique la classe parente. Les <code>var</code> de premier niveau sont des <b>membres</b> (propriétés), les <code>func</code> sont des <b>méthodes</b>&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node
+
+var pv: int = 100
+var nom: String = "Héros"
+
+func subir_degats(montant: int) -&gt; void:
+    pv -= montant
+    if pv &lt; 0:
+        pv = 0</code></pre>
+            </div>
+
+            <h3>2. class_name : nommer sa classe</h3>
+            <p><code>class_name</code> enregistre ta classe globalement&nbsp;: elle apparaît dans la liste des nodes/types et peut être instanciée par son nom&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>class_name Ennemi
+extends CharacterBody2D
+
+var pv: int = 30
+
+func _init():            # constructeur : appelé à la création de l'objet
+    print("Un ennemi est né")</code></pre>
+            </div>
+            <p>Ailleurs&nbsp;: <code>var e = Ennemi.new()</code> crée une instance (pour les objets non-node)&nbsp;; pour un node, on instancie plutôt sa scène (<a href="../../cours/gdscript/gd09-nodes-scenes.html">GD9</a>).</p>
+
+            <h3>3. Héritage &amp; super</h3>
+            <p>Une classe peut <b>étendre</b> une de tes classes et la spécialiser. <code>super</code> appelle la version parente d'une méthode&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>class_name Boss
+extends Ennemi              # Boss EST un Ennemi (avec ses pv, etc.)
+
+func _init():
+    super()                # appelle Ennemi._init()
+    pv = 200               # le boss a plus de vie
+
+func subir_degats(montant: int) -&gt; void:
+    super(montant / 2)     # le boss ne subit que la moitié des dégâts</code></pre>
+            </div>
+
+            <h3>4. Encapsulation à la Godot</h3>
+            <p>GDScript n'a pas de <code>private</code> strict&nbsp;: la convention est de préfixer les membres internes d'un <b>underscore</b> (<code>_compteur</code>) pour signaler « ne pas toucher de l'extérieur ». On expose plutôt des méthodes claires.</p>
+
+            <h3>5. Classes internes</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>class Stats:                # classe interne (dans le même fichier)
+    var force: int = 10
+    var agilite: int = 5
+
+func _ready():
+    var s = Stats.new()
+    print(s.force)</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Hiérarchie CharacterBody2D vers Ennemi vers Boss">
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="220" y="20" width="200" height="34" rx="7" fill="#eab308" fill-opacity="0.15" stroke="#eab308"/><text x="320" y="42" text-anchor="middle">CharacterBody2D</text>
+                  <rect x="245" y="80" width="150" height="34" rx="7" class="svg-surface" stroke="#313c4c"/><text x="320" y="102" text-anchor="middle">Ennemi</text>
+                  <rect x="265" y="124" width="110" height="30" rx="7" class="svg-surface" stroke="#313c4c"/><text x="320" y="144" text-anchor="middle">Boss</text>
+                </g>
+                <g stroke="#7aa2f7" stroke-width="1.6" fill="none">
+                  <line x1="320" y1="54" x2="320" y2="78"/><line x1="320" y1="114" x2="320" y2="122"/>
+                </g>
+                <text x="320" y="14" text-anchor="middle" class="svg-dim" font-size="9">classe d'engine</text>
+                <text x="470" y="100" class="svg-dim" font-size="9.5">Ennemi hérite du node ;</text>
+                <text x="470" y="114" class="svg-dim" font-size="9.5">Boss hérite d'Ennemi.</text>
+              </svg>
+              <figcaption>Tes classes prolongent celles de Godot, et peuvent se spécialiser entre elles.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée une classe <code>Ennemi</code> (<code>class_name</code>) avec <code>pv</code> et <code>subir_degats</code>.</li>
+              <li>Crée <code>Boss extends Ennemi</code> qui double les PV dans <code>_init</code> via <code>super()</code>.</li>
+              <li>Redéfinis <code>subir_degats</code> pour halver les dégâts, en appelant <code>super(...)</code>.</li>
+              <li>Préfixe un membre interne d'un <code>_</code> pour marquer l'intention « privé ».</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le comportement parent est perdu.</div>
+                <div class="pi-cause"><b>Cause</b>Override sans appeler <code>super</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Appelle <code>super(...)</code> quand tu veux conserver le comportement de base.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Class Ennemi not found ».</div>
+                <div class="pi-cause"><b>Cause</b><code>class_name</code> manquant ou script non sauvegardé.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute <code>class_name Ennemi</code> et sauvegarde.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreur en faisant <code>Node2D.new()</code> pour un node de scène.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion entre instancier un objet et instancier une scène.</div>
+                <div class="pi-fix"><b>Correction</b>Pour un node de scène, instancie la <code>PackedScene</code> (<a href="../../cours/gdscript/gd09-nodes-scenes.html">GD9</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Membre « privé » modifié de l'extérieur.</div>
+                <div class="pi-cause"><b>Cause</b>GDScript n'impose pas <code>private</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Préfixe d'un <code>_</code> et expose des méthodes contrôlées.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Une classe <code>Arme</code> (<code>class_name</code>) avec <code>degats</code> et <code>tirer()</code>.</li>
+                <li>Une classe <code>Fusil extends Arme</code> qui spécialise <code>tirer()</code> avec <code>super()</code>.</li>
+                <li>Une classe interne <code>Munition</code> avec quelques membres.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li><code>class_name</code> et <code>extends</code> corrects.</li>
+                  <li>L'override appelle <code>super</code> quand nécessaire.</li>
+                  <li>Les membres internes sont marqués par convention.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un script EST une classe&nbsp;: <code>extends</code> = parente, <code>var</code> = membres, <code>func</code> = méthodes.</li>
+                <li><code>class_name</code> nomme et enregistre ta classe globalement.</li>
+                <li>Héritage&nbsp;: <code>extends MaClasse</code>&nbsp;; <code>super(...)</code> appelle la version parente.</li>
+                <li><code>_init</code> = constructeur&nbsp;; encapsulation par convention (préfixe <code>_</code>).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>class_name</b> — nomme une classe GDScript et l'enregistre globalement.</p>
+              <p><b>_init</b> — constructeur appelé à la création d'un objet.</p>
+              <p><b>super</b> — appelle la version parente d'une méthode.</p>
+              <p><b>Classe interne</b> — classe définie dans le même fichier (<code>class Nom:</code>).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd09-nodes-scenes.html">GD9 — Nodes, scènes &amp; instanciation</a>.</li>
+              <li><a href="../../cours/csharp/cs08-classes-poo.html">CS8 — Classes (C#)</a>&nbsp;: comparer la POO.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

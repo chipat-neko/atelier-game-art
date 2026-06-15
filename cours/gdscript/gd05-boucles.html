@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD05 — Boucles (for, while, range) · Atelier Game Art</title>
+  <meta name="description" content="Répéter du code en GDScript : for avec range, parcourir un tableau, while, break/continue, et éviter les boucles bloquantes par frame.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Boucles</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD05 — Boucles (for, while, range)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd04-conditions.html">GD4 — Conditions</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Répéter avec <code>for</code> et <code>range</code>.</li>
+                <li>Parcourir un tableau avec <code>for x in tableau</code>.</li>
+                <li>Utiliser <code>while</code>, <code>break</code> et <code>continue</code>.</li>
+                <li>Comprendre pourquoi une boucle ne doit pas bloquer une frame.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Traiter «&nbsp;tous les ennemis&nbsp;», «&nbsp;chaque case d'une grille&nbsp;» ou répéter une action N fois&nbsp;: les boucles sont l'outil de la répétition.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. for avec range</h3>
+            <p><code>range(n)</code> génère les nombres de 0 à n-1&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>for i in range(5):           # 0, 1, 2, 3, 4
+    print("Spawn n°", i)
+
+for i in range(1, 4):        # 1, 2, 3 (début, fin exclue)
+    print(i)
+
+for i in range(0, 10, 2):    # 0, 2, 4, 6, 8 (pas de 2)
+    print(i)</code></pre>
+            </div>
+
+            <h3>2. Parcourir un tableau (le plus utile en jeu)</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>for ennemi in ennemis:       # "pour chaque ennemi dans ennemis"
+    if is_instance_valid(ennemi):
+        ennemi.queue_free()
+
+for nom in ["Alice", "Bob"]:
+    print(nom)</code></pre>
+            </div>
+            <p>Pas d'index à gérer&nbsp;: GDScript te donne directement chaque élément. (Les tableaux sont détaillés en <a href="../../cours/gdscript/gd11-collections.html">GD11</a>.)</p>
+
+            <h3>3. while</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>while munitions &gt; 0:
+    tirer()
+    munitions -= 1</code></pre>
+            </div>
+
+            <h3>4. break &amp; continue</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>for a in acteurs:
+    if not is_instance_valid(a):
+        continue             # passe au tour suivant
+    if a.is_in_group("boss"):
+        cible = a
+        break                # sort de la boucle</code></pre>
+            </div>
+
+            <div class="callout danger">
+              <div class="callout-title"><span class="ico">🛑</span>Ne bloque jamais une frame</div>
+              <p>Une boucle très longue ou <code>while true</code> sans sortie s'exécute <b>entièrement dans la même frame</b> et gèle le jeu. Pour étaler dans le temps, on utilise <code>await</code> et les timers (<a href="../../cours/gdscript/gd14-timers-await.html">GD14</a>), pas une boucle qui attend.</p>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Une boucle for visite chaque élément d'un tableau">
+                <defs><marker id="gd05ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker></defs>
+                <text x="320" y="28" text-anchor="middle" class="svg-dim" font-size="10">for ennemi in ennemis:</text>
+                <g class="svg-text" font-size="11" font-family="monospace">
+                  <rect x="60" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="105" y="80" text-anchor="middle">[0]</text>
+                  <rect x="180" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="225" y="80" text-anchor="middle">[1]</text>
+                  <rect x="300" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="345" y="80" text-anchor="middle">[2]</text>
+                  <rect x="420" y="55" width="90" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="465" y="80" text-anchor="middle">[3]</text>
+                  <rect x="540" y="55" width="60" height="40" rx="6" fill="#eab308" fill-opacity="0.15" stroke="#eab308"/><text x="570" y="80" text-anchor="middle">fin</text>
+                </g>
+                <g stroke="#eab308" stroke-width="1.7" marker-end="url(#gd05ar)">
+                  <line x1="150" y1="75" x2="178" y2="75"/><line x1="270" y1="75" x2="298" y2="75"/><line x1="390" y1="75" x2="418" y2="75"/><line x1="510" y1="75" x2="538" y2="75"/>
+                </g>
+                <text x="320" y="130" text-anchor="middle" class="svg-dim" font-size="10">Chaque élément est visité une fois, dans l'ordre, sans gérer d'index.</text>
+              </svg>
+              <figcaption><code>for x in collection</code> est la façon idiomatique de traiter chaque élément.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Avec <code>range</code>, logge les nombres de 1 à 5.</li>
+              <li>Avec <code>while</code>, vide un stock de munitions en tirant.</li>
+              <li>Parcours un tableau d'ennemis et détruis chaque élément valide.</li>
+              <li>Cherche le premier acteur du groupe « boss » avec <code>break</code>, en sautant les invalides par <code>continue</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le jeu se fige.</div>
+                <div class="pi-cause"><b>Cause</b>Boucle infinie ou condition de sortie jamais atteinte.</div>
+                <div class="pi-fix"><b>Correction</b>Garantis la progression vers la sortie&nbsp;; pour le temps, <code>await</code>/timer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreur en modifiant un tableau pendant le parcours.</div>
+                <div class="pi-cause"><b>Cause</b>Ajout/suppression d'éléments en cours d'itération.</div>
+                <div class="pi-fix"><b>Correction</b>Itère sur une copie (<code>tableau.duplicate()</code>) pour supprimer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le dernier nombre est ignoré.</div>
+                <div class="pi-cause"><b>Cause</b><code>range(1, 4)</code> exclut la borne de fin (4).</div>
+                <div class="pi-fix"><b>Correction</b>Ajuste&nbsp;: <code>range(1, 5)</code> pour aller jusqu'à 4.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Invalid get index » dans la boucle.</div>
+                <div class="pi-cause"><b>Cause</b>Accès à un élément détruit / index hors bornes.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie <code>is_instance_valid(...)</code> avant usage.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Une boucle <code>for</code> qui calcule la somme des entiers de 1 à 100.</li>
+                <li>Parcours un tableau de PV et compte combien sont « morts » (≤ 0).</li>
+                <li>Trouve le premier ennemi à portée avec <code>break</code> et saute les invalides avec <code>continue</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucune boucle ne bloque la frame.</li>
+                  <li>Le parcours utilise <code>for x in collection</code>.</li>
+                  <li>Pas d'erreur de borne ni de modification du tableau pendant l'itération.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>for i in range(n)</code> pour un nombre connu&nbsp;; <code>range(début, fin, pas)</code>.</li>
+                <li><code>for x in collection</code> pour parcourir chaque élément (idiomatique).</li>
+                <li><code>while</code> tant que vrai&nbsp;; <code>break</code> sort, <code>continue</code> passe au tour suivant.</li>
+                <li>Ne bloque jamais une frame&nbsp;: pour le temps, <code>await</code>/timers, pas une boucle d'attente.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>range</b> — génère une suite d'entiers (début, fin exclue, pas).</p>
+              <p><b>for x in collection</b> — boucle visitant chaque élément d'un tableau/dictionnaire.</p>
+              <p><b>break / continue</b> — sortir de la boucle / passer au tour suivant.</p>
+              <p><b>is_instance_valid</b> — teste qu'un objet existe encore avant de l'utiliser.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd06-fonctions.html">GD6 — Fonctions</a>.</li>
+              <li><a href="../../cours/gdscript/gd11-collections.html">GD11 — Collections</a>&nbsp;: ce que l'on parcourt.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

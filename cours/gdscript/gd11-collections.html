@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD11 — Collections (Array, Dictionary) · Atelier Game Art</title>
+  <meta name="description" content="Les collections GDScript : Array, Dictionary, tableaux typés, parcours, ajouter/retirer et bien choisir.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Collections</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD11 — Collections (Array, Dictionary)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd05-boucles.html">GD5 — Boucles</a> et <a href="../../cours/gdscript/gd06-fonctions.html">GD6</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Utiliser un <code>Array</code>&nbsp;: ajouter, parcourir, retirer.</li>
+                <li>Typer un tableau (<code>Array[int]</code>) pour plus de sûreté.</li>
+                <li>Utiliser un <code>Dictionary</code> (clé → valeur).</li>
+                <li>Choisir la bonne collection selon le besoin.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu manipule des <b>collections</b> partout&nbsp;: la liste des ennemis, l'inventaire, les scores par joueur. GDScript propose l'<code>Array</code> (liste) et le <code>Dictionary</code> (table clé-valeur) — équivalents des <code>List</code>/<code>Dictionary</code> de C# (<a href="../../cours/csharp/cs10-collections.html">CS10</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Array : la liste</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var ennemis = []                 # tableau vide
+ennemis.append(nouvel_ennemi)    # ajouter à la fin
+var n = ennemis.size()           # nombre d'éléments
+var premier = ennemis[0]         # accès par index (attention aux bornes !)
+
+ennemis.erase(mort)              # retirer par valeur
+ennemis.remove_at(2)             # retirer par index
+var present = cible in ennemis   # test d'appartenance
+
+for e in ennemis:                # parcours (GD5)
+    if is_instance_valid(e):
+        pass</code></pre>
+            </div>
+
+            <h3>2. Tableaux typés</h3>
+            <p>Comme pour les variables, on peut <b>typer</b> un tableau&nbsp;: Godot refuse alors les éléments du mauvais type&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var scores: Array[int] = [100, 75, 50]
+var noms: Array[String] = []
+noms.append("Alice")
+# noms.append(42)   # ERREUR : 42 n'est pas un String</code></pre>
+            </div>
+
+            <h3>3. Dictionary : clé → valeur</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var scores_par_joueur = {
+    "Alice": 100,
+    "Bob": 75
+}
+
+scores_par_joueur["Carla"] = 60          # ajouter / modifier
+var s = scores_par_joueur.get("Alice", 0) # lire avec valeur par défaut si absent
+var existe = scores_par_joueur.has("Bob") # tester une clé
+
+for nom in scores_par_joueur:             # parcourt les CLÉS
+    print(nom, " = ", scores_par_joueur[nom])</code></pre>
+            </div>
+
+            <h3>4. Quelques méthodes utiles</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>ennemis.is_empty()        # vide ?
+ennemis.clear()           # tout vider
+ennemis.sort()            # trier
+ennemis.has(cible)        # contient ?
+ennemis.pick_random()     # élément au hasard</code></pre>
+            </div>
+
+            <h3>5. Choisir le bon conteneur</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Besoin</th><th>Conteneur</th><th>Pourquoi</th></tr></thead>
+                <tbody>
+                  <tr><td>Liste ordonnée, parcourue souvent</td><td><code>Array</code></td><td>Accès par index, ajout en fin efficace.</td></tr>
+                  <tr><td>Retrouver par clé (nom, id)</td><td><code>Dictionary</code></td><td>Recherche rapide clé → valeur.</td></tr>
+                  <tr><td>Données homogènes sûres</td><td><code>Array[T]</code></td><td>Type vérifié, moins de bugs.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Array indexé contre Dictionary clé-valeur">
+                <g class="svg-text" font-size="10" font-family="monospace">
+                  <text x="160" y="32" text-anchor="middle" font-family="sans-serif" class="svg-dim">Array</text>
+                  <rect x="60" y="44" width="50" height="30" rx="4" class="svg-surface" stroke="#313c4c"/><text x="85" y="64" text-anchor="middle">A</text>
+                  <rect x="115" y="44" width="50" height="30" rx="4" class="svg-surface" stroke="#313c4c"/><text x="140" y="64" text-anchor="middle">B</text>
+                  <rect x="170" y="44" width="50" height="30" rx="4" class="svg-surface" stroke="#313c4c"/><text x="195" y="64" text-anchor="middle">C</text>
+                  <text x="140" y="92" text-anchor="middle" font-family="sans-serif" class="svg-dim" font-size="9">[0] [1] [2]</text>
+
+                  <text x="460" y="32" text-anchor="middle" font-family="sans-serif" class="svg-dim">Dictionary</text>
+                  <rect x="360" y="44" width="200" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="460" y="62" text-anchor="middle">"Alice" → 100</text>
+                  <rect x="360" y="78" width="200" height="28" rx="4" class="svg-surface" stroke="#313c4c"/><text x="460" y="96" text-anchor="middle">"Bob" → 75</text>
+                </g>
+                <text x="320" y="135" text-anchor="middle" class="svg-dim" font-size="10">Liste indexée vs table clé→valeur : deux besoins, deux conteneurs.</text>
+              </svg>
+              <figcaption>Le bon conteneur dépend de l'accès recherché&nbsp;: par index (Array) ou par clé (Dictionary).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Un <code>Array</code> d'ennemis&nbsp;: ajoute-en, parcours-les, retire les invalides.</li>
+              <li>Un tableau typé <code>Array[int]</code> de scores et tente d'y mettre un texte (observe l'erreur).</li>
+              <li>Un <code>Dictionary</code> « nom → score »&nbsp;: ajoute, lis avec <code>get</code>, parcours les clés.</li>
+              <li>Utilise <code>pick_random()</code> pour choisir une cible au hasard.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Index out of bounds ».</div>
+                <div class="pi-cause"><b>Cause</b>Accès à un index ≥ <code>size()</code> ou tableau vide.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie <code>size()</code> / <code>is_empty()</code> avant l'accès.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Invalid key in dictionary ».</div>
+                <div class="pi-cause"><b>Cause</b>Accès direct à une clé absente.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>has(cle)</code> ou <code>get(cle, defaut)</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Erreur en retirant pendant un parcours.</div>
+                <div class="pi-cause"><b>Cause</b>Modification du tableau pendant l'itération.</div>
+                <div class="pi-fix"><b>Correction</b>Itère sur une copie (<code>.duplicate()</code>) ou par index à l'envers.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un tableau accepte n'importe quoi.</div>
+                <div class="pi-cause"><b>Cause</b>Tableau non typé.</div>
+                <div class="pi-fix"><b>Correction</b>Déclare <code>Array[Type]</code> pour la vérification.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un inventaire en <code>Array[String]</code>&nbsp;: ajouter/retirer et afficher le nombre.</li>
+                <li>Un <code>Dictionary</code> « objet → quantité » avec mise à jour et recherche.</li>
+                <li>Choisis un ennemi au hasard avec <code>pick_random()</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Aucun accès hors bornes ni clé absente non gérée.</li>
+                  <li>Les tableaux homogènes sont typés.</li>
+                  <li>Le bon conteneur est choisi pour chaque besoin.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>Array</code> (liste indexée) et <code>Dictionary</code> (clé→valeur) couvrent l'essentiel.</li>
+                <li>Type tes tableaux (<code>Array[int]</code>) pour la sûreté.</li>
+                <li>Vérifie bornes (<code>size</code>) et clés (<code>has</code>/<code>get</code>) avant l'accès.</li>
+                <li>Parcours avec <code>for x in collection</code>&nbsp;; n'modifie pas pendant l'itération.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Array</b> — liste dynamique indexée (append, size, erase…).</p>
+              <p><b>Array[T]</b> — tableau typé&nbsp;: éléments d'un type vérifié.</p>
+              <p><b>Dictionary</b> — table associant des clés à des valeurs.</p>
+              <p><b>has / get</b> — tester une clé / la lire avec une valeur par défaut.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd12-entrees-mouvement.html">GD12 — Entrées &amp; mouvement</a>.</li>
+              <li><a href="../../cours/csharp/cs10-collections.html">CS10 — Collections (C#)</a>&nbsp;: les mêmes idées côté Unity.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

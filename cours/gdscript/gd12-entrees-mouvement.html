@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD12 — Entrées & mouvement · Atelier Game Art</title>
+  <meta name="description" content="Lire les entrées et déplacer un personnage dans Godot : Input, l'Input Map, _input vs _process, CharacterBody2D et move_and_slide.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd12";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Entrées &amp; mouvement</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD12 — Entrées &amp; mouvement</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd07-cycle-node.html">GD7</a> et <a href="../../cours/gdscript/gd09-nodes-scenes.html">GD9</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Définir des actions dans l'<b>Input Map</b> et les lire avec <code>Input</code>.</li>
+                <li>Distinguer « action maintenue » et « action ponctuelle ».</li>
+                <li>Déplacer un <code>CharacterBody2D</code> avec <code>velocity</code> et <code>move_and_slide</code>.</li>
+                <li>Choisir entre <code>_process</code>, <code>_physics_process</code> et <code>_input</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Contrôler un personnage, c'est le premier «&nbsp;ça marche&nbsp;!&nbsp;» d'un débutant. Godot propose un système d'<b>actions</b> propre&nbsp;: tu nommes une intention («&nbsp;sauter&nbsp;») et tu y associes des touches — le code lit l'action, pas la touche physique.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. L'Input Map : nommer les actions</h3>
+            <p>Dans <b>Project Settings ▸ Input Map</b>, crée des actions (<code>move_left</code>, <code>move_right</code>, <code>saut</code>…) et associe-leur des touches. Avantages&nbsp;: remapping facile, support clavier/manette, code lisible. Godot fournit déjà <code>ui_left</code>, <code>ui_right</code>, etc.</p>
+
+            <h3>2. Lire les entrées</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>if Input.is_action_pressed("move_right"):     # VRAI tant que maintenue
+    pass
+if Input.is_action_just_pressed("saut"):      # VRAI seulement à l'instant de l'appui
+    pass
+
+# Axe pratique : renvoie un vecteur normalisé selon 4 actions
+var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")</code></pre>
+            </div>
+            <p><b>Distinction clé</b>&nbsp;: <code>is_action_pressed</code> (continu, pour le déplacement) vs <code>is_action_just_pressed</code> (instant, pour sauter/tirer). <code>get_vector</code> donne directement une direction prête à l'emploi.</p>
+
+            <h3>3. Déplacer un CharacterBody2D</h3>
+            <p>Pour un personnage qui respecte les collisions, on utilise un <code>CharacterBody2D</code>, sa <code>velocity</code> et <code>move_and_slide()</code> — dans <code>_physics_process</code> (<a href="../../cours/gdscript/gd07-cycle-node.html">GD7</a>)&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>extends CharacterBody2D
+
+@export var vitesse: float = 300.0
+
+func _physics_process(delta):
+    var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+    velocity = direction * vitesse
+    move_and_slide()             # déplace en gérant les collisions (utilise velocity)</code></pre>
+            </div>
+            <p><code>move_and_slide()</code> applique <code>velocity</code> en glissant le long des murs. Note&nbsp;: il intègre déjà <code>delta</code> en interne — pas besoin de multiplier <code>velocity</code> par <code>delta</code> ici.</p>
+
+            <h3>4. Un saut (plateforme 2D)</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>@export var force_saut: float = -400.0   # vers le haut (y négatif en 2D)
+var gravite: float = 980.0
+
+func _physics_process(delta):
+    if not is_on_floor():
+        velocity.y += gravite * delta
+    if Input.is_action_just_pressed("saut") and is_on_floor():
+        velocity.y = force_saut
+    velocity.x = Input.get_axis("move_left", "move_right") * vitesse
+    move_and_slide()</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="L'Input Map nomme les actions, lues par Input, appliquées à velocity puis move_and_slide">
+                <defs><marker id="gd12ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker></defs>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="20" y="58" width="140" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="90" y="77" text-anchor="middle" font-weight="700">Touches</text><text x="90" y="93" text-anchor="middle" class="svg-dim">→ Input Map</text>
+                  <rect x="180" y="58" width="150" height="44" rx="8" fill="#eab308" fill-opacity="0.14" stroke="#eab308"/><text x="255" y="77" text-anchor="middle" font-weight="700">Input</text><text x="255" y="93" text-anchor="middle" class="svg-dim">get_vector(...)</text>
+                  <rect x="350" y="58" width="130" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="415" y="77" text-anchor="middle" font-weight="700">velocity</text><text x="415" y="93" text-anchor="middle" class="svg-dim">= dir × vitesse</text>
+                  <rect x="500" y="58" width="120" height="44" rx="8" fill="#7aa2f7" fill-opacity="0.14" stroke="#7aa2f7"/><text x="560" y="77" text-anchor="middle" font-weight="700">move_and</text><text x="560" y="92" text-anchor="middle" class="svg-dim">_slide()</text>
+                </g>
+                <g stroke="#eab308" stroke-width="1.7" marker-end="url(#gd12ar)">
+                  <line x1="160" y1="80" x2="178" y2="80"/><line x1="330" y1="80" x2="348" y2="80"/><line x1="480" y1="80" x2="498" y2="80"/>
+                </g>
+                <text x="320" y="138" text-anchor="middle" class="svg-dim" font-size="10">On lit une action (pas une touche), on règle velocity, et move_and_slide gère les collisions.</text>
+              </svg>
+              <figcaption>Le flux du contrôle&nbsp;: actions nommées → <code>velocity</code> → <code>move_and_slide()</code> dans <code>_physics_process</code>.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée les actions <code>move_left/right/up/down</code> dans l'Input Map.</li>
+              <li>Sur un <code>CharacterBody2D</code>, lis <code>get_vector</code>, règle <code>velocity</code> et appelle <code>move_and_slide()</code> dans <code>_physics_process</code>.</li>
+              <li>Ajoute un mur (collision) et vérifie que le personnage glisse dessus.</li>
+              <li>Variante plateforme&nbsp;: ajoute gravité et saut avec <code>is_action_just_pressed</code> + <code>is_on_floor()</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Action move_right not found ».</div>
+                <div class="pi-cause"><b>Cause</b>Action non définie dans l'Input Map.</div>
+                <div class="pi-fix"><b>Correction</b>Crée l'action dans Project Settings ▸ Input Map.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le personnage traverse les murs.</div>
+                <div class="pi-cause"><b>Cause</b>Déplacement via <code>position</code> au lieu de <code>move_and_slide</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un <code>CharacterBody2D</code> + colliders + <code>move_and_slide()</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon saut se déclenche plusieurs fois.</div>
+                <div class="pi-cause"><b>Cause</b><code>is_action_pressed</code> (continu) au lieu de <code>just_pressed</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>is_action_just_pressed</code> pour les actions ponctuelles.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mouvement saccadé.</div>
+                <div class="pi-cause"><b>Cause</b>Code de déplacement dans <code>_process</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Mets-le dans <code>_physics_process</code>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Déplace un <code>CharacterBody2D</code> dans 4 directions à vitesse réglable.</li>
+                <li>Ajoute des murs et vérifie le glissement (collisions).</li>
+                <li>Variante plateforme&nbsp;: gravité + saut au sol uniquement.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le déplacement utilise des actions (Input Map), pas des touches en dur.</li>
+                  <li>Le code de mouvement est dans <code>_physics_process</code>.</li>
+                  <li>Le saut se déclenche une seule fois et seulement au sol.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Définis des <b>actions</b> dans l'Input Map&nbsp;; lis-les avec <code>Input</code> (jamais la touche en dur).</li>
+                <li><code>is_action_pressed</code> (maintenu) vs <code>is_action_just_pressed</code> (instant)&nbsp;; <code>get_vector</code> pour une direction.</li>
+                <li><code>CharacterBody2D</code> + <code>velocity</code> + <code>move_and_slide()</code> dans <code>_physics_process</code>.</li>
+                <li><code>move_and_slide</code> intègre <code>delta</code>&nbsp;: ne le multiplie pas en plus.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Input Map</b> — table associant des actions nommées à des touches/boutons.</p>
+              <p><b>Input</b> — classe lisant l'état des actions (pressed, just_pressed, get_vector).</p>
+              <p><b>CharacterBody2D</b> — corps contrôlable gérant les collisions via <code>move_and_slide</code>.</p>
+              <p><b>velocity / move_and_slide</b> — vélocité du corps / déplacement avec glissement sur les obstacles.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd13-ressources-export.html">GD13 — Ressources &amp; @export</a>.</li>
+              <li><a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12 — Entrées (Unity)</a>&nbsp;: comparer l'approche.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

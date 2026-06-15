@@ -417,3 +417,35 @@ window.GLOSSAIRE = window.GLOSSAIRE.concat([
   { terme: "Forward declaration", def: "Annoncer une classe (class X;) sans l'inclure, pour alléger un en-tête et accélérer la compilation.", alias: [], src: "cpp15" },
   { terme: "Préfixes Unreal", def: "Conventions de nommage imposées : A (Actor), U (UObject), F (struct), E (enum), I (interface), b (booléen).", alias: [], src: "cpp15" }
 ]);
+
+/* === Termes Programmation GDScript (Godot) (Piste 9) === */
+window.GLOSSAIRE = window.GLOSSAIRE.concat([
+  { terme: "extends", def: "Mot-clé GDScript indiquant le type de node/classe dont un script hérite ; le script devient ce type.", alias: [], src: "gd01" },
+  { terme: "_ready", def: "Fonction GDScript appelée une fois quand le node entre dans l'arbre de la scène (initialisation).", alias: [], src: "gd01" },
+  { terme: "print (GDScript)", def: "Affiche un message dans le panneau Output de Godot (équivalent d'un log de débogage).", alias: [], src: "gd01" },
+  { terme: "var / const (GDScript)", def: "var déclare une variable modifiable ; const une constante (en MAJUSCULES par convention).", alias: [], src: "gd02" },
+  { terme: "Typage statique (GDScript)", def: "Préciser le type d'une variable/fonction (var x: int, -> int) pour plus de sûreté et de performance ; optionnel mais recommandé.", alias: ["inférence"], src: "gd02" },
+  { terme: "@export", def: "Annotation GDScript exposant une variable dans l'Inspector de Godot (réglage sans toucher au code).", alias: ["export_range", "export_enum"], src: "gd02" },
+  { terme: "match", def: "Structure de branchement multi-cas de GDScript (équivalent d'un switch puissant, sans break ; cas par défaut '_').", alias: [], src: "gd04" },
+  { terme: "range", def: "Fonction GDScript générant une suite d'entiers (début, fin exclue, pas) pour les boucles for.", alias: [], src: "gd05" },
+  { terme: "func", def: "Mot-clé déclarant une fonction en GDScript ; paramètres et retour peuvent être typés (-> Type).", alias: [], src: "gd06" },
+  { terme: "_process / _physics_process", def: "Fonctions de cycle de vie d'un node : boucle de rendu (variable) / boucle physique à pas fixe ; reçoivent delta.", alias: [], src: "gd07" },
+  { terme: "delta (Godot)", def: "Temps écoulé depuis la frame précédente ; multiplier un déplacement par delta le rend indépendant du framerate.", alias: [], src: "gd07" },
+  { terme: "_input", def: "Fonction de node appelée à chaque événement d'entrée, pour réagir ponctuellement à une touche/clic.", alias: [], src: "gd07" },
+  { terme: "class_name", def: "Déclaration nommant une classe GDScript et l'enregistrant globalement (réutilisable, instanciable par son nom).", alias: [], src: "gd08" },
+  { terme: "_init", def: "Constructeur d'une classe GDScript, appelé à la création d'un objet.", alias: [], src: "gd08" },
+  { terme: "super (GDScript)", def: "Appelle la version parente d'une méthode redéfinie dans une classe fille.", alias: [], src: "gd08" },
+  { terme: "$ / get_node", def: "Désigne un node par son chemin dans l'arbre ; $ est le raccourci de get_node.", alias: ["NodePath"], src: "gd09" },
+  { terme: "@onready", def: "Annotation GDScript assignant une variable juste avant _ready (idéal pour référencer un node enfant).", alias: [], src: "gd09" },
+  { terme: "PackedScene", def: "Scène Godot sauvegardée (.tscn) réutilisable ; on l'instancie (instantiate) et on l'ajoute à l'arbre (add_child). Équivalent d'un prefab.", alias: ["instantiate", "add_child"], src: "gd09" },
+  { terme: "queue_free", def: "Supprime un node proprement en fin de frame (différé), évitant les crashs liés à une suppression immédiate.", alias: [], src: "gd09" },
+  { terme: "signal", def: "Mécanisme natif de Godot pour communiquer sans couplage : un node émet (emit), d'autres se connectent (connect). Patron observateur.", alias: ["emit", "connect"], src: "gd10" },
+  { terme: "Array (GDScript)", def: "Liste dynamique indexée de GDScript (append, size, erase) ; peut être typée (Array[int]).", alias: ["Array typé"], src: "gd11" },
+  { terme: "Dictionary (GDScript)", def: "Table associant des clés à des valeurs en GDScript (has, get) ; équivalent d'un dictionnaire.", alias: [], src: "gd11" },
+  { terme: "Input Map", def: "Table de Godot associant des actions nommées (move_left, saut) à des touches/boutons ; lue par la classe Input.", alias: [], src: "gd12" },
+  { terme: "CharacterBody2D", def: "Corps contrôlable de Godot gérant les collisions ; on règle sa velocity et on appelle move_and_slide() dans _physics_process.", alias: ["move_and_slide"], src: "gd12" },
+  { terme: "Resource (Godot)", def: "Conteneur de données sauvegardable (.tres) indépendant des scènes ; les Resource personnalisées (extends Resource) séparent données et code.", alias: ["custom resource", ".tres"], src: "gd13" },
+  { terme: "await", def: "Mot-clé GDScript suspendant une fonction jusqu'à l'émission d'un signal, sans bloquer le jeu (coroutine de Godot).", alias: [], src: "gd14" },
+  { terme: "Timer (Godot)", def: "Node émettant le signal timeout après une durée (une fois ou en boucle) ; create_timer crée un timer ponctuel.", alias: ["create_timer", "timeout"], src: "gd14" },
+  { terme: "Autoload (singleton)", def: "Script ou scène globale de Godot toujours accessible, pour un état partagé (score, options).", alias: [], src: "gd15" }
+]);

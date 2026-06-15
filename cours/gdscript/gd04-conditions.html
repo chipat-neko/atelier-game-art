@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD04 — Conditions (if, match) · Atelier Game Art</title>
+  <meta name="description" content="Brancher le code en GDScript : if / elif / else, indentation, ternaire et match (le switch puissant de GDScript).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Conditions</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD04 — Conditions (if, match)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd03-operateurs.html">GD3 — Opérateurs</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Brancher le code avec <code>if</code> / <code>elif</code> / <code>else</code>.</li>
+                <li>Respecter l'indentation des blocs.</li>
+                <li>Utiliser l'opérateur ternaire (<code>... if ... else ...</code>).</li>
+                <li>Choisir entre plusieurs cas avec <code>match</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un jeu décide en permanence&nbsp;: «&nbsp;si la vie atteint 0, mourir&nbsp;», «&nbsp;selon l'état de l'IA, patrouiller ou attaquer&nbsp;». Les conditions sont le mécanisme de base de toute logique.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. if / elif / else</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>if pv &lt;= 0:
+    mourir()
+elif pv &lt; 30:
+    afficher_alerte_vie()    # entre 1 et 29
+else:
+    pass                     # tout va bien</code></pre>
+            </div>
+            <p>Noter le <b>deux-points</b> <code>:</code> en fin de ligne et l'<b>indentation</b> du bloc (pas d'accolades). C'est <code>elif</code> (pas « else if »).</p>
+
+            <h3>2. L'opérateur ternaire</h3>
+            <p>GDScript écrit le ternaire « à la Python »&nbsp;: la valeur d'abord, puis la condition&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>var etat = "Vivant" if pv &gt; 0 else "Mort"
+var vitesse = 600.0 if court else 300.0</code></pre>
+            </div>
+
+            <h3>3. match : choisir parmi des cas</h3>
+            <p><code>match</code> est l'équivalent du <code>switch</code>, mais <b>plus puissant</b> et sans piège de <code>break</code> (chaque cas est isolé)&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>match etat_ia:
+    "patrouille":
+        patrouiller()
+    "poursuite":
+        poursuivre()
+    "attaque":
+        attaquer()
+    _:                       # '_' = cas par défaut (tous les autres)
+        attendre()</code></pre>
+            </div>
+            <p><code>match</code> peut aussi tester des <b>motifs</b> (plages, plusieurs valeurs avec <code>,</code>, tableaux)&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>match degats:
+    0:
+        print("aucun dégât")
+    1, 2, 3:
+        print("dégâts légers")    # plusieurs valeurs
+    _:
+        print("gros dégâts")</code></pre>
+            </div>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 170" role="img" aria-label="Un if dirige le flux selon une condition vraie ou fausse">
+                <defs><marker id="gd04ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker></defs>
+                <rect x="265" y="20" width="110" height="40" rx="8" fill="#eab308" fill-opacity="0.15" stroke="#eab308"/>
+                <text x="320" y="44" text-anchor="middle" class="svg-text" font-size="11">pv &lt;= 0 ?</text>
+                <g class="svg-text" font-size="10.5">
+                  <rect x="90" y="110" width="150" height="40" rx="8" class="svg-surface" stroke="#5ad19a"/><text x="165" y="134" text-anchor="middle">VRAI → mourir()</text>
+                  <rect x="400" y="110" width="170" height="40" rx="8" class="svg-surface" stroke="#313c4c"/><text x="485" y="134" text-anchor="middle">FAUX → continuer</text>
+                </g>
+                <g stroke="#eab308" stroke-width="1.7" marker-end="url(#gd04ar)" fill="none">
+                  <path d="M300 60 L175 108"/><path d="M340 60 L470 108"/>
+                </g>
+                <text x="210" y="92" class="svg-dim" font-size="10">vrai</text>
+                <text x="410" y="92" class="svg-dim" font-size="10">faux</text>
+              </svg>
+              <figcaption>Une condition dirige le flux&nbsp;; <code>match</code> aiguille vers le bon cas, sans <code>break</code>.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Une fonction <code>evaluer_vie(pv)</code> qui affiche « Mort », « Critique » ou « OK » selon des seuils.</li>
+              <li>Un ternaire qui choisit une vitesse selon un booléen <code>court</code>.</li>
+              <li>Un <code>match</code> sur une chaîne d'état d'IA qui déclenche l'action correspondante (avec <code>_</code>).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Expected indented block ».</div>
+                <div class="pi-cause"><b>Cause</b>Bloc non indenté après le <code>:</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Indente le corps du <code>if</code>/<code>elif</code>/<code>else</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« else if » refusé.</div>
+                <div class="pi-cause"><b>Cause</b>GDScript utilise <code>elif</code>, pas « else if ».</div>
+                <div class="pi-fix"><b>Correction</b>Écris <code>elif condition:</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Un cas non prévu n'est pas géré.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de cas par défaut dans le <code>match</code>.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute le motif <code>_:</code> (défaut).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>La condition est toujours vraie/fausse.</div>
+                <div class="pi-cause"><b>Cause</b>Confusion entre <code>=</code> (affectation) et <code>==</code> (comparaison).</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>==</code> dans les conditions.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un « rang » selon le score (Bronze/Argent/Or) via if/elif/else.</li>
+                <li>Un <code>match</code> sur un état d'IA qui déclenche l'action correspondante.</li>
+                <li>Un ternaire qui choisit un message court selon que le joueur est vivant.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Indentation correcte, <code>elif</code> bien utilisé.</li>
+                  <li>Le <code>match</code> a un cas par défaut <code>_</code>.</li>
+                  <li>Aucune confusion <code>=</code>/<code>==</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><code>if</code> / <code>elif</code> / <code>else</code> avec <code>:</code> et indentation (pas d'accolades).</li>
+                <li>Ternaire « à la Python »&nbsp;: <code>valeur_si_vrai if cond else valeur_si_faux</code>.</li>
+                <li><code>match</code> = switch puissant, sans <code>break</code>&nbsp;; cas par défaut <code>_</code>.</li>
+                <li><code>match</code> gère aussi plusieurs valeurs (<code>1, 2, 3:</code>) et motifs.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>elif</b> — « sinon si » de GDScript.</p>
+              <p><b>match</b> — branchement multi-cas par motif, sans <code>break</code>.</p>
+              <p><b>_ (motif joker)</b> — cas par défaut d'un <code>match</code>.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd05-boucles.html">GD5 — Boucles</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

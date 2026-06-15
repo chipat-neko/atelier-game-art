@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GD10 — Signaux & communication · Atelier Game Art</title>
+  <meta name="description" content="Faire communiquer des nodes sans tout coupler : signal, emit, connect dans l'éditeur ou par code, le patron observateur.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="gd10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 108</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/gdscript/gd01-introduction.html">GDScript (Godot)</a><span class="sep">/</span>
+            <span>Signaux</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>GD10 — Signaux &amp; communication</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 9 · GDScript (Godot)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/gdscript/gd08-classes-poo.html">GD8</a> et <a href="../../cours/gdscript/gd09-nodes-scenes.html">GD9</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre le <b>couplage</b> et pourquoi le réduire.</li>
+                <li>Déclarer un <code>signal</code> et l'émettre.</li>
+                <li>Connecter un signal dans l'éditeur <b>ou</b> par code.</li>
+                <li>Appliquer le patron <span class="gloss">observateur</span> pour découpler.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Quand le joueur meurt, l'UI, le son et le score doivent réagir. Si le node <code>Sante</code> appelle directement chacun, il devient couplé à tout le projet. Les <b>signaux</b> sont la solution native de Godot&nbsp;: <code>Sante</code> <em>émet</em> «&nbsp;je suis mort&nbsp;», et qui veut réagir s'y <b>connecte</b>. C'est le patron observateur, équivalent des events C# (<a href="../../cours/csharp/cs13-evenements.html">CS13</a>) et des delegates Unreal (<a href="../../cours/cpp/cpp13-delegates.html">CPP13</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Déclarer &amp; émettre un signal</h3>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node
+
+signal mort                         # signal sans donnée
+signal vie_changee(nouvelle_vie)    # signal qui transporte une valeur
+
+var pv: int = 100
+
+func subir(degats: int) -&gt; void:
+    pv = max(0, pv - degats)
+    vie_changee.emit(pv)            # émet le signal vers tous les connectés
+    if pv == 0:
+        mort.emit()</code></pre>
+            </div>
+
+            <h3>2. Connecter par code</h3>
+            <p>Un autre node s'<b>abonne</b> avec <code>.connect()</code> en passant la fonction à appeler (un <i>Callable</i>)&nbsp;:</p>
+            <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Control
+
+@onready var sante = $"../Joueur/Sante"
+
+func _ready():
+    sante.vie_changee.connect(_on_vie_changee)   # s'abonner
+    sante.mort.connect(_on_mort)
+
+func _on_vie_changee(nouvelle_vie: int) -&gt; void:
+    print("Barre de vie : ", nouvelle_vie)
+
+func _on_mort() -&gt; void:
+    print("GAME OVER")</code></pre>
+            </div>
+            <p>Convention&nbsp;: nommer la fonction réceptrice <code>_on_&lt;signal&gt;</code>.</p>
+
+            <h3>3. Connecter dans l'éditeur</h3>
+            <p>Godot permet aussi de connecter <b>visuellement</b>&nbsp;: sélectionne le node émetteur ▸ onglet <b>Node ▸ Signals</b> ▸ double-clic sur le signal ▸ choisis le node récepteur. Godot génère la fonction <code>_on_...</code>. Idéal pour les boutons d'UI (<code>pressed</code>) et les zones (<code>body_entered</code>).</p>
+
+            <h3>4. Pourquoi c'est puissant</h3>
+            <p>L'émetteur <b>ne connaît pas</b> ses abonnés&nbsp;: ajouter une réaction (un son, un effet) ne modifie pas le node <code>Sante</code>. C'est la clé d'un code maintenable. Beaucoup de nodes Godot émettent déjà des signaux intégrés&nbsp;: <code>Button.pressed</code>, <code>Area2D.body_entered</code>, <code>Timer.timeout</code>…</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 200" role="img" aria-label="Sante émet vie_changee vers plusieurs nodes connectés et découplés">
+                <defs><marker id="gd10ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker></defs>
+                <rect x="40" y="80" width="150" height="50" rx="8" fill="#eab308" fill-opacity="0.16" stroke="#eab308"/>
+                <text x="115" y="102" text-anchor="middle" class="svg-text" font-weight="700" font-size="12">Sante</text>
+                <text x="115" y="119" text-anchor="middle" class="svg-dim" font-size="10">vie_changee.emit()</text>
+                <g class="svg-text" font-size="11">
+                  <rect x="430" y="24" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="46" text-anchor="middle">Barre de vie</text>
+                  <rect x="430" y="84" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="106" text-anchor="middle">Audio</text>
+                  <rect x="430" y="144" width="180" height="36" rx="7" class="svg-surface" stroke="#313c4c"/><text x="520" y="166" text-anchor="middle">Score</text>
+                </g>
+                <g stroke="#eab308" stroke-width="1.7" marker-end="url(#gd10ar)" fill="none">
+                  <path d="M190 98 C 300 70, 340 46, 428 42"/>
+                  <path d="M190 105 C 300 105, 340 102, 428 102"/>
+                  <path d="M190 112 C 300 140, 340 160, 428 162"/>
+                </g>
+                <text x="300" y="194" text-anchor="middle" class="svg-dim" font-size="10">Sante ne connaît aucun abonné. Chacun se connecte (connect / éditeur).</text>
+              </svg>
+              <figcaption>Patron observateur&nbsp;: l'émetteur signale, les abonnés réagissent — sans couplage.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans un node <code>Sante</code>, déclare <code>signal vie_changee(v)</code> et <code>signal mort</code>, et émets-les dans <code>subir()</code>.</li>
+              <li>Dans l'UI, connecte-toi par code à <code>vie_changee</code> et mets à jour un affichage.</li>
+              <li>Ajoute un node Audio qui se connecte aussi à <code>mort</code> — sans toucher à <code>Sante</code>.</li>
+              <li>Connecte un <code>Button.pressed</code> dans l'éditeur pour comparer les deux méthodes.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Rien ne se passe à l'émission.</div>
+                <div class="pi-cause"><b>Cause</b>Aucun node connecté au signal.</div>
+                <div class="pi-fix"><b>Correction</b>Connecte le signal (par code ou éditeur).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Signal is already connected ».</div>
+                <div class="pi-cause"><b>Cause</b>Connexion faite deux fois (code + éditeur, ou _ready rappelé).</div>
+                <div class="pi-fix"><b>Correction</b>Connecte une seule fois&nbsp;; vérifie avec <code>is_connected</code> si besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>« Nonexistent function _on_... ».</div>
+                <div class="pi-cause"><b>Cause</b>La fonction réceptrice n'existe pas / mauvaise signature.</div>
+                <div class="pi-fix"><b>Correction</b>Crée la fonction avec les bons paramètres du signal.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Crash après destruction d'un node connecté.</div>
+                <div class="pi-cause"><b>Cause</b>Récepteur détruit alors que le signal s'émet encore.</div>
+                <div class="pi-fix"><b>Correction</b>Godot nettoie en général à <code>queue_free</code>&nbsp;; évite d'émettre vers un node libéré.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Un node <code>Sante</code> émettant <code>vie_changee(int)</code> et <code>mort</code>.</li>
+                <li>Une UI qui se connecte par code et met à jour une barre de vie.</li>
+                <li>Un 2ᵉ abonné (audio/score) ajouté sans modifier <code>Sante</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'émetteur ne référence aucun abonné.</li>
+                  <li>Les connexions sont faites une seule fois.</li>
+                  <li>Les fonctions réceptrices ont la bonne signature.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les signaux réduisent le couplage&nbsp;: l'émetteur <code>emit</code>, les abonnés réagissent.</li>
+                <li><code>signal nom(params)</code>&nbsp;; émettre avec <code>nom.emit(...)</code>.</li>
+                <li>Connecter par code (<code>signal.connect(fonction)</code>) ou dans l'éditeur (onglet Node ▸ Signals).</li>
+                <li>Beaucoup de nodes émettent des signaux intégrés (<code>pressed</code>, <code>body_entered</code>, <code>timeout</code>).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>signal</b> — annonce qu'un node émet&nbsp;; les autres s'y connectent.</p>
+              <p><b>emit</b> — déclenche un signal vers tous les connectés.</p>
+              <p><b>connect</b> — abonne une fonction (Callable) à un signal.</p>
+              <p><b>Observateur</b> — patron où des abonnés réagissent à un émetteur sans qu'il les connaisse.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/gdscript/gd11-collections.html">GD11 — Collections</a>.</li>
+              <li><a href="../../cours/csharp/cs13-evenements.html">CS13 — Événements (C#)</a> et <a href="../../cours/cpp/cpp13-delegates.html">CPP13 — Delegates</a>&nbsp;: le même patron ailleurs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>
