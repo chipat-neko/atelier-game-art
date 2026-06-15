@@ -387,6 +387,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est le grand atout de Blender pour un débutant ?","a":["Gratuit, open source et tout-en-un (modélisation, sculpt, UV, texture, anim, rendu)","Il ne fait que de la modélisation","Il nécessite un abonnement","Il ne gère pas l'export jeu"],"correct":0,"explain":"Blender est gratuit et couvre tout le pipeline 3D dans un seul logiciel : idéal pour apprendre sans coût et exporter vers Unity/Unreal/Godot (FBX, glTF)."},
+  {"q":"Quelle est la différence entre Eevee et Cycles ?","a":["Eevee est un moteur temps réel (rapide) ; Cycles est un moteur de path tracing (réaliste mais plus lent)","Cycles est temps réel","Eevee ne gère pas les matériaux","Ils sont identiques"],"correct":0,"explain":"Eevee rastérise en temps réel (aperçu rapide, proche du jeu). Cycles calcule la lumière physiquement (path tracing) pour un rendu réaliste, au prix du temps de calcul."},
+  {"q":"Quel format choisir pour exporter un asset animé vers un moteur ?","a":["FBX ou glTF (qui transportent géométrie + animations)","PSD","BMP","TXT"],"correct":0,"explain":"FBX (très répandu) et glTF/GLB (ouvert, temps réel) transportent la géométrie, les UV, les matériaux et les animations vers les moteurs."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Installe Blender, crée un cube, déplace/tourne/échelonne-le (G, R, S) et change de vue (navigation orbitale).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>G = déplacer, R = tourner, S = redimensionner&nbsp;; appuie sur X/Y/Z pour contraindre à un axe. La molette zoome, le clic-milieu orbite. Maîtriser cette navigation est la base de tout le reste.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modélise un objet simple (tasse, dé), applique-lui un matériau de base et fais un rendu Eevee.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pars d'une primitive, édite-la en mode Edit (extrude, bevel), ajoute un matériau (Base Color + roughness), place une lumière et une caméra, puis F12 pour le rendu Eevee. Compare avec un rendu Cycles.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Exporte ton objet en glTF (GLB) et vérifie qu'il s'ouvre correctement dans un viewer ou un moteur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>File ▸ Export ▸ glTF 2.0. Vérifie l'échelle (applique les transforms avant export&nbsp;: Ctrl+A), l'orientation et que le matériau suit. Un GLB qui s'ouvre net ailleurs valide ton pipeline d'export.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

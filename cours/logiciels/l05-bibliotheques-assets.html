@@ -376,6 +376,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi vérifier la licence d'un asset avant de l'utiliser ?","a":["Elle définit les droits d'usage (commercial, modification, attribution) et évite les problèmes juridiques","Elle change la qualité de l'asset","C'est seulement décoratif","Elle réduit la taille du fichier"],"correct":0,"explain":"Un asset « gratuit » n'est pas forcément libre d'usage commercial. La licence (CC0, CC-BY, royalty-free, EULA du store) précise ce que tu as le droit de faire : toujours la lire."},
+  {"q":"Qu'est-ce que Quixel Megascans ?","a":["Une bibliothèque de scans photoréalistes (surfaces, props, végétation) intégrée à l'écosystème Unreal","Un logiciel de modélisation","Un moteur de jeu","Un format de fichier"],"correct":0,"explain":"Megascans propose des assets scannés haute qualité (matériaux PBR, props, plantes). Très utilisé avec Unreal, il accélère la création de décors réalistes."},
+  {"q":"Quel est le risque d'abuser d'assets de bibliothèque sans adaptation ?","a":["Un rendu hétérogène et un manque d'identité visuelle (« asset flip »)","Une meilleure cohérence","Moins de draw calls","Des UV plus propres"],"correct":0,"explain":"Mélanger des assets de styles/échelles différents sans retouche donne un résultat incohérent. On adapte (échelle, matériaux, palette) pour une direction artistique unifiée."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Compare trois sources d'assets (ex. un store de moteur, une banque CC0, Megascans) et note leur type de licence.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Repère : usage commercial autorisé ? attribution requise ? redistribution interdite ? Les CC0 sont les plus permissives (domaine public), les stores ont des EULA précises, Megascans dépend de ton abonnement/usage Unreal.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Importe un asset de bibliothèque dans ton moteur et adapte-le (échelle, matériau, palette) à ton projet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Vérifie l'échelle réelle (un mannequin de référence), réajuste le matériau pour qu'il s'accorde à ta DA (teinte, rugosité), et garde une cohérence de texel density avec tes autres assets.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Constitue une petite scène mêlant 2–3 assets de bibliothèque et 1 asset à toi, en visant une direction artistique cohérente.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Choisis des assets compatibles en style et échelle, unifie l'éclairage et la palette, et retouche les matériaux pour gommer les différences. L'objectif&nbsp;: qu'on ne devine pas ce qui vient d'une bibliothèque.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

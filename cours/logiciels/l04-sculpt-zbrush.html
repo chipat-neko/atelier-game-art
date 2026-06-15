@@ -332,6 +332,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le sculpt (ZBrush, Blender sculpt) ?","a":["Modeler des détails organiques à très haute densité (le high-poly)","Créer le low-poly final du jeu","Animer un personnage","Écrire des shaders"],"correct":0,"explain":"Le sculpt façonne des millions de polygones comme de l'argile (rides, plis, écailles). Ce high-poly sert ensuite de source pour baker les détails sur un low-poly."},
+  {"q":"Qu'est-ce que le dynamic tessellation / DynaMesh / remesh en sculpt ?","a":["Redistribuer dynamiquement la géométrie pour sculpter sans étirer le maillage","Réduire le nombre de calques","Exporter en FBX","Peindre la couleur"],"correct":0,"explain":"Quand on étire une forme, les polygones manquent. Le DynaMesh/remesh recrée une topologie homogène à la volée pour continuer à ajouter du détail proprement."},
+  {"q":"Après le sculpt, quelle étape rend le modèle utilisable en jeu ?","a":["La retopologie (créer un low-poly propre) puis le baking","Rien, on exporte le sculpt tel quel","Le rendu Cycles","L'ajout de particules"],"correct":0,"explain":"Le sculpt est trop lourd pour le temps réel. On retopologise un low-poly, on le déplie (UV) et on bake les détails du sculpt (normal map, AO) dessus."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Dans un outil de sculpt (Blender sculpt suffit), pars d'une sphère et bloque une forme simple (un rocher) avec les brosses de base.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Active le mode Sculpt, utilise Grab pour la forme générale, Clay/Draw pour ajouter de la matière, Smooth pour adoucir. Pense à remailler (Remesh) quand la densité devient insuffisante.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Ajoute des détails de surface (fissures, érosion) avec des brosses d'alphas, et remaille si le maillage s'étire.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Utilise des brosses avec alpha (motifs) pour tamponner des détails, et la brosse Crease pour les fissures. Si les détails « bavent » par manque de polygones, augmente la résolution (remesh/subdivise) avant de continuer.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Prépare la suite&nbsp;: décris comment tu passerais de ton high-poly sculpté à un asset jouable.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Retopologie (low-poly propre, quads) → UV → baking du high vers le low (normal, AO, curvature) → texturing PBR → export. Le sculpt ne va jamais directement dans le moteur&nbsp;: il sert de référence de détail.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

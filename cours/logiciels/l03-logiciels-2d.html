@@ -347,6 +347,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi servent les logiciels 2D (Photoshop, Krita, GIMP) dans un pipeline jeu ?","a":["Concept art, retouche de textures, sprites, UI et matte painting","Modélisation 3D","Animation de squelette","Compilation de code"],"correct":0,"explain":"Les outils 2D couvrent le concept, la peinture/retouche de textures, les sprites et atlas, l'UI/HUD. Ils complètent les outils 3D et de texturing PBR."},
+  {"q":"Quel est l'intérêt de travailler en calques et masques en 2D ?","a":["Modifier chaque élément séparément, de façon non destructive","Réduire la résolution","Supprimer la transparence","Accélérer le moteur"],"correct":0,"explain":"Les calques isolent les éléments (fond, perso, effets) et les masques cachent/révèlent sans effacer : on itère librement, comme en texturing 3D."},
+  {"q":"Quel logiciel 2D est gratuit et open source, orienté peinture ?","a":["Krita","Photoshop","Substance Painter","ZBrush"],"correct":0,"explain":"Krita est gratuit, open source et taillé pour la peinture numérique (brosses, stabilisation). GIMP est l'alternative libre généraliste ; Photoshop est la référence payante."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Dans un logiciel 2D, compose une image simple sur 3 calques (fond, objet, détail) et masque une partie d'un calque.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée trois calques empilés, peins sur chacun, puis ajoute un masque sur le calque du dessus et peins en noir pour révéler le calque en dessous. Réorganiser l'ordre change le rendu&nbsp;: c'est le non destructif.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Retouche une texture (corrige une couture visible ou ajoute de la variation) et ré-exporte-la en PNG.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Utilise le tampon/clone ou une brosse pour casser une répétition trop visible, ajoute du grain/variation, puis exporte en PNG (alpha si besoin). Vérifie que la texture se raccorde bien en tuilage si elle est seamless.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Prépare un petit sprite sheet (atlas) de quelques frames pour une animation 2D simple.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dessine chaque frame sur une grille régulière (même taille de case), exporte l'atlas en PNG. Le moteur (ou un shader flipbook) fera défiler les cases. Garde un espacement (padding) pour éviter le « bleeding » entre cases.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

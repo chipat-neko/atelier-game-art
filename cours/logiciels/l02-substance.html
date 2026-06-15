@@ -317,6 +317,49 @@
   </div>
 </div>
 
+<section class="lesson-check">
+  <h2>Vérifie ta compréhension</h2>
+  <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+  <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert Substance 3D Painter ?","a":["Peindre des textures PBR directement sur le modèle 3D, avec des calques et des smart materials","Modéliser des personnages","Animer un rig","Faire du montage vidéo"],"correct":0,"explain":"Painter permet de texturer en PBR sur le mesh : calques, masques, générateurs (usure, poussière) et smart materials accélèrent un rendu réaliste et non destructif."},
+  {"q":"Quel est l'intérêt d'un workflow non destructif par calques ?","a":["Modifier ou réorganiser les effets à tout moment sans repeindre","Réduire la taille du fichier","Supprimer les UV","Accélérer le rendu du jeu"],"correct":0,"explain":"Les calques et masques se réordonnent et se réajustent sans tout refaire : on itère vite et on garde le contrôle, comme dans un éditeur 2D mais en 3D PBR."},
+  {"q":"Que sont les maps « cuites » utilisées par les générateurs (curvature, AO…) ?","a":["Des maps bakées qui informent les effets procéduraux (usure sur les arêtes, saleté dans les creux)","Des textures de couleur finales","Des fichiers audio","Des animations"],"correct":0,"explain":"Painter bake des maps (curvature, AO, position…) du modèle. Les générateurs s'en servent pour placer intelligemment l'usure sur les arêtes saillantes et la saleté dans les recoins."}
+]
+  </script>
+</section>
+
+<section class="exos">
+  <h2>Exercices</h2>
+
+  <div class="exo">
+    <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+    <p>Importe un modèle low-poly avec UV dans Substance Painter, bake ses maps et applique un smart material.</p>
+    <details class="exo-sol">
+      <summary>Voir une piste</summary>
+      <p>New project ▸ importe le mesh (et le high-poly si dispo) ▸ Bake Mesh Maps ▸ glisse un smart material (ex. métal usé). Les générateurs utilisent les maps cuites pour placer l'usure automatiquement.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+    <p>Ajoute un calque d'usure sur les arêtes avec un générateur de curvature, et règle son intensité avec un masque.</p>
+    <details class="exo-sol">
+      <summary>Voir une piste</summary>
+      <p>Ajoute un fill layer (couleur métal nu) + un masque noir + un générateur « Curvature/Edge Wear ». L'usure apparaît sur les arêtes saillantes. Ajuste le contraste du masque pour doser l'effet.</p>
+    </details>
+  </div>
+
+  <div class="exo">
+    <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+    <p>Exporte tes textures au bon preset (ex. Unity/Unreal/glTF) et vérifie qu'elles se branchent correctement dans le moteur.</p>
+    <details class="exo-sol">
+      <summary>Voir une piste</summary>
+      <p>Export ▸ choisis le preset du moteur cible (qui packe les maps comme attendu&nbsp;: ORM pour glTF/Unreal, metallic/roughness séparés ou non). Dans le moteur, branche Base Color (sRGB) et les maps de données (linéaire). Vérifie que l'aspect correspond à Painter.</p>
+    </details>
+  </div>
+</section>
+
 <div class="callout retenir">
   <div class="callout-title"><span class="ico">📌</span>À retenir</div>
   <ul>
