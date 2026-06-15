@@ -371,6 +371,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce qu'un draw call et pourquoi en limiter le nombre ?","a":["Un ordre de dessin envoyé au GPU ; trop de draw calls surchargent le CPU","Un appel réseau","Le nombre de pixels","Un type de texture"],"correct":0,"explain":"Chaque matériau/objet distinct génère des draw calls. En réduire le nombre (atlas, batching, instancing) soulage le CPU, souvent goulot d'étranglement avant le GPU."},
+  {"q":"À quoi servent les LOD ?","a":["Afficher une version simplifiée du modèle quand il est loin, pour économiser des polygones","Augmenter la résolution de près","Ajouter des textures","Gérer la transparence"],"correct":0,"explain":"Les Level Of Detail basculent vers des maillages plus simples avec la distance : on économise des polygones là où la perte n'est pas visible. Le moteur change de LOD selon la distance caméra."},
+  {"q":"Qu'est-ce que l'instancing (GPU instancing) ?","a":["Dessiner de nombreuses copies d'un même mesh en très peu de draw calls","Copier des fichiers","Doubler la mémoire","Un type d'animation"],"correct":0,"explain":"L'instancing dessine des milliers d'exemplaires d'un mesh (herbe, foule) en un appel, en ne variant que quelques données par instance (position, couleur). Idéal pour la végétation."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Dans un moteur, affiche le compteur de draw calls / triangles d'une scène et fais varier le nombre d'objets pour voir l'impact.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le Stats/Profiler du moteur montre draw calls, tris, et batches. Ajouter des objets aux matériaux distincts fait grimper les draw calls&nbsp;; partager un matériau (atlas) ou instancier les fait chuter.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée 2–3 niveaux de LOD pour un objet (manuellement ou via l'auto-LOD) et observe le passage selon la distance.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>LOD0 = détaillé (proche), LOD1/LOD2 = de plus en plus simplifiés. Règle les distances de bascule pour que le changement soit imperceptible. Vérifie que la silhouette se dégrade peu pour éviter le « popping ».</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Réduis les draw calls d'une petite scène en fusionnant des textures dans un atlas et/ou en instanciant un objet répété.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Regroupe plusieurs textures dans un atlas pour qu'un même matériau couvre plusieurs objets (donc moins de draw calls). Pour un objet répété (caisse, arbre), active l'instancing&nbsp;: des centaines de copies en un appel. Mesure avant/après dans le profiler.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

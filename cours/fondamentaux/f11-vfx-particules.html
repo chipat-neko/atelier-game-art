@@ -392,6 +392,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce qu'un système de particules ?","a":["Un émetteur qui génère de nombreux petits éléments (sprites/meshes) animés par des règles (vitesse, durée de vie…)","Un seul gros objet 3D","Une texture statique","Un type de lumière"],"correct":0,"explain":"Un émetteur crée des particules avec des paramètres (émission, vitesse, durée de vie, taille, couleur dans le temps). Multipliées, elles forment fumée, feu, étincelles…"},
+  {"q":"Qu'est-ce qu'un flipbook (sprite sheet animé) ?","a":["Une grille d'images jouées en séquence pour animer un effet sur un quad","Une texture 3D","Un format vidéo","Un type de mesh"],"correct":0,"explain":"Un flipbook range plusieurs frames dans un atlas ; le shader fait défiler les cases pour animer un effet (explosion, fumée) sur un simple plan, sans simulation coûteuse."},
+  {"q":"Qu'est-ce qu'un billboard en VFX ?","a":["Un quad qui fait toujours face à la caméra","Un panneau publicitaire 3D","Une lumière directionnelle","Un type de collision"],"correct":0,"explain":"Le billboarding oriente les particules-sprites vers la caméra pour qu'elles paraissent toujours « de face », donnant du volume à peu de coût (fumée, halos)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Dans un jeu ou un moteur, repère trois effets de particules et décris leur émetteur (forme, débit, durée de vie apparente).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ex.&nbsp;: feu de camp (émission depuis un point, particules montantes, courte durée), poussière de pas (burst bref au sol), magie (émission en cône, couleurs vives). Note l'évolution taille/opacité dans le temps.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un système de particules simple (étincelles ou fumée) en réglant émission, durée de vie et courbe de taille/opacité.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Fumée&nbsp;: faible débit, longue durée de vie, taille croissante, opacité qui décroît, légère turbulence. Étincelles&nbsp;: burst, courte vie, gravité, traînée. Les courbes dans le temps font tout le réalisme.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Prépare (ou trouve) un flipbook d'explosion et explique comment le shader le fait défiler.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le flipbook est un atlas (ex. 8×8 cases). Le shader calcule, selon le temps de vie de la particule, quelle case afficher (décalage des UV par ligne/colonne). On peut interpoler entre deux cases pour un rendu fluide.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

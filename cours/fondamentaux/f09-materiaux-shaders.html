@@ -336,6 +336,49 @@ void main() {
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la différence entre matériau, shader et texture ?","a":["Le shader est le programme qui calcule le pixel ; le matériau règle ses paramètres ; la texture est une image fournie en entrée","Ils sont synonymes","La texture calcule la lumière","Le matériau est une image"],"correct":0,"explain":"Le shader est le code (sur GPU) qui décide de la couleur finale. Le matériau est une instance réglée de ce shader (valeurs, textures branchées). La texture est une donnée image consommée par le shader."},
+  {"q":"Que fait un fragment (pixel) shader ?","a":["Calculer la couleur de chaque pixel affiché de la surface","Déplacer les sommets","Charger les fichiers","Trier les objets"],"correct":0,"explain":"Le vertex shader traite les sommets (position) ; le fragment/pixel shader calcule la couleur de chaque pixel couvert par la surface (éclairage, textures, reflets)."},
+  {"q":"Quel est l'avantage d'un matériau procédural sur du texture-based ?","a":["Pas de texture à stocker, résolution « infinie » et paramétrable, mais coût de calcul","Il est toujours plus rapide","Il ne marche pas en temps réel","Il remplace les UV"],"correct":0,"explain":"Le procédural génère le motif par calcul (bruit, motifs) : léger en mémoire, sans répétition visible, ajustable. En contrepartie, il coûte du temps GPU et est moins prévisible que des textures peintes."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Dans un éditeur de matériaux à nœuds (Blender Shader Editor par ex.), repère où l'on branche une texture et où l'on règle des paramètres.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Les nœuds Image Texture (entrées) se branchent sur les entrées du shader (Base Color, Roughness…). Les valeurs réglées (un slider de roughness) sont les paramètres du matériau. Le nœud de sortie correspond au résultat affiché.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un matériau simple en branchant une couleur de base et en réglant la rugosité, puis duplique-le et change un seul paramètre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Tu obtiens deux matériaux (instances) du même shader, ne différant que par un réglage. C'est la logique des « material instances » des moteurs&nbsp;: un master shader, des variantes légères.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Génère un motif procédural simple (damier ou bruit) sans aucune texture et explique un avantage et un inconvénient.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Avantage&nbsp;: aucune image à stocker, motif net à toute échelle, paramétrable. Inconvénient&nbsp;: coût GPU et rendu parfois trop « parfait »/répétitif. On combine souvent procédural + textures peintes pour le meilleur des deux.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

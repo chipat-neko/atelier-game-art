@@ -362,6 +362,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce qu'un UV unwrap ?","a":["Déplier la surface 3D sur un plan 2D pour y appliquer une texture","Réduire le nombre de polygones","Lisser les normales","Compresser la texture"],"correct":0,"explain":"L'unwrap « ouvre » le mesh comme un patron de couture pour le mettre à plat dans l'espace UV (0–1), afin que chaque point de la surface corresponde à un point de la texture."},
+  {"q":"À quoi sert une couture (seam) ?","a":["Indiquer où le mesh est « découpé » pour se déplier à plat sans trop d'étirement","À ajouter du détail","À cacher des polygones","À éclairer la surface"],"correct":0,"explain":"Une seam marque les arêtes le long desquelles on coupe pour aplatir la surface. Bien placées (zones cachées), elles minimisent l'étirement et les coutures visibles."},
+  {"q":"Pourquoi viser une texel density homogène ?","a":["Pour que la densité de pixels de texture soit cohérente entre les objets (netteté uniforme)","Pour réduire le nombre d'UV","Pour accélérer l'unwrap","Pour supprimer les seams"],"correct":0,"explain":"La texel density (texels par unité) doit être homogène : sinon un objet apparaît net et un autre flou. On l'uniformise pour une qualité visuelle cohérente."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Applique une texture en damier (checker) sur un objet déplié et repère les zones où les carrés sont étirés ou de taille inégale.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le checker révèle l'étirement (carrés déformés) et les variations de texel density (carrés plus gros/petits). On corrige en ajustant les seams et en relaxant/échelonnant les îlots UV.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déplie un cube et un cylindre en plaçant les coutures dans des zones peu visibles, puis pack les îlots dans l'espace 0–1.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pour le cylindre, une seam verticale + deux cercles aux extrémités. Pour le cube, on peut déplier en croix. On packe ensuite les îlots pour maximiser l'usage de l'espace UV (donc la résolution utile).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Uniformise la texel density entre deux objets de tailles différentes partageant la même texture.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Mesure la texel density de chaque objet (outil dédié dans Blender/RizomUV) et mets-les à la même valeur (ex. 10,24 px/cm pour du 1024). Le petit objet occupe alors moins d'espace UV que le grand&nbsp;: la netteté perçue devient cohérente.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

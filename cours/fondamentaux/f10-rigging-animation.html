@@ -358,6 +358,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le weight painting (skinning) ?","a":["Définir l'influence de chaque bone sur les sommets du mesh, pour des déformations propres","Colorer la texture","Réduire les polygones","Créer les UV"],"correct":0,"explain":"Le skinning attribue à chaque sommet un poids par bone : ainsi, plier le coude déforme la peau de façon crédible. Des poids mal réglés donnent des déformations qui « cassent »."},
+  {"q":"Quelle est la différence entre IK et FK ?","a":["FK : on tourne chaque articulation ; IK : on place l'extrémité et le système calcule les rotations","IK tourne chaque os un par un","FK place le pied au sol","Ils font exactement la même chose"],"correct":0,"explain":"En FK (Forward Kinematics), on anime chaque rotation d'articulation. En IK (Inverse Kinematics), on positionne la main/le pied et le rig calcule le reste : idéal pour caler un pied au sol."},
+  {"q":"Quand préférer une blendshape (morph target) à une animation par squelette ?","a":["Pour des déformations fines pré-modelées comme les expressions faciales","Pour faire marcher un personnage","Pour les os longs","Jamais"],"correct":0,"explain":"Les blendshapes interpolent des formes pré-modelées (sourire, clignement) via des curseurs. Elles excellent pour le visage, là où un squelette serait lourd et peu naturel."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Sur un personnage rigué (asset gratuit), bouge un bras et observe comment la «&nbsp;peau&nbsp;» suit le squelette.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le mesh se déforme selon les poids de skinning. Regarde le coude/l'épaule&nbsp;: si la peau s'effondre ou se pince, les poids sont mal répartis. Une bonne déformation conserve le volume.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée une armature simple (2–3 bones) sur un cylindre, attache-la et fais une petite flexion en posant 2 keyframes.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Place les bones, fais un skinning automatique puis corrige les poids près de l'articulation. Pose une keyframe en position neutre (frame 1) et une fléchie (frame 20)&nbsp;: la lecture interpole le mouvement.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique, pour une jambe qui doit rester plantée au sol pendant un mouvement, pourquoi l'IK est plus pratique que le FK.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Avec l'IK, on verrouille le pied à une position et le rig ajuste hanche/genou automatiquement&nbsp;: le pied ne glisse pas. En FK, il faudrait corriger chaque rotation à chaque frame pour éviter le « foot sliding » — fastidieux.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

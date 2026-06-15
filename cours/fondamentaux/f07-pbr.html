@@ -394,6 +394,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que représente la map metallic en PBR (workflow metallic/roughness) ?","a":["Si une surface est métallique (1) ou non-métal/diélectrique (0)","La rugosité de la surface","La couleur de base","La transparence"],"correct":0,"explain":"Le metallic indique la nature de la surface : 1 = métal (les reflets prennent la couleur de l'albedo, pas de diffus), 0 = diélectrique (plastique, bois…). C'est souvent du noir ou blanc pur."},
+  {"q":"Que contrôle la map roughness ?","a":["La netteté des reflets : lisse (reflets nets) à rugueux (reflets diffus)","La couleur","Le relief","La métallicité"],"correct":0,"explain":"Roughness (rugosité) règle la dispersion des reflets : faible = miroir net, élevée = reflets flous/mats. C'est l'un des paramètres les plus expressifs du PBR."},
+  {"q":"Que dit le principe de conservation de l'énergie en PBR ?","a":["Une surface ne peut pas renvoyer plus de lumière qu'elle n'en reçoit","Les couleurs doivent être sombres","Il faut peu de polygones","La lumière est gratuite"],"correct":0,"explain":"Le PBR s'appuie sur des lois physiques : l'énergie réfléchie + absorbée ne dépasse pas l'énergie reçue. C'est ce qui rend les matériaux crédibles sous tout éclairage."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Dans un viewer PBR (ou un moteur), prends un matériau et fais varier la roughness de 0 à 1. Observe l'évolution des reflets.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>À 0, la surface agit comme un miroir (reflets nets)&nbsp;; à 1, les reflets s'étalent et la surface paraît mate. C'est souvent le réglage le plus « parlant » pour donner une matière (métal poli vs brossé).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée deux matériaux&nbsp;: un métal brossé et un plastique mat, en réglant seulement albedo, metallic et roughness.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Métal brossé&nbsp;: metallic = 1, roughness moyenne, albedo = teinte du métal. Plastique mat&nbsp;: metallic = 0, roughness élevée, albedo coloré. Évite les valeurs metallic « grises » (0,5) qui n'existent pas physiquement, sauf transition (rouille).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique le rôle du Fresnel&nbsp;: pourquoi une surface devient-elle plus réfléchissante aux angles rasants&nbsp;?</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le Fresnel décrit l'augmentation de la réflexion quand on regarde une surface presque de profil (angle rasant). C'est pourquoi un sol mouillé brille au loin et l'eau réfléchit le ciel à l'horizon. Le PBR l'intègre automatiquement.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

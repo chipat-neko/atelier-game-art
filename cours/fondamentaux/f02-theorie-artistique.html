@@ -345,6 +345,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que désignent les trois composantes du modèle TSV (HSV) d'une couleur ?","a":["Teinte, Saturation, Valeur (luminosité)","Texture, Surface, Volume","Transparence, Style, Vue","Ton, Son, Vibration"],"correct":0,"explain":"TSV décompose une couleur en Teinte (la « couleur » : rouge, bleu…), Saturation (son intensité) et Valeur (sa clarté). C'est plus intuitif que RVB pour choisir des couleurs."},
+  {"q":"Pourquoi la valeur (le contraste clair/foncé) est-elle si importante ?","a":["Elle porte la lisibilité d'une image, même sans couleur (silhouette, profondeur)","Elle ne sert qu'aux images en noir et blanc","Elle augmente la résolution","Elle remplace la composition"],"correct":0,"explain":"La valeur structure la lecture : une image qui « marche » en niveaux de gris (bonnes valeurs) reste lisible. Un mauvais contraste de valeurs rend une image confuse, même bien colorée."},
+  {"q":"À quoi sert une silhouette forte pour un asset de jeu ?","a":["À le rendre reconnaissable instantanément, même petit ou à contre-jour","À réduire le nombre de polygones","À accélérer le rendu","À éviter les textures"],"correct":0,"explain":"Une silhouette lisible permet d'identifier un personnage/objet d'un coup d'œil. C'est un pilier du game art : on teste souvent un asset en ombre noire."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Prends une capture d'écran d'un jeu que tu aimes et passe-la en niveaux de gris. Les éléments importants ressortent-ils encore&nbsp;?</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Si le personnage/objectif reste lisible en gris, c'est que les <b>valeurs</b> sont bien gérées (contraste avec le fond). Beaucoup de jeux assombrissent le décor et éclaircissent le joueur pour le faire ressortir.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Choisis une teinte de base et construis une harmonie (complémentaire ou analogue) de 3 couleurs avec une roue chromatique.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Complémentaire&nbsp;: deux couleurs opposées sur la roue (fort contraste). Analogue&nbsp;: trois teintes voisines (harmonie douce). Garde une couleur dominante, une secondaire et une touche d'accent pour guider l'œil.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Réalise un petit «&nbsp;value study&nbsp;»&nbsp;: dessine un objet simple en 3 valeurs seulement (clair, moyen, foncé) pour suggérer le volume.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Place la lumière à une source unique. Le clair = faces tournées vers la lumière, le foncé = faces opposées, le moyen = transitions. Trois valeurs suffisent à lire un volume&nbsp;: c'est la base du shading.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

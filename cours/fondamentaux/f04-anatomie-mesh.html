@@ -408,6 +408,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi privilégier des quads (faces à 4 côtés) en modélisation ?","a":["Ils se subdivisent et se déforment proprement (animation, smoothing)","Ils sont plus légers que les triangles","Le moteur n'accepte que les quads","Ils n'ont pas de normales"],"correct":0,"explain":"Les quads donnent un edge flow lisible et se déforment bien à l'animation et à la subdivision. Le moteur, lui, triangule tout au final, mais on modélise en quads pour la propreté."},
+  {"q":"Que définit la normale d'une face ?","a":["La direction vers laquelle la surface « regarde » (réaction à la lumière)","Sa couleur","Son nombre de côtés","Sa transparence"],"correct":0,"explain":"La normale est un vecteur perpendiculaire à la surface qui indique son orientation. Elle détermine comment la face réagit à la lumière ; une normale inversée donne une face « noire »."},
+  {"q":"Qu'est-ce qu'un bon edge flow ?","a":["Des boucles d'arêtes qui suivent les formes et les zones de déformation","Le plus petit nombre d'arêtes possible","Des arêtes alignées sur la grille du monde","Uniquement des n-gons"],"correct":0,"explain":"Un bon edge flow fait suivre aux boucles d'arêtes la silhouette et les articulations : cela facilite l'animation et un rendu propre des courbes."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Sur un modèle 3D simple (un personnage low-poly trouvé en ligne), repère les vertices, edges et faces, et compte approximativement les triangles.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Active l'affichage du wireframe. Les <b>vertices</b> sont les points, les <b>edges</b> les segments, les <b>faces</b> les surfaces fermées. Le compteur de statistiques du logiciel donne le nombre de tris/verts (le « budget »).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modélise un cube et applique-lui un smoothing (ombrage doux) puis dur. Observe l'effet des normales et des smoothing groups sur les arêtes.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le shade smooth lisse les normales entre faces (surface arrondie)&nbsp;; le shade flat garde des arêtes nettes. Sur un objet mixte (caisse arrondie aux coins), on marque les arêtes dures pour contrôler où l'ombrage casse.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Repère un n-gon (face à plus de 4 côtés) sur un modèle et explique pourquoi il peut poser problème, puis transforme-le en quads.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Un n-gon peut se trianguler de façon imprévisible, créer des artefacts d'ombrage et mal se déformer. On le découpe en quads (ou triangles maîtrisés) en ajoutant des boucles d'arêtes qui suivent la forme.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

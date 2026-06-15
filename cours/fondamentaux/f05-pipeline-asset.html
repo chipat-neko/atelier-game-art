@@ -382,6 +382,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le blockout au début d'un asset/niveau ?","a":["Valider proportions, échelle et composition avec des formes simples avant de détailler","À texturer en premier","À exporter le modèle final","À créer les UV"],"correct":0,"explain":"Le blockout (greybox) est une maquette grossière : on vérifie l'échelle et la lecture des formes avant d'investir du temps dans le détail. Corriger tôt coûte bien moins cher."},
+  {"q":"Pourquoi crée-t-on un high-poly puis un low-poly ?","a":["Le high-poly porte le détail, qu'on « cuit » (bake) sur le low-poly léger pour le temps réel","Le low-poly est plus détaillé","Les deux sont identiques","Le high-poly s'exporte dans le moteur"],"correct":0,"explain":"Le high-poly (sculpt, millions de polys) est trop lourd pour le jeu. On bake ses détails (normal map, AO) sur un low-poly optimisé : on garde l'apparence sans le coût."},
+  {"q":"Dans quel ordre se placent UV, retopologie et baking ?","a":["Retopologie → UV → baking","Baking → UV → retopologie","UV → baking → retopologie","Les trois en même temps, sans ordre"],"correct":0,"explain":"On retopologise (low-poly propre), on déplie ses UV, puis on bake le high-poly dessus : le baking a besoin des UV du low-poly pour écrire les maps."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Liste, dans l'ordre, les étapes du pipeline pour un asset que tu veux créer (ex. une caisse, un tonneau).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Concept → blockout → high-poly (détails/sculpt) → retopologie (low-poly) → UV → baking → texturing PBR → LOD → export → intégration moteur. Toutes les étapes ne sont pas toujours nécessaires (un asset simple peut sauter le high-poly).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Réalise le blockout d'un petit objet (formes primitives uniquement) en respectant une échelle réelle (ex. une porte de 2 m).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Travaille avec des cubes/cylindres aux bonnes dimensions et un repère d'échelle (un mannequin de 1,8 m). L'objectif est la justesse des proportions, pas le détail&nbsp;: on valide la lecture avant de modéliser finement.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Pour un asset donné, décide quelles étapes tu peux sauter et justifie (budget, style, usage).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Un asset stylisé low-poly peut se passer de high-poly et de baking (la normal map). Un prop hero (vu de près) mérite tout le pipeline. Le choix dépend de la distance de vue, du style et du budget de production.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

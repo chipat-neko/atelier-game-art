@@ -396,6 +396,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que le baking d'une normal map ?","a":["Projeter les détails du high-poly dans une texture appliquée au low-poly","Réduire la taille de la texture","Lisser le maillage","Compresser le modèle"],"correct":0,"explain":"Le baking « cuit » les détails géométriques du high-poly dans une normal map. Appliquée au low-poly, elle simule le relief sans ajouter de polygones."},
+  {"q":"À quoi sert la cage lors d'un bake ?","a":["À contrôler la distance de projection du high vers le low pour éviter les artefacts","À colorer le modèle","À créer les UV","À éclairer la scène"],"correct":0,"explain":"La cage est une enveloppe légèrement gonflée du low-poly qui définit jusqu'où les rayons captent le high-poly. Bien réglée, elle évite les erreurs de projection (skews, coutures)."},
+  {"q":"Différence entre normal map tangent space et object space ?","a":["Tangent space suit la déformation du mesh (animation) ; object space est figé dans le repère de l'objet","Object space anime mieux","Elles sont identiques","Tangent space ne marche qu'en 2D"],"correct":0,"explain":"La tangent space (bleutée) s'adapte aux déformations : c'est le standard pour les objets animés. L'object space est plus précise mais figée, réservée aux objets rigides."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Compare un low-poly avec et sans normal map appliquée (même nombre de polygones). Observe l'illusion de relief.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>La géométrie ne change pas, mais l'éclairage « croit » au relief encodé dans la normal map (vis, rivets, plis). La silhouette reste celle du low-poly&nbsp;: c'est la limite de la technique (le relief disparaît au bord).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Bake une normal map et une AO d'un high-poly simple (un cube biseauté détaillé) sur son low-poly.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Aligne high et low, déplie le low (UV), règle une cage, puis lance le bake (normal + AO) dans Substance Painter, Marmoset ou Blender. Vérifie l'absence d'artefacts (coutures, projections croisées).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Diagnostique un artefact de bake courant (coutures visibles, projection ratée) et propose une correction.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Coutures&nbsp;: augmenter le padding/dilatation, séparer les îlots, ou ajouter des hard edges alignés sur les seams UV. Projection ratée&nbsp;: ajuster la cage ou exploser les pièces (matching par nom) pour éviter qu'une partie capte une autre.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

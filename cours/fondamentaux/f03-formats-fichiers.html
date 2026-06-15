@@ -343,6 +343,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi éviter le JPG pour une texture avec transparence ?","a":["Le JPG ne gère pas le canal alpha et compresse avec pertes","Le JPG est trop lourd","Le JPG n'existe plus","Le JPG est vectoriel"],"correct":0,"explain":"Le JPG n'a pas d'alpha et sa compression destructive crée des artefacts (halos). Pour la transparence et la netteté, on préfère le PNG (ou TGA)."},
+  {"q":"Quel format est conçu pour les données HDR (valeurs > 1.0) ?","a":["EXR","JPG","PNG 8 bits","BMP"],"correct":0,"explain":"L'EXR stocke des valeurs flottantes au-delà de 1.0, indispensables pour l'éclairage réaliste, les rendus et les passes de compositing. PNG/JPG 8 bits sont limités à [0,1]."},
+  {"q":"Quel format 3D ouvert est pensé pour le temps réel et le web ?","a":["glTF / GLB","FBX uniquement","OBJ uniquement","PSD"],"correct":0,"explain":"glTF (« le JPEG de la 3D ») et sa variante binaire GLB transportent géométrie, matériaux PBR et animations dans un format ouvert et léger, idéal pour le temps réel et le web."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Exporte une même image en PNG et en JPG très compressé, puis compare la taille et la qualité (surtout sur les contours nets).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le JPG est plus léger mais montre des artefacts (blocs, halos) sur les aplats et les contours&nbsp;; le PNG est sans perte mais plus lourd. Choix&nbsp;: PNG pour les UI/textures nettes, JPG pour les photos où la perte se voit peu.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Dresse un mini-tableau «&nbsp;format → usage&nbsp;» pour 4 formats image et 3 formats 3D que tu utiliseras.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Exemple&nbsp;: PNG (UI/textures à alpha), TGA (textures jeu), EXR (HDR/rendu), JPG (références photo)&nbsp;; FBX (échange animé courant), glTF/GLB (temps réel/web), USD (pipelines studio). L'important est de justifier chaque choix.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Exporte un cube texturé en glTF (GLB) et ouvre-le dans un autre logiciel (ou un visualiseur glTF) pour vérifier que matériau et UV survivent au transfert.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le GLB embarque géométrie, UV et matériau PBR dans un seul fichier. S'il s'ouvre correctement ailleurs avec sa texture, le pipeline d'échange est bon. Vérifie l'échelle et l'orientation (axes) qui varient parfois entre logiciels.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

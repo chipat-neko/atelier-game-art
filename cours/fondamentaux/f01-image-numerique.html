@@ -307,6 +307,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la différence entre une image raster et une image vectorielle ?","a":["Le raster est une grille de pixels (qualité liée à la résolution) ; le vectoriel décrit des formes mathématiques (redimensionnable sans perte)","Le raster se redimensionne sans perte","Le vectoriel est fait de pixels","Il n'y a aucune différence"],"correct":0,"explain":"Une image raster (PNG, JPG) est une grille de pixels : l'agrandir la pixellise. Le vectoriel (SVG) décrit des formes par des équations, donc il reste net à toute taille."},
+  {"q":"À quoi sert le canal alpha d'une image ?","a":["Encoder la transparence (ou un masque)","Augmenter la résolution","Stocker le nom du fichier","Compresser l'image"],"correct":0,"explain":"L'alpha est un canal supplémentaire : 0 = transparent, 1 (255) = opaque. Il sert au découpage (feuillage), au blending et aux masques."},
+  {"q":"Pourquoi distingue-t-on l'espace sRGB de l'espace linéaire ?","a":["Les calculs d'éclairage doivent se faire en linéaire ; l'affichage final repasse en sRGB","sRGB est plus rapide à calculer","Le linéaire n'existe que pour le son","Ils sont interchangeables sans effet"],"correct":0,"explain":"Le linéaire est proportionnel à l'intensité lumineuse réelle : indispensable pour des calculs d'éclairage corrects. Les couleurs (albedo) sont stockées en sRGB et converties au bon moment."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Ouvre une image PNG et une icône SVG dans un visualiseur, agrandis-les fortement (×8) et compare le résultat. Note ce qui se pixellise.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le PNG (raster) montre des carrés de pixels à l'agrandissement&nbsp;; le SVG (vectoriel) reste net car il est recalculé. Conclusion&nbsp;: choisir le raster pour les photos/textures, le vectoriel pour les logos/UI nettes à toute taille.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée une image PNG 32 bits avec une zone transparente (canal alpha) et vérifie qu'elle se superpose bien sur un fond coloré.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans un éditeur (Krita, Photoshop, GIMP), supprime le fond pour révéler le damier de transparence, puis exporte en PNG (qui supporte l'alpha, contrairement au JPG). Place l'image sur un calque coloré&nbsp;: les zones alpha = 0 laissent voir le fond.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique, pour une texture de couleur (albedo) et une normal map, laquelle doit être importée en sRGB et laquelle en linéaire — et pourquoi.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>L'albedo (couleur perçue) s'importe en sRGB. La normal map (et les maps de données&nbsp;: roughness, metallic, masques) s'importe en <b>linéaire</b> car elle encode des données numériques, pas des couleurs à afficher&nbsp;: une mauvaise conversion fausserait l'éclairage.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
