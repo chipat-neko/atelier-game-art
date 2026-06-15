@@ -173,6 +173,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que sont les Geometry Nodes de Blender ?","a":["Un système procédural à nœuds pour générer/modifier la géométrie de façon non destructive","Un moteur de rendu","Un format d'export","Un outil de peinture"],"correct":0,"explain":"Les Geometry Nodes construisent et transforment la géométrie par un graphe de nœuds : on paramètre tout (instances, distribution, déformation) sans modifier le mesh de base."},
+  {"q":"Quel usage typique des Geometry Nodes ?","a":["Disperser des objets sur une surface (herbe, rochers) via Distribute Points + Instance on Points","Animer un visage","Compresser des textures","Créer un rig"],"correct":0,"explain":"Distribuer des points sur un mesh puis y instancier des objets est un cas classique : végétation, cailloux, rivets… le tout réglable et reproductible."},
+  {"q":"Quel avantage du procédural par rapport au placement manuel ?","a":["On modifie un paramètre et tout se met à jour ; c'est réutilisable et non destructif","C'est toujours plus rapide à rendre","Ça supprime le besoin d'UV","Ça réduit les polygones automatiquement"],"correct":0,"explain":"Changer la densité ou la graine régénère toute la distribution instantanément. On réutilise le même setup sur d'autres objets : gain de temps et flexibilité."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Ajoute un modifier Geometry Nodes à un plan et relie quelques nœuds pour transformer la géométrie (ex. extruder ou subdiviser).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute le modifier ▸ New. Tu obtiens Group Input → Group Output. Insère un nœud (Subdivide, Extrude Mesh…) entre les deux et observe l'effet. Tout reste non destructif et réglable.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Disperse des petits objets (cailloux) sur une surface avec Distribute Points on Faces + Instance on Points.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Distribute Points on Faces (règle la densité) → Instance on Points (branche un objet caillou en instance). Ajoute du Random Rotation/Scale pour varier. Change la densité ou la graine pour régénérer la dispersion.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Expose un paramètre (densité ou échelle) dans l'interface du modifier pour le régler sans ouvrir le graphe.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Relie une valeur au Group Input&nbsp;: elle apparaît comme champ dans le modifier. Tu peux alors ajuster la densité d'herbe directement depuis le panneau, sans toucher aux nœuds — pratique pour réutiliser le setup.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

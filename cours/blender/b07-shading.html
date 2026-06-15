@@ -182,6 +182,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Dans le Shader Editor de Blender, à quoi sert le nœud Principled BSDF ?","a":["C'est le shader PBR tout-en-un (base color, metallic, roughness, normal…)","À éclairer la scène","À déplier les UV","À exporter le modèle"],"correct":0,"explain":"Le Principled BSDF regroupe les entrées PBR standard dans un seul nœud : on y branche couleurs et maps (roughness, metallic, normal) pour un matériau crédible."},
+  {"q":"Comment branche-t-on une texture sur une entrée du shader ?","a":["Avec un nœud Image Texture relié à l'entrée voulue (ex. Base Color)","En tapant la couleur à la main","Avec un modifier","Dans le mode Sculpt"],"correct":0,"explain":"Un nœud Image Texture charge l'image ; on relie sa sortie Color à l'entrée du shader. Pour les maps de données (roughness, normal), on règle l'espace colorimétrique sur Non-Color."},
+  {"q":"Pourquoi régler une normal map en « Non-Color » et la passer par un nœud Normal Map ?","a":["Elle encode des données, pas une couleur : la traiter en couleur fausserait le relief","Pour la rendre plus claire","Pour l'animer","Ce n'est pas nécessaire"],"correct":0,"explain":"La normal map contient des vecteurs encodés. En Non-Color (linéaire) + nœud Normal Map, Blender l'interprète correctement ; en sRGB, le relief serait faux."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un matériau avec le Principled BSDF, règle sa couleur de base et sa rugosité, et observe en aperçu rendu.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans le Shading workspace, le Principled BSDF est déjà là. Change Base Color et Roughness, passe le viewport en Rendered (Eevee/Cycles) pour voir l'effet en direct.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Branche une texture Base Color et une Roughness map via des nœuds Image Texture (avec le bon espace colorimétrique).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Base Color en sRGB ; Roughness en Non-Color. Ajoute Shift+A ▸ Texture ▸ Image Texture pour chaque, relie-les aux bonnes entrées. Le Node Wrangler (Ctrl+T) accélère le branchement coordonnées/mapping.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute une normal map correctement (Non-Color + nœud Normal Map) et vérifie le relief sous un éclairage mobile.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Image Texture (Non-Color) → nœud Normal Map → entrée Normal du Principled. Déplace une lampe&nbsp;: le relief doit réagir de façon cohérente. Si le creux/bosse est inversé, vérifie la convention (OpenGL/DirectX) de la map.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

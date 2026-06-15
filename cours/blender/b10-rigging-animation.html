@@ -165,6 +165,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce qu'une armature dans Blender ?","a":["L'objet qui contient le squelette (les bones) servant à déformer un mesh","Une texture","Un modifier de rendu","Un type de lumière"],"correct":0,"explain":"L'armature regroupe les bones. Une fois le mesh « parenté » à l'armature (skinning), bouger les bones en Pose Mode déforme la peau pour l'animer."},
+  {"q":"À quoi sert le weight paint sur un personnage rigué ?","a":["Régler l'influence de chaque bone sur les sommets pour des déformations propres","Colorer la texture finale","Définir les UV","Choisir le moteur de rendu"],"correct":0,"explain":"Le weight paint attribue à chaque sommet un poids par bone. Des poids bien réglés évitent que la peau s'effondre ou se pince aux articulations."},
+  {"q":"Comment crée-t-on une animation de base en Pose Mode ?","a":["En posant des keyframes à différentes frames (le moteur interpole entre elles)","En sculptant","En changeant le matériau","En exportant en FBX"],"correct":0,"explain":"On pose le rig à la frame 1 (keyframe), puis une autre pose à la frame 20 (keyframe). Blender interpole le mouvement entre les clés ; on règle le rythme avec les courbes."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée une armature simple (2–3 bones) et parente-la à un cylindre avec poids automatiques.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Add ▸ Armature, extrude des bones (E), positionne-les dans le cylindre. Sélectionne le mesh puis l'armature, Ctrl+P ▸ With Automatic Weights. Passe en Pose Mode pour tester.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Corrige les poids près de l'articulation pour une flexion propre (Weight Paint).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>En Weight Paint, sélectionne le bone concerné&nbsp;: le rouge = forte influence, le bleu = nulle. Lisse la transition autour du « coude » pour que la flexion conserve le volume au lieu de se pincer.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Anime une flexion sur 20 frames avec 2–3 keyframes et lis le résultat en boucle.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pose Mode, frame 1 : pose neutre, I ▸ insère une keyframe (Rotation). Frame 20 : pose fléchie, keyframe. Lis l'animation. Ajuste le timing dans le Graph Editor / Dope Sheet pour un mouvement moins linéaire.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

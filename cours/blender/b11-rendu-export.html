@@ -191,6 +191,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Avant d'exporter un asset vers un moteur, quelle préparation est essentielle ?","a":["Appliquer les transformations (échelle/rotation) et vérifier les normales/UV","Augmenter la résolution du rendu","Supprimer les matériaux","Activer Cycles"],"correct":0,"explain":"Ctrl+A (Apply Transforms) évite les surprises d'échelle dans le moteur. On vérifie aussi les normales (vers l'extérieur) et la présence d'UV avant l'export FBX/glTF."},
+  {"q":"Quel format choisir pour un export temps réel ouvert ?","a":["glTF / GLB","EXR","une image PNG","un .blend"],"correct":0,"explain":"glTF/GLB est l'export ouvert pensé pour le temps réel : il porte géométrie, UV, matériaux PBR et animations. FBX reste très utilisé pour l'échange (notamment animé)."},
+  {"q":"Quelle est la différence entre un rendu Eevee et un rendu Cycles pour une présentation ?","a":["Eevee est rapide (temps réel) ; Cycles est plus réaliste (path tracing) mais plus lent","Cycles est plus rapide","Eevee ne gère pas la lumière","Ils donnent un résultat identique"],"correct":0,"explain":"Pour une image de portfolio réaliste, Cycles excelle (lumière physique) au prix du temps. Eevee suffit pour des aperçus rapides ou un style proche du jeu."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Mets en place une caméra et un éclairage simple (3 points), puis fais un rendu Eevee de ton objet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Place une key light (principale), une fill (douce, opposée) et une rim (contre-jour) pour détacher l'objet du fond. Cadre avec la caméra (Numpad 0), puis F12 pour le rendu Eevee.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Exporte ton asset en glTF (GLB) après avoir appliqué les transformations, et vérifie-le dans un viewer.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ctrl+A ▸ All Transforms, vérifie les UV/normales, File ▸ Export ▸ glTF 2.0 (Format GLB). Ouvre le fichier dans un viewer glTF&nbsp;: l'échelle, l'orientation et le matériau doivent être corrects.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compare un même plan rendu en Eevee et en Cycles, et note les différences (reflets, ombres, GI) et le temps de calcul.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Cycles montre des ombres douces, des reflets et une illumination indirecte plus crédibles, mais met plus de temps. Eevee approxime (SSR, ombres) en temps réel. Choisis selon l'objectif&nbsp;: portfolio réaliste vs aperçu rapide.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

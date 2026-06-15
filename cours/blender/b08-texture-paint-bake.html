@@ -173,6 +173,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que faut-il avant de pouvoir peindre une texture (Texture Paint) sur un objet ?","a":["Un dépliage UV et une image texture assignée au matériau","Un rig","Un moteur de rendu Cycles uniquement","Aucune préparation"],"correct":0,"explain":"La peinture de texture s'applique dans l'espace UV : il faut des UV propres et une image texture cible créée/assignée. Sinon, rien à peindre."},
+  {"q":"Dans Blender, sur quoi écrit un bake « Selected to Active » ?","a":["Sur l'image texture du low-poly (objet actif), à partir du high-poly sélectionné","Sur le high-poly","Sur la scène entière","Sur un fichier audio"],"correct":0,"explain":"On sélectionne le high-poly puis le low-poly (actif), et le bake projette les détails dans l'image du low-poly (normal, AO…). Il faut une image cible et des UV."},
+  {"q":"Pourquoi prévoir une marge (padding/dilatation) lors d'un bake de texture ?","a":["Pour éviter les coutures noires aux bords des îlots UV (mipmaps, filtrage)","Pour réduire la taille du fichier","Pour ajouter des polygones","Pour accélérer le rendu"],"correct":0,"explain":"Le filtrage et les mipmaps peuvent « déborder » au bord des îlots. Une marge étend les pixels autour des îlots pour éviter des liserés sombres visibles en jeu."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée une image texture, assigne-la, et peins quelques couleurs sur ton objet en mode Texture Paint.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Déplie l'objet, crée une image (Texture Paint workspace ▸ New Image), passe en Texture Paint et peins. Les coups de pinceau s'appliquent sur l'UV&nbsp;; sauvegarde l'image (elle n'est pas dans le .blend par défaut).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Bake une AO (Ambient Occlusion) sur l'image texture de ton objet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>En Cycles, crée une image cible, sélectionne le nœud Image Texture, Render Properties ▸ Bake ▸ Ambient Occlusion ▸ Bake. Le résultat assombrit les creux&nbsp;: pratique comme calque de saleté/ombrage.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Bake une normal map d'un high-poly vers le low-poly avec « Selected to Active » et une marge correcte.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Aligne high et low, image cible Non-Color sur le low, coche Selected to Active avec une Extrusion/Cage adaptée, type Normal. Augmente la marge (Margin) pour éviter les coutures. Vérifie le résultat sur le low-poly seul.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

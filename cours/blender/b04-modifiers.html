@@ -182,6 +182,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est l'intérêt d'un modifier (non destructif) ?","a":["Il modifie l'apparence sans altérer le maillage de base, et reste réglable à tout moment","Il supprime des polygones définitivement","Il ne sert qu'au rendu","Il remplace les UV"],"correct":0,"explain":"Un modifier (Subdivision, Mirror, Array…) s'applique « par-dessus » la géométrie sans la détruire : on peut l'ajuster ou le retirer. On le « bake » (Apply) seulement à la fin si besoin."},
+  {"q":"Que fait le modifier Mirror ?","a":["Refléter la géométrie par symétrie : on modélise une moitié, l'autre suit","Doubler le nombre de polygones aléatoirement","Lisser la surface","Ajouter de la couleur"],"correct":0,"explain":"Mirror reflète le mesh selon un axe : idéal pour les objets symétriques (personnages, véhicules). On sculpte une moitié et l'autre se met à jour en miroir."},
+  {"q":"À quoi sert le modifier Subdivision Surface ?","a":["Lisser et densifier la surface pour des formes organiques arrondies","Réduire le maillage","Exporter en FBX","Créer les UV"],"correct":0,"explain":"La Subdivision Surface subdivise et lisse le mesh : on contrôle les arêtes dures avec des boucles de support. C'est la base de la modélisation organique haute qualité."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Applique un modifier Subdivision Surface à un cube et observe l'arrondi. Joue avec le niveau de subdivision.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute le modifier (Ctrl+1 raccourci). Le cube devient une sphère lissée. Ajoute des Loop Cuts près des arêtes (support loops) pour durcir certains coins&nbsp;: tu contrôles ainsi où la surface reste vive.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modélise une moitié d'objet symétrique avec un modifier Mirror, puis vérifie la jointure au centre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Active Mirror (axe X), coche « Clipping » pour que les sommets du centre se collent à l'axe sans trou. Modélise une moitié&nbsp;; l'autre suit. Pratique pour tout objet symétrique.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Combine deux modifiers (ex. Array + Curve) pour générer une rampe ou une chaîne, et comprends l'ordre de la pile.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Array duplique l'objet en série&nbsp;; Curve le plie le long d'une courbe. L'ordre dans la pile compte&nbsp;: Array avant Curve donne une chaîne suivant le tracé. Ajuste le décalage de l'Array et la longueur de la courbe.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

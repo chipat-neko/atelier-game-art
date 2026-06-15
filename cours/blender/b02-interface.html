@@ -179,6 +179,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi servent les raccourcis G, R, S dans le viewport ?","a":["Déplacer (Grab), tourner (Rotate), redimensionner (Scale)","Enregistrer, recharger, supprimer","Trois modes de rendu","Trois moteurs"],"correct":0,"explain":"G/R/S sont les transformations de base. On peut les contraindre à un axe en tapant X, Y ou Z juste après, ou saisir une valeur au clavier."},
+  {"q":"Quelle est la différence entre le mode Object et le mode Edit ?","a":["Object manipule l'objet entier ; Edit modifie sa géométrie (vertices, edges, faces)","Edit sert au rendu","Object n'existe pas","Ils sont identiques"],"correct":0,"explain":"On bascule avec Tab. Le mode Object déplace/duplique des objets entiers ; le mode Edit travaille la topologie (extrude, bevel, loop cut)."},
+  {"q":"Pourquoi Blender propose-t-il des « Workspaces » (Layout, Sculpting, UV Editing…) ?","a":["Ce sont des dispositions d'écran préréglées pour chaque tâche","Ce sont des moteurs de rendu","Ce sont des formats d'export","Ce sont des add-ons"],"correct":0,"explain":"Les Workspaces (onglets en haut) réorganisent l'interface selon la tâche : modélisation, sculpt, UV, shading, animation… On gagne du temps sans tout reconfigurer."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Navigue dans le viewport (orbite, pan, zoom) et bascule entre les Workspaces Layout et Shading.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Clic-milieu = orbite, Shift+clic-milieu = pan, molette = zoom (ou le gizmo de navigation en haut à droite). Les onglets de Workspace en haut changent toute la disposition selon la tâche.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Bascule en mode Edit sur un cube et déplace un seul sommet, une arête, puis une face.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Tab pour entrer en Edit, puis 1/2/3 pour le mode vertex/edge/face. Sélectionne un élément et utilise G pour le déplacer. C'est la base de toute la modélisation.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Personnalise un espace de travail (divise une zone, change un éditeur) et enregistre-le comme fichier de démarrage si tu le souhaites.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Tire le coin d'une zone pour la diviser, change son type d'éditeur (menu en haut à gauche de la zone). File ▸ Defaults ▸ Save Startup File pour conserver ta disposition au prochain lancement.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

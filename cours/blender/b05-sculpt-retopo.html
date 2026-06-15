@@ -178,6 +178,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le DynaMesh / Remesh pendant le sculpt ?","a":["Redistribuer la géométrie pour sculpter sans étirer ni manquer de polygones","Exporter le modèle","Créer les UV","Réduire la définition finale"],"correct":0,"explain":"Quand on étire une forme, les polygones s'espacent. Le Remesh recrée une densité homogène pour continuer à ajouter du détail proprement."},
+  {"q":"Pourquoi retopologiser un sculpt ?","a":["Obtenir un low-poly propre (quads, edge flow) utilisable en jeu et pour l'animation","Le rendre plus lourd","Changer sa couleur","Ajouter des particules"],"correct":0,"explain":"Le sculpt est trop dense pour le temps réel et mal organisé pour l'animation. La retopologie reconstruit un maillage léger et propre par-dessus."},
+  {"q":"Que fait-on après la retopologie pour récupérer les détails du sculpt ?","a":["On déplie les UV du low-poly puis on bake (normal, AO) depuis le high-poly","On supprime le sculpt","On ré-importe le sculpt dans le moteur","Rien"],"correct":0,"explain":"Avec les UV du low-poly, on bake les détails du high-poly (normal map, AO) : le low-poly affiche alors le relief du sculpt sans son coût."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Sculpte un rocher à partir d'une sphère et utilise le Remesh quand le maillage s'étire.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Brosses Grab (forme), Clay Strips (matière), Crease (fissures), Smooth (adoucir). Quand les détails « bavent », applique un Remesh (Voxel) pour redonner de la densité homogène.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Retopologise ton rocher en un low-poly simple (manuellement ou avec un Remesh basse résolution + nettoyage).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pour un rocher, un Remesh basse résolution + Decimate peut suffire (pas besoin d'un edge flow d'animation). Pour un personnage, on retopologise à la main (outils Poly Build / add-ons) en suivant les déformations.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Déplie les UV du low-poly et bake une normal map depuis le high-poly sculpté.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>UV unwrap du low-poly, place high et low au même endroit, configure un bake « Selected to Active » (Normal) avec une distance d'extrusion (cage). Applique la normal map au low-poly et compare au sculpt.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

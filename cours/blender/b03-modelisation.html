@@ -180,6 +180,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait l'opération Extrude (E) ?","a":["Prolonger une sélection (face/arête) en créant de la nouvelle géométrie","Supprimer une face","Lisser le maillage","Déplier les UV"],"correct":0,"explain":"Extrude tire une face/arête en créant de nouveaux polygones reliés : c'est l'outil central pour faire grandir une forme (un bras à partir d'un torse, par ex.)."},
+  {"q":"À quoi sert un Loop Cut (Ctrl+R) ?","a":["Ajouter une boucle d'arêtes pour plus de contrôle/détail","Supprimer une boucle","Exporter le modèle","Changer la couleur"],"correct":0,"explain":"Le Loop Cut insère une boucle d'arêtes le long d'une surface : on l'utilise pour ajouter de la définition là où il en faut (et contrôler une subdivision/un bevel)."},
+  {"q":"Pourquoi appliquer ses transformations (Ctrl+A) avant export ?","a":["Pour que l'échelle/rotation soient « cuites » et éviter des problèmes dans le moteur","Pour supprimer les UV","Pour réduire les polygones","Ce n'est jamais utile"],"correct":0,"explain":"Une échelle non appliquée peut fausser les modifiers, la physique ou l'import moteur. Ctrl+A ▸ Apply Scale/Rotation remet l'objet « propre » (scale 1, rotation 0)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>À partir d'un cube, modélise une forme simple (une chaise basique) avec Extrude, Loop Cut et Bevel.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Extrude les pieds depuis le dessous d'un plateau, ajoute des Loop Cuts pour le dossier, et un léger Bevel sur les arêtes vives pour accrocher la lumière. Travaille en quads.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modélise un objet du quotidien (tasse, clé) en gardant une topologie en quads propre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pour la tasse&nbsp;: un cylindre, intérieur creusé par extrude vers le bas, anse extrudée depuis des faces latérales. Surveille l'edge flow et évite les n-gons sur les zones courbes.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Nettoie ton modèle&nbsp;: supprime les doublons de sommets, recalcule les normales et applique les transformations.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>En Edit&nbsp;: M ▸ Merge by Distance (doublons), Shift+N (recalcul des normales vers l'extérieur). En Object&nbsp;: Ctrl+A ▸ All Transforms. Un modèle propre s'exporte et s'anime bien mieux.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

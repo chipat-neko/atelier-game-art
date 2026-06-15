@@ -171,6 +171,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment marque-t-on une couture (seam) dans Blender ?","a":["Sélectionner des arêtes puis Edge ▸ Mark Seam","Appuyer sur S","Avec le modifier Mirror","En mode Object"],"correct":0,"explain":"En Edit, on sélectionne les arêtes de découpe et Mark Seam (clic droit ou menu Edge). L'unwrap se fait ensuite le long de ces coutures."},
+  {"q":"Que révèle une texture damier (checker) sur un modèle déplié ?","a":["Les étirements et les variations de texel density","Le nombre de polygones","La couleur finale","Les normales"],"correct":0,"explain":"Des carrés déformés = étirement ; des carrés de tailles différentes = texel density inégale. Le checker est l'outil de diagnostic de l'unwrap."},
+  {"q":"Pourquoi bien packer les îlots UV dans l'espace 0–1 ?","a":["Pour maximiser la résolution de texture utile et éviter le gaspillage","Pour réduire les polygones","Pour accélérer l'animation","Pour supprimer les seams"],"correct":0,"explain":"L'espace UV inutilisé = des pixels de texture gâchés. Un packing serré (sans chevauchement) donne plus de netteté à résolution égale."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Déplie un cube en marquant des seams, puis applique une texture damier pour vérifier.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Marque les seams (ex. en croix), U ▸ Unwrap, ouvre l'UV Editor. Applique un material damier&nbsp;: les carrés doivent être réguliers et non étirés sur toutes les faces.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déplie un objet plus complexe (la tasse modélisée plus tôt) en plaçant les seams dans des zones peu visibles.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Cache les seams sous l'anse ou à l'intérieur. Sépare l'anse en îlot propre. Vérifie au checker, puis relax/aligne les îlots pour limiter l'étirement.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Packe les îlots efficacement et uniformise la texel density entre les parties.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>UV ▸ Pack Islands (ajuste la marge). Pour la texel density, un add-on (TexTools) ou l'option d'échelle moyenne aide à mettre tous les îlots à la même densité, pour une netteté homogène.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
