@@ -329,6 +329,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel outil Unity sert à identifier les goulots d'étranglement (CPU/GPU/mémoire) ?","a":["Le Profiler","L'Inspector","Le Package Manager","Le Shader Graph"],"correct":0,"explain":"Le Profiler montre le temps passé par image (CPU, rendu, GC, physique…). On l'utilise pour mesurer AVANT d'optimiser, plutôt que de deviner."},
+  {"q":"Comment réduire les draw calls dans Unity ?","a":["Partager des matériaux/atlas, utiliser le batching et le GPU instancing","Augmenter la résolution des textures","Ajouter des lumières","Désactiver le Profiler"],"correct":0,"explain":"Moins de matériaux distincts = plus de batching ; les atlas regroupent les textures ; le GPU instancing dessine de nombreuses copies en un appel. Tout cela soulage le CPU."},
+  {"q":"Pourquoi mettre en place des LOD dans une scène 3D dense ?","a":["Afficher des versions simplifiées au loin pour économiser des polygones sans perte visible","Pour augmenter la qualité de près uniquement","Pour ajouter des sons","Cela n'aide pas les perfs"],"correct":0,"explain":"Les LOD réduisent la charge géométrique des objets lointains, là où le détail n'est pas perceptible. Avec l'occlusion culling, on évite aussi de dessiner ce qui est caché."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Ouvre le Profiler sur une scène et identifie si le coût dominant est côté CPU ou GPU.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Window ▸ Analysis ▸ Profiler. Regarde les pics par image et la répartition (Rendering, Scripts, GC). Beaucoup de draw calls/temps CPU pointent vers du batching à améliorer ; un GPU saturé pointe vers shaders/overdraw.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Réduis les draw calls d'une scène en partageant des matériaux et en activant le GPU instancing.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Regroupe les objets sur un même matériau (atlas si besoin), coche « Enable GPU Instancing » sur le matériau d'un objet répété. Mesure les draw calls avant/après dans le Frame Debugger.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets en place des LOD Groups et l'occlusion culling sur une scène, et compare les perfs.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute un LOD Group à des objets (LOD0/1/2) et règle les distances de bascule. Configure l'Occlusion Culling (bake) pour ne pas dessiner les objets cachés. Le Profiler doit montrer moins de tris/draw calls rendus.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

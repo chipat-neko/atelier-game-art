@@ -358,6 +358,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la différence entre éclairage en temps réel et baked (précalculé) ?","a":["Le temps réel se recalcule à chaque frame ; le baked est cuit dans des lightmaps (statique, peu coûteux)","Le baked se recalcule chaque frame","Le temps réel est gratuit en perf","Il n'y a aucune différence"],"correct":0,"explain":"Le baked précalcule l'éclairage des objets statiques dans des lightmaps : très peu coûteux à l'affichage mais figé. Le temps réel s'adapte (jour/nuit, objets mobiles) au prix de performances."},
+  {"q":"À quoi servent les Light Probes ?","a":["Apporter l'éclairage indirect (GI) aux objets dynamiques se déplaçant dans une scène baked","Éclairer le ciel","Compresser les textures","Créer des ombres dures"],"correct":0,"explain":"Les objets mobiles ne sont pas dans les lightmaps. Les Light Probes échantillonnent l'éclairage indirect en points de l'espace pour que les objets dynamiques s'intègrent à l'ambiance baked."},
+  {"q":"Pourquoi marquer un objet « Static » pour le baking ?","a":["Le baking ne calcule l'éclairage cuit que pour les objets qui ne bougent pas","Pour le rendre invisible","Pour doubler ses polygones","Pour l'animer"],"correct":0,"explain":"Le baking suppose que la géométrie ne bouge pas. On marque les objets fixes « Contribute GI / Static » pour qu'ils soient inclus dans les lightmaps."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Éclaire une petite scène avec une Directional Light (soleil) et observe l'effet de l'angle sur les ombres.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>La Directional Light simule le soleil (direction, pas de position). Tourne-la&nbsp;: les ombres s'allongent (matin/soir) ou se raccourcissent (midi). Règle l'intensité et la couleur pour l'ambiance.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Marque les objets statiques, configure le Lightmapping et lance un bake. Compare avant/après.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Coche « Contribute GI » sur les objets fixes, ouvre Lighting ▸ règle la résolution de lightmap ▸ Generate Lighting. Tu obtiens des ombres douces et de la GI cuites, peu coûteuses à l'affichage.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un objet mobile et utilise des Light Probes pour qu'il s'intègre à l'éclairage baked.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Place un Light Probe Group couvrant la zone de déplacement. Sans probes, l'objet dynamique paraît « détaché » (mal éclairé). Avec, il capte la GI ambiante locale et s'intègre naturellement.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

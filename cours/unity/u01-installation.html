@@ -294,6 +294,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert Unity Hub ?","a":["Gérer les versions de Unity, les modules et les projets depuis un point central","À écrire le code","À faire le rendu final","À exporter des textures"],"correct":0,"explain":"Unity Hub installe et gère plusieurs versions de l'éditeur, leurs modules (plateformes cibles) et la liste des projets. On garde ainsi un projet sur une version précise."},
+  {"q":"Pourquoi privilégier une version LTS de Unity pour un projet sérieux ?","a":["Elle est stable et supportée longtemps (corrections sans nouvelles cassures)","Elle a plus de fonctionnalités expérimentales","Elle est gratuite contrairement aux autres","Elle compile plus vite"],"correct":0,"explain":"Les versions LTS (Long Term Support) reçoivent des correctifs sans bouleversements : idéales pour un projet qui s'étale dans le temps, contrairement aux versions Tech."},
+  {"q":"Que choisit-on à la création d'un projet selon le rendu visé ?","a":["Un template de pipeline (Built-in, URP ou HDRP)","La résolution de l'écran","Le langage de script","La couleur de l'éditeur"],"correct":0,"explain":"Le template définit le render pipeline (URP pour large compatibilité, HDRP pour le haut de gamme PC/console, Built-in historique). Ce choix oriente tout le rendu (détaillé en U3)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Installe Unity Hub, ajoute une version LTS avec le module de ta plateforme, et crée un projet URP vide.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans Hub ▸ Installs ▸ ajoute une LTS (coche le build support voulu). Puis Projects ▸ New ▸ template 3D (URP). Vérifie que la scène s'ouvre et que tu peux entrer en Play.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Repère où changer les Project Settings et où se trouve le dossier Assets sur le disque.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Edit ▸ Project Settings (qualité, graphics, input…). Le dossier Assets/ contient tes ressources (versionnable) ; Library/ est régénérable (à exclure du versioning). Garde une arborescence Assets propre dès le départ.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un .gitignore adapté à Unity et fais un premier commit propre du projet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Utilise un .gitignore Unity (exclut Library/, Temp/, Obj/, Build/…). Active « Visible Meta Files » et le mode de sérialisation texte (Force Text) pour des diffs lisibles. Commit Assets/ + ProjectSettings/.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

@@ -359,6 +359,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Où règle-t-on l'échelle, les normales ou la génération de colliders d'un modèle importé ?","a":["Dans les Import Settings du modèle (Inspector)","Dans le code","Dans la fenêtre Game","Dans les Build Settings"],"correct":0,"explain":"Sélectionner un .fbx/.glb affiche ses Import Settings : échelle, normales, tangentes, matériaux, rig, animations, génération de collider. On y règle l'import sans toucher au fichier source."},
+  {"q":"Pourquoi régler une texture importée comme « Normal Map » dans ses Import Settings ?","a":["Pour qu'Unity l'interprète correctement (encodage/espace linéaire) et la traite comme une map de relief","Pour la rendre plus colorée","Pour réduire sa résolution","Pour l'animer"],"correct":0,"explain":"Le type Normal Map indique à Unity de traiter l'image comme des données de relief (non-color/linéaire), sinon l'éclairage serait faux."},
+  {"q":"Quel réglage d'import réduit la mémoire d'une texture sur la plateforme cible ?","a":["La compression (et le Max Size) dans les Import Settings","Le nom du fichier","Le format de scène","La caméra"],"correct":0,"explain":"On choisit un format de compression (BCn/ASTC selon plateforme) et un Max Size adapté : cela réduit fortement la mémoire et la taille du build, avec un compromis qualité."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Importe un modèle (FBX ou glTF) et vérifie son échelle et son orientation dans la scène.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Glisse le fichier dans Assets, place une instance, compare sa taille à un objet de référence (un cube de 1 m). Ajuste le Scale Factor des Import Settings si l'échelle est fausse (souvent un facteur 100 entre logiciels).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Importe une normal map, règle son type sur Normal Map, et branche-la dans un matériau.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans les Import Settings de la texture, Texture Type = Normal map. Crée un matériau, branche la Base Color (sRGB) et la Normal Map. Bouge une lumière&nbsp;: le relief doit réagir correctement.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Optimise une texture lourde via compression et Max Size, et compare la mémoire avant/après.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Réduis le Max Size (ex. 4096 → 1024) et choisis une compression adaptée à la plateforme. L'aperçu en bas de l'Inspector indique la taille mémoire&nbsp;: compare avant/après. Vérifie que la perte de qualité reste acceptable.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

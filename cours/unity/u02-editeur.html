@@ -399,6 +399,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est le modèle de composition de Unity ?","a":["GameObject + Components : on assemble des comportements sur des objets","Une seule grosse classe par scène","Tout est une texture","Des nœuds visuels uniquement"],"correct":0,"explain":"Un GameObject est un conteneur ; ses Components (Transform, Mesh Renderer, Collider, scripts…) lui donnent ses capacités. On compose le gameplay en empilant des composants."},
+  {"q":"À quoi sert la fenêtre Inspector ?","a":["Voir et régler les Components de l'objet sélectionné","Lister les fichiers du projet","Afficher la console d'erreurs","Lancer le build"],"correct":0,"explain":"L'Inspector affiche les composants de l'objet sélectionné et leurs propriétés réglables (dont les champs publics/SerializeField des scripts)."},
+  {"q":"Quelle est la différence entre la fenêtre Scene et la fenêtre Game ?","a":["Scene = édition/navigation libre ; Game = ce que voit la caméra du joueur","Scene est en 2D, Game en 3D","Game sert à modéliser","Aucune différence"],"correct":0,"explain":"La vue Scene sert à construire et naviguer librement ; la vue Game montre le rendu à travers la caméra active, c'est-à-dire l'expérience finale du joueur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un GameObject (cube), observe ses Components dans l'Inspector et ajoute-lui un Rigidbody.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>GameObject ▸ 3D Object ▸ Cube. L'Inspector montre Transform + Mesh Renderer + Collider. Add Component ▸ Rigidbody&nbsp;: en Play, le cube tombe (physique). Tu viens d'ajouter une capacité par composition.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Organise une petite scène avec une hiérarchie parent/enfant et observe l'effet sur le Transform.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Glisse des objets sous un parent dans la Hierarchy. Déplacer/tourner le parent affecte les enfants (transform local vs monde). Utile pour grouper (ex. un véhicule et ses roues).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un Prefab à partir d'un objet, place-en plusieurs instances, puis modifie le Prefab et observe la propagation.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Glisse l'objet de la Hierarchy vers le Project&nbsp;: il devient un Prefab. Place plusieurs instances. Édite le Prefab (double-clic)&nbsp;: les changements se propagent à toutes les instances&nbsp;— base de la réutilisation.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

@@ -366,6 +366,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que Shader Graph dans Unity ?","a":["Un éditeur visuel à nœuds pour créer des shaders sans écrire de code","Un moteur de rendu","Un format de texture","Un outil d'animation"],"correct":0,"explain":"Shader Graph permet de construire des shaders en reliant des nœuds (textures, maths, masques). Idéal pour des effets personnalisés (dissolve, eau) sans HLSL."},
+  {"q":"Quel est l'intérêt d'instancier un matériau (variantes d'un même shader) ?","a":["Partager un même shader avec des réglages différents, sans dupliquer la logique","Réduire le nombre de polygones","Créer des UV","Supprimer les textures"],"correct":0,"explain":"Plusieurs matériaux peuvent dériver d'un même shader avec des paramètres distincts (couleur, rugosité). On garde une logique unique et des variantes légères."},
+  {"q":"Pourquoi partager un matériau entre plusieurs objets améliore les perfs ?","a":["Cela favorise le batching et réduit les draw calls","Cela augmente la résolution","Cela double la mémoire","Cela n'a aucun effet"],"correct":0,"explain":"Des objets qui partagent le même matériau peuvent être regroupés (batching), ce qui réduit les draw calls — un levier d'optimisation important (voir U11)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un matériau URP/Lit, règle Base Color, Metallic et Smoothness, et applique-le à un objet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Assets ▸ Create ▸ Material. Choisis le shader URP/Lit. Règle la couleur, Metallic (0 pour non-métal) et Smoothness (inverse de la rugosité). Glisse-le sur l'objet et observe sous un éclairage.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un petit Shader Graph (ex. effet de Fresnel pour un contour lumineux) et applique-le.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Create ▸ Shader Graph ▸ URP. Ajoute un nœud Fresnel Effect relié à l'Emission. Crée un matériau depuis ce shader et applique-le&nbsp;: tu obtiens un « rim light » paramétrable.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée plusieurs variantes d'un même matériau et vérifie l'impact du partage de matériau sur les draw calls.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Duplique un matériau pour des teintes différentes&nbsp;; à l'inverse, regroupe des objets sur un même matériau et observe les draw calls (Stats / Frame Debugger). Moins de matériaux distincts = plus de batching possible.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

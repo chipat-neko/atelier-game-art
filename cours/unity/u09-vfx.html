@@ -331,6 +331,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la différence entre le Built-in Particle System (Shuriken) et le VFX Graph ?","a":["Shuriken est simulé sur CPU (modeste mais simple) ; VFX Graph est simulé sur GPU (très grand nombre de particules)","Shuriken est sur GPU","VFX Graph ne gère pas les particules","Ils sont identiques"],"correct":0,"explain":"Shuriken (CPU) convient aux effets courants et est très accessible. Le VFX Graph (GPU, à nœuds) gère des millions de particules pour des effets spectaculaires, sur plateformes compatibles."},
+  {"q":"Qu'est-ce qui donne le réalisme d'un effet de particules ?","a":["Les courbes d'évolution dans le temps (taille, couleur, opacité, vitesse)","Le nombre de polygones du sol","La résolution de l'écran","Le nom du préfab"],"correct":0,"explain":"Faire varier taille, opacité, couleur et vitesse au fil de la durée de vie (courbes) est ce qui rend fumée, feu ou étincelles crédibles, plus que le nombre brut de particules."},
+  {"q":"Pourquoi les particules-sprites font-elles souvent face à la caméra (billboard) ?","a":["Pour paraître volumétriques à faible coût quel que soit l'angle de vue","Pour réduire la mémoire","Pour créer des collisions","Pour les éclairer"],"correct":0,"explain":"Le billboarding oriente le quad vers la caméra : la fumée/le halo semble avoir du volume sous tous les angles, sans géométrie coûteuse."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un Particle System (Shuriken) de fumée simple en réglant émission, durée de vie et taille.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>GameObject ▸ Effects ▸ Particle System. Faible Rate of Emission, Start Lifetime longue, Size over Lifetime croissante, Color over Lifetime qui s'estompe, un peu de Noise pour la turbulence. Tu obtiens une fumée crédible.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un effet d'impact (burst d'étincelles) avec gravité et courte durée de vie.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Émission en Burst (un coup), Start Speed élevée, Gravity Modifier > 0, Lifetime courte, trails optionnels. L'effet doit être bref et nerveux, à déclencher au moment d'une collision.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Si ton projet le permet, recrée un effet dense (poussière, magie) avec le VFX Graph et compare le nombre de particules possible.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Installe le package Visual Effect Graph (URP/HDRP). Le graphe (Spawn → Initialize → Update → Output) gère bien plus de particules que Shuriken grâce au GPU. Compare les FPS à nombre élevé&nbsp;: l'écart est net.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

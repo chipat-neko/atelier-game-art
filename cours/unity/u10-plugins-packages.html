@@ -333,6 +333,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le Package Manager de Unity ?","a":["Installer et gérer des packages officiels et tiers (URP, Input System, Cinemachine…)","Compiler le jeu","Créer des matériaux","Faire le rendu"],"correct":0,"explain":"Le Package Manager gère les modules versionnés du projet : packages Unity (URP, Cinemachine, Input System) et registres tiers. Les versions sont notées dans le manifest pour la reproductibilité."},
+  {"q":"Quelle précaution avant d'installer un asset/plugin de l'Asset Store ?","a":["Vérifier compatibilité (version Unity, pipeline) et licence","Le renommer","Le compresser","Désactiver le rendu"],"correct":0,"explain":"Un asset peut être incompatible avec ta version d'Unity ou ton pipeline (URP/HDRP), et sa licence encadre l'usage. On vérifie ces points avant d'intégrer du tiers."},
+  {"q":"Pourquoi privilégier des packages bien maintenus ?","a":["Pour bénéficier des correctifs et éviter qu'un plugin abandonné casse à la prochaine version d'Unity","Pour réduire la taille des textures","Pour augmenter les FPS automatiquement","Aucune raison"],"correct":0,"explain":"Un plugin non maintenu peut casser lors d'une mise à jour d'Unity. On préfère des dépendances actives, et on note les versions pour ne pas casser le projet."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Ouvre le Package Manager, installe un package officiel utile (ex. Cinemachine) et repère où il apparaît.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Window ▸ Package Manager ▸ Unity Registry ▸ Cinemachine ▸ Install. Il ajoute des composants (Virtual Camera) au menu. Vérifie la version installée&nbsp;: elle est consignée dans Packages/manifest.json.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Mets en place une Cinemachine Virtual Camera qui suit un objet, et teste en Play.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute une Virtual Camera, assigne Follow/Look At sur ton objet. Cinemachine prend le contrôle de la caméra principale et gère le suivi/lissage sans code. Ajuste le damping pour un mouvement fluide.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Évalue un asset de l'Asset Store (compatibilité, licence, maintenance) avant de décider de l'utiliser.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Vérifie&nbsp;: versions Unity supportées, pipeline (URP/HDRP), date de dernière mise à jour, avis, et licence (usage commercial ?). Un asset récent, bien noté et compatible avec ton pipeline est un bon candidat.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

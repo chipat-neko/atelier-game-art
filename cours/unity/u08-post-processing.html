@@ -324,6 +324,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que le post-processing ?","a":["Des effets appliqués à l'image finale après le rendu (bloom, tone mapping, vignette…)","La modélisation des objets","L'import de textures","Le calcul de la physique"],"correct":0,"explain":"Le post-processing traite l'image rendue : bloom, color grading, tone mapping, depth of field, vignette… Ces effets donnent une grande partie de l'identité visuelle."},
+  {"q":"Comment ajoute-t-on des effets de post-processing en URP ?","a":["Via un Volume (global ou local) auquel on ajoute des overrides d'effets","En modifiant chaque matériau","Dans les Import Settings","En ajoutant un Rigidbody"],"correct":0,"explain":"En URP/HDRP, on crée un Volume et on y ajoute des overrides (Bloom, Tonemapping…). La caméra doit avoir le post-processing activé pour les voir."},
+  {"q":"Pourquoi le tone mapping est-il important avec un éclairage HDR ?","a":["Il ramène les valeurs HDR dans la plage affichable de l'écran de façon harmonieuse","Il augmente le nombre de polygones","Il supprime les ombres","Il compresse les sons"],"correct":0,"explain":"L'éclairage HDR produit des valeurs > 1. Le tone mapping (ex. ACES) les mappe vers l'écran (LDR) sans cramer les hautes lumières, pour une image équilibrée."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Ajoute un Volume global avec Bloom et Tonemapping, et active le post-processing sur la caméra.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée un Global Volume, ajoute les overrides Bloom et Tonemapping (ACES). Sur la Camera, coche Post Processing. Les zones lumineuses se mettent à « baver » (bloom) et l'image gagne en cohérence tonale.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Fais un color grading (Color Adjustments / Lift-Gamma-Gain) pour donner une ambiance (chaude ou froide) à ta scène.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute Color Adjustments (saturation, contraste, teinte) et/ou Shadows-Midtones-Highlights. Pousse vers le bleu pour une nuit froide, vers l'orange pour un coucher de soleil. Reste subtil pour ne pas dénaturer.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un Volume local (zone) avec un effet différent qui ne s'applique que dans une partie du niveau.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Mets un Volume en mode Local avec un Collider (trigger) délimitant une salle. À l'entrée, ajoute par ex. une vignette et un grain pour une ambiance oppressante&nbsp;; le Blend Distance lisse la transition.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

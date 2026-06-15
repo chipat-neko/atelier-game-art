@@ -326,6 +326,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi définir une structure de dossiers Assets dès le départ ?","a":["Pour s'y retrouver et garder un projet maintenable quand il grossit","Pour accélérer le rendu","Parce que Unity l'impose","Pour réduire la taille du build"],"correct":0,"explain":"Une arborescence claire (Models, Materials, Textures, Prefabs, Scenes, Scripts…) évite le chaos quand le projet grandit et facilite le travail en équipe."},
+  {"q":"Que sont les fichiers .meta de Unity ?","a":["Des fichiers qui stockent l'ID et les réglages d'import de chaque asset","Des sauvegardes automatiques","Des textures","Des scripts cachés"],"correct":0,"explain":"Chaque asset a un .meta : il porte un GUID stable et ses réglages d'import. Il faut les versionner avec les assets, sinon les références se cassent."},
+  {"q":"Quel réglage facilite le travail en équipe et le versioning ?","a":["Forcer la sérialisation en mode texte (Force Text)","Désactiver les .meta","Tout mettre dans une seule scène","Supprimer le dossier Library"],"correct":0,"explain":"En mode texte (Editor Settings ▸ Asset Serialization ▸ Force Text), les scènes/prefabs deviennent diffables et fusionnables, ce qui réduit les conflits Git."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée une arborescence de dossiers propre dans Assets (Scenes, Prefabs, Materials, Textures, Models, Scripts).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée ces dossiers dès le début et range chaque import à sa place. Une convention de nommage cohérente (préfixes T_ pour textures, M_ pour matériaux…) aide aussi à la lisibilité.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Active la sérialisation texte et les Visible Meta Files, puis vérifie qu'une scène s'enregistre en texte lisible.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Edit ▸ Project Settings ▸ Editor ▸ Asset Serialization = Force Text, Version Control = Visible Meta Files. Ouvre une .unity dans un éditeur texte&nbsp;: elle est désormais lisible/diffable.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets en place un dépôt Git du projet avec un .gitignore Unity et vérifie que Library/ est exclu.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>git init + un .gitignore Unity (exclut Library/, Temp/, Logs/, Build/…). git status ne doit pas lister Library/. Commit Assets/, Packages/ et ProjectSettings/ — le reste est régénérable.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

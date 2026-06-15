@@ -305,6 +305,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi correspond URP (Universal Render Pipeline) ?","a":["Un pipeline polyvalent, performant et large compatibilité (mobile au PC)","Le pipeline le plus haut de gamme réservé au PC","Un format de texture","Un langage de shader"],"correct":0,"explain":"URP vise un bon équilibre perf/qualité et une grande compatibilité (mobile, web, PC, console). C'est le choix par défaut pour la plupart des projets aujourd'hui."},
+  {"q":"Quand choisir HDRP plutôt qu'URP ?","a":["Pour un rendu haut de gamme sur PC/console puissants (éclairage et matériaux avancés)","Pour un jeu mobile léger","Pour un prototype rapide","Pour le web"],"correct":0,"explain":"HDRP (High Definition) cible les plateformes puissantes avec un rendu physiquement avancé. Il est plus lourd : inadapté au mobile ou aux machines modestes."},
+  {"q":"Pourquoi le choix du pipeline est-il structurant ?","a":["Les shaders, matériaux et fonctionnalités diffèrent : changer de pipeline en cours de projet est coûteux","Il ne change rien au rendu","Il n'affecte que le son","Il se change en un clic sans impact"],"correct":0,"explain":"Chaque pipeline a ses shaders et ses réglages. Migrer un projet d'un pipeline à l'autre demande de refaire matériaux et effets : mieux vaut bien choisir au départ."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Crée un projet URP et un projet HDRP, puis compare l'aspect par défaut d'une même scène simple.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le HDRP affiche d'emblée un éclairage plus riche (volumétrie, exposition, reflets). L'URP est plus sobre mais tourne partout. Note aussi la différence des réglages disponibles dans les Volumes/réglages caméra.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Dans un projet URP, ouvre l'URP Asset et règle un paramètre global (ombres, qualité) et observe l'effet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>L'URP Asset (dans les Quality/Graphics Settings) contrôle la distance d'ombres, le nombre de lumières, l'anti-aliasing… Modifier ces réglages affecte tout le rendu du projet&nbsp;: c'est le tableau de bord du pipeline.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Décide, pour un projet fictif (ex. jeu mobile stylisé), quel pipeline tu choisirais et justifie.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pour du mobile stylisé&nbsp;: URP (perf, compatibilité, shaders adaptés). HDRP serait surdimensionné et trop lourd. Le choix se justifie par la plateforme cible, le style visuel et le budget de performance.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
