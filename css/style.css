@@ -293,8 +293,8 @@ img, svg { max-width: 100%; height: auto; }
 .nav-lessons li { position: relative; }
 .nav-lessons a {
   display: flex; align-items: center; gap: 8px;
-  padding: 6px 9px; margin: 1px 0; border-radius: 6px;
-  font-size: .83rem; color: var(--text-dim); line-height: 1.35;
+  padding: 1px 9px; margin: 0; border-radius: 6px;
+  font-size: .83rem; color: var(--text-dim); line-height: 1.15;
 }
 .nav-lessons a:hover { background: var(--surface); color: var(--text); text-decoration: none; }
 .nav-lessons a.active { background: var(--surface-2); color: var(--text); font-weight: 600; }
