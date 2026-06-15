@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH08 — Éclairage de base (diffus/spéculaire) · Atelier Game Art</title>
+  <meta name="description" content="Calculer l'éclairage dans un shader : diffus de Lambert (normale · lumière) et spéculaire de Phong/Blinn.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh08";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Éclairage de base</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH08 — Éclairage de base (diffus/spéculaire)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh05-espaces-uv.html">SH5 — Normales</a> et <a href="../../cours/shaders/sh07-maths.html">SH7 — dot</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Calculer le <b>diffus de Lambert</b> (<code>dot(normale, lumière)</code>).</li>
+                <li>Ajouter un <b>spéculaire</b> (Phong/Blinn) pour les reflets brillants.</li>
+                <li>Comprendre le rôle de la normale, de la direction de lumière et de la vue.</li>
+                <li>Composer ambiant + diffus + spéculaire.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'éclairage donne le volume et la matière. Comprendre le diffus et le spéculaire « à la main » éclaire ce que font le PBR (<a href="../../cours/shaders/sh09-pbr.html">SH9</a>) et les éditeurs à nœuds&nbsp;: ce ne sont que des versions plus physiques de ces idées.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Le diffus de Lambert</h3>
+            <p>La quantité de lumière reçue par une surface dépend de l'angle entre sa <b>normale</b> (N) et la <b>direction vers la lumière</b> (L). Le produit scalaire <code>dot(N, L)</code> (rappel <a href="../../cours/shaders/sh07-maths.html">SH7</a>) donne cette intensité&nbsp;: face à la lumière → 1, de profil → 0.</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float3 N = normalize(normalWS);
+float3 L = normalize(directionLumiere);
+float diffus = max(0.0, dot(N, L));     // max(0,...) : pas de lumière négative
+float3 couleur = albedo * couleurLumiere * diffus;</code></pre>
+            </div>
+            <p>Le <code>max(0, …)</code> évite l'« éclairage négatif » sur les faces tournées à l'opposé.</p>
+
+            <h3>2. Le spéculaire (Phong / Blinn-Phong)</h3>
+            <p>Le reflet brillant dépend aussi de la position de l'<b>œil</b> (direction de vue V). En <b>Blinn-Phong</b>, on calcule le vecteur « moitié » <code>H = normalize(L + V)</code>, puis <code>pow(max(0, dot(N, H)), brillance)</code>&nbsp;: un point lumineux d'autant plus serré que la brillance est haute.</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float3 V = normalize(dirVue);
+float3 H = normalize(L + V);
+float spec = pow(max(0.0, dot(N, H)), brillance);   // brillance ~ 8..128
+float3 couleur = albedo * diffus + couleurLumiere * spec;</code></pre>
+            </div>
+
+            <h3>3. Ambiant : éviter le noir total</h3>
+            <p>Les faces non éclairées seraient totalement noires. On ajoute une petite lumière <b>ambiante</b> (constante ou venant du ciel) pour garder de la lecture dans les ombres&nbsp;: <code>couleur = albedo * (ambiant + diffus) + spec</code>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Normale N, direction lumière L, vue V ; diffus dépend de dot(N,L)">
+                <line x1="200" y1="120" x2="200" y2="50" stroke="#5ad19a" stroke-width="2" marker-end="url(#sh08a)"/>
+                <defs><marker id="sh08a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#5ad19a"/></marker><marker id="sh08b" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#eab308"/></marker><marker id="sh08c" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#7aa2f7"/></marker></defs>
+                <line x1="200" y1="120" x2="120" y2="55" stroke="#eab308" stroke-width="2" marker-end="url(#sh08b)"/>
+                <line x1="200" y1="120" x2="285" y2="60" stroke="#7aa2f7" stroke-width="2" marker-end="url(#sh08c)"/>
+                <line x1="80" y1="120" x2="330" y2="120" stroke="#313c4c" stroke-width="2"/>
+                <g class="svg-text" font-size="11"><text x="206" y="48" fill="#5ad19a">N</text><text x="108" y="50" fill="#eab308">L</text><text x="292" y="56" fill="#7aa2f7">V</text></g>
+                <text x="430" y="70" class="svg-text" font-size="11">diffus = max(0, dot(N, L))</text>
+                <text x="430" y="95" class="svg-text" font-size="11">spec = pow(dot(N, H), brillance)</text>
+                <text x="430" y="120" class="svg-dim" font-size="10">H = normalize(L + V)</text>
+              </svg>
+              <figcaption>Le diffus dépend de l'angle N·L&nbsp;; le spéculaire ajoute l'influence de la vue V (via H).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Calcule le diffus <code>max(0, dot(N, L))</code> et multiplie l'albédo&nbsp;: l'objet prend du volume.</li>
+              <li>Ajoute un ambiant constant&nbsp;: les ombres ne sont plus noires.</li>
+              <li>Ajoute un spéculaire Blinn-Phong&nbsp;: un point brillant apparaît&nbsp;; fais varier la brillance.</li>
+              <li>Bouge la lumière (ou l'objet) et observe le déplacement du reflet.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Éclairage incohérent / « inversé ».</div>
+                <div class="pi-cause"><b>Cause</b>N et L dans des espaces différents, ou L mal orientée (vers la lumière vs depuis).</div>
+                <div class="pi-fix"><b>Correction</b>Même espace, et L = direction <b>vers</b> la lumière, normalisée (rappel <a href="../../cours/shaders/sh05-espaces-uv.html">SH5</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Faces opposées trop sombres / artefacts.</div>
+                <div class="pi-cause"><b>Cause</b><code>dot</code> négatif non borné.</div>
+                <div class="pi-fix"><b>Correction</b>Applique <code>max(0, dot(...))</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Spéculaire trop large/laiteux.</div>
+                <div class="pi-cause"><b>Cause</b>Brillance trop faible.</div>
+                <div class="pi-fix"><b>Correction</b>Augmente l'exposant de brillance pour resserrer le reflet.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Reflet immobile quand je tourne autour.</div>
+                <div class="pi-cause"><b>Cause</b>La direction de vue V n'est pas prise en compte.</div>
+                <div class="pi-fix"><b>Correction</b>Recalcule V (caméra − position pixel) pour le spéculaire.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Implémente un diffus de Lambert + ambiant.</li>
+                <li>Ajoute un spéculaire Blinn-Phong avec brillance réglable.</li>
+                <li>Vérifie que le reflet se déplace quand la lumière ou la caméra bouge.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'objet a du volume (diffus) et des ombres lisibles (ambiant).</li>
+                  <li>Le spéculaire forme un point cohérent avec la lumière/vue.</li>
+                  <li>N et L sont normalisés et dans le même espace.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment calcule-t-on le diffus de Lambert ?","a":["max(0, dot(N, L)) avec N et L normalisés","dot(N, V)","la couleur de la texture seule","pow(dot, brillance)"],"correct":0,"explain":"Le diffus dépend de l'angle entre la normale N et la direction vers la lumière L : dot(N,L) en donne le cosinus. max(0,...) évite l'éclairage négatif sur les faces opposées."},
+  {"q":"Pourquoi ajouter une lumière ambiante ?","a":["Pour que les zones non éclairées ne soient pas totalement noires","Pour accélérer le rendu","Pour créer des reflets","Pour supprimer la normale"],"correct":0,"explain":"Sans ambiant, les faces orientées loin de la lumière seraient noires (diffus = 0). Un petit ambiant conserve de la lecture dans les ombres."},
+  {"q":"De quoi dépend le reflet spéculaire (en plus de N et L) ?","a":["De la direction de vue V (position de l'œil)","Uniquement de la texture","Du nombre de polygones","De la résolution d'écran"],"correct":0,"explain":"Le spéculaire dépend d'où l'on regarde : en Blinn-Phong on utilise H = normalize(L+V), puis pow(dot(N,H), brillance). Le reflet se déplace quand la caméra bouge."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Affiche uniquement le terme diffus (niveaux de gris) pour visualiser comment la lumière « tombe » sur l'objet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>return float4(diffus.xxx, 1) avec diffus = max(0, dot(N, L)). Tu vois un dégradé clair/sombre selon l'orientation des faces&nbsp;: c'est le cœur du modelé.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Compose albédo × (ambiant + diffus) et applique une texture comme albédo.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>albedo = sample(tex, uv). couleur = albedo * (ambiant + diffus). L'objet est éclairé tout en gardant ses détails de texture&nbsp;: c'est un Lambert texturé classique.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute le spéculaire Blinn-Phong et expose la brillance&nbsp;; compare métal poli (brillance haute) vs surface mate.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>H = normalize(L+V); spec = pow(max(0, dot(N,H)), brillance). Brillance haute (128) → petit point net (poli)&nbsp;; basse (8) → reflet large (mat). C'est l'intuition derrière la roughness du PBR (SH9).</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Diffus</b> = <code>max(0, dot(N, L))</code> (N, L normalisés, même espace).</li>
+                <li><b>Spéculaire</b> Blinn-Phong&nbsp;: <code>pow(max(0, dot(N, H)), brillance)</code>, dépend de la vue.</li>
+                <li>Ajoute un <b>ambiant</b> pour éviter le noir total.</li>
+                <li>Couleur ≈ albédo × (ambiant + diffus) + spéculaire — base que le PBR rend physique.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Diffus (Lambert)</b> — éclairage dépendant de l'angle normale/lumière.</p>
+              <p><b>Spéculaire (Phong/Blinn)</b> — reflet brillant dépendant aussi de la vue.</p>
+              <p><b>Ambiant</b> — lumière de remplissage évitant des ombres totalement noires.</p>
+              <p><b>Brillance (shininess)</b> — exposant qui resserre/élargit le reflet spéculaire.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh09-pbr.html">SH9 — PBR en shader</a>&nbsp;: la version physique.</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

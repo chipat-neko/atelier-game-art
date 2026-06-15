@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH02 — Le pipeline graphique · Atelier Game Art</title>
+  <meta name="description" content="Du sommet au pixel : vertex shader, rasterisation, fragment shader, test de profondeur et blending.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh02";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Pipeline graphique</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH02 — Le pipeline graphique</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh01-introduction.html">SH1 — Introduction</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Décrire les étapes du pipeline&nbsp;: vertex → rasterisation → fragment → sortie.</li>
+                <li>Comprendre la <b>rasterisation</b> (triangles → pixels) et l'<b>interpolation</b>.</li>
+                <li>Comprendre le <b>test de profondeur</b> (depth) et le <b>blending</b> (transparence).</li>
+                <li>Situer ce que tu contrôles (shaders) vs ce que le GPU fait pour toi.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Pour écrire des shaders, il faut savoir <em>à quel moment</em> ton code intervient et ce que le GPU fait automatiquement autour. Comprendre le pipeline explique des comportements clés&nbsp;: pourquoi les données sont interpolées, pourquoi un objet en cache un autre (profondeur), pourquoi la transparence demande un réglage spécial (blending).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les grandes étapes</h3>
+            <ol>
+              <li><b>Entrée</b>&nbsp;: les sommets du mesh (position, normale, UV…).</li>
+              <li><b>Vertex shader</b>&nbsp;: transforme chaque sommet vers l'espace écran (clip space).</li>
+              <li><b>Rasterisation</b>&nbsp;: le GPU « remplit » chaque triangle de pixels candidats (fragments).</li>
+              <li><b>Fragment shader</b>&nbsp;: calcule la couleur de chaque fragment.</li>
+              <li><b>Tests &amp; sortie</b>&nbsp;: test de profondeur, blending, écriture dans l'image.</li>
+            </ol>
+
+            <h3>2. La rasterisation &amp; l'interpolation</h3>
+            <p>Le vertex shader ne s'exécute que pour quelques sommets&nbsp;; mais un triangle couvre des milliers de pixels. La <b>rasterisation</b> détermine quels pixels sont dans le triangle, puis <b>interpole</b> les données des 3 sommets (couleur, UV, normale) pour chaque pixel. C'est pourquoi un dégradé apparaît entre deux sommets de couleurs différentes&nbsp;: l'interpolation fait le mélange (vu en <a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a>).</p>
+
+            <h3>3. Le test de profondeur (depth)</h3>
+            <p>Plusieurs objets peuvent se projeter sur le même pixel. Le <b>depth buffer</b> mémorise la profondeur du pixel le plus proche déjà dessiné&nbsp;: un fragment plus lointain est <b>rejeté</b>. C'est ce qui fait qu'un objet proche en cache un autre, sans qu'on ait à trier manuellement chaque pixel.</p>
+
+            <h3>4. Le blending (transparence)</h3>
+            <p>Par défaut, un fragment <b>remplace</b> la couleur existante (opaque). Pour la transparence, on active le <b>blending</b>&nbsp;: la couleur du fragment se <b>mélange</b> avec le fond selon l'alpha. Les objets transparents demandent souvent un tri par distance et coûtent plus cher (overdraw, vu en <a href="../../cours/shaders/sh14-performance.html">SH14</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="Étapes : vertex, rasterisation, fragment, test de profondeur et blending, image finale">
+                <defs><marker id="sh02ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker></defs>
+                <g class="svg-text" font-size="9.5">
+                  <rect x="12" y="62" width="92" height="42" rx="7" fill="#d946ef" fill-opacity="0.14" stroke="#d946ef"/><text x="58" y="80" text-anchor="middle" font-weight="700">Vertex</text>
+                  <rect x="120" y="62" width="110" height="42" rx="7" class="svg-surface" stroke="#313c4c"/><text x="175" y="80" text-anchor="middle" font-weight="700">Rastérisation</text><text x="175" y="94" text-anchor="middle" class="svg-dim">+ interpolation</text>
+                  <rect x="246" y="62" width="92" height="42" rx="7" fill="#d946ef" fill-opacity="0.14" stroke="#d946ef"/><text x="292" y="80" text-anchor="middle" font-weight="700">Fragment</text>
+                  <rect x="354" y="62" width="130" height="42" rx="7" class="svg-surface" stroke="#313c4c"/><text x="419" y="80" text-anchor="middle" font-weight="700">Depth + Blend</text>
+                  <rect x="500" y="62" width="120" height="42" rx="7" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="560" y="84" text-anchor="middle" font-weight="700">Image</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.6" marker-end="url(#sh02ar)">
+                  <line x1="104" y1="83" x2="118" y2="83"/><line x1="230" y1="83" x2="244" y2="83"/><line x1="338" y1="83" x2="352" y2="83"/><line x1="484" y1="83" x2="498" y2="83"/>
+                </g>
+                <text x="320" y="135" text-anchor="middle" class="svg-dim" font-size="10">Tu écris vertex &amp; fragment ; le GPU gère rasterisation, profondeur et blending.</text>
+              </svg>
+              <figcaption>Ce que tu programmes (vertex, fragment) et ce que le GPU fait autour (rasterisation, depth, blending).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée deux objets qui se chevauchent&nbsp;: observe que le plus proche cache l'autre (test de profondeur).</li>
+              <li>Donne des couleurs différentes aux sommets d'un triangle (vertex color)&nbsp;: observe le dégradé interpolé.</li>
+              <li>Passe un matériau en mode transparent (blending alpha)&nbsp;: observe le mélange avec le fond.</li>
+              <li>Empile plusieurs surfaces transparentes&nbsp;: note la baisse de perf (overdraw).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma transparence s'affiche dans le mauvais ordre.</div>
+                <div class="pi-cause"><b>Cause</b>Les transparents se trient par distance&nbsp;; le depth seul ne suffit pas.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise un mode/queue de rendu transparent et limite les superpositions.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Une donnée « saute » entre pixels.</div>
+                <div class="pi-cause"><b>Cause</b>Tu attendais une valeur constante alors qu'elle est interpolée.</div>
+                <div class="pi-fix"><b>Correction</b>Comprends que les sorties vertex sont interpolées par pixel.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Du « z-fighting » (surfaces qui clignotent).</div>
+                <div class="pi-cause"><b>Cause</b>Deux surfaces quasi à la même profondeur&nbsp;: le depth hésite.</div>
+                <div class="pi-fix"><b>Correction</b>Décale légèrement les surfaces ou ajuste le near/far de la caméra.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>FPS qui chute avec beaucoup de transparents.</div>
+                <div class="pi-cause"><b>Cause</b>Overdraw&nbsp;: les pixels transparents sont recalculés plusieurs fois.</div>
+                <div class="pi-fix"><b>Correction</b>Réduis les couches transparentes (voir <a href="../../cours/shaders/sh14-performance.html">SH14</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Mets en évidence le test de profondeur avec deux objets qui se croisent.</li>
+                <li>Crée un dégradé via des vertex colors (interpolation).</li>
+                <li>Active la transparence sur un objet et observe le blending.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu expliques pourquoi un objet en cache un autre.</li>
+                  <li>Tu relies le dégradé à l'interpolation.</li>
+                  <li>Tu sais que la transparence = blending (et son coût).</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait la rasterisation ?","a":["Déterminer quels pixels sont couverts par un triangle et interpoler les données des sommets","Charger les textures","Trier les objets par nom","Compresser l'image"],"correct":0,"explain":"La rasterisation transforme les triangles en fragments (pixels candidats) et interpole les données (couleur, UV, normale) des 3 sommets pour chaque pixel."},
+  {"q":"À quoi sert le test de profondeur (depth) ?","a":["Garder, pour chaque pixel, le fragment le plus proche et rejeter les plus lointains","À flouter l'image","À gérer le son","À créer des ombres douces"],"correct":0,"explain":"Le depth buffer mémorise la profondeur la plus proche dessinée. Un fragment plus loin est rejeté : c'est ce qui fait qu'un objet proche en cache un autre, automatiquement."},
+  {"q":"Pourquoi la transparence coûte-t-elle souvent plus cher ?","a":["Le blending recalcule des pixels superposés (overdraw) et impose souvent un tri par distance","Elle double la résolution","Elle désactive le GPU","Elle n'a aucun surcoût"],"correct":0,"explain":"Les fragments transparents se mélangent au fond (blending) et plusieurs couches se superposent (overdraw), ce qui multiplie le travail du fragment shader."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Fais se croiser deux objets opaques et identifie le rôle du depth buffer.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Le pixel affiché est celui du fragment le plus proche de la caméra&nbsp;; les fragments plus lointains sont rejetés. Aucun tri manuel n'est nécessaire pour les opaques&nbsp;: le depth s'en charge.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un dégradé sur une face en attribuant des couleurs différentes à ses sommets.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Avec des vertex colors différentes par sommet, la rasterisation interpole la couleur entre eux&nbsp;: le fragment shader reçoit une couleur lissée par pixel, d'où le dégradé.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Empile 3 plans transparents et mesure l'impact sur les performances (overdraw).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Chaque pixel couvert par les 3 plans exécute le fragment 3 fois (overdraw ×3) et blend à chaque couche. Le coût grimpe vite&nbsp;: c'est pourquoi on limite les couches transparentes plein écran.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Pipeline&nbsp;: entrée → <b>vertex</b> → <b>rasterisation</b> (+ interpolation) → <b>fragment</b> → depth/blend → image.</li>
+                <li>La rasterisation interpole les données des sommets pour chaque pixel.</li>
+                <li>Le <b>depth</b> gère qui cache qui&nbsp;; le <b>blending</b> gère la transparence (et son coût).</li>
+                <li>Tu écris vertex &amp; fragment&nbsp;; le GPU fait la rasterisation, le depth et le blending.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Rasterisation</b> — conversion des triangles en fragments (pixels), avec interpolation.</p>
+              <p><b>Interpolation</b> — mélange des données des sommets pour chaque pixel intermédiaire.</p>
+              <p><b>Depth buffer</b> — mémoire de profondeur qui détermine quel fragment est visible.</p>
+              <p><b>Blending</b> — mélange d'un fragment avec le fond selon l'alpha (transparence).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh03-vertex-shader.html">SH3 — Le vertex shader</a>.</li>
+              <li><a href="../../cours/shaders/sh14-performance.html">SH14 — Performance</a>&nbsp;: overdraw et coût des transparents.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

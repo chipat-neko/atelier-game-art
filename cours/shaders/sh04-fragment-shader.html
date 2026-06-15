@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH04 — Le fragment (pixel) shader · Atelier Game Art</title>
+  <meta name="description" content="Calculer la couleur de chaque pixel : entrées interpolées, sortie couleur, premiers dégradés à partir des UV.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh04";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Fragment shader</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH04 — Le fragment (pixel) shader</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh03-vertex-shader.html">SH3 — Vertex shader</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Le rôle du fragment shader&nbsp;: produire la couleur (RGBA) de chaque pixel.</li>
+                <li>Utiliser les <b>entrées interpolées</b> (UV, normale) venues du vertex.</li>
+                <li>Créer un <b>dégradé</b> à partir des UV.</li>
+                <li>Comprendre la sortie couleur et le canal <b>alpha</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le fragment shader est là où se joue presque tout le « look »&nbsp;: couleur, textures, éclairage, effets. Apprendre à lire ses entrées et à composer sa sortie est la compétence centrale de la programmation graphique.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Entrées : des valeurs interpolées par pixel</h3>
+            <p>Le fragment reçoit les sorties du vertex, <b>interpolées</b> pour le pixel courant (rappel <a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a>)&nbsp;: l'UV exact, la normale, la position monde… À partir de ces valeurs, il calcule une couleur.</p>
+
+            <h3>2. La sortie : une couleur RGBA</h3>
+            <p>Le fragment renvoie un vecteur de 4 composantes <code>(r, g, b, a)</code>, chacune entre 0 et 1. <code>a</code> (alpha) sert à la transparence (si le blending est actif).</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// Dégradé horizontal à partir de l'UV
+float4 frag(float2 uv : TEXCOORD0) : SV_Target
+{
+    float intensite = uv.x;                 // 0 à gauche, 1 à droite
+    return float4(intensite, intensite, intensite, 1.0);  // niveaux de gris
+}</code></pre>
+            </div>
+
+            <h3>3. Premiers dégradés avec les UV</h3>
+            <p>Les UV varient de 0 à 1 sur la surface (vu en <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>). En les utilisant comme couleur, on obtient des dégradés&nbsp;: <code>uv.x</code> horizontal, <code>uv.y</code> vertical, la distance au centre pour un cercle. C'est l'exercice fondateur pour « penser par pixel ».</p>
+
+            <h3>4. Composer une couleur</h3>
+            <p>On combine des sources&nbsp;: une couleur de base, une texture (échantillonnée, vu en <a href="../../cours/shaders/sh06-textures.html">SH6</a>), un masque, l'éclairage (vu en <a href="../../cours/shaders/sh08-eclairage.html">SH8</a>). Le fragment est un mini-programme de calcul de couleur&nbsp;: on l'enrichit progressivement.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Le fragment reçoit des données interpolées et produit une couleur RGBA">
+                <defs>
+                  <linearGradient id="sh04g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient>
+                  <marker id="sh04ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker>
+                </defs>
+                <g class="svg-text" font-size="10">
+                  <rect x="20" y="55" width="150" height="46" rx="8" class="svg-surface" stroke="#313c4c"/><text x="95" y="74" text-anchor="middle">UV, normale…</text><text x="95" y="90" text-anchor="middle" class="svg-dim">interpolés</text>
+                  <rect x="220" y="55" width="160" height="46" rx="8" fill="#d946ef" fill-opacity="0.15" stroke="#d946ef"/><text x="300" y="74" text-anchor="middle" font-weight="700">Fragment shader</text><text x="300" y="90" text-anchor="middle" class="svg-dim">calcule la couleur</text>
+                  <rect x="430" y="55" width="190" height="46" rx="8" stroke="#313c4c"/><rect x="432" y="57" width="186" height="42" rx="6" fill="url(#sh04g)"/><text x="525" y="48" text-anchor="middle" class="svg-dim">sortie (r,g,b,a) — ici uv.x</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.7" marker-end="url(#sh04ar)">
+                  <line x1="170" y1="78" x2="218" y2="78"/><line x1="380" y1="78" x2="428" y2="78"/>
+                </g>
+              </svg>
+              <figcaption>Le fragment transforme des données interpolées en une couleur&nbsp;: ici, <code>uv.x</code> donne un dégradé du noir au blanc.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Renvoie <code>uv.x</code> comme niveau de gris&nbsp;: tu obtiens un dégradé horizontal.</li>
+              <li>Mets <code>uv</code> directement dans (R,G)&nbsp;: tu vois le « damier de couleurs » UV (rouge→droite, vert→haut).</li>
+              <li>Calcule la distance de l'UV au centre (0.5, 0.5) et seuil-la pour dessiner un disque.</li>
+              <li>Multiplie ta couleur par une couleur de base réglable (paramètre du matériau).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Couleurs « cramées » ou ternes.</div>
+                <div class="pi-cause"><b>Cause</b>Valeurs hors [0,1] ou confusion sRGB/linéaire (voir <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</div>
+                <div class="pi-fix"><b>Correction</b>Garde les couleurs dans [0,1] et respecte l'espace colorimétrique.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon dégradé est uniforme (pas de variation).</div>
+                <div class="pi-cause"><b>Cause</b>L'UV n'est pas transmis depuis le vertex, ou vaut une constante.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie que le vertex passe bien l'UV (varying).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma transparence ne marche pas.</div>
+                <div class="pi-cause"><b>Cause</b>L'alpha est calculé mais le matériau est opaque (blending off).</div>
+                <div class="pi-fix"><b>Correction</b>Passe le matériau en mode transparent (rappel <a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le shader est lent.</div>
+                <div class="pi-cause"><b>Cause</b>Calcul lourd dans le fragment (exécuté par pixel).</div>
+                <div class="pi-fix"><b>Correction</b>Allège le fragment, déporte ce qui peut l'être (voir <a href="../../cours/shaders/sh14-performance.html">SH14</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un dégradé horizontal puis vertical à partir des UV.</li>
+                <li>Dessine un disque (distance au centre + seuil).</li>
+                <li>Ajoute une couleur de base réglable multipliée à ta sortie.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les dégradés suivent bien u et v.</li>
+                  <li>Le disque est net (seuil) ou doux (smoothstep).</li>
+                  <li>La couleur de base modifie le rendu.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que produit un fragment shader ?","a":["La couleur RGBA du pixel courant","La position d'un sommet","Le maillage","Le nombre de lumières"],"correct":0,"explain":"Le fragment shader calcule, pour chaque pixel couvert, sa couleur finale sous forme (r,g,b,a), à partir des entrées interpolées, des textures et de l'éclairage."},
+  {"q":"D'où viennent les valeurs (UV, normale) reçues par le fragment ?","a":["Des sorties du vertex shader, interpolées par pixel","De la carte son","Du nom du fichier","Elles sont aléatoires"],"correct":0,"explain":"Le vertex shader transmet ces données ; la rasterisation les interpole entre les sommets, si bien que le fragment reçoit la valeur exacte pour son pixel."},
+  {"q":"Comment obtenir un dégradé horizontal simple ?","a":["Utiliser uv.x comme intensité de couleur","Utiliser le temps","Multiplier par zéro","Désactiver la texture"],"correct":0,"explain":"uv.x varie de 0 (gauche) à 1 (droite) sur la surface. L'employer comme niveau de gris produit un dégradé horizontal — l'exercice fondateur du fragment."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Affiche les UV comme couleur (R=u, G=v) pour visualiser le « plan » de texture de l'objet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>return float4(uv.x, uv.y, 0, 1). Tu vois un dégradé rouge vers la droite et vert vers le haut&nbsp;: c'est une excellente façon de vérifier que les UV de l'objet sont corrects.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Dessine un disque centré&nbsp;: calcule la distance de l'UV à (0.5, 0.5) et applique un seuil.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>float d = distance(uv, float2(0.5, 0.5)); float cercle = step(d, 0.3); — cercle vaut 1 à l'intérieur du rayon 0.3, 0 dehors. Remplace step par smoothstep pour un bord doux (anti-aliasé).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Combine une couleur de base, un dégradé et un masque (disque) en une seule sortie cohérente.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Calcule un dégradé, multiplie par une couleur de base, puis utilise le masque disque comme alpha (ou pour mélanger deux couleurs avec lerp). Tu composes ainsi un « badge » coloré&nbsp;: la logique de tout effet plus complexe.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le fragment shader produit une <b>couleur RGBA</b> par pixel.</li>
+                <li>Ses entrées (UV, normale…) viennent du vertex et sont <b>interpolées</b>.</li>
+                <li>Les <b>UV</b> (0→1) servent à fabriquer dégradés, masques et formes.</li>
+                <li>On compose la couleur en combinant base, textures, masques et éclairage.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Fragment / pixel shader</b> — programme calculant la couleur d'un pixel.</p>
+              <p><b>RGBA</b> — composantes rouge, vert, bleu, alpha (transparence) d'une couleur.</p>
+              <p><b>UV</b> — coordonnées de texture (0→1) servant à situer un point sur la surface.</p>
+              <p><b>step / smoothstep</b> — seuil net / transition douce (vu en <a href="../../cours/shaders/sh07-maths.html">SH7</a>).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh05-espaces-uv.html">SH5 — Espaces, UV &amp; normales</a>.</li>
+              <li><a href="../../cours/shaders/sh06-textures.html">SH6 — Textures &amp; échantillonnage</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

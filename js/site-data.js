@@ -222,6 +222,32 @@ window.SITE_DATA = {
         { id:"gd14", fichier:"gd14-timers-await.html",        titre:"Timers, await & gestion du temps",    niveau:"Avancé",        duree:"40 min", desc:"Node Timer, get_tree().create_timer, await pour étaler une action, et les coroutines à la Godot.", motscles:["Timer","await","create_timer","coroutine","temps","délai","signal timeout","async"] },
         { id:"gd15", fichier:"gd15-bonnes-pratiques.html",    titre:"Bonnes pratiques, perfs & organisation",niveau:"Avancé",        duree:"45 min", desc:"Typage statique, @onready, éviter le travail par frame, organisation des scènes, débogage et mini-projet récapitulatif.", motscles:["bonnes pratiques","performance","typage statique","@onready","organisation","debug","scène","mini-projet"] }
       ]
+    },
+    {
+      id: "shaders",
+      titre: "Shaders & programmation graphique",
+      kicker: "Piste 10",
+      couleur: "var(--piste-shaders)",
+      dossier: "cours/shaders/",
+      icone: "sparkles",
+      desc: "Comprendre et écrire des shaders : pipeline GPU, vertex & fragment, espaces et UV, textures, maths, éclairage, PBR, effets (dissolve, eau, toon), éditeurs à nœuds et performance.",
+      lecons: [
+        { id:"sh01", fichier:"sh01-introduction.html",        titre:"Introduction aux shaders",            niveau:"Débutant",      duree:"35 min", desc:"Qu'est-ce qu'un shader, pourquoi le GPU, où s'exécute le code, langages (HLSL/GLSL) et éditeurs à nœuds.", motscles:["shader","GPU","pipeline","HLSL","GLSL","vertex","fragment","temps réel"] },
+        { id:"sh02", fichier:"sh02-pipeline-gpu.html",        titre:"Le pipeline graphique",               niveau:"Débutant",      duree:"40 min", desc:"Du sommet au pixel : vertex shader, rasterisation, fragment shader, profondeur et blending.", motscles:["pipeline","rasterisation","vertex shader","fragment shader","depth","blending","GPU"] },
+        { id:"sh03", fichier:"sh03-vertex-shader.html",       titre:"Le vertex shader",                    niveau:"Intermédiaire", duree:"40 min", desc:"Transformer les sommets : matrices model/view/projection (MVP), position clip, données passées au fragment.", motscles:["vertex shader","MVP","matrice","clip space","position","varying","attribut"] },
+        { id:"sh04", fichier:"sh04-fragment-shader.html",     titre:"Le fragment (pixel) shader",          niveau:"Intermédiaire", duree:"40 min", desc:"Calculer la couleur de chaque pixel, interpolation des données, sortie couleur, premiers dégradés.", motscles:["fragment shader","pixel","interpolation","couleur","gradient","UV","output"] },
+        { id:"sh05", fichier:"sh05-espaces-uv.html",          titre:"Espaces, UV & normales",             niveau:"Intermédiaire", duree:"40 min", desc:"Object/world/view/clip space, coordonnées UV, normales et leur rôle, transformer entre espaces.", motscles:["espace","world space","view space","UV","normale","tangent","coordonnées"] },
+        { id:"sh06", fichier:"sh06-textures.html",            titre:"Textures & échantillonnage",          niveau:"Intermédiaire", duree:"40 min", desc:"Sampler une texture, UV et tiling, filtrage et wrapping, combiner plusieurs textures (masques).", motscles:["texture","sampler","UV","tiling","filtrage","wrap","masque","sample"] },
+        { id:"sh07", fichier:"sh07-maths.html",               titre:"Les maths du shader",                 niveau:"Intermédiaire", duree:"45 min", desc:"Vecteurs, dot/cross, lerp, clamp, step, smoothstep, frac — la boîte à outils du shader.", motscles:["vecteur","dot","cross","lerp","clamp","step","smoothstep","frac","maths"] },
+        { id:"sh08", fichier:"sh08-eclairage.html",           titre:"Éclairage de base (diffus/spéculaire)",niveau:"Avancé",        duree:"45 min", desc:"Lambert (diffus), Phong/Blinn (spéculaire), rôle de la normale et de la direction de lumière.", motscles:["éclairage","Lambert","diffus","Phong","Blinn","spéculaire","normale","lumière"] },
+        { id:"sh09", fichier:"sh09-pbr.html",                 titre:"PBR en shader (concepts)",            niveau:"Avancé",        duree:"45 min", desc:"Metallic/roughness, Fresnel, conservation de l'énergie et notion de BRDF — côté shader.", motscles:["PBR","metallic","roughness","Fresnel","BRDF","conservation énergie","spéculaire"] },
+        { id:"sh10", fichier:"sh10-effets.html",              titre:"Effets courants (dissolve, rim…)",    niveau:"Avancé",        duree:"45 min", desc:"Dissolve par seuil/noise, contour Fresnel (rim light), hologramme, masques et alpha.", motscles:["effet","dissolve","Fresnel","rim","hologramme","noise","alpha","masque"] },
+        { id:"sh11", fichier:"sh11-eau-deformation.html",     titre:"Eau & déformation de géométrie",      niveau:"Avancé",        duree:"45 min", desc:"Panning d'UV, déplacement de sommets (vertex displacement), normales animées pour l'eau/le vent.", motscles:["eau","panning","UV","vertex displacement","vagues","normales","vent","animation"] },
+        { id:"sh12", fichier:"sh12-toon-npr.html",            titre:"Toon & rendu non photoréaliste",      niveau:"Avancé",        duree:"40 min", desc:"Cel shading par bandes (step), contours (outline), stylisation et seuils d'éclairage.", motscles:["toon","cel shading","NPR","outline","contour","step","bandes","stylisé"] },
+        { id:"sh13", fichier:"sh13-editeurs-noeuds.html",     titre:"Éditeurs à nœuds (Graph)",            niveau:"Intermédiaire", duree:"40 min", desc:"Shader Graph (Unity), Material Editor (Unreal), VisualShader (Godot) : penser shader sans code.", motscles:["Shader Graph","Material Editor","VisualShader","nœuds","node","visuel","master material"] },
+        { id:"sh14", fichier:"sh14-performance.html",         titre:"Performance des shaders",             niveau:"Avancé",        duree:"40 min", desc:"Coût par pixel, overdraw, branches dynamiques, instructions, half vs float, variantes de shader.", motscles:["performance","overdraw","branche","instructions","half","float","variante","coût pixel"] },
+        { id:"sh15", fichier:"sh15-bonnes-pratiques.html",    titre:"Bonnes pratiques, debug & mini-projet",niveau:"Avancé",        duree:"45 min", desc:"Déboguer un shader (visualiser des valeurs), lisibilité, réutilisation, et mini-projet récapitulatif.", motscles:["bonnes pratiques","debug","shader","visualiser","réutilisation","mini-projet","organisation"] }
+      ]
     }
   ]
 };

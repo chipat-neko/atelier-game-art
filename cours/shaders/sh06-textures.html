@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH06 — Textures & échantillonnage · Atelier Game Art</title>
+  <meta name="description" content="Échantillonner une texture dans un shader : UV et tiling, filtrage et wrapping, et combiner plusieurs textures avec des masques.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh06";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Textures</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH06 — Textures &amp; échantillonnage</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a> et <a href="../../cours/shaders/sh05-espaces-uv.html">SH5</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Échantillonner une texture avec une coordonnée UV.</li>
+                <li>Faire du <b>tiling</b> (répétition) et décaler les UV.</li>
+                <li>Comprendre le <b>filtrage</b> et le <b>wrapping</b>.</li>
+                <li>Combiner plusieurs textures avec un <b>masque</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les textures apportent le détail&nbsp;: couleur, relief (normal map), rugosité… Savoir les échantillonner et les combiner est indispensable pour tout matériau réaliste ou stylisé.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Échantillonner = lire un pixel de texture à une UV</h3>
+            <p>Une texture est une image&nbsp;; on lit sa couleur à la coordonnée UV du pixel courant. La fonction varie selon le langage (<code>tex2D</code>/<code>SAMPLE_TEXTURE2D</code> en HLSL, <code>texture()</code> en GLSL), mais l'idée est la même.</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float4 frag(float2 uv : TEXCOORD0) : SV_Target
+{
+    float4 couleur = tex2D(_BaseMap, uv);   // lit la texture à l'UV du pixel
+    return couleur;
+}</code></pre>
+            </div>
+
+            <h3>2. Tiling &amp; offset</h3>
+            <p>Multiplier l'UV répète la texture (<b>tiling</b>)&nbsp;; ajouter un décalage la déplace (<b>offset</b>). Animer l'offset dans le temps fait défiler la texture (panning, utile pour l'eau — <a href="../../cours/shaders/sh11-eau-deformation.html">SH11</a>).</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float2 uv2 = uv * 4.0;          // répète la texture 4×4
+float2 uv3 = uv + float2(temps * 0.1, 0.0);  // défile vers la droite</code></pre>
+            </div>
+
+            <h3>3. Filtrage &amp; wrapping</h3>
+            <ul>
+              <li><b>Filtrage</b>&nbsp;: comment la texture est lissée entre ses pixels. <em>Point/Nearest</em> = net (pixel art)&nbsp;; <em>Bilinear/Trilinear</em> = lissé. Les <b>mipmaps</b> (rappel <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>) évitent l'aliasing au loin.</li>
+              <li><b>Wrapping</b>&nbsp;: que faire hors de [0,1] ? <em>Repeat</em> (répète), <em>Clamp</em> (étire le bord), <em>Mirror</em> (miroir).</li>
+            </ul>
+
+            <h3>4. Combiner avec un masque</h3>
+            <p>On mélange deux textures selon un <b>masque</b> (une 3ᵉ texture en niveaux de gris, ou un canal). <code>lerp(a, b, masque)</code> interpole entre les deux selon le masque (vu en <a href="../../cours/shaders/sh07-maths.html">SH7</a>)&nbsp;: c'est la base des terrains (herbe/roche), de l'usure, etc.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="UV plus texture donne une couleur ; tiling répète ; masque mélange deux textures">
+                <defs><marker id="sh06ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker></defs>
+                <g class="svg-text" font-size="10">
+                  <rect x="20" y="58" width="80" height="42" rx="7" class="svg-surface" stroke="#313c4c"/><text x="60" y="83" text-anchor="middle">UV</text>
+                  <rect x="130" y="58" width="120" height="42" rx="7" fill="#d946ef" fill-opacity="0.14" stroke="#d946ef"/><text x="190" y="76" text-anchor="middle">sample(tex,</text><text x="190" y="90" text-anchor="middle">uv * tiling)</text>
+                  <rect x="280" y="40" width="120" height="34" rx="7" class="svg-surface" stroke="#313c4c"/><text x="340" y="61" text-anchor="middle">texture A</text>
+                  <rect x="280" y="86" width="120" height="34" rx="7" class="svg-surface" stroke="#313c4c"/><text x="340" y="107" text-anchor="middle">texture B</text>
+                  <rect x="430" y="58" width="100" height="42" rx="7" fill="#d946ef" fill-opacity="0.14" stroke="#d946ef"/><text x="480" y="83" text-anchor="middle">lerp(A,B,m)</text>
+                  <rect x="560" y="58" width="64" height="42" rx="7" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="592" y="83" text-anchor="middle">couleur</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.5" marker-end="url(#sh06ar)">
+                  <line x1="100" y1="79" x2="128" y2="79"/><line x1="400" y1="57" x2="428" y2="70"/><line x1="400" y1="103" x2="428" y2="88"/><line x1="530" y1="79" x2="558" y2="79"/>
+                </g>
+              </svg>
+              <figcaption>Échantillonner (avec tiling), puis mélanger deux textures via un masque (<code>lerp</code>).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Affiche une texture sur un objet en l'échantillonnant à l'UV.</li>
+              <li>Multiplie l'UV par 2, 4, 8&nbsp;: la texture se répète (tiling).</li>
+              <li>Anime l'offset avec le temps&nbsp;: la texture défile.</li>
+              <li>Mélange deux textures avec un masque (<code>lerp</code>) et règle le masque.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Texture floue ou « baveuse » de près.</div>
+                <div class="pi-cause"><b>Cause</b>Filtrage bilinéaire alors que tu veux du net (pixel art).</div>
+                <div class="pi-fix"><b>Correction</b>Passe le filtrage en Point/Nearest dans les réglages d'import.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Couture visible au bord de la texture.</div>
+                <div class="pi-cause"><b>Cause</b>Mode de wrapping inadapté (Repeat sur une texture non-seamless).</div>
+                <div class="pi-fix"><b>Correction</b>Utilise Clamp, ou une texture tileable, ou ajoute du padding.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Texture qui scintille au loin.</div>
+                <div class="pi-cause"><b>Cause</b>Pas de mipmaps (aliasing à distance).</div>
+                <div class="pi-fix"><b>Correction</b>Active les mipmaps (rappel <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Ma normal map donne un éclairage faux.</div>
+                <div class="pi-cause"><b>Cause</b>Texture lue en sRGB au lieu de linéaire.</div>
+                <div class="pi-fix"><b>Correction</b>Marque les maps de données en linéaire/Non-Color.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Échantillonne une texture et applique un tiling réglable.</li>
+                <li>Fais défiler la texture avec le temps (panning).</li>
+                <li>Mélange deux textures via un masque (lerp) réglable.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le tiling répète proprement la texture.</li>
+                  <li>Le panning est fluide.</li>
+                  <li>Le masque mélange bien les deux textures.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait « multiplier l'UV par 4 » avant d'échantillonner ?","a":["Répéter la texture 4 fois (tiling), si le wrapping est Repeat","Agrandir la texture sans la répéter","Changer sa couleur","Réduire sa résolution"],"correct":0,"explain":"Multiplier l'UV étend l'intervalle au-delà de [0,1] ; avec le wrapping Repeat, la texture se répète. C'est le tiling. Ajouter un offset la décale."},
+  {"q":"Quel filtrage choisir pour du pixel art net ?","a":["Point / Nearest","Bilinear","Trilinear","Anisotrope"],"correct":0,"explain":"Point/Nearest prend le pixel le plus proche, sans lissage : indispensable pour garder des bords nets en pixel art. Bilinear/Trilinear lissent (flou) la texture."},
+  {"q":"Comment mélanger deux textures selon un masque en niveaux de gris ?","a":["lerp(textureA, textureB, masque)","textureA + textureB","masque uniquement","On ne peut pas"],"correct":0,"explain":"lerp(a, b, m) renvoie a quand m=0, b quand m=1, et un mélange entre les deux. C'est la base des terrains (herbe/roche), de l'usure, etc."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Affiche une texture sur un objet, puis ajoute un paramètre de tiling (×N) réglable.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Échantillonne à <code>uv * tiling</code>. Un tiling de 2 répète 2×2, etc. Vérifie que la texture est en wrap Repeat pour que la répétition fonctionne (sinon Clamp étire le bord).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Fais défiler une texture (nuages, eau) en animant l'offset UV avec le temps.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p><code>uv += float2(temps * vitesse, 0)</code> avant l'échantillonnage. La texture glisse horizontalement. Combine deux couches à vitesses différentes pour un effet de profondeur (parallaxe simple).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Réalise un mélange « herbe/roche » contrôlé par un masque (par ex. lié à la pente ou une texture).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Échantillonne deux textures (herbe, roche), un masque (ou calcule-le depuis la normale&nbsp;: pentes raides = roche), puis <code>lerp(herbe, roche, masque)</code>. Tu obtiens un terrain qui varie selon le relief.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Échantillonner = lire la couleur d'une texture à une <b>UV</b>.</li>
+                <li><b>Tiling</b> (× UV) répète&nbsp;; <b>offset</b> (+ UV) décale&nbsp;; animé = panning.</li>
+                <li><b>Filtrage</b> (net vs lissé) + <b>mipmaps</b> (anti-aliasing)&nbsp;; <b>wrapping</b> (Repeat/Clamp/Mirror).</li>
+                <li>Combine des textures avec un <b>masque</b> et <code>lerp</code>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Échantillonnage (sampling)</b> — lecture de la couleur d'une texture à une coordonnée UV.</p>
+              <p><b>Tiling / offset</b> — répétition / décalage de la texture via les UV.</p>
+              <p><b>Filtrage / wrapping</b> — lissage entre pixels / comportement hors [0,1].</p>
+              <p><b>Masque</b> — image niveaux de gris pilotant un mélange (<code>lerp</code>).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh07-maths.html">SH7 — Les maths du shader</a> (lerp, step…).</li>
+              <li><a href="../../cours/shaders/sh11-eau-deformation.html">SH11 — Eau &amp; déformation</a> (panning).</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

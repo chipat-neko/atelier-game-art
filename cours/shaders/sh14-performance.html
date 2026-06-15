@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH14 — Performance des shaders · Atelier Game Art</title>
+  <meta name="description" content="Optimiser un shader : coût par pixel, overdraw, branches dynamiques, nombre d'instructions, half vs float et variantes.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh14";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Performance</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH14 — Performance des shaders</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a> et <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Comprendre le <b>coût par pixel</b> et l'<b>overdraw</b>.</li>
+                <li>Éviter les <b>branches dynamiques</b> coûteuses.</li>
+                <li>Réduire le nombre d'<b>instructions</b> et d'échantillonnages.</li>
+                <li>Connaître <b>half vs float</b> et les <b>variantes</b> de shader.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un shader joli mais lourd peut effondrer le framerate, surtout sur mobile. Comme le fragment s'exécute des millions de fois par image (rappel <a href="../../cours/shaders/sh01-introduction.html">SH1</a>), chaque économie compte.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Coût par pixel &amp; overdraw</h3>
+            <p>Le coût du fragment = (nombre de pixels) × (instructions par pixel). L'<b>overdraw</b> (rappel <a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a>) multiplie ce coût quand des surfaces se superposent (transparents, particules). Premiers réflexes&nbsp;: limiter les couches transparentes et la surface écran couverte par des shaders lourds.</p>
+
+            <h3>2. Les branches (if) dynamiques</h3>
+            <p>Sur GPU, un <code>if</code> dont la condition <b>varie par pixel</b> peut forcer l'exécution des deux branches (divergence). Préfère des fonctions sans branche (<code>step</code>, <code>lerp</code>, <code>min/max</code>) ou des conditions <b>uniformes</b> (constantes pour tout le draw).</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// ❌ branche par pixel (peut être coûteuse)
+if (uv.x &gt; 0.5) col = a; else col = b;
+// ✅ sans branche
+col = lerp(b, a, step(0.5, uv.x));</code></pre>
+            </div>
+
+            <h3>3. Moins d'instructions, moins de samples</h3>
+            <p>Chaque échantillonnage de texture et chaque opération coûte. On factorise les calculs, on évite les <code>pow</code>/divisions inutiles, on regroupe des maps (ORM packé, rappel <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>) pour réduire le nombre de samples.</p>
+
+            <h3>4. Précision (half vs float) &amp; variantes</h3>
+            <ul>
+              <li><b>half</b> (16 bits) suffit souvent pour couleurs/UV sur mobile et coûte moins que <b>float</b> (32 bits). À utiliser quand la précision le permet.</li>
+              <li><b>Variantes de shader</b>&nbsp;: les options (keywords) génèrent plusieurs versions compilées. Trop de variantes = compilation longue et mémoire&nbsp;: limite-les.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 140" role="img" aria-label="Trois couches transparentes superposées multiplient le coût (overdraw x3)">
+                <g class="svg-text" font-size="10">
+                  <rect x="220" y="30" width="160" height="70" rx="8" fill="#d946ef" fill-opacity="0.25" stroke="#d946ef"/>
+                  <rect x="240" y="45" width="160" height="70" rx="8" fill="#d946ef" fill-opacity="0.25" stroke="#d946ef"/>
+                  <rect x="260" y="60" width="160" height="70" rx="8" fill="#d946ef" fill-opacity="0.25" stroke="#d946ef"/>
+                </g>
+                <text x="460" y="80" class="svg-text" font-size="11">overdraw ×3</text>
+                <text x="320" y="128" text-anchor="middle" class="svg-dim" font-size="10">Chaque couche transparente réexécute le fragment sur les pixels couverts.</text>
+              </svg>
+              <figcaption>L'overdraw&nbsp;: trois transparents superposés = le fragment exécuté trois fois sur ces pixels.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Active la visualisation d'overdraw/Shader Complexity du moteur pour repérer les zones coûteuses.</li>
+              <li>Remplace un <code>if</code> par pixel par un <code>lerp(…, step(…))</code> et compare.</li>
+              <li>Réduis le nombre de samples (ORM packé, moins de textures) et mesure.</li>
+              <li>Passe quelques variables en <code>half</code> (si la plateforme/précision le permet).</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>FPS qui chute en plein écran.</div>
+                <div class="pi-cause"><b>Cause</b>Fragment lourd appliqué sur beaucoup de pixels / overdraw.</div>
+                <div class="pi-fix"><b>Correction</b>Allège le fragment, limite les transparents superposés.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Performances irrégulières selon la scène.</div>
+                <div class="pi-cause"><b>Cause</b>Branches dynamiques divergentes.</div>
+                <div class="pi-fix"><b>Correction</b>Remplace par des fonctions sans branche ou des conditions uniformes.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Build lent / beaucoup de mémoire shader.</div>
+                <div class="pi-cause"><b>Cause</b>Explosion combinatoire des variantes (keywords).</div>
+                <div class="pi-fix"><b>Correction</b>Réduis les keywords&nbsp;; strippe les variantes inutilisées.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Artefacts de précision sur mobile.</div>
+                <div class="pi-cause"><b>Cause</b><code>half</code> insuffisant pour certaines positions/grands nombres.</div>
+                <div class="pi-fix"><b>Correction</b>Repasse en <code>float</code> là où la précision est nécessaire.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Mesure l'overdraw d'une scène avec des transparents et réduis les couches.</li>
+                <li>Convertis un <code>if</code> par pixel en version sans branche.</li>
+                <li>Réduis les samples d'un shader (regroupe des maps) et compare le coût.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu identifies les zones coûteuses (overdraw/complexity).</li>
+                  <li>Tu sais éviter une branche dynamique.</li>
+                  <li>Tu réduis le nombre d'échantillonnages.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que l'overdraw ?","a":["Le fait de réexécuter le fragment sur des pixels recouverts par plusieurs surfaces (souvent transparentes)","Le nombre de polygones","La résolution de la texture","Un type de lumière"],"correct":0,"explain":"Quand plusieurs surfaces se superposent (transparents, particules), le fragment s'exécute plusieurs fois par pixel : le coût grimpe. On limite les couches superposées."},
+  {"q":"Pourquoi préférer step/lerp à un if par pixel ?","a":["Un if dont la condition varie par pixel peut forcer l'exécution des deux branches (divergence)","Parce que if n'existe pas en shader","Parce que lerp est toujours faux","Aucune raison"],"correct":0,"explain":"Sur GPU, les branches divergentes coûtent cher. Des fonctions sans branche (step, lerp, min/max) donnent souvent le même résultat plus efficacement."},
+  {"q":"Quand utiliser half plutôt que float ?","a":["Quand 16 bits de précision suffisent (couleurs, UV) — gain sur mobile notamment","Toujours, half est plus précis","Jamais","Uniquement pour les positions monde"],"correct":0,"explain":"half (16 bits) coûte moins que float (32 bits) et suffit pour beaucoup de données (couleurs, UV). Pour les grandes valeurs/positions, float reste nécessaire pour éviter les artefacts."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Active le mode « Shader Complexity / Overdraw » et repère les zones rouges (coûteuses) d'une scène.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Les zones chaudes correspondent à des transparents superposés ou des shaders lourds. C'est la première carte à regarder avant d'optimiser : on cible le vrai coupable.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Réécris une condition par pixel sans branche et vérifie le résultat identique.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Remplace <code>if (x > s) col = a; else col = b;</code> par <code>col = lerp(b, a, step(s, x));</code>. Même rendu, sans branche divergente.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Optimise un shader « eau/hologramme » lourd&nbsp;: réduis samples, branches et couches transparentes&nbsp;; mesure le gain.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Regroupe les textures (ORM/atlas), supprime les branches, baisse le nombre de couches transparentes plein écran, passe certaines variables en half. Compare avant/après dans le profiler/overdraw view.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Coût fragment = pixels × instructions&nbsp;; l'<b>overdraw</b> (transparents) le multiplie.</li>
+                <li>Évite les <b>branches par pixel</b>&nbsp;: préfère <code>step</code>/<code>lerp</code>/<code>min</code>/<code>max</code>.</li>
+                <li>Réduis <b>samples</b> et <b>instructions</b> (maps packées, calculs factorisés).</li>
+                <li><b>half</b> quand la précision suffit&nbsp;; limite les <b>variantes</b> (keywords).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Overdraw</b> — réexécution du fragment sur des pixels superposés.</p>
+              <p><b>Branche dynamique</b> — <code>if</code> dont la condition varie par pixel (peut diverger).</p>
+              <p><b>half / float</b> — précision 16 bits / 32 bits.</p>
+              <p><b>Variante (keyword)</b> — version compilée d'un shader selon des options.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh15-bonnes-pratiques.html">SH15 — Bonnes pratiques &amp; debug</a>.</li>
+              <li><a href="../../cours/fondamentaux/f12-optimisation.html">F12 — Optimisation graphique</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

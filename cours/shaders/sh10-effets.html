@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH10 — Effets courants (dissolve, rim…) · Atelier Game Art</title>
+  <meta name="description" content="Construire des effets de shader répandus : dissolve par seuil/noise, contour Fresnel (rim light) et hologramme.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh10";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Effets courants</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH10 — Effets courants (dissolve, rim…)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh06-textures.html">SH6</a>, <a href="../../cours/shaders/sh07-maths.html">SH7</a> et <a href="../../cours/shaders/sh09-pbr.html">SH9 — Fresnel</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Créer un effet de <b>dissolve</b> (seuil sur une texture de bruit).</li>
+                <li>Réaliser un <b>contour Fresnel</b> (rim light).</li>
+                <li>Composer un <b>hologramme</b> (lignes + Fresnel + transparence).</li>
+                <li>Réutiliser step/smoothstep/lerp/Fresnel pour combiner des effets.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les effets « signature » (dissolution d'un ennemi, halo de bouclier, hologramme d'UI) reposent sur peu d'ingrédients combinés intelligemment. Savoir les construire, c'est maîtriser le vocabulaire (seuil, masque, Fresnel, alpha) qu'on remixe à l'infini.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Dissolve</h3>
+            <p>On échantillonne une texture de <b>bruit</b> (niveaux de gris). On compare au seuil animé&nbsp;: au-dessus, le pixel disparaît (alpha 0)&nbsp;; sinon il reste. Une fine bande autour du seuil s'illumine (le « bord ardent »).</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float bruit = tex2D(_NoiseMap, uv).r;
+clip(bruit - _Seuil);                       // jette le pixel si bruit &lt; seuil
+float bord = smoothstep(_Seuil, _Seuil + 0.05, bruit);  // 0 sur le bord
+float3 couleur = lerp(_CouleurBord, albedo, bord);      // bord lumineux</code></pre>
+            </div>
+
+            <h3>2. Rim light (contour Fresnel)</h3>
+            <p>Le Fresnel (<a href="../../cours/shaders/sh09-pbr.html">SH9</a>) éclaire les bords vus de profil&nbsp;: idéal pour détacher un personnage du fond ou simuler un bouclier.</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float rim = pow(1.0 - saturate(dot(N, V)), _Puissance);
+float3 couleur = albedo + _CouleurRim * rim;</code></pre>
+            </div>
+
+            <h3>3. Hologramme</h3>
+            <p>On combine&nbsp;: des <b>lignes de balayage</b> (sinus sur la position écran/UV + frac), un <b>Fresnel</b> bleuté, et une <b>transparence</b> (blending). On peut faire défiler les lignes avec le temps. C'est l'archétype de l'effet composé&nbsp;: chaque ingrédient est simple, le mélange fait l'effet.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Dissolve par seuil de bruit ; rim par Fresnel sur les bords">
+                <g class="svg-text" font-size="10">
+                  <text x="150" y="22" text-anchor="middle" class="svg-dim">dissolve : seuil sur le bruit</text>
+                  <rect x="70" y="40" width="160" height="80" rx="8" fill="#222a3a" stroke="#313c4c"/>
+                  <path d="M90 110 Q110 70 140 95 Q170 60 210 100 L210 118 L90 118 Z" fill="#d946ef" fill-opacity="0.5"/>
+                  <text x="470" y="22" text-anchor="middle" class="svg-dim">rim : bords lumineux (Fresnel)</text>
+                  <circle cx="470" cy="82" r="40" fill="#222a3a" stroke="#d946ef" stroke-width="3"/>
+                </g>
+              </svg>
+              <figcaption>Dissolve&nbsp;: un seuil sur le bruit fait disparaître la surface, avec un bord lumineux. Rim&nbsp;: les contours s'illuminent.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Branche une texture de bruit, ajoute un paramètre <em>Seuil</em> et utilise <code>clip</code> pour faire disparaître les pixels.</li>
+              <li>Anime le seuil dans le temps (0→1)&nbsp;: l'objet se dissout&nbsp;; ajoute un bord lumineux avec smoothstep.</li>
+              <li>Ajoute un rim Fresnel et règle sa puissance/couleur.</li>
+              <li>Compose un hologramme&nbsp;: lignes (sinus + frac), Fresnel bleuté, transparence.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon dissolve fait des trous nets sans bord.</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises seulement <code>clip</code>, sans bande de bord.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute un <code>smoothstep</code> autour du seuil pour le bord ardent.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon rim illumine toute la surface.</div>
+                <div class="pi-cause"><b>Cause</b>Puissance de Fresnel trop faible.</div>
+                <div class="pi-fix"><b>Correction</b>Augmente l'exposant pour concentrer l'effet sur les bords.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'hologramme est opaque.</div>
+                <div class="pi-cause"><b>Cause</b>Le matériau n'est pas en mode transparent.</div>
+                <div class="pi-fix"><b>Correction</b>Active le blending (rappel <a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Effet correct mais perfs en chute.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de samples/calculs lourds par pixel.</div>
+                <div class="pi-fix"><b>Correction</b>Simplifie le fragment (voir <a href="../../cours/shaders/sh14-performance.html">SH14</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Réalise un dissolve animé avec bord lumineux.</li>
+                <li>Ajoute un rim light Fresnel réglable.</li>
+                <li>Compose un hologramme (lignes + Fresnel + transparence).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le dissolve disparaît progressivement avec un bord net.</li>
+                  <li>Le rim ne touche que les contours.</li>
+                  <li>L'hologramme est translucide et animé.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Sur quoi repose un effet de dissolve ?","a":["Comparer une texture de bruit à un seuil animé (et jeter les pixels au-delà)","Changer la couleur de base","Augmenter la résolution","Désactiver l'éclairage"],"correct":0,"explain":"On lit un bruit en niveaux de gris et on compare au seuil : selon le côté du seuil, le pixel est gardé ou jeté (clip). Animer le seuil fait apparaître/disparaître la surface."},
+  {"q":"Quel ingrédient produit un contour lumineux (rim light) ?","a":["Le Fresnel : pow(1 - dot(N, V), puissance)","Le tiling de texture","La division entière","Le test de profondeur"],"correct":0,"explain":"Le Fresnel renforce les bords vus de profil (N quasi perpendiculaire à V). On l'ajoute à la couleur/émission pour un halo de contour."},
+  {"q":"Comment obtenir le bord lumineux d'un dissolve ?","a":["Avec un smoothstep autour du seuil pour isoler une fine bande","Avec un clamp à 1","En doublant la texture","Avec le depth buffer"],"correct":0,"explain":"Une bande étroite autour du seuil (via smoothstep) sert de masque pour teinter le bord en couleur ardente, juste avant que le pixel ne disparaisse."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un rim light simple et règle sa couleur/puissance pour détacher un objet du fond.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>rim = pow(1 - saturate(dot(N, V)), puissance); couleur = albedo + couleurRim * rim. Augmente la puissance pour un liseré fin, baisse-la pour un halo plus large.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Réalise un dissolve animé (seuil piloté par le temps) avec un bord ardent.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>clip(bruit - seuil) pour effacer&nbsp;; bord = smoothstep(seuil, seuil+largeur, bruit)&nbsp;; couleur = lerp(couleurBord, albedo, bord). Anime « seuil » de 0 à 1 pour la dissolution.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compose un hologramme&nbsp;: lignes de balayage animées + Fresnel bleuté + transparence.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>lignes = smoothstep(0.4, 0.5, frac(posY * densite - temps)) ; fresnel pour les bords ; alpha = base + lignes*0.2 + fresnel ; matériau transparent. Chaque morceau est simple&nbsp;: c'est leur combinaison qui crée l'hologramme.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Dissolve</b>&nbsp;: seuil animé sur une texture de bruit (<code>clip</code>) + bord via <code>smoothstep</code>.</li>
+                <li><b>Rim light</b>&nbsp;: Fresnel (<code>pow(1 - dot(N, V), p)</code>) ajouté à la couleur.</li>
+                <li><b>Hologramme</b>&nbsp;: lignes (sinus/frac) + Fresnel + transparence.</li>
+                <li>Les effets se construisent en combinant peu d'ingrédients (seuil, masque, Fresnel, alpha).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Dissolve</b> — effet d'apparition/disparition par seuil sur un bruit.</p>
+              <p><b>clip / discard</b> — instruction qui rejette le pixel courant (transparence dure).</p>
+              <p><b>Rim light</b> — halo de contour basé sur le Fresnel.</p>
+              <p><b>Bruit (noise)</b> — texture pseudo-aléatoire pilotant des effets organiques.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh11-eau-deformation.html">SH11 — Eau &amp; déformation</a>.</li>
+              <li><a href="../../cours/shaders/sh12-toon-npr.html">SH12 — Toon &amp; NPR</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

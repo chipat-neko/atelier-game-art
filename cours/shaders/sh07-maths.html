@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH07 — Les maths du shader · Atelier Game Art</title>
+  <meta name="description" content="La boîte à outils mathématique du shader : vecteurs, dot et cross, lerp, clamp, step, smoothstep, frac.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh07";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Maths du shader</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH07 — Les maths du shader</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a> et <a href="../../cours/shaders/sh05-espaces-uv.html">SH5</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Manipuler des <b>vecteurs</b> (composantes, swizzle).</li>
+                <li>Utiliser <b>dot</b> (produit scalaire) et <b>cross</b> (produit vectoriel).</li>
+                <li>Employer <b>lerp</b>, <b>clamp</b>, <b>step</b>, <b>smoothstep</b>, <b>frac</b>.</li>
+                <li>Reconnaître ces outils comme les briques de tous les effets.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Un shader, c'est avant tout des maths sur des vecteurs. Une poignée de fonctions (lerp, step, smoothstep, dot…) revient dans <b>tous</b> les effets&nbsp;: les maîtriser, c'est pouvoir lire et écrire n'importe quel shader.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Vecteurs &amp; swizzle</h3>
+            <p>Les types <code>float2/3/4</code> regroupent des composantes. On accède à <code>.x .y .z .w</code> (ou <code>.r .g .b .a</code>), et on peut les réarranger (<b>swizzle</b>)&nbsp;: <code>couleur.rgb</code>, <code>uv.yx</code>. Les opérations s'appliquent composante par composante.</p>
+
+            <h3>2. dot &amp; cross</h3>
+            <ul>
+              <li><b><code>dot(a, b)</code></b>&nbsp;: produit scalaire. Pour deux vecteurs normalisés, il vaut le <b>cosinus de l'angle</b> entre eux&nbsp;: 1 = même direction, 0 = perpendiculaire, -1 = opposés. C'est le cœur de l'éclairage diffus (<a href="../../cours/shaders/sh08-eclairage.html">SH8</a>).</li>
+              <li><b><code>cross(a, b)</code></b>&nbsp;: produit vectoriel, donne un vecteur perpendiculaire aux deux. Utile pour reconstruire des repères (tangentes).</li>
+            </ul>
+
+            <h3>3. lerp, clamp, step, smoothstep, frac</h3>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>lerp(a, b, t);        // interpolation : a si t=0, b si t=1, mélange entre
+clamp(x, 0, 1);       // borne x dans [0,1] (saturate = clamp 0..1)
+step(seuil, x);       // 0 si x &lt; seuil, sinon 1 (bord net)
+smoothstep(a, b, x);  // transition douce de 0 à 1 entre a et b (bord lissé)
+frac(x);              // partie fractionnaire (x - floor(x)) : motifs répétés</code></pre>
+            </div>
+            <ul>
+              <li><b>lerp</b>&nbsp;: mélanger deux couleurs/valeurs (rappel masques, <a href="../../cours/shaders/sh06-textures.html">SH6</a>).</li>
+              <li><b>step</b> vs <b>smoothstep</b>&nbsp;: seuil dur (toon) vs transition douce (anti-aliasing des formes).</li>
+              <li><b>frac</b>&nbsp;: créer des motifs/grilles répétés à partir d'une coordonnée.</li>
+            </ul>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 160" role="img" aria-label="step donne une marche nette, smoothstep une transition douce">
+                <g class="svg-text" font-size="10">
+                  <text x="150" y="24" text-anchor="middle" class="svg-dim">step(0.5, x)</text>
+                  <polyline points="40,120 150,120 150,50 260,50" fill="none" stroke="#d946ef" stroke-width="2"/>
+                  <line x1="40" y1="130" x2="260" y2="130" stroke="#313c4c"/>
+                  <text x="470" y="24" text-anchor="middle" class="svg-dim">smoothstep(0.3, 0.7, x)</text>
+                  <path d="M380 120 L420 120 Q470 120 470 85 Q470 50 520 50 L580 50" fill="none" stroke="#5ad19a" stroke-width="2"/>
+                  <line x1="380" y1="130" x2="580" y2="130" stroke="#313c4c"/>
+                </g>
+                <text x="320" y="152" text-anchor="middle" class="svg-dim" font-size="10">step = marche nette (toon) ; smoothstep = transition douce (bords lisses).</text>
+              </svg>
+              <figcaption><code>step</code> crée un bord net&nbsp;; <code>smoothstep</code> une transition progressive — deux outils omniprésents.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Fais un dégradé puis applique <code>step(0.5, uv.x)</code>&nbsp;: tu obtiens deux zones nettes.</li>
+              <li>Remplace par <code>smoothstep(0.45, 0.55, uv.x)</code>&nbsp;: la frontière devient douce.</li>
+              <li>Mélange deux couleurs avec <code>lerp</code> piloté par <code>uv.y</code>.</li>
+              <li>Crée une grille avec <code>frac(uv * 10)</code> et un <code>step</code> sur la fraction.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon <code>dot</code> donne des valeurs bizarres.</div>
+                <div class="pi-cause"><b>Cause</b>Vecteurs non normalisés&nbsp;: dot ≠ cosinus.</div>
+                <div class="pi-fix"><b>Correction</b>Normalise les deux vecteurs avant le <code>dot</code>.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Bords « en escalier » (aliasing) sur une forme.</div>
+                <div class="pi-cause"><b>Cause</b><code>step</code> crée un bord dur.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>smoothstep</code> pour adoucir le bord.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Couleurs « cramées ».</div>
+                <div class="pi-cause"><b>Cause</b>Valeurs hors [0,1] non bornées.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise <code>saturate</code>/<code>clamp</code> au besoin.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon <code>lerp</code> ne mélange pas.</div>
+                <div class="pi-cause"><b>Cause</b>Le facteur <code>t</code> est 0 ou 1 partout.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie que <code>t</code> varie (UV, masque…) entre 0 et 1.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Compare visuellement <code>step</code> et <code>smoothstep</code> sur un dégradé.</li>
+                <li>Mélange deux couleurs avec <code>lerp</code> piloté par une UV.</li>
+                <li>Dessine une grille avec <code>frac</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu distingues bord net (step) et bord doux (smoothstep).</li>
+                  <li>Le lerp mélange réellement selon le facteur.</li>
+                  <li>La grille apparaît avec frac.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que vaut dot(a, b) si a et b sont normalisés et pointent dans la même direction ?","a":["1 (cosinus de 0°)","0","-1","Indéfini"],"correct":0,"explain":"Pour des vecteurs unitaires, dot = cos(angle) : 1 si même direction, 0 si perpendiculaires, -1 si opposés. C'est la base du diffus (normale · lumière)."},
+  {"q":"Quelle fonction donne une transition DOUCE entre 0 et 1 ?","a":["smoothstep(a, b, x)","step(seuil, x)","frac(x)","floor(x)"],"correct":0,"explain":"smoothstep interpole en douceur de 0 à 1 entre a et b (utile pour des bords anti-aliasés). step, lui, fait une marche nette (0 ou 1)."},
+  {"q":"Que renvoie lerp(rouge, bleu, 0.5) ?","a":["Un mélange à 50 % (violet)","Rouge","Bleu","Noir"],"correct":0,"explain":"lerp(a, b, t) interpole linéairement : t=0 → a, t=1 → b, t=0.5 → moitié-moitié. C'est l'outil de mélange par excellence (couleurs, masques)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Sur un dégradé <code>uv.x</code>, applique <code>step(0.5, uv.x)</code> puis <code>smoothstep(0.45, 0.55, uv.x)</code> et compare.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>step donne deux zones tranchées à 0.5&nbsp;; smoothstep adoucit la frontière entre 0.45 et 0.55. Élargir l'intervalle de smoothstep adoucit davantage le bord.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Mélange deux couleurs avec <code>lerp</code> selon <code>uv.y</code>, puis selon un masque (texture/forme).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>return lerp(couleurBas, couleurHaut, uv.y) pour un dégradé vertical. Remplace uv.y par un masque (disque smoothstep) pour un mélange localisé&nbsp;: la logique des effets composites.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée une grille (lignes) avec <code>frac</code> et <code>smoothstep</code>, à densité réglable.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>float2 g = frac(uv * densite); float ligne = smoothstep(0.0, 0.03, g.x) * smoothstep(0.0, 0.03, g.y); — affiche des lignes fines régulières. frac crée la répétition, smoothstep adoucit les lignes.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Les shaders manipulent des <b>vecteurs</b> (swizzle, opérations par composante).</li>
+                <li><code>dot</code> = cosinus d'angle (éclairage)&nbsp;; <code>cross</code> = vecteur perpendiculaire.</li>
+                <li><code>lerp</code> (mélanger), <code>step</code>/<code>smoothstep</code> (bord net/doux), <code>frac</code> (motifs), <code>clamp</code>/<code>saturate</code> (borner).</li>
+                <li>Ces quelques fonctions reviennent dans presque tous les effets.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>dot / cross</b> — produit scalaire (cosinus d'angle) / produit vectoriel (perpendiculaire).</p>
+              <p><b>lerp</b> — interpolation linéaire entre deux valeurs.</p>
+              <p><b>step / smoothstep</b> — seuil net / transition douce.</p>
+              <p><b>frac</b> — partie fractionnaire, utile pour répéter des motifs.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh08-eclairage.html">SH8 — Éclairage de base</a> (dot en action).</li>
+              <li><a href="../../cours/shaders/sh10-effets.html">SH10 — Effets courants</a> (step/smoothstep/lerp).</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

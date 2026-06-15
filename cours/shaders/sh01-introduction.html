@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH01 — Introduction aux shaders · Atelier Game Art</title>
+  <meta name="description" content="Qu'est-ce qu'un shader, pourquoi il s'exécute sur le GPU, où il se place dans le pipeline, et les langages (HLSL/GLSL) et éditeurs à nœuds.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh01";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Introduction</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH01 — Introduction aux shaders</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b>notions d'image (<a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>) et de matériaux/shaders (<a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce qu'est un <span class="gloss">shader</span> et pourquoi il tourne sur le <b>GPU</b>.</li>
+                <li>Distinguer <b>vertex shader</b> et <b>fragment (pixel) shader</b>.</li>
+                <li>Situer le shader dans le pipeline de rendu temps réel.</li>
+                <li>Connaître les langages (HLSL/GLSL) et les éditeurs à nœuds.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Tout ce que tu vois à l'écran dans un jeu — la couleur d'un mur, le reflet d'une épée, l'eau qui ondule, un effet de dissolution — est calculé par des <b>shaders</b>. Comprendre comment un shader transforme des sommets et colore des pixels, c'est ouvrir la porte aux effets visuels personnalisés et à une vraie maîtrise du rendu. C'est le pont entre l'art et le code, au cœur du game art.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un shader, c'est quoi ?</h3>
+            <p>Un <b>shader</b> est un petit programme exécuté par la carte graphique (le <b>GPU</b>) pour décider, en parallèle et des millions de fois par image, <em>où</em> placer un sommet et <em>de quelle couleur</em> est un pixel. Le GPU est conçu pour faire ces calculs <b>massivement en parallèle</b> (des milliers de cœurs), là où le CPU traiterait les pixels un par un.</p>
+
+            <h3>2. Les deux shaders incontournables</h3>
+            <ul>
+              <li><b>Vertex shader</b>&nbsp;: s'exécute <em>pour chaque sommet</em> du mesh. Son rôle principal&nbsp;: transformer la position du sommet vers l'écran (matrices MVP, vu en <a href="../../cours/shaders/sh03-vertex-shader.html">SH3</a>). Il peut aussi déplacer des sommets (vagues, vent).</li>
+              <li><b>Fragment shader</b> (ou <b>pixel shader</b>)&nbsp;: s'exécute <em>pour chaque pixel</em> couvert par la surface. Son rôle&nbsp;: calculer la couleur finale (textures, éclairage, effets — vu en <a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a>).</li>
+            </ul>
+
+            <h3>3. Où ça se place dans le pipeline</h3>
+            <p>Schématiquement&nbsp;: les sommets passent dans le <b>vertex shader</b> → le GPU «&nbsp;remplit&nbsp;» les triangles en pixels (<b>rasterisation</b>) → chaque pixel passe dans le <b>fragment shader</b> → la couleur est écrite à l'écran. On détaille tout ce pipeline en <a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Pipeline : sommets, vertex shader, rasterisation, fragment shader, écran">
+                <defs><marker id="sh01ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker></defs>
+                <g class="svg-text" font-size="10">
+                  <rect x="14" y="58" width="100" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="64" y="76" text-anchor="middle" font-weight="700">Sommets</text><text x="64" y="92" text-anchor="middle" class="svg-dim">mesh</text>
+                  <rect x="134" y="58" width="110" height="44" rx="8" fill="#d946ef" fill-opacity="0.15" stroke="#d946ef"/><text x="189" y="76" text-anchor="middle" font-weight="700">Vertex</text><text x="189" y="92" text-anchor="middle" class="svg-dim">positions</text>
+                  <rect x="264" y="58" width="110" height="44" rx="8" class="svg-surface" stroke="#313c4c"/><text x="319" y="76" text-anchor="middle" font-weight="700">Rastérisation</text><text x="319" y="92" text-anchor="middle" class="svg-dim">→ pixels</text>
+                  <rect x="394" y="58" width="110" height="44" rx="8" fill="#d946ef" fill-opacity="0.15" stroke="#d946ef"/><text x="449" y="76" text-anchor="middle" font-weight="700">Fragment</text><text x="449" y="92" text-anchor="middle" class="svg-dim">couleur</text>
+                  <rect x="524" y="58" width="100" height="44" rx="8" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="574" y="76" text-anchor="middle" font-weight="700">Écran</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.7" marker-end="url(#sh01ar)">
+                  <line x1="114" y1="80" x2="132" y2="80"/><line x1="244" y1="80" x2="262" y2="80"/><line x1="374" y1="80" x2="392" y2="80"/><line x1="504" y1="80" x2="522" y2="80"/>
+                </g>
+                <text x="320" y="128" text-anchor="middle" class="svg-dim" font-size="10">Du sommet au pixel : deux programmes (vertex, fragment) que TU peux écrire.</text>
+              </svg>
+              <figcaption>Le shader s'insère à deux endroits du pipeline&nbsp;: la transformation des sommets et la coloration des pixels.</figcaption>
+            </figure>
+
+            <h3>4. Comment on écrit un shader</h3>
+            <p>Deux grandes voies, équivalentes en concepts&nbsp;:</p>
+            <ul>
+              <li><b>Par code</b>&nbsp;: en <b>HLSL</b> (DirectX/Unity) ou <b>GLSL</b> (OpenGL/Vulkan/Godot). Syntaxe proche du C, avec des types vecteurs (<code>float3</code>, <code>float4</code>).</li>
+              <li><b>Par nœuds</b>&nbsp;: Shader Graph (Unity), Material Editor (Unreal), VisualShader (Godot). On relie des blocs visuels — mêmes maths, sans écrire de code (vu en <a href="../../cours/shaders/sh13-editeurs-noeuds.html">SH13</a>).</li>
+            </ul>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// Fragment shader minimal : colorer chaque pixel en magenta
+float4 frag() : SV_Target
+{
+    return float4(0.85, 0.27, 0.94, 1.0);   // R, G, B, A
+}</code></pre>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans ton moteur, crée un matériau et ouvre son shader/graph par défaut&nbsp;: repère la sortie « couleur ».</li>
+              <li>Force une couleur unie (constante) et applique le matériau à un objet&nbsp;: tout l'objet prend cette couleur.</li>
+              <li>Identifie, dans la doc/l'éditeur, où se trouvent l'étape « vertex » et l'étape « fragment/pixel ».</li>
+              <li>Observe que la même couleur s'applique à des milliers de pixels « en même temps »&nbsp;: c'est le parallélisme du GPU.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon objet est noir / invisible.</div>
+                <div class="pi-cause"><b>Cause</b>Le fragment shader ne renvoie pas de couleur valide, ou la normale/éclairage manque.</div>
+                <div class="pi-fix"><b>Correction</b>Renvoie d'abord une couleur unie pour valider, puis ajoute l'éclairage.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je confonds vertex et fragment.</div>
+                <div class="pi-cause"><b>Cause</b>Les deux manipulent des données différentes (sommets vs pixels).</div>
+                <div class="pi-fix"><b>Correction</b>Retiens&nbsp;: vertex = « où », fragment = « quelle couleur ».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le shader « rame » sur mobile.</div>
+                <div class="pi-cause"><b>Cause</b>Le fragment shader s'exécute par pixel&nbsp;: un calcul lourd × millions de pixels.</div>
+                <div class="pi-fix"><b>Correction</b>Garde le fragment léger (voir <a href="../../cours/shaders/sh14-performance.html">SH14</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon code HLSL ne marche pas en GLSL.</div>
+                <div class="pi-cause"><b>Cause</b>Les langages diffèrent en syntaxe (types, fonctions).</div>
+                <div class="pi-fix"><b>Correction</b>Les concepts sont identiques&nbsp;; adapte la syntaxe au langage du moteur.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un matériau qui affiche une couleur unie de ton choix sur un objet.</li>
+                <li>Change la couleur et observe la mise à jour en temps réel.</li>
+                <li>Décris en une phrase ce que feraient ici le vertex shader et le fragment shader.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'objet affiche bien ta couleur.</li>
+                  <li>Tu sais dire quelle étape colore le pixel.</li>
+                  <li>Tu comprends pourquoi le GPU est adapté à ce calcul.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi les shaders s'exécutent-ils sur le GPU plutôt que le CPU ?","a":["Le GPU calcule massivement en parallèle (idéal pour traiter des millions de pixels/sommets)","Le GPU est plus lent mais moins cher","Le CPU ne sait pas afficher d'image","Parce que les shaders sont écrits en GPU"],"correct":0,"explain":"Un shader s'applique à d'énormes quantités d'éléments (sommets, pixels). Le GPU possède des milliers de cœurs qui traitent ces données en parallèle, ce que le CPU ne ferait pas efficacement."},
+  {"q":"Quel est le rôle principal du vertex shader ?","a":["Transformer la position des sommets (vers l'écran), et éventuellement les déplacer","Calculer la couleur de chaque pixel","Charger les textures","Compresser le mesh"],"correct":0,"explain":"Le vertex shader traite chaque sommet : il calcule sa position finale (matrices MVP) et peut le déplacer (vagues, vent). La couleur des pixels, c'est le fragment shader."},
+  {"q":"Que renvoie un fragment (pixel) shader ?","a":["La couleur (RGBA) du pixel courant","La position d'un sommet","Le nombre de triangles","Le nom du matériau"],"correct":0,"explain":"Le fragment shader s'exécute par pixel et produit sa couleur finale (souvent un float4 RGBA), à partir des textures, de l'éclairage et des effets."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Repère, dans un Shader Graph/Material Editor par défaut, la sortie « couleur » (fragment) et, si visible, l'étape vertex.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>La sortie principale (Base Color / Albedo / Fragment) correspond au fragment shader. L'étape vertex (Vertex Position / Vertex stage) sert à déplacer les sommets&nbsp;: souvent un nœud ou une section dédiée du master node.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Applique une couleur unie à un objet par code (ou par nœud constant) puis fais-la varier&nbsp;: confirme que tout l'objet change instantanément.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Une couleur constante en sortie du fragment colore uniformément la surface. La mise à jour est immédiate car le GPU recalcule tous les pixels à chaque image&nbsp;: c'est le temps réel.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Explique, pour un écran 1920×1080 à 60 fps, pourquoi un fragment shader coûteux peut effondrer les performances.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>≈ 2 millions de pixels × 60 images/s ≈ 124 millions d'exécutions du fragment par seconde (et davantage avec l'overdraw). Chaque instruction ajoutée est multipliée par ce nombre&nbsp;: d'où l'importance d'un fragment léger (SH14).</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un <b>shader</b> = un programme GPU qui s'exécute massivement en parallèle.</li>
+                <li><b>Vertex</b> = position des sommets («&nbsp;où&nbsp;»)&nbsp;; <b>fragment/pixel</b> = couleur des pixels («&nbsp;quelle couleur&nbsp;»).</li>
+                <li>Pipeline&nbsp;: sommets → vertex → rasterisation → fragment → écran.</li>
+                <li>On écrit en <b>HLSL/GLSL</b> ou par <b>nœuds</b> (Shader Graph, Material Editor, VisualShader) — mêmes concepts.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Shader</b> — programme exécuté sur le GPU pour transformer des sommets et colorer des pixels.</p>
+              <p><b>Vertex shader</b> — étape traitant chaque sommet (position, déplacement).</p>
+              <p><b>Fragment / pixel shader</b> — étape calculant la couleur de chaque pixel.</p>
+              <p><b>HLSL / GLSL</b> — langages de shader (DirectX/Unity / OpenGL-Vulkan/Godot).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2 — Le pipeline graphique</a>.</li>
+              <li><a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9 — Matériaux &amp; shaders</a>&nbsp;: le rappel des bases.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

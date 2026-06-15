@@ -449,3 +449,31 @@ window.GLOSSAIRE = window.GLOSSAIRE.concat([
   { terme: "Timer (Godot)", def: "Node émettant le signal timeout après une durée (une fois ou en boucle) ; create_timer crée un timer ponctuel.", alias: ["create_timer", "timeout"], src: "gd14" },
   { terme: "Autoload (singleton)", def: "Script ou scène globale de Godot toujours accessible, pour un état partagé (score, options).", alias: [], src: "gd15" }
 ]);
+
+/* === Termes Shaders & programmation graphique (Piste 10) === */
+window.GLOSSAIRE = window.GLOSSAIRE.concat([
+  { terme: "Shader", def: "Programme exécuté sur le GPU pour transformer des sommets (vertex) et colorer des pixels (fragment), massivement en parallèle.", alias: [], src: "sh01" },
+  { terme: "Vertex shader", def: "Étape du pipeline traitant chaque sommet : le transforme vers l'écran (matrices MVP) et peut le déplacer (vagues, vent).", alias: [], src: "sh01" },
+  { terme: "Fragment shader", def: "Étape calculant la couleur RGBA de chaque pixel à partir des données interpolées, des textures et de l'éclairage. Aussi appelé pixel shader.", alias: ["pixel shader"], src: "sh01" },
+  { terme: "Rasterisation", def: "Conversion des triangles en fragments (pixels), avec interpolation des données des sommets pour chaque pixel.", alias: [], src: "sh02" },
+  { terme: "Depth buffer", def: "Mémoire de profondeur qui détermine quel fragment est visible (le plus proche), gérant automatiquement qui cache qui.", alias: ["test de profondeur"], src: "sh02" },
+  { terme: "Blending", def: "Mélange d'un fragment avec le fond selon l'alpha, pour la transparence ; source d'overdraw.", alias: [], src: "sh02" },
+  { terme: "Matrices MVP", def: "Model, View, Projection : la chaîne qui amène un sommet de l'espace objet à l'écran (clip space).", alias: ["clip space"], src: "sh03" },
+  { terme: "UV (shader)", def: "Coordonnées de texture (0→1) servant à échantillonner des textures et fabriquer dégradés et masques.", alias: [], src: "sh04" },
+  { terme: "Normale (shader)", def: "Vecteur perpendiculaire à la surface, base de l'éclairage ; à normaliser et à garder dans le bon espace.", alias: [], src: "sh05" },
+  { terme: "Échantillonnage (sampling)", def: "Lecture de la couleur d'une texture à une coordonnée UV (tex2D / texture / Sample Texture 2D).", alias: ["sample"], src: "sh06" },
+  { terme: "Tiling / panning", def: "Répétition d'une texture (× UV) / défilement animé (offset UV qui évolue dans le temps).", alias: [], src: "sh06" },
+  { terme: "dot (produit scalaire)", def: "Pour deux vecteurs normalisés, donne le cosinus de l'angle entre eux ; cœur de l'éclairage diffus.", alias: [], src: "sh07" },
+  { terme: "lerp", def: "Interpolation linéaire entre deux valeurs/couleurs selon un facteur t (0→1).", alias: [], src: "sh07" },
+  { terme: "step / smoothstep", def: "Seuil net (0 ou 1) / transition douce entre deux bornes ; omniprésents pour masques, bords et toon.", alias: [], src: "sh07" },
+  { terme: "Diffus (Lambert)", def: "Éclairage dépendant de l'angle normale/lumière : max(0, dot(N, L)).", alias: [], src: "sh08" },
+  { terme: "Spéculaire (Phong/Blinn)", def: "Reflet brillant dépendant aussi de la direction de vue ; resserré par la brillance.", alias: [], src: "sh08" },
+  { terme: "PBR (shader)", def: "Rendu physique piloté par metallic et roughness, respectant la conservation de l'énergie ; combiné dans une BRDF.", alias: ["BRDF"], src: "sh09" },
+  { terme: "Fresnel", def: "Augmentation de la réflexion aux angles rasants (bords vus de profil) ; base du rim light. Approx. pow(1 - dot(N,V), 5).", alias: ["rim light"], src: "sh09" },
+  { terme: "Dissolve", def: "Effet d'apparition/disparition par seuil animé sur une texture de bruit, souvent avec un bord lumineux.", alias: [], src: "sh10" },
+  { terme: "Vertex displacement", def: "Déplacement des sommets dans le vertex shader (sinus + temps) pour des vagues, du vent, etc.", alias: [], src: "sh11" },
+  { terme: "Cel shading", def: "Éclairage quantifié en bandes nettes (rendu cartoon/anime), via step/quantification du diffus.", alias: ["toon", "NPR"], src: "sh12" },
+  { terme: "Shader Graph / VisualShader", def: "Éditeurs de shaders à nœuds (Unity Shader Graph, Unreal Material Editor, Godot VisualShader) : un nœud = une opération.", alias: ["Material Editor", "éditeur à nœuds"], src: "sh13" },
+  { terme: "Overdraw (shader)", def: "Réexécution du fragment sur des pixels superposés (transparents, particules), qui multiplie le coût de rendu.", alias: [], src: "sh14" },
+  { terme: "Branche dynamique", def: "Condition (if) qui varie par pixel ; peut diverger et coûter cher. On préfère step/lerp/min/max.", alias: [], src: "sh14" }
+]);

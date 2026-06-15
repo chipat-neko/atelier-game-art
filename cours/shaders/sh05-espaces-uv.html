@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH05 — Espaces, UV & normales · Atelier Game Art</title>
+  <meta name="description" content="Comprendre les espaces (objet/monde/vue/clip), les coordonnées UV et les normales, et passer de l'un à l'autre dans un shader.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh05";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Espaces, UV &amp; normales</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH05 — Espaces, UV &amp; normales</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh03-vertex-shader.html">SH3</a>, <a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a> et <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Distinguer espace <b>objet</b>, <b>monde</b>, <b>vue</b> et <b>clip</b>.</li>
+                <li>Ce que sont les <b>UV</b> et comment ils situent un point sur la surface.</li>
+                <li>Ce qu'est une <b>normale</b> et pourquoi elle est centrale pour l'éclairage.</li>
+                <li>Pourquoi il faut souvent travailler dans le <b>bon espace</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Beaucoup de bugs de shader viennent d'un calcul fait dans le mauvais espace (une normale en espace objet alors qu'on la veut en monde, par exemple). Comprendre les espaces et les normales, c'est éviter ces erreurs et préparer l'éclairage (<a href="../../cours/shaders/sh08-eclairage.html">SH8</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Les espaces, du local à l'écran</h3>
+            <ul>
+              <li><b>Object space</b>&nbsp;: coordonnées telles que modélisées (centrées sur l'objet).</li>
+              <li><b>World space</b>&nbsp;: après placement dans la scène (Model). Idéal pour des effets liés au monde (hauteur, position du soleil).</li>
+              <li><b>View space</b>&nbsp;: relatif à la caméra (View).</li>
+              <li><b>Clip space</b>&nbsp;: la projection finale (Projection), utilisée pour dessiner (rappel <a href="../../cours/shaders/sh03-vertex-shader.html">SH3</a>).</li>
+            </ul>
+
+            <h3>2. Les UV</h3>
+            <p>Les <b>UV</b> (rappel <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) attribuent à chaque point de la surface une coordonnée 2D dans [0,1]. Le fragment s'en sert pour échantillonner des textures (<a href="../../cours/shaders/sh06-textures.html">SH6</a>) et pour fabriquer des motifs/masques (vu en <a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a>).</p>
+
+            <h3>3. Les normales</h3>
+            <p>La <b>normale</b> est le vecteur perpendiculaire à la surface (rappel <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>). Elle indique « vers où regarde » la surface&nbsp;: c'est l'ingrédient n°1 de l'éclairage (l'angle entre normale et lumière donne l'intensité diffuse). Une normal map (rappel <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) perturbe cette normale par pixel pour simuler du relief.</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// Visualiser la normale (monde) comme couleur : un classique de debug
+float4 frag(float3 normalWS : TEXCOORD1) : SV_Target
+{
+    float3 n = normalize(normalWS);     // normaliser (longueur 1)
+    return float4(n * 0.5 + 0.5, 1.0);  // mapper [-1,1] -> [0,1] pour l'affichage
+}</code></pre>
+            </div>
+
+            <h3>4. Travailler dans le bon espace</h3>
+            <p>Règle pratique&nbsp;: pour l'éclairage, on met souvent normale et directions en <b>world space</b> (ou view space), de façon cohérente. Mélanger les espaces (normale en objet, lumière en monde) donne un éclairage faux. On transforme explicitement quand il le faut.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Object, World, View, Clip et la normale perpendiculaire à la surface">
+                <defs><marker id="sh05ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker></defs>
+                <g class="svg-text" font-size="10">
+                  <rect x="20" y="58" width="96" height="40" rx="7" class="svg-surface" stroke="#313c4c"/><text x="68" y="82" text-anchor="middle">Object</text>
+                  <rect x="142" y="58" width="96" height="40" rx="7" class="svg-surface" stroke="#313c4c"/><text x="190" y="82" text-anchor="middle">World</text>
+                  <rect x="264" y="58" width="96" height="40" rx="7" class="svg-surface" stroke="#313c4c"/><text x="312" y="82" text-anchor="middle">View</text>
+                  <rect x="386" y="58" width="96" height="40" rx="7" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="434" y="82" text-anchor="middle">Clip</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.6" marker-end="url(#sh05ar)">
+                  <line x1="116" y1="78" x2="140" y2="78"/><line x1="238" y1="78" x2="262" y2="78"/><line x1="360" y1="78" x2="384" y2="78"/>
+                </g>
+                <g stroke="#7aa2f7" stroke-width="1.6"><line x1="540" y1="100" x2="600" y2="100"/><line x1="570" y1="100" x2="570" y2="56" marker-end="url(#sh05ar)"/></g>
+                <text x="572" y="120" text-anchor="middle" class="svg-dim" font-size="9.5">normale ⟂ surface</text>
+              </svg>
+              <figcaption>La même donnée vit dans différents espaces&nbsp;; la normale (à droite) est perpendiculaire à la surface.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Affiche les UV en couleur (rappel <a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a>) pour vérifier le dépliage.</li>
+              <li>Affiche la normale monde en couleur&nbsp;: les faces orientées différemment prennent des teintes différentes.</li>
+              <li>Teinte l'objet selon sa hauteur en <b>world space</b> (position monde Y).</li>
+              <li>Compare avec la même teinte en <b>object space</b>&nbsp;: l'effet ne « tient » plus quand l'objet bouge.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Éclairage incohérent quand l'objet tourne.</div>
+                <div class="pi-cause"><b>Cause</b>Normale et lumière dans des espaces différents.</div>
+                <div class="pi-fix"><b>Correction</b>Mets-les dans le même espace (souvent world) avant de calculer.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes normales donnent des couleurs « plates ».</div>
+                <div class="pi-cause"><b>Cause</b>Normale non normalisée ou non transmise.</div>
+                <div class="pi-fix"><b>Correction</b>Normalise (<code>normalize</code>) et transmets bien la normale.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon effet « hauteur » bouge avec l'objet.</div>
+                <div class="pi-cause"><b>Cause</b>Tu utilises la position en object space.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise la position world space pour un effet lié au monde.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Texture étirée/mal placée.</div>
+                <div class="pi-cause"><b>Cause</b>UV incorrects (dépliage), pas un problème de shader.</div>
+                <div class="pi-fix"><b>Correction</b>Vérifie l'unwrap (rappel <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Visualise UV et normale monde en couleur (deux modes de debug).</li>
+                <li>Teinte l'objet selon sa hauteur monde et vérifie que l'effet reste fixe quand l'objet se déplace verticalement.</li>
+                <li>Refais-le en object space et constate la différence.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Tu sais visualiser UV et normales.</li>
+                  <li>Tu choisis l'espace selon l'effet voulu.</li>
+                  <li>Tu normalises tes normales.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert la normale dans un shader ?","a":["Indiquer l'orientation de la surface : base du calcul d'éclairage","À stocker la couleur","À compresser la texture","À trier les objets"],"correct":0,"explain":"La normale (perpendiculaire à la surface) sert à mesurer l'angle avec la lumière : c'est l'ingrédient central du diffus et du spéculaire (SH8)."},
+  {"q":"Pour un effet « teinte selon la hauteur dans la scène », quel espace utiliser ?","a":["World space (position monde)","Object space","Clip space","UV space"],"correct":0,"explain":"La hauteur « dans le monde » est une donnée world space. En object space, l'effet suivrait l'objet (faux si l'objet se déplace/tourne)."},
+  {"q":"Pourquoi normaliser une normale avant de l'utiliser ?","a":["Pour qu'elle ait une longueur de 1 (les calculs d'angle/éclairage l'exigent)","Pour la rendre plus colorée","Pour réduire le nombre de polygones","Ce n'est jamais nécessaire"],"correct":0,"explain":"L'interpolation peut raccourcir une normale ; les formules d'éclairage supposent une longueur 1. normalize() la remet à l'unité pour un résultat correct."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Affiche la normale monde en couleur et tourne l'objet&nbsp;: observe les faces changer de teinte selon leur orientation.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>return float4(normalize(normalWS) * 0.5 + 0.5, 1). Les faces tournées vers +X/+Y/+Z prennent des teintes distinctes&nbsp;: c'est un excellent mode de debug pour vérifier les normales.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un dégradé sol→sommet basé sur la position monde Y (ex. roche en bas, neige en haut).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Récupère la position monde (transmise par le vertex), normalise Y sur une plage (smoothstep), puis lerp entre deux couleurs. L'effet reste fixe dans le monde quand l'objet se déplace.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compare l'effet précédent en object space vs world space et explique la différence.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>En object space, la « hauteur » est celle du modèle&nbsp;: si l'objet monte/tourne, l'effet le suit (la neige reste « en haut du modèle »). En world space, la neige reste liée à l'altitude réelle&nbsp;: c'est ce qu'on veut pour un décor.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Espaces&nbsp;: object → world → view → clip&nbsp;; choisis selon l'effet (monde pour la scène).</li>
+                <li>Les <b>UV</b> situent un point sur la surface (textures, motifs, masques).</li>
+                <li>La <b>normale</b> oriente la surface&nbsp;: base de l'éclairage&nbsp;; pense à la <b>normaliser</b>.</li>
+                <li>Garde normale et lumière dans le <b>même espace</b>.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Object / World / View / Clip space</b> — étapes d'espace de la géométrie, du local à l'écran.</p>
+              <p><b>UV</b> — coordonnées de texture (0→1) sur la surface.</p>
+              <p><b>Normale</b> — vecteur perpendiculaire à la surface, clé de l'éclairage.</p>
+              <p><b>normalize</b> — ramène un vecteur à une longueur de 1.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh06-textures.html">SH6 — Textures &amp; échantillonnage</a>.</li>
+              <li><a href="../../cours/shaders/sh08-eclairage.html">SH8 — Éclairage de base</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

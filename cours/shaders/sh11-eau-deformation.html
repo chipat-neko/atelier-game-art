@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH11 — Eau & déformation de géométrie · Atelier Game Art</title>
+  <meta name="description" content="Animer une surface dans un shader : panning d'UV, déplacement de sommets (vagues) et normales animées pour l'eau ou le vent.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh11";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Eau &amp; déformation</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH11 — Eau &amp; déformation de géométrie</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh03-vertex-shader.html">SH3 — Vertex</a> et <a href="../../cours/shaders/sh06-textures.html">SH6 — Textures</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Faire défiler une texture (<b>panning</b>) pour simuler un flux.</li>
+                <li>Déplacer les sommets (<b>vertex displacement</b>) pour des vagues.</li>
+                <li>Animer/perturber les normales pour le scintillement de l'eau.</li>
+                <li>Combiner ces techniques pour une eau ou un drapeau au vent.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>L'eau, l'herbe, les drapeaux&nbsp;: tout ce qui « bouge » sans animation pré-faite vient souvent du shader. La déformation de sommets et le défilement de normales sont des techniques clés et économiques.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Panning d'UV</h3>
+            <p>Faire défiler une texture (rappel <a href="../../cours/shaders/sh06-textures.html">SH6</a>) en animant l'offset UV avec le temps donne une illusion de mouvement (courant d'eau, nuages). En superposant deux couches à vitesses/échelles différentes, on évite la répétition trop visible.</p>
+
+            <h3>2. Vertex displacement (vagues)</h3>
+            <p>Dans le vertex shader (rappel <a href="../../cours/shaders/sh03-vertex-shader.html">SH3</a>), on décale la hauteur des sommets avec une somme de sinus dépendant de la position et du temps&nbsp;: c'est la base d'une houle.</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// Dans le vertex shader : vague simple sur l'axe Y
+float vague = sin(positionWS.x * _Freq + _Temps * _Vitesse) * _Amplitude;
+positionWS.y += vague;     // puis on reprojette en clip space</code></pre>
+            </div>
+
+            <h3>3. Normales animées</h3>
+            <p>Pour le scintillement, on ne déforme pas forcément la géométrie&nbsp;: on fait défiler une (ou deux) <b>normal map</b> pour perturber l'éclairage en surface. C'est l'astuce classique d'une eau « plate mais vivante ».</p>
+
+            <h3>4. Composer une eau</h3>
+            <p>Une eau crédible combine&nbsp;: léger displacement de vagues (vertex), deux normal maps qui défilent en sens croisés (scintillement), un Fresnel (<a href="../../cours/shaders/sh09-pbr.html">SH9</a>) pour la réflexivité aux bords, et de la transparence. Chaque morceau vient des leçons précédentes.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Plan plat déformé en vagues par un sinus dans le vertex shader">
+                <line x1="40" y1="60" x2="300" y2="60" stroke="#7aa2f7" stroke-width="2"/>
+                <text x="170" y="48" text-anchor="middle" class="svg-dim" font-size="10">plan plat</text>
+                <path d="M340 70 Q370 40 400 70 Q430 100 460 70 Q490 40 520 70 Q550 100 580 70" fill="none" stroke="#d946ef" stroke-width="2"/>
+                <text x="460" y="48" text-anchor="middle" class="svg-dim" font-size="10">+ sin(x·freq + temps) → vagues</text>
+                <text x="320" y="120" text-anchor="middle" class="svg-dim" font-size="10">Le vertex shader décale la hauteur de chaque sommet selon un sinus animé.</text>
+              </svg>
+              <figcaption>Une houle simple&nbsp;: décaler la hauteur des sommets avec un sinus de la position et du temps.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sur un plan, fais défiler une texture (panning) pour un courant.</li>
+              <li>Ajoute un displacement de vagues dans le vertex shader (sinus, amplitude/fréquence réglables).</li>
+              <li>Fais défiler une normal map pour le scintillement de surface.</li>
+              <li>Ajoute Fresnel + transparence pour finir l'eau.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes vagues sont « facettées » / pas lisses.</div>
+                <div class="pi-cause"><b>Cause</b>Le plan a trop peu de sommets pour le displacement.</div>
+                <div class="pi-fix"><b>Correction</b>Subdivise le plan (plus de sommets) ou utilise des normal maps.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Répétition trop visible de la texture.</div>
+                <div class="pi-cause"><b>Cause</b>Une seule couche de panning.</div>
+                <div class="pi-fix"><b>Correction</b>Superpose deux couches à vitesses/échelles différentes.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'éclairage ne suit pas mes vagues.</div>
+                <div class="pi-cause"><b>Cause</b>Tu déplaces la position mais pas les normales.</div>
+                <div class="pi-fix"><b>Correction</b>Recalcule/normal-mappe les normales après déformation.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le mouvement dépend du framerate.</div>
+                <div class="pi-cause"><b>Cause</b>Tu n'utilises pas la variable de temps du moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Pilote l'animation par le temps fourni par le moteur.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un courant par panning d'UV (deux couches).</li>
+                <li>Ajoute des vagues par vertex displacement (réglables).</li>
+                <li>Combine normal map animée + Fresnel + transparence pour une eau.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le panning n'a pas de répétition criante.</li>
+                  <li>Les vagues sont lisses (assez de sommets).</li>
+                  <li>L'eau scintille et réagit aux bords (Fresnel).</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Dans quel shader réalise-t-on le déplacement de sommets (vagues) ?","a":["Le vertex shader (il contrôle la position des sommets)","Le fragment shader","Aucun, c'est une animation pré-faite","Le depth buffer"],"correct":0,"explain":"Le vertex shader manipule la position des sommets : on y ajoute un sinus de la position et du temps pour créer une houle. Le fragment, lui, colore les pixels."},
+  {"q":"Pourquoi superposer deux couches de panning ?","a":["Pour casser la répétition visible d'une seule texture qui défile","Pour doubler la résolution","Pour réduire le nombre de polygones","Pour désactiver le blending"],"correct":0,"explain":"Deux couches à vitesses et échelles différentes se mélangent et masquent le motif répétitif d'une couche unique : l'eau/les nuages paraissent plus naturels."},
+  {"q":"Comment faire « vivre » une eau plate sans déformer la géométrie ?","a":["Faire défiler une (ou deux) normal map pour perturber l'éclairage","Augmenter la roughness à 1","Supprimer la normale","Désactiver la lumière"],"correct":0,"explain":"Des normal maps animées perturbent les normales en surface : l'éclairage scintille comme sur de l'eau, sans coût de géométrie. Astuce très répandue."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Fais défiler une normal map sur un plan pour simuler un scintillement d'eau (sans déformer la géométrie).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Échantillonne la normal map à <code>uv + temps * vitesse</code>, applique-la à l'éclairage. Ajoute une 2ᵉ couche en sens opposé pour un effet plus riche.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Ajoute des vagues par vertex displacement sur un plan subdivisé, avec amplitude/fréquence réglables.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>positionWS.y += sin(positionWS.x * freq + temps * vitesse) * amplitude. Subdivise assez le plan pour des vagues lisses. Combine 2-3 sinus de fréquences différentes pour une houle moins régulière.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compose une eau complète&nbsp;: vagues (vertex) + normal maps animées + Fresnel + transparence.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Empile les briques&nbsp;: déformation des sommets, deux normal maps en sens croisés pour le scintillement, Fresnel pour la réflexivité des bords, matériau transparent. Chaque morceau vient des leçons précédentes&nbsp;: l'eau est leur somme.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Panning</b> d'UV (animer l'offset) pour un flux&nbsp;; deux couches pour casser la répétition.</li>
+                <li><b>Vertex displacement</b> (sinus + temps) pour des vagues&nbsp;; subdivise assez la géométrie.</li>
+                <li><b>Normal maps animées</b> pour un scintillement sans déformer la géométrie.</li>
+                <li>Une eau = somme de briques&nbsp;: vagues + normales + Fresnel + transparence.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Panning</b> — défilement d'une texture en animant son offset UV.</p>
+              <p><b>Vertex displacement</b> — déplacement des sommets dans le vertex shader (vagues, vent).</p>
+              <p><b>Normal map animée</b> — normal map dont l'UV défile pour perturber l'éclairage.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh12-toon-npr.html">SH12 — Toon &amp; NPR</a>.</li>
+              <li><a href="../../cours/shaders/sh13-editeurs-noeuds.html">SH13 — Éditeurs à nœuds</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

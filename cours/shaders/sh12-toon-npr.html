@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH12 — Toon & rendu non photoréaliste · Atelier Game Art</title>
+  <meta name="description" content="Cel shading par bandes (step), contours (outline) et stylisation : les bases du rendu non photoréaliste (NPR).">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh12";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Toon &amp; NPR</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH12 — Toon &amp; rendu non photoréaliste</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh07-maths.html">SH7 — step</a> et <a href="../../cours/shaders/sh08-eclairage.html">SH8 — diffus</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Transformer un éclairage continu en <b>bandes</b> (cel shading) avec <code>step</code>.</li>
+                <li>Ajouter un <b>contour</b> (outline).</li>
+                <li>Comprendre la logique du <b>NPR</b> (stylisation par seuils).</li>
+                <li>Combiner toon + spéculaire stylisé pour un look « anime/cartoon ».</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le rendu non photoréaliste (NPR) est partout&nbsp;: jeux « anime », cartoon, bande dessinée. Il repose sur des seuils appliqués à l'éclairage (au lieu d'un dégradé continu) et sur des contours — des techniques simples, très expressives.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Cel shading : quantifier le diffus</h3>
+            <p>On reprend le diffus de Lambert (<a href="../../cours/shaders/sh08-eclairage.html">SH8</a>) mais, au lieu de l'utiliser tel quel, on le <b>seuil</b> en quelques niveaux avec <code>step</code> (rappel <a href="../../cours/shaders/sh07-maths.html">SH7</a>)&nbsp;: une zone claire et une zone sombre nettes (parfois 3 bandes).</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>float diffus = max(0.0, dot(N, L));
+float bandes = step(0.5, diffus);          // 2 tons : ombre / lumière
+// ou plusieurs bandes : floor(diffus * 3) / 3
+float3 couleur = albedo * lerp(_Ombre, 1.0, bandes);</code></pre>
+            </div>
+
+            <h3>2. Contour (outline)</h3>
+            <p>Deux approches classiques&nbsp;: <b>inverted hull</b> (dupliquer le mesh, l'agrandir le long des normales, le peindre en noir et l'afficher en face arrière) ou un <b>post-process</b> qui détecte les bords (profondeur/normales). L'inverted hull est simple et très répandu pour les personnages.</p>
+
+            <h3>3. Spéculaire stylisé</h3>
+            <p>On peut aussi seuiller le spéculaire pour obtenir un <b>reflet en tache nette</b> (style manga), au lieu d'un dégradé. Même principe&nbsp;: <code>step</code> sur le terme spéculaire.</p>
+
+            <h3>4. La philosophie NPR</h3>
+            <p>Le NPR ne cherche pas le réalisme mais une <b>lisibilité stylisée</b>&nbsp;: aplats, contours, peu de transitions. On remplace les dégradés par des seuils, et on assume des choix artistiques (couleurs d'ombre décalées en teinte, etc.).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Dégradé continu transformé en deux bandes nettes par un seuil">
+                <defs><linearGradient id="sh12g" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1b2230"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
+                <rect x="60" y="40" width="220" height="50" rx="6" fill="url(#sh12g)"/>
+                <text x="170" y="108" text-anchor="middle" class="svg-dim" font-size="10">diffus continu</text>
+                <rect x="360" y="40" width="110" height="50" rx="6" fill="#1b2230"/><rect x="470" y="40" width="110" height="50" rx="6" fill="#fff"/>
+                <text x="470" y="108" text-anchor="middle" class="svg-dim" font-size="10">après step → 2 bandes (toon)</text>
+              </svg>
+              <figcaption>Le cel shading remplace le dégradé d'éclairage par quelques bandes nettes (seuils).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Calcule le diffus, puis applique <code>step(0.5, diffus)</code>&nbsp;: deux tons nets apparaissent.</li>
+              <li>Passe à 3 bandes (<code>floor(diffus * 3)/3</code>) et choisis des couleurs d'ombre.</li>
+              <li>Ajoute un contour par inverted hull (mesh dupliqué, agrandi le long des normales, faces arrière noires).</li>
+              <li>Stylise le spéculaire en tache nette avec un <code>step</code>.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mes bandes « bavent » (aliasing).</div>
+                <div class="pi-cause"><b>Cause</b><code>step</code> crée un bord dur sensible à l'aliasing.</div>
+                <div class="pi-fix"><b>Correction</b>Adoucis légèrement avec <code>smoothstep</code> (anti-aliasing du seuil).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon outline disparaît selon l'angle.</div>
+                <div class="pi-cause"><b>Cause</b>Inverted hull mal réglé (épaisseur, faces).</div>
+                <div class="pi-fix"><b>Correction</b>Affiche les faces arrière (cull front) et ajuste l'épaisseur selon la distance.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le look est terne.</div>
+                <div class="pi-cause"><b>Cause</b>Couleur d'ombre = simple assombrissement.</div>
+                <div class="pi-fix"><b>Correction</b>Décale la teinte de l'ombre (vers le bleu/violet) pour un rendu plus riche.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Trop de bandes = rendu « sale ».</div>
+                <div class="pi-cause"><b>Cause</b>Quantification trop fine (proche du dégradé).</div>
+                <div class="pi-fix"><b>Correction</b>Limite à 2-3 bandes pour un vrai look toon.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée un cel shading 2 bandes, puis 3 bandes, avec couleur d'ombre.</li>
+                <li>Ajoute un contour (inverted hull).</li>
+                <li>Stylise le spéculaire en tache nette.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'éclairage est en aplats nets (pas un dégradé).</li>
+                  <li>Le contour entoure le personnage.</li>
+                  <li>Le look reste lisible et stylisé.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment obtient-on l'aspect « bandes » du cel shading ?","a":["En seuillant le diffus (step / quantification) au lieu de l'utiliser en dégradé","En augmentant la roughness","En supprimant la normale","En doublant la texture"],"correct":0,"explain":"On prend le diffus de Lambert et on le quantifie en quelques niveaux (step, floor) : le dégradé continu devient des aplats nets, caractéristiques du toon."},
+  {"q":"En quoi consiste la technique d'outline « inverted hull » ?","a":["Dupliquer le mesh, l'agrandir le long des normales, le peindre en noir et n'afficher que ses faces arrière","Flouter l'image","Ajouter une lumière","Augmenter la résolution"],"correct":0,"explain":"On rend une copie légèrement gonflée du mesh, en noir, avec culling des faces avant : il ne reste qu'un liseré sur les bords, le contour."},
+  {"q":"Quelle est la philosophie du NPR ?","a":["Privilégier une lisibilité stylisée (aplats, contours) plutôt que le réalisme","Reproduire la physique exacte de la lumière","Maximiser le nombre de polygones","Supprimer les couleurs"],"correct":0,"explain":"Le NPR assume des choix artistiques : seuils au lieu de dégradés, contours, teintes d'ombre décalées. L'objectif est le style et la lisibilité, pas le photoréalisme."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Transforme un diffus continu en 2 bandes nettes, puis adoucis légèrement le bord.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>bandes = step(0.5, diffus) pour 2 tons&nbsp;; remplace par smoothstep(0.48, 0.52, diffus) pour un bord anti-aliasé. Choisis une couleur d'ombre légèrement teintée (pas un gris neutre).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Ajoute un contour par inverted hull sur un personnage et règle l'épaisseur.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée une passe qui pousse les sommets le long des normales (position += normal * épaisseur), rend en noir avec Cull Front. Module l'épaisseur par la distance caméra pour un trait constant à l'écran.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compose un look « anime »&nbsp;: 2-3 bandes, ombre teintée, spéculaire en tache nette et contour.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Combine cel shading (bandes), une couleur d'ombre décalée en teinte, un spéculaire seuillé (step) pour une tache, et un outline. Reste sobre&nbsp;: 2-3 bandes suffisent pour un rendu propre et lisible.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li><b>Cel shading</b>&nbsp;: seuiller le diffus en 2-3 bandes (<code>step</code>/quantification).</li>
+                <li><b>Outline</b>&nbsp;: inverted hull (mesh gonflé, faces arrière noires) ou post-process de bords.</li>
+                <li>Stylise aussi le <b>spéculaire</b> (tache nette).</li>
+                <li>Le NPR vise la <b>lisibilité stylisée</b>&nbsp;: aplats, contours, teintes d'ombre choisies.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Cel shading</b> — éclairage quantifié en bandes (rendu cartoon/anime).</p>
+              <p><b>Outline</b> — contour stylisé&nbsp;; technique courante&nbsp;: inverted hull.</p>
+              <p><b>NPR</b> — Non-Photorealistic Rendering&nbsp;: rendu stylisé non réaliste.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh13-editeurs-noeuds.html">SH13 — Éditeurs à nœuds</a>.</li>
+              <li><a href="../../cours/shaders/sh14-performance.html">SH14 — Performance</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH03 — Le vertex shader · Atelier Game Art</title>
+  <meta name="description" content="Transformer les sommets : matrices model/view/projection (MVP), position en clip space et données passées au fragment.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh03";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Vertex shader</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH03 — Le vertex shader</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2 — Pipeline</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Le rôle du vertex shader&nbsp;: amener un sommet de l'objet vers l'écran.</li>
+                <li>Ce que font les matrices <b>Model</b>, <b>View</b>, <b>Projection</b> (MVP).</li>
+                <li>Ce qu'est le <b>clip space</b> (la sortie obligatoire du vertex).</li>
+                <li>Passer des données (UV, normale) du vertex vers le fragment.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Avant de colorer quoi que ce soit, il faut placer correctement la géométrie à l'écran. Le vertex shader fait ce travail pour chaque sommet, et c'est aussi là qu'on déforme la géométrie (vagues, vent, herbe — vu en <a href="../../cours/shaders/sh11-eau-deformation.html">SH11</a>).</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. La chaîne des espaces (MVP)</h3>
+            <p>Un sommet part dans l'espace de l'objet et doit arriver à l'écran. Trois matrices l'y emmènent&nbsp;:</p>
+            <ul>
+              <li><b>Model</b>&nbsp;: objet → monde (place/oriente/échelonne l'objet dans la scène).</li>
+              <li><b>View</b>&nbsp;: monde → caméra (le monde vu depuis l'œil).</li>
+              <li><b>Projection</b>&nbsp;: caméra → clip space (perspective/orthographique).</li>
+            </ul>
+            <p>On les combine en une matrice <b>MVP</b> et on l'applique à la position du sommet. (On détaille les espaces en <a href="../../cours/shaders/sh05-espaces-uv.html">SH5</a>.)</p>
+
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// Vertex shader : transformer la position du sommet vers l'écran
+struct Entree { float3 positionOS : POSITION; float2 uv : TEXCOORD0; };
+struct Sortie { float4 positionCS : SV_POSITION; float2 uv : TEXCOORD0; };
+
+Sortie vert(Entree v)
+{
+    Sortie o;
+    // positionOS = position en espace objet ; mul par MVP -> clip space
+    o.positionCS = mul(MatriceMVP, float4(v.positionOS, 1.0));
+    o.uv = v.uv;          // on passe les UV au fragment
+    return o;
+}</code></pre>
+            </div>
+
+            <h3>2. La sortie obligatoire : la position en clip space</h3>
+            <p>Tout vertex shader DOIT produire la position du sommet en <b>clip space</b> (souvent nommée <code>SV_POSITION</code> en HLSL, <code>gl_Position</code> en GLSL). C'est à partir d'elle que le GPU sait où dessiner le triangle. Le reste (UV, normales, couleurs) est facultatif et sert au fragment.</p>
+
+            <h3>3. Passer des données au fragment (varyings)</h3>
+            <p>Le vertex peut transmettre des valeurs au fragment&nbsp;: UV, normale, position monde… Ces sorties sont <b>interpolées</b> (rappel <a href="../../cours/shaders/sh02-pipeline-gpu.html">SH2</a>) pour chaque pixel. C'est ainsi que le fragment connaît l'UV exact d'un pixel pour échantillonner une texture.</p>
+
+            <h3>4. Déformer la géométrie</h3>
+            <p>Comme on contrôle la position du sommet, on peut la <b>modifier</b> avant projection&nbsp;: ajouter un sinus sur la hauteur pour des vagues, décaler selon le temps pour du vent. C'est la base des effets de déplacement (<a href="../../cours/shaders/sh11-eau-deformation.html">SH11</a>).</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Sommet en espace objet transformé par Model, View, Projection vers le clip space">
+                <defs><marker id="sh03ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker></defs>
+                <g class="svg-text" font-size="10">
+                  <rect x="14" y="58" width="100" height="42" rx="7" class="svg-surface" stroke="#313c4c"/><text x="64" y="76" text-anchor="middle">Objet</text><text x="64" y="90" text-anchor="middle" class="svg-dim">positionOS</text>
+                  <rect x="140" y="58" width="90" height="42" rx="7" fill="#d946ef" fill-opacity="0.12" stroke="#d946ef"/><text x="185" y="83" text-anchor="middle">Model</text>
+                  <rect x="256" y="58" width="90" height="42" rx="7" fill="#d946ef" fill-opacity="0.12" stroke="#d946ef"/><text x="301" y="83" text-anchor="middle">View</text>
+                  <rect x="372" y="58" width="110" height="42" rx="7" fill="#d946ef" fill-opacity="0.12" stroke="#d946ef"/><text x="427" y="83" text-anchor="middle">Projection</text>
+                  <rect x="508" y="58" width="116" height="42" rx="7" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="566" y="76" text-anchor="middle">Clip space</text><text x="566" y="90" text-anchor="middle" class="svg-dim">→ écran</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.6" marker-end="url(#sh03ar)">
+                  <line x1="114" y1="79" x2="138" y2="79"/><line x1="230" y1="79" x2="254" y2="79"/><line x1="346" y1="79" x2="370" y2="79"/><line x1="482" y1="79" x2="506" y2="79"/>
+                </g>
+              </svg>
+              <figcaption>Le vertex shader enchaîne Model → View → Projection pour amener chaque sommet à l'écran (clip space).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Dans un shader (code ou graph), repère la transformation de position (souvent une fonction utilitaire « Object → Clip »).</li>
+              <li>Ajoute un petit décalage constant à la position du sommet&nbsp;: l'objet entier se déplace.</li>
+              <li>Multiplie le décalage par le temps&nbsp;: l'objet glisse (animation par vertex).</li>
+              <li>Passe l'UV au fragment et affiche-le comme couleur pour vérifier la transmission.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>L'objet n'apparaît pas / est déformé n'importe comment.</div>
+                <div class="pi-cause"><b>Cause</b>Position non transformée en clip space (MVP manquant ou mauvais ordre).</div>
+                <div class="pi-fix"><b>Correction</b>Applique bien la transformation Object→Clip (MVP) à la position.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon déplacement de vertex part dans le mauvais sens.</div>
+                <div class="pi-cause"><b>Cause</b>Tu déplaces dans le mauvais espace (objet vs monde).</div>
+                <div class="pi-fix"><b>Correction</b>Choisis l'espace explicitement avant/après la matrice Model.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le fragment n'a pas les bons UV.</div>
+                <div class="pi-cause"><b>Cause</b>Tu n'as pas transmis l'UV depuis le vertex.</div>
+                <div class="pi-fix"><b>Correction</b>Ajoute l'UV en sortie du vertex (varying) pour qu'il soit interpolé.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon animation de vertex « saccade ».</div>
+                <div class="pi-cause"><b>Cause</b>Tu n'utilises pas le temps fourni par le moteur.</div>
+                <div class="pi-fix"><b>Correction</b>Utilise la variable de temps du moteur pour une animation continue.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Déplace tous les sommets d'un objet d'un offset constant, puis animé par le temps.</li>
+                <li>Transmets l'UV au fragment et affiche-le (R=u, G=v).</li>
+                <li>Explique pourquoi la position en clip space est obligatoire.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'objet se déplace via le vertex shader.</li>
+                  <li>Les UV transmis s'affichent comme dégradé.</li>
+                  <li>Tu sais ce que produit obligatoirement un vertex shader.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que font, dans l'ordre, les matrices M, V, P ?","a":["Model : objet→monde ; View : monde→caméra ; Projection : caméra→clip space","Projection→View→Model dans cet ordre","Elles colorent les pixels","Elles chargent les textures"],"correct":0,"explain":"On part de l'espace objet : Model place dans le monde, View regarde depuis la caméra, Projection projette vers le clip space (puis l'écran)."},
+  {"q":"Quelle est la sortie OBLIGATOIRE d'un vertex shader ?","a":["La position du sommet en clip space (SV_POSITION / gl_Position)","La couleur du pixel","Le nom de la texture","Le nombre de triangles"],"correct":0,"explain":"Sans position en clip space, le GPU ne sait pas où dessiner le triangle. Les autres sorties (UV, normale) sont facultatives et destinées au fragment."},
+  {"q":"Pourquoi peut-on déformer la géométrie dans le vertex shader ?","a":["Parce qu'on y contrôle la position de chaque sommet avant projection","Parce qu'il colore les pixels","Parce qu'il trie les objets","On ne peut pas déformer la géométrie"],"correct":0,"explain":"Le vertex shader manipule la position des sommets : en la modifiant (sinus, temps), on crée vagues, vent, herbe animée — avant la projection à l'écran."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Applique un offset constant à la position des sommets et observe l'objet se déplacer entièrement.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute un vecteur constant à la position (en espace objet ou monde) avant la transformation finale. Tout l'objet bouge d'un bloc&nbsp;: c'est le vertex shader qui agit, pas le Transform du moteur.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Anime un léger mouvement (sinus du temps) sur la hauteur des sommets pour un effet de respiration/flottement.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>position.y += sin(temps) * amplitude. Le moteur fournit une variable de temps. En jouant sur la fréquence/amplitude, tu obtiens un flottement&nbsp;; en ajoutant la position comme phase, des vagues (voir SH11).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Transmets la position monde au fragment et utilise-la (par ex. teinter selon la hauteur).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Calcule la position monde dans le vertex (Model appliqué), passe-la en sortie. Interpolée par pixel, elle permet au fragment de varier la couleur selon l'altitude (dégradé sol→ciel, brouillard de hauteur…).</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le vertex shader amène chaque sommet de l'espace objet au <b>clip space</b> via <b>MVP</b>.</li>
+                <li>Sa sortie obligatoire&nbsp;: la <b>position en clip space</b>.</li>
+                <li>Il transmet au fragment des données (UV, normale…) qui seront <b>interpolées</b>.</li>
+                <li>En modifiant la position des sommets, on <b>déforme</b> la géométrie (vagues, vent).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Matrices MVP</b> — Model, View, Projection&nbsp;: la chaîne objet → monde → caméra → écran.</p>
+              <p><b>Clip space</b> — espace de sortie du vertex shader, à partir duquel le GPU dessine.</p>
+              <p><b>Varying</b> — donnée transmise du vertex au fragment, interpolée par pixel.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh04-fragment-shader.html">SH4 — Le fragment shader</a>.</li>
+              <li><a href="../../cours/shaders/sh05-espaces-uv.html">SH5 — Espaces, UV &amp; normales</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

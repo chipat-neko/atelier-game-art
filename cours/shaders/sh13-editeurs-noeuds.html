@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH13 — Éditeurs à nœuds (Graph) · Atelier Game Art</title>
+  <meta name="description" content="Penser shader sans code : Shader Graph (Unity), Material Editor (Unreal) et VisualShader (Godot), et la correspondance nœuds ↔ code.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh13";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>Éditeurs à nœuds</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH13 — Éditeurs à nœuds (Graph)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh07-maths.html">SH7</a> et <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Reconnaître Shader Graph (Unity), Material Editor (Unreal), VisualShader (Godot).</li>
+                <li>Faire le lien <b>nœud ↔ fonction de code</b> (un nœud = une opération).</li>
+                <li>Construire un petit effet par nœuds (Fresnel, panning…).</li>
+                <li>Choisir entre code et nœuds selon le contexte.</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Les éditeurs à nœuds rendent les shaders accessibles aux artistes et accélèrent l'itération. Comme tu connais déjà les opérations (dot, lerp, step, Fresnel…), passer aux nœuds est immédiat&nbsp;: chaque nœud correspond à une fonction vue dans les leçons précédentes.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. Un nœud = une opération</h3>
+            <p>Dans un graph, on relie des nœuds&nbsp;: une texture (sample), une multiplication, un <code>Lerp</code>, un <code>Fresnel</code>, un <code>Time</code>… jusqu'au nœud de sortie (Base Color, Emission, etc.). C'est exactement le code de fragment, dessiné. Le <b>flux de données</b> va de gauche (entrées) à droite (sortie).</p>
+
+            <h3>2. Les trois grands éditeurs</h3>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Moteur</th><th>Éditeur</th><th>Notes</th></tr></thead>
+                <tbody>
+                  <tr><td>Unity</td><td><b>Shader Graph</b></td><td>Master node (URP/HDRP)&nbsp;; sous-graphes réutilisables.</td></tr>
+                  <tr><td>Unreal</td><td><b>Material Editor</b></td><td>Master Material + Material Instances (paramètres).</td></tr>
+                  <tr><td>Godot</td><td><b>VisualShader</b></td><td>Alternative au code de shader Godot.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3. Correspondance nœud ↔ code</h3>
+            <p>Pour penser en nœuds, traduis ce que tu sais&nbsp;: <code>lerp(a,b,t)</code> → nœud <em>Lerp</em>&nbsp;; <code>dot(N,V)</code> → nœud <em>Dot</em>&nbsp;; <code>pow</code> → nœud <em>Power</em>&nbsp;; échantillonner → <em>Sample Texture 2D</em>&nbsp;; <code>frac</code> → <em>Fraction</em>. Le Fresnel et le Time ont souvent leur nœud dédié.</p>
+
+            <h3>4. Quand code vs nœuds&nbsp;?</h3>
+            <p>Les <b>nœuds</b> sont parfaits pour itérer vite, rester lisibles et collaborer avec des artistes. Le <b>code</b> reste utile pour la logique très dense, la réutilisation fine ou des fonctions absentes du graph. Beaucoup d'éditeurs permettent d'insérer un nœud « Custom Function/Code » pour mélanger les deux.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Des nœuds reliés (texture, lerp) jusqu'à la sortie Base Color">
+                <defs><marker id="sh13ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#d946ef"/></marker></defs>
+                <g class="svg-text" font-size="10">
+                  <rect x="20" y="35" width="110" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="75" y="55" text-anchor="middle">Texture A</text>
+                  <rect x="20" y="85" width="110" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="75" y="105" text-anchor="middle">Texture B</text>
+                  <rect x="180" y="60" width="110" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="235" y="80" text-anchor="middle">Masque</text>
+                  <rect x="330" y="55" width="110" height="40" rx="6" fill="#d946ef" fill-opacity="0.15" stroke="#d946ef"/><text x="385" y="79" text-anchor="middle">Lerp</text>
+                  <rect x="480" y="55" width="140" height="40" rx="6" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="550" y="79" text-anchor="middle">Base Color</text>
+                </g>
+                <g stroke="#d946ef" stroke-width="1.5" marker-end="url(#sh13ar)" fill="none">
+                  <path d="M130 50 L328 65"/><path d="M130 100 L328 85"/><path d="M290 75 L328 75"/><path d="M440 75 L478 75"/>
+                </g>
+              </svg>
+              <figcaption>Un graph relie des nœuds (textures, masque, Lerp) jusqu'à la sortie&nbsp;: c'est le fragment shader, en visuel.</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Crée un Shader Graph/Material/VisualShader et relie une couleur à la sortie Base Color.</li>
+              <li>Ajoute un nœud Fresnel relié à l'Emission&nbsp;: contour lumineux (rappel <a href="../../cours/shaders/sh09-pbr.html">SH9</a>).</li>
+              <li>Ajoute un Time + Tiling/Offset pour faire défiler une texture (panning, <a href="../../cours/shaders/sh06-textures.html">SH6</a>).</li>
+              <li>Mélange deux textures avec un nœud Lerp piloté par un masque.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Je ne trouve pas le bon nœud.</div>
+                <div class="pi-cause"><b>Cause</b>Tu cherches par syntaxe code, pas par nom de nœud.</div>
+                <div class="pi-fix"><b>Correction</b>Traduis l'opération (lerp → Lerp, pow → Power) et cherche ce mot.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Mon graph ne compile pas.</div>
+                <div class="pi-cause"><b>Cause</b>Types incompatibles entre deux nœuds (float vs vecteur).</div>
+                <div class="pi-fix"><b>Correction</b>Adapte les dimensions (split/combine, ou un seul canal).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Le graph devient illisible.</div>
+                <div class="pi-cause"><b>Cause</b>Trop de nœuds sans regroupement.</div>
+                <div class="pi-fix"><b>Correction</b>Regroupe (groups), nomme, et crée des sous-graphes réutilisables.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Effet correct mais lourd.</div>
+                <div class="pi-cause"><b>Cause</b>Beaucoup de nœuds = beaucoup d'instructions par pixel.</div>
+                <div class="pi-fix"><b>Correction</b>Simplifie&nbsp;; les nœuds génèrent du code (voir <a href="../../cours/shaders/sh14-performance.html">SH14</a>).</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Refais en nœuds un effet déjà fait en code (Fresnel ou panning).</li>
+                <li>Expose des paramètres (couleur, vitesse) réglables sans rouvrir le graph.</li>
+                <li>Regroupe et nomme tes nœuds pour la lisibilité.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'effet par nœuds correspond à la version code.</li>
+                  <li>Les paramètres sont exposés.</li>
+                  <li>Le graph reste lisible.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce qu'un nœud dans un éditeur de shader visuel ?","a":["Une opération (texture, lerp, dot…) reliée à d'autres, jusqu'à la sortie","Un fichier image","Un type de lumière","Un mesh"],"correct":0,"explain":"Chaque nœud correspond à une opération du fragment (échantillonner, multiplier, lerp, Fresnel…). On relie les sorties aux entrées jusqu'au nœud final (Base Color, etc.)."},
+  {"q":"À quel nœud correspond la fonction lerp(a, b, t) ?","a":["Un nœud Lerp (interpolation linéaire)","Un nœud Texture","Un nœud Time","Un nœud Normal"],"correct":0,"explain":"Les fonctions de code ont leur équivalent visuel : lerp → Lerp, pow → Power, dot → Dot, frac → Fraction. Penser nœuds, c'est traduire ce qu'on sait déjà."},
+  {"q":"Quand le code reste-t-il préférable aux nœuds ?","a":["Pour une logique très dense, de la réutilisation fine ou des fonctions absentes du graph","Jamais, les nœuds font tout mieux","Toujours, les nœuds sont à éviter","Uniquement en 2D"],"correct":0,"explain":"Les nœuds excellent pour itérer et collaborer ; le code gère mieux la complexité dense. Un nœud « Custom Function » permet souvent de mélanger les deux approches."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Recrée un rim light (Fresnel) en nœuds et branche-le sur l'Emission.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Nœud Fresnel Effect → Multiply (par une couleur) → Emission. Expose la puissance et la couleur en paramètres pour régler sans rouvrir le graph.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Fais défiler une texture avec un nœud Time relié au Tiling/Offset (panning).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Time → Multiply (vitesse) → entrée Offset du nœud Tiling And Offset → UV du Sample Texture. La texture défile&nbsp;; ajoute une 2ᵉ couche pour casser la répétition.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Construis un sous-graphe réutilisable (ex. « blend deux textures par masque ») et utilise-le dans deux matériaux.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Regroupe Sample A, Sample B, masque et Lerp dans un sous-graphe avec des entrées exposées. Réutilise-le&nbsp;: tu factorises la logique, comme une fonction en code.</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un <b>nœud = une opération</b>&nbsp;; un graph = le fragment shader dessiné.</li>
+                <li>Shader Graph (Unity), Material Editor (Unreal), VisualShader (Godot) — même logique.</li>
+                <li>Traduis le code en nœuds&nbsp;: lerp→Lerp, pow→Power, dot→Dot…</li>
+                <li>Nœuds pour itérer/collaborer&nbsp;; code pour la logique dense (les deux se mélangent).</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Shader Graph / Material Editor / VisualShader</b> — éditeurs de shaders à nœuds (Unity/Unreal/Godot).</p>
+              <p><b>Nœud</b> — bloc visuel réalisant une opération, relié à d'autres.</p>
+              <p><b>Sous-graphe</b> — groupe de nœuds réutilisable (≈ fonction).</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh14-performance.html">SH14 — Performance</a>.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux (Unity)</a> et <a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

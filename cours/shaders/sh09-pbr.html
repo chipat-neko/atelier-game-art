@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SH09 — PBR en shader (concepts) · Atelier Game Art</title>
+  <meta name="description" content="Le PBR côté shader : metallic/roughness, Fresnel, conservation de l'énergie et notion de BRDF.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="sh09";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 123</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/shaders/sh01-introduction.html">Shaders</a><span class="sep">/</span>
+            <span>PBR en shader</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>SH09 — PBR en shader (concepts)</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-avance"><span class="badge-dot"></span>Avancé</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 10 · Shaders</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/shaders/sh08-eclairage.html">SH8 — Éclairage</a> et <a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectifs d'apprentissage</div>
+              <p>À la fin de cette leçon, tu sauras&nbsp;:</p>
+              <ul>
+                <li>Ce que change le PBR par rapport à Phong (modèle physique).</li>
+                <li>Le rôle de <b>metallic</b> et <b>roughness</b> dans le calcul.</li>
+                <li>Ce qu'est le <b>Fresnel</b> et la <b>conservation de l'énergie</b>.</li>
+                <li>La notion de <b>BRDF</b> (sans les équations complètes).</li>
+              </ul>
+            </div>
+
+            <h2>Pourquoi c'est important</h2>
+            <p>Le PBR (rappel <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>) est le standard des moteurs modernes&nbsp;: comprendre ses ingrédients côté shader permet de régler des matériaux crédibles et de savoir ce que font Shader Graph/Material Editor sous le capot.</p>
+
+            <h2>Théorie en profondeur</h2>
+
+            <h3>1. De Phong au PBR</h3>
+            <p>Phong (<a href="../../cours/shaders/sh08-eclairage.html">SH8</a>) est « bricolé »&nbsp;: il rend joli mais pas forcément physique. Le <b>PBR</b> repose sur des lois&nbsp;: <b>conservation de l'énergie</b> (une surface ne renvoie pas plus de lumière qu'elle n'en reçoit) et un modèle de microfacettes. Résultat&nbsp;: des matériaux crédibles sous n'importe quel éclairage.</p>
+
+            <h3>2. Metallic &amp; roughness</h3>
+            <ul>
+              <li><b>Metallic</b>&nbsp;: 0 = diélectrique (plastique, bois&nbsp;: diffus coloré + reflets faibles blancs), 1 = métal (pas de diffus&nbsp;; les reflets prennent la couleur de l'albédo).</li>
+              <li><b>Roughness</b>&nbsp;: dispersion des reflets. Lisse → reflet net (miroir)&nbsp;; rugueux → reflet large et mat. C'est le paramètre le plus expressif.</li>
+            </ul>
+
+            <h3>3. Le Fresnel</h3>
+            <p>Le <b>Fresnel</b> augmente la réflexion aux angles rasants (rappel <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>)&nbsp;: les bords d'un objet, vus de profil, réfléchissent davantage. On l'approxime souvent par <code>pow(1 - dot(N, V), 5)</code> (Schlick). C'est aussi l'effet de base du « rim light » (<a href="../../cours/shaders/sh10-effets.html">SH10</a>).</p>
+            <div class="codeblock" data-lang="HLSL">
+<pre><code>// Approximation de Fresnel (Schlick) : plus fort de profil
+float fresnel = pow(1.0 - saturate(dot(N, V)), 5.0);</code></pre>
+            </div>
+
+            <h3>4. La BRDF, en une phrase</h3>
+            <p>Une <b>BRDF</b> (Bidirectional Reflectance Distribution Function) décrit, pour une direction de lumière et une direction de vue données, quelle fraction de lumière est réfléchie. Les moteurs implémentent une BRDF PBR (souvent Cook-Torrance) qui combine diffus + spéculaire à microfacettes, piloté par metallic/roughness. On l'utilise sans réécrire les équations&nbsp;: l'important est de comprendre les <b>entrées</b>.</p>
+
+            <figure class="schema">
+              <svg viewBox="0 0 640 150" role="img" aria-label="Roughness fait passer un reflet net à un reflet diffus ; metallic colore le reflet">
+                <g class="svg-text" font-size="10">
+                  <text x="160" y="24" text-anchor="middle" class="svg-dim">roughness faible → reflet net</text>
+                  <circle cx="160" cy="85" r="40" fill="#222a3a" stroke="#313c4c"/><circle cx="148" cy="72" r="9" fill="#fff"/>
+                  <text x="470" y="24" text-anchor="middle" class="svg-dim">roughness élevée → reflet large</text>
+                  <circle cx="470" cy="85" r="40" fill="#222a3a" stroke="#313c4c"/><circle cx="458" cy="72" r="20" fill="#fff" fill-opacity="0.5"/>
+                </g>
+              </svg>
+              <figcaption>La <b>roughness</b> étale le reflet&nbsp;; le <b>metallic</b> en colore l'intensité (réflexions teintées par l'albédo).</figcaption>
+            </figure>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li>Sur un matériau PBR, fais varier la <b>roughness</b> de 0 à 1&nbsp;: observe le reflet passer de net à diffus.</li>
+              <li>Bascule <b>metallic</b> de 0 à 1&nbsp;: le diffus disparaît, les reflets prennent la teinte de l'albédo.</li>
+              <li>Ajoute un terme de Fresnel à l'émission&nbsp;: les bords s'illuminent (rim).</li>
+              <li>Note qu'à éclairage égal, un matériau PBR reste cohérent quand tu changes la lumière.</li>
+            </ol>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Métal qui paraît « plastique ».</div>
+                <div class="pi-cause"><b>Cause</b>Metallic mal réglé ou roughness trop élevée.</div>
+                <div class="pi-fix"><b>Correction</b>Metallic = 1 pour un métal, ajuste la roughness selon le poli.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Valeurs metallic « grises » incohérentes.</div>
+                <div class="pi-cause"><b>Cause</b>Le metallic est binaire physiquement (0 ou 1), sauf transition.</div>
+                <div class="pi-fix"><b>Correction</b>Réserve les valeurs intermédiaires aux zones de transition (rouille).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Reflets faux / surface trop sombre.</div>
+                <div class="pi-cause"><b>Cause</b>Maps de données lues en sRGB, ou normale incorrecte.</div>
+                <div class="pi-fix"><b>Correction</b>Maps de données en linéaire&nbsp;; normale normalisée (rappel <a href="../../cours/shaders/sh06-textures.html">SH6</a>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b>Fresnel trop fort / blanchâtre partout.</div>
+                <div class="pi-cause"><b>Cause</b>Exposant trop faible ou non borné.</div>
+                <div class="pi-fix"><b>Correction</b>Ajuste l'exposant (≈5) et borne le résultat.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <ol>
+                <li>Crée des variantes d'un matériau PBR&nbsp;: métal poli, métal brossé, plastique mat.</li>
+                <li>Ajoute un effet de Fresnel sur l'émission.</li>
+                <li>Explique en une phrase ce que fait metallic et ce que fait roughness.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les trois matériaux sont visuellement distincts et crédibles.</li>
+                  <li>Le Fresnel illumine bien les bords.</li>
+                  <li>Tu distingues clairement metallic et roughness.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que contrôle la roughness en PBR ?","a":["La dispersion des reflets : net (lisse) à diffus (rugueux)","La couleur de base","La transparence","Le nombre de polygones"],"correct":0,"explain":"La roughness étale ou resserre les reflets : faible = miroir net, élevée = reflets flous/mats. C'est l'équivalent physique de la 'brillance' de Phong."},
+  {"q":"Que se passe-t-il quand metallic = 1 ?","a":["Pas de diffus ; les reflets prennent la couleur de l'albédo","La surface devient transparente","Les reflets disparaissent","La roughness est ignorée"],"correct":0,"explain":"Un métal n'a pas de composante diffuse colorée : sa couleur vient de reflets teintés par l'albédo. Un diélectrique (metallic=0) a un diffus coloré et des reflets faibles blancs."},
+  {"q":"Qu'est-ce que le Fresnel ?","a":["L'augmentation de la réflexion aux angles rasants (bords vus de profil)","Un type de texture","Une compression","Un format de mesh"],"correct":0,"explain":"Le Fresnel rend les surfaces plus réfléchissantes quand on les regarde de profil. Approximé par pow(1 - dot(N,V), 5), il sert aussi au rim light."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Sur un matériau PBR, balaie la roughness de 0 à 1 et décris l'évolution du reflet.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>À 0, reflet net comme un miroir&nbsp;; en montant, il s'étale et la surface devient mate. C'est le réglage le plus parlant pour donner une matière (chrome vs métal brossé).</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un métal et un plastique en ne changeant que metallic, roughness et albédo.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Métal&nbsp;: metallic=1, albédo = teinte du métal, roughness selon poli. Plastique&nbsp;: metallic=0, albédo coloré, roughness moyenne/haute. Évite les metallic « gris » sauf transition.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un Fresnel (Schlick) sur l'émission pour un contour lumineux, et règle son intensité.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>fresnel = pow(1 - saturate(dot(N, V)), 5); emission = couleurRim * fresnel * intensite. Les bords s'illuminent&nbsp;: c'est le rim light, qu'on réutilise pour les effets (SH10).</p>
+                </details>
+              </div>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Le PBR est <b>physique</b>&nbsp;: conservation de l'énergie + microfacettes (vs Phong « bricolé »).</li>
+                <li><b>Metallic</b> (nature&nbsp;: métal/non-métal) et <b>roughness</b> (netteté des reflets) sont les deux réglages clés.</li>
+                <li><b>Fresnel</b>&nbsp;: plus de réflexion aux angles rasants (bords)&nbsp;; base du rim light.</li>
+                <li>Une <b>BRDF</b> combine diffus + spéculaire&nbsp;; on en règle les entrées sans réécrire les équations.</li>
+              </ul>
+            </div>
+
+            <h2>Glossaire des termes introduits</h2>
+            <dl class="prose">
+              <p><b>Metallic / roughness</b> — nature métal/diélectrique / dispersion des reflets.</p>
+              <p><b>Fresnel</b> — réflexion accrue aux angles rasants (approx. de Schlick).</p>
+              <p><b>Conservation de l'énergie</b> — une surface ne renvoie pas plus qu'elle ne reçoit.</p>
+              <p><b>BRDF</b> — fonction décrivant la lumière réfléchie selon les directions lumière/vue.</p>
+              <p>Voir aussi le <a href="../../glossaire.html">glossaire global</a>.</p>
+            </dl>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/shaders/sh10-effets.html">SH10 — Effets courants</a> (Fresnel/rim).</li>
+              <li><a href="../../cours/fondamentaux/f07-pbr.html">F7 — Le workflow PBR</a>.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>
