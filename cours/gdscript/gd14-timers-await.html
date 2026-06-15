@@ -202,6 +202,67 @@ func attendre_signal():
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait await get_tree().create_timer(3.0).timeout ?","a":["Suspend la fonction 3 secondes sans bloquer le jeu, puis reprend","Bloque tout le jeu 3 secondes","Crée un node Timer permanent","Attend 3 frames"],"correct":0,"explain":"await suspend la fonction jusqu'à l'émission du signal timeout (ici 3 s plus tard). Pendant ce temps, le jeu continue de tourner : c'est la coroutine de Godot."},
+  {"q":"Quel signal émet un node Timer à échéance ?","a":["timeout","done","finished","tick"],"correct":0,"explain":"Le node Timer émet timeout quand sa durée est écoulée. On s'y connecte (timeout.connect) ; s'il n'est pas one_shot, il reboucle."},
+  {"q":"Pourquoi une boucle while + await ne gèle-t-elle pas le jeu ?","a":["Elle rend la main au moteur à chaque await","Parce que while est interdit","Parce qu'elle ne tourne qu'une fois","Elle gèle quand même"],"correct":0,"explain":"À chaque await, la fonction se suspend et la frame se termine normalement. La boucle reprend plus tard : on peut donc faire un spawner en boucle sans bloquer."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Écris une fonction qui <code>await</code> un timer de 3 s puis logge un message.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func ouvrir_apres_delai():
+    await get_tree().create_timer(3.0).timeout
+    print("Porte ouverte !")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un effet de clignotement qui alterne la visibilité d'un sprite avec des <code>await</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func clignoter(fois: int):
+    for i in range(fois):
+        $Sprite2D.visible = false
+        await get_tree().create_timer(0.1).timeout
+        $Sprite2D.visible = true
+        await get_tree().create_timer(0.1).timeout</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un spawner en <code>while</code> + <code>await</code> qui fait apparaître un ennemi toutes les 2 s, arrêtable.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var continuer := true
+
+func lancer_vagues():
+    while continuer:
+        faire_apparaitre_ennemi()
+        await get_tree().create_timer(2.0).timeout</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

@@ -187,6 +187,61 @@ func _process(delta):
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert delta dans _process(delta) ?","a":["C'est le temps écoulé depuis la dernière frame : multiplier par delta rend le mouvement indépendant du framerate","C'est le numéro de la frame","C'est la vitesse maximale","C'est une constante"],"correct":0,"explain":"Multiplier un déplacement par delta convertit « par frame » en « par seconde » : la vitesse est identique quel que soit le nombre d'images par seconde."},
+  {"q":"Où mettre le code de physique / mouvement d'un corps ?","a":["Dans _physics_process (pas de temps fixe)","Dans _ready","Dans _process","Dans _input"],"correct":0,"explain":"_physics_process tourne à pas fixe, stable : c'est là que va tout ce qui touche aux corps physiques (move_and_slide). _process suit la cadence de rendu (variable)."},
+  {"q":"Quand _ready() est-elle appelée par rapport aux enfants du node ?","a":["Une fois les enfants entrés dans la scène : on peut les référencer","Avant que les enfants existent","À chaque frame","Jamais"],"correct":0,"explain":"_ready s'exécute quand le node et ses enfants sont dans l'arbre : c'est le moment sûr pour récupérer des références (avec @onready ou $)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Logge un message dans <code>_ready()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func _ready():
+    print("Node prêt")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Fais glisser un node 2D vers la droite à vitesse constante (indépendante du framerate).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var vitesse := 200.0
+
+func _process(delta):
+    position.x += vitesse * delta</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Affiche un message au pressage d'une action via <code>_input</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func _input(event):
+    if event.is_action_pressed("saut"):
+        print("Saut !")</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

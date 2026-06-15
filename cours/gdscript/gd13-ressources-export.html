@@ -189,6 +189,67 @@ func _ready():
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la différence entre @export et @onready ?","a":["@export = réglage exposé dans l'Inspector ; @onready = référence interne de node assignée avant _ready","Ils sont identiques","@onready expose dans l'Inspector","@export référence un node enfant"],"correct":0,"explain":"@export sert au designer (régler une valeur dans l'éditeur). @onready sert au programmeur (récupérer un node enfant au bon moment). Deux usages distincts."},
+  {"q":"Qu'est-ce qu'une Resource personnalisée (.tres) ?","a":["Un conteneur de données réutilisable, indépendant des scènes","Une scène","Un script d'entrée","Une texture"],"correct":0,"explain":"Une Resource (extends Resource + class_name) regroupe des données sauvegardables en .tres. Plusieurs fichiers .tres partagent la même structure : on sépare données et code (équivalent ScriptableObject)."},
+  {"q":"Pourquoi dupliquer une Resource avec .duplicate() parfois ?","a":["Parce qu'une même Resource est partagée par référence : la dupliquer crée une copie indépendante","Pour la supprimer","Pour la rendre constante","Ce n'est jamais utile"],"correct":0,"explain":"Si plusieurs objets pointent la même Resource, la modifier les change tous. .duplicate() crée une copie indépendante quand on veut des valeurs propres à un objet."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Expose plusieurs variables avec <code>@export</code>, dont un curseur borné.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>@export var vitesse: float = 300.0
+@export_range(0, 100) var vie: int = 100
+@export var couleur: Color = Color.RED</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée une Resource <code>StatsArme</code> (<code>extends Resource</code>) avec des champs exportés.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>class_name StatsArme
+extends Resource
+
+@export var nom: String = "Pistolet"
+@export var degats: int = 10
+@export var cadence: float = 0.2</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Un node utilise une <code>StatsArme</code> via un <code>@export</code> et affiche ses données dans <code>_ready</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node2D
+
+@export var stats: StatsArme   # glisse pistolet.tres dans l'Inspector
+
+func _ready():
+    print(stats.nom, " fait ", stats.degats, " dégâts")</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

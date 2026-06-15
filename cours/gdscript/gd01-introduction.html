@@ -183,6 +183,60 @@ print("PV restants : %d" % pv)   # formatage avec %d (entier), %s (texte), %f (f
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que fait le mot-clé extends en tête d'un script GDScript ?","a":["Il indique le type de node dont le script hérite ; le script devient ce node","Il importe une bibliothèque","Il crée une variable","Il termine le script"],"correct":0,"explain":"extends Node (ou Node2D, CharacterBody2D…) fait hériter ton script de ce type : il en obtient tous les pouvoirs et lui ajoute du comportement."},
+  {"q":"Quand la fonction _ready() est-elle appelée ?","a":["Une fois, quand le node entre dans la scène","À chaque frame","Au clic de souris","Jamais automatiquement"],"correct":0,"explain":"_ready() s'exécute une seule fois, à l'entrée du node dans l'arbre : c'est l'endroit pour initialiser. _process(delta) tourne, lui, à chaque frame."},
+  {"q":"Qu'est-ce qui définit les blocs de code en GDScript ?","a":["L'indentation (comme en Python), pas les accolades","Les accolades { }","Les points-virgules","Les parenthèses"],"correct":0,"explain":"GDScript suit la logique de Python : tout ce qui est indenté sous func _ready(): appartient à cette fonction. Une indentation incohérente provoque une erreur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Attache un script à un node et affiche un message dans <code>_ready()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node
+
+func _ready():
+    print("Mon premier script !")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Ajoute un <code>_process(delta)</code> qui affiche la valeur de <code>delta</code> (tu verras de petits nombres défiler).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func _process(delta):
+    print(delta)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Affiche un message formaté avec <code>%d</code> pour un score fictif.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var score = 42
+print("Score : %d" % score)   # Score : 42</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

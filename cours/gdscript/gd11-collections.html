@@ -206,6 +206,63 @@ ennemis.pick_random()     # élément au hasard</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel conteneur pour associer un nom à un score ?","a":["Dictionary (clé -> valeur)","Array","int","String"],"correct":0,"explain":"Un Dictionary fait correspondre des clés (le nom) à des valeurs (le score) : on retrouve une valeur directement par sa clé, sans tout parcourir."},
+  {"q":"Comment ajouter un élément à la fin d'un Array ?","a":["mon_tableau.append(element)","mon_tableau.add(element)","mon_tableau + element","push(element)"],"correct":0,"explain":"append ajoute en fin de tableau. size() donne le nombre d'éléments, erase(valeur) retire par valeur, remove_at(i) par index."},
+  {"q":"Quel est l'avantage d'un tableau typé Array[int] ?","a":["Godot refuse les éléments du mauvais type (moins de bugs)","Il est trié automatiquement","Il est plus petit en mémoire seulement","Il devient constant"],"correct":0,"explain":"Array[int] n'accepte que des entiers : tenter d'y mettre un texte provoque une erreur, ce qui attrape les bugs plus tôt."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée un inventaire <code>Array[String]</code>, ajoute trois objets et affiche leur nombre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var inventaire: Array[String] = []
+inventaire.append("Potion")
+inventaire.append("Épée")
+inventaire.append("Clé")
+print("Objets : ", inventaire.size())   # 3</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un <code>Dictionary</code> «&nbsp;nom → score&nbsp;», ajoute deux joueurs et lis-en un avec <code>get</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var scores := { "Alice": 100, "Bob": 75 }
+scores["Carla"] = 60
+print(scores.get("Alice", 0))   # 100</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Choisis un ennemi au hasard dans un tableau avec <code>pick_random()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var ennemis := ["slime", "golem", "spectre"]
+var cible = ennemis.pick_random()
+print("Cible : ", cible)</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

@@ -197,6 +197,66 @@ print("PV : %d / %d" % [pv, VIE_MAX])   # formatage avec une liste de valeurs</c
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est l'intérêt du typage statique optionnel (var x: int) ?","a":["Plus de sûreté (erreurs détectées tôt) et de meilleures performances","Cela rend le code plus lent","C'est obligatoire en GDScript","Cela empêche l'autocomplétion"],"correct":0,"explain":"GDScript est dynamiquement typé par défaut, mais préciser le type (: int) fait vérifier la cohérence par le moteur et accélère l'exécution. C'est recommandé."},
+  {"q":"Que fait l'annotation @export devant une variable ?","a":["Elle la rend réglable dans l'Inspector de Godot","Elle la rend constante","Elle la supprime au lancement","Elle l'exporte vers un fichier"],"correct":0,"explain":"@export expose la variable dans l'Inspector : un designer peut l'ajuster sans toucher au code (vitesse, couleur…)."},
+  {"q":"Que fait l'opérateur := dans var degats := 25 ?","a":["Il infère et verrouille le type d'après la valeur (ici int)","Il compare deux valeurs","Il crée une constante","Il déclare une variable sans type"],"correct":0,"explain":":= laisse Godot déduire le type (int) tout en le fixant. C'est l'inférence typée : concis et sûr."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare des variables typées pour un personnage&nbsp;: nom (<code>String</code>), pv (<code>int</code>), vitesse (<code>float</code>), vivant (<code>bool</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var nom: String = "Héros"
+var pv: int = 100
+var vitesse: float = 300.0
+var en_vie: bool = true</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Expose une <code>vitesse</code> avec <code>@export</code> et affiche-la dans <code>_ready</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node
+
+@export var vitesse: float = 300.0
+
+func _ready():
+    print("Vitesse : ", vitesse)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Calcule le pourcentage de vie en flottant et affiche-le formaté.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var pv := 73
+const VIE_MAX := 100
+var pourcent := roundi(float(pv) / VIE_MAX * 100)
+print("Vie : %d %%" % pourcent)   # Vie : 73 %</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

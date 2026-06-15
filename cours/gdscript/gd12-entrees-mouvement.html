@@ -187,6 +187,74 @@ func _physics_process(delta):
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi lire les entrées via des actions (Input Map) plutôt que des touches en dur ?","a":["Remapping facile, support clavier/manette, code lisible","C'est obligatoire","Les touches en dur n'existent pas","Pour économiser la mémoire"],"correct":0,"explain":"On nomme une intention (« saut ») et on y associe des touches. Le code lit l'action : on peut remapper, gérer la manette, et le code reste clair."},
+  {"q":"Que faut-il pour déplacer un CharacterBody2D en gérant les collisions ?","a":["Régler velocity puis appeler move_and_slide()","Modifier position directement","Appeler queue_free()","Utiliser _ready"],"correct":0,"explain":"On affecte velocity (souvent direction × vitesse) puis move_and_slide() déplace le corps en glissant le long des obstacles. À faire dans _physics_process."},
+  {"q":"Faut-il multiplier velocity par delta avant move_and_slide() ?","a":["Non : move_and_slide intègre déjà delta","Oui, toujours","Seulement en 3D","Seulement au saut"],"correct":0,"explain":"move_and_slide gère le delta en interne. Multiplier velocity par delta en plus rendrait le mouvement beaucoup trop lent."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déplace un <code>CharacterBody2D</code> dans 4 directions avec <code>get_vector</code> et <code>move_and_slide</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>extends CharacterBody2D
+
+@export var vitesse: float = 300.0
+
+func _physics_process(delta):
+    var direction = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+    velocity = direction * vitesse
+    move_and_slide()</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Affiche «&nbsp;Saut&nbsp;!&nbsp;» une seule fois par appui sur l'action <code>saut</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func _physics_process(delta):
+    if Input.is_action_just_pressed("saut"):
+        print("Saut !")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Variante plateforme&nbsp;: ajoute la gravité et un saut possible uniquement au sol.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>@export var vitesse: float = 300.0
+@export var force_saut: float = -400.0
+var gravite: float = 980.0
+
+func _physics_process(delta):
+    if not is_on_floor():
+        velocity.y += gravite * delta
+    if Input.is_action_just_pressed("saut") and is_on_floor():
+        velocity.y = force_saut
+    velocity.x = Input.get_axis("move_left", "move_right") * vitesse
+    move_and_slide()</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

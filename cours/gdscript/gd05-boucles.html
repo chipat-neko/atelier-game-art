@@ -192,6 +192,70 @@ for nom in ["Alice", "Bob"]:
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que génère range(1, 4) ?","a":["1, 2, 3 (la borne de fin est exclue)","1, 2, 3, 4","0, 1, 2, 3","4, 3, 2, 1"],"correct":0,"explain":"range(début, fin) exclut la borne de fin : range(1, 4) donne 1, 2, 3. Pour aller jusqu'à 4, on écrit range(1, 5)."},
+  {"q":"Comment parcourir chaque élément d'un tableau sans index ?","a":["for element in mon_tableau:","while mon_tableau:","loop mon_tableau","foreach mon_tableau"],"correct":0,"explain":"for x in collection: visite chaque élément directement, sans gérer d'index. C'est la forme idiomatique en GDScript."},
+  {"q":"Pourquoi éviter une boucle bloquante (while true sans sortie) ?","a":["Elle s'exécute dans une seule frame et gèle le jeu","Elle consomme la batterie","Elle est interdite","Elle ralentit l'éditeur seulement"],"correct":0,"explain":"Tout se déroule dans la même frame : l'image ne se termine jamais. Pour étaler dans le temps, on utilise await et les timers (GD14)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Avec <code>range</code>, calcule la somme des entiers de 1 à 100.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var somme := 0
+for i in range(1, 101):
+    somme += i
+print(somme)   # 5050</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Parcours un tableau de PV et compte combien sont «&nbsp;morts&nbsp;» (≤ 0).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var pvs := [30, 0, 12, -5, 8]
+var morts := 0
+for pv in pvs:
+    if pv &lt;= 0:
+        morts += 1
+print("Morts : ", morts)   # 2</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Trouve le premier nombre positif d'un tableau en sautant les non-positifs (<code>continue</code>) et en sortant (<code>break</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var valeurs := [0, 0, -3, 7, 9]
+var trouve := 0
+for v in valeurs:
+    if v &lt;= 0:
+        continue
+    trouve = v
+    break
+print(trouve)   # 7</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

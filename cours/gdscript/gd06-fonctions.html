@@ -186,6 +186,75 @@ print(sac)                     # ["potion"]</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel mot-clé déclare une fonction en GDScript ?","a":["func","function","def","fn"],"correct":0,"explain":"func nom(parametres): déclare une fonction. On peut typer les paramètres (param: Type) et le retour (-> Type)."},
+  {"q":"Comment déclare-t-on le type de retour d'une fonction ?","a":["Avec une flèche : func f() -> int:","return int","type int","func int f()"],"correct":0,"explain":"La flèche -> Type indique le retour : func calculer() -> int:. -> void signifie qu'elle ne renvoie rien."},
+  {"q":"Un Array passé à une fonction est-il modifié si on le change dedans ?","a":["Oui : les conteneurs et objets sont passés par référence","Non, jamais","Seulement les int","Seulement avec const"],"correct":0,"explain":"Les types simples (int, float, String, Vector2) sont passés par valeur, mais Array, Dictionary et les objets sont passés par référence : la fonction modifie l'original."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Écris une fonction typée <code>calculer_score(base: int, multi: int = 1) -&gt; int</code> et appelle-la.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func calculer_score(base: int, multi: int = 1) -&gt; int:
+    return base * multi
+
+func _ready():
+    print(calculer_score(10, 3))   # 30</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris une fonction qui ajoute un objet à un <code>Array</code> (passage par référence).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func ajouter_objet(inventaire: Array, objet: String) -&gt; void:
+    inventaire.append(objet)
+
+var sac := []
+ajouter_objet(sac, "potion")
+print(sac)   # ["potion"]</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Découpe une logique en deux fonctions à rôle unique (<code>est_vivant</code>, <code>soigner</code>) et combine-les.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var pv := 0
+
+func est_vivant() -&gt; bool:
+    return pv &gt; 0
+
+func soigner(montant: int = 10) -&gt; void:
+    pv += montant
+
+func _ready():
+    if not est_vivant():
+        soigner()
+    print("PV : ", pv, " vivant : ", est_vivant())</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

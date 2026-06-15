@@ -194,6 +194,76 @@ assert(pv &gt;= 0, "PV ne doit pas être négatif")   # vérifie une hypothèse 
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle convention de nommage pour les variables et fonctions GDScript ?","a":["snake_case (mots séparés par _)","PascalCase","camelCase","MAJUSCULES"],"correct":0,"explain":"En GDScript : snake_case pour variables/fonctions, MAJUSCULES pour les constantes, PascalCase pour les class_name. Et on type tout pour la sûreté."},
+  {"q":"Comment éviter un coûteux sondage de distance à chaque frame ?","a":["Réagir à un signal de zone (Area2D.body_entered) plutôt que sonder dans _process","Mettre le sondage dans _ready","Utiliser un tableau","Doubler la vitesse"],"correct":0,"explain":"_process tourne chaque frame sur chaque node : sonder une distance en continu coûte cher. Un signal de zone ne se déclenche QUE quand l'événement se produit."},
+  {"q":"Comment organiser un projet Godot proprement ?","a":["Par composition : des scènes réutilisables à rôle unique, reliées par signaux","Tout dans une seule scène","Un seul script géant","Sans aucune scène"],"correct":0,"explain":"On découpe en scènes (Joueur.tscn, Ennemi.tscn…) à rôle unique, assemblées par instanciation et communiquant par signaux. Un autoload sert pour l'état global."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Type une variable et une fonction non typées d'un ancien script.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code># Avant
+var vitesse = 5
+func deplacer(dir): pass
+
+# Après (typé)
+var vitesse: float = 5.0
+func deplacer(dir: Vector2) -&gt; void: pass</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Remplace un sondage de distance dans <code>_process</code> par un signal de zone.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code># ❌ sonder chaque frame
+func _process(delta):
+    if global_position.distance_to(joueur.global_position) &lt; 100:
+        attaquer()
+
+# ✅ réagir à l'entrée dans une Area2D
+func _on_zone_body_entered(corps):
+    if corps.is_in_group("joueur"):
+        attaquer()</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets une référence de node en cache avec <code>@onready</code> au lieu d'un <code>get_node</code> répété.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code># ❌ recalculé sans cesse
+func _process(delta):
+    get_node("Sprite2D").rotation += delta
+
+# ✅ mis en cache une fois
+@onready var sprite := $Sprite2D
+func _process(delta):
+    sprite.rotation += delta</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

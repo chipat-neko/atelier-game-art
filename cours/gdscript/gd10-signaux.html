@@ -189,6 +189,76 @@ func _on_mort() -&gt; void:
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est l'intérêt principal des signaux ?","a":["Découpler : l'émetteur annonce, les abonnés réagissent sans qu'il les connaisse","Aller plus vite","Remplacer les variables","Éviter les fonctions"],"correct":0,"explain":"Le node Sante émet « vie_changee » sans connaître l'UI, l'audio ou le score : chacun se connecte. Ajouter une réaction ne modifie pas l'émetteur — c'est l'observateur."},
+  {"q":"Comment émet-on un signal vie_changee avec une valeur en GDScript 4 ?","a":["vie_changee.emit(pv)","emit vie_changee","signal vie_changee","vie_changee(pv)"],"correct":0,"explain":"En GDScript 4, on déclare signal vie_changee(v) et on l'émet avec vie_changee.emit(pv). Tous les nodes connectés reçoivent l'appel."},
+  {"q":"Comment un node s'abonne-t-il à un signal par code ?","a":["emetteur.mon_signal.connect(ma_fonction)","emetteur.subscribe(ma_fonction)","connect(mon_signal)","ma_fonction.listen()"],"correct":0,"explain":"On appelle signal.connect(fonction) en passant la fonction à exécuter (un Callable). On peut aussi connecter visuellement dans l'onglet Node ▸ Signals."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare un node <code>Sante</code> avec <code>signal mort</code> et <code>signal vie_changee(v)</code>, et émets-les dans <code>subir()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>extends Node
+
+signal mort
+signal vie_changee(nouvelle_vie)
+
+var pv: int = 100
+
+func subir(degats: int) -&gt; void:
+    pv = max(0, pv - degats)
+    vie_changee.emit(pv)
+    if pv == 0:
+        mort.emit()</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Dans l'UI, connecte-toi par code à <code>vie_changee</code> et mets à jour un affichage.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>@onready var sante = $"../Joueur/Sante"
+
+func _ready():
+    sante.vie_changee.connect(_on_vie_changee)
+
+func _on_vie_changee(nouvelle_vie: int) -&gt; void:
+    print("Barre de vie : ", nouvelle_vie)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un second abonné (audio) connecté à <code>mort</code> — sans modifier le node <code>Sante</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func _ready():
+    sante.mort.connect(_on_mort)
+
+func _on_mort() -&gt; void:
+    print("Joue le jingle de Game Over")</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

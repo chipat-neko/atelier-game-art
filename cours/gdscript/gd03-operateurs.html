@@ -186,6 +186,62 @@ var proche = is_equal_approx(a, b)      # comparer deux floats sans piège</code
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que vaut 7 / 2 entre deux int en GDScript ?","a":["3 (division entière)","3.5","4","Une erreur"],"correct":0,"explain":"Entre deux entiers, la division est entière : 7 / 2 = 3. Pour 3.5, il faut au moins un float : 7.0 / 2."},
+  {"q":"Comment écrit-on le ET logique en GDScript ?","a":["and (ou &&)","et","plus","AND uniquement en majuscules"],"correct":0,"explain":"GDScript se lit presque comme du français : and, or, not (il accepte aussi &&, ||, !). Ces opérateurs sont court-circuités."},
+  {"q":"GDScript possède-t-il l'opérateur d'incrément ++ ?","a":["Non : on utilise x += 1","Oui","Seulement sur les float","Seulement dans _process"],"correct":0,"explain":"GDScript n'a pas de ++ ni --. On incrémente avec x += 1 et on décrémente avec x -= 1."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Calcule des dégâts en flottant&nbsp;: base 10 × (1 + bonus critique 0,5).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var base_degats := 10.0
+var bonus := 0.5
+var total := base_degats * (1.0 + bonus)   # 15.0
+print(total)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris une condition «&nbsp;peut tirer&nbsp;» avec <code>and</code> et <code>not</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var a_des_munitions := true
+var en_pause := false
+var peut_tirer := a_des_munitions and not en_pause   # true</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Calcule un pourcentage de vie (cast + <code>roundi</code>) et compare deux flottants avec <code>is_equal_approx</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var pourcent := roundi(float(73) / 100 * 100)   # 73
+var proche := is_equal_approx(0.1 + 0.2, 0.3)   # true
+print(pourcent, " ", proche)</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

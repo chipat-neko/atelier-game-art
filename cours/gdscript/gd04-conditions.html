@@ -186,6 +186,69 @@ var vitesse = 600.0 if court else 300.0</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment écrit-on « sinon si » en GDScript ?","a":["elif","else if","elseif","sinonsi"],"correct":0,"explain":"GDScript utilise elif (comme Python). Chaque branche se termine par : et son corps est indenté."},
+  {"q":"Quel avantage de match sur switch ?","a":["Chaque cas est isolé (pas de break à oublier) et il gère des motifs","Il est plus lent","Il n'accepte qu'un cas","Il faut toujours un break"],"correct":0,"explain":"match n'a pas le piège du break : chaque cas est isolé. Il accepte aussi des motifs (plusieurs valeurs avec une virgule, le joker _ pour le défaut)."},
+  {"q":"Comment écrit-on un ternaire en GDScript ?","a":["valeur_si_vrai if condition else valeur_si_faux","condition ? a : b","if condition: a else: b","ternaire(condition, a, b)"],"correct":0,"explain":"GDScript suit la syntaxe « à la Python » : la valeur d'abord, puis la condition. Ex. : \"Vivant\" if pv > 0 else \"Mort\"."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Affiche «&nbsp;Mort&nbsp;», «&nbsp;Critique&nbsp;» ou «&nbsp;OK&nbsp;» selon les PV avec <code>if / elif / else</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func evaluer_vie(pv: int):
+    if pv &lt;= 0:
+        print("Mort")
+    elif pv &lt; 30:
+        print("Critique")
+    else:
+        print("OK")</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris un <code>match</code> sur un état d'IA («&nbsp;patrouille&nbsp;», «&nbsp;attaque&nbsp;») avec un cas par défaut <code>_</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>match etat_ia:
+    "patrouille":
+        patrouiller()
+    "attaque":
+        attaquer()
+    _:
+        attendre()</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Avec un ternaire, choisis un message selon que le joueur est vivant.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>var pv := 0
+var etat := "Vivant" if pv &gt; 0 else "Mort"
+print(etat)   # Mort</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

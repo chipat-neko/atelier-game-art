@@ -199,6 +199,67 @@ func _ready():
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert class_name dans un script GDScript ?","a":["Nommer la classe et l'enregistrer globalement (réutilisable, instanciable par son nom)","Renommer le fichier","Créer une variable globale","Supprimer l'héritage"],"correct":0,"explain":"class_name Ennemi enregistre la classe dans tout le projet : elle apparaît dans la liste des types et peut être instanciée par Ennemi.new()."},
+  {"q":"Que fait super(...) dans une méthode redéfinie ?","a":["Il appelle la version parente de la méthode","Il supprime le parent","Il crée une nouvelle classe","Il arrête le script"],"correct":0,"explain":"super() (ou super(arguments)) exécute la version de la classe parente, ce qui permet de conserver son comportement en plus du sien."},
+  {"q":"Comment marque-t-on un membre « privé » par convention en GDScript ?","a":["Avec un underscore en préfixe : _compteur","Avec le mot-clé private","En MAJUSCULES","Avec @private"],"correct":0,"explain":"GDScript n'impose pas private. La convention est de préfixer d'un underscore les membres internes (_compteur) pour signaler « ne pas toucher de l'extérieur »."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée une classe <code>Ennemi</code> (<code>class_name</code>) avec <code>pv</code> et une méthode <code>subir_degats</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>class_name Ennemi
+extends Node
+
+var pv: int = 30
+
+func subir_degats(montant: int) -&gt; void:
+    pv = max(0, pv - montant)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée <code>Boss extends Ennemi</code> qui double les PV via <code>super()</code> dans <code>_init</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>class_name Boss
+extends Ennemi
+
+func _init():
+    super()
+    pv = 200</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Redéfinis <code>subir_degats</code> dans <code>Boss</code> pour qu'il n'encaisse que la moitié des dégâts (en appelant <code>super</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func subir_degats(montant: int) -&gt; void:
+    super(montant / 2)   # le boss encaisse la moitié</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

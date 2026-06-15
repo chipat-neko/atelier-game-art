@@ -183,6 +183,64 @@ mon_ennemi.queue_free()   # supprime un autre node</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que désigne $UI/BarreVie dans un script ?","a":["Le node au chemin UI/BarreVie ($ est le raccourci de get_node)","Une variable globale","Une ressource externe","Un signal"],"correct":0,"explain":"$ est un raccourci de get_node : $UI/BarreVie récupère le node enfant au chemin indiqué dans l'arbre de la scène."},
+  {"q":"Que faut-il faire après instantiate() pour qu'un objet apparaisse ?","a":["L'ajouter à l'arbre avec add_child()","Rien, il apparaît seul","Appeler queue_free()","Le sauvegarder en .tres"],"correct":0,"explain":"instantiate() crée une copie mais elle n'est pas dans la scène tant qu'on n'appelle pas add_child(instance). Sans cela, l'objet reste invisible."},
+  {"q":"Pourquoi préférer queue_free() à free() ?","a":["La suppression est différée en fin de frame, ce qui évite les crashs","free() n'existe pas","queue_free est plus lent mais obligatoire","Aucune différence"],"correct":0,"explain":"queue_free() programme la suppression pour la fin de la frame : si le node est encore utilisé ailleurs pendant la frame, on évite un accès à un objet détruit."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Référence un enfant <code>Sprite2D</code> avec <code>@onready</code> et change sa couleur dans <code>_ready</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>@onready var sprite: Sprite2D = $Sprite2D
+
+func _ready():
+    sprite.modulate = Color.RED</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Précharge une scène d'ennemi, instancie-la, place-la et ajoute-la à l'arbre.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>const ENNEMI = preload("res://ennemi.tscn")
+
+func faire_apparaitre():
+    var e = ENNEMI.instantiate()
+    e.position = Vector2(100, 50)
+    add_child(e)</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Détruis proprement un node après usage avec <code>queue_free()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="GDScript">
+<pre><code>func _on_collision():
+    queue_free()   # supprime ce node en fin de frame</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
