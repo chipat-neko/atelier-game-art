@@ -206,6 +206,75 @@ float vitesse = estAccroupi ? 2f : 5f;</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Dans un switch C#, que se passe-t-il si on oublie break à la fin d'un case (non vide) ?","a":["Le compilateur refuse : C# interdit le « fall-through » implicite","Les cas suivants s'exécutent en cascade","Rien, c'est optionnel","Le programme plante au lancement"],"correct":0,"explain":"Contrairement à d'autres langages, C# exige une instruction de fin (break, return…) pour chaque case non vide : il n'autorise pas le fall-through implicite, ce qui évite des bugs."},
+  {"q":"Quelle est la bonne écriture de l'opérateur ternaire ?","a":["condition ? valeurSiVrai : valeurSiFaux","if condition then a else b","condition : a ? b","ternaire(condition, a, b)"],"correct":0,"explain":"La forme est condition ? valeurSiVrai : valeurSiFaux. Pratique pour choisir entre deux valeurs en une ligne ; pour une logique riche, un if reste plus lisible."},
+  {"q":"Pourquoi if (vie = 0) est-il une erreur fréquente ?","a":["= est une affectation, pas une comparaison : il faut == ","Parce que 0 doit être à gauche","Parce que vie ne peut pas valoir 0","Ce n'est pas une erreur"],"correct":0,"explain":"if (vie = 0) tente d'affecter 0 à vie. La comparaison s'écrit ==. En C#, ce cas précis lève d'ailleurs une erreur de type (int n'est pas bool), ce qui aide à le repérer."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Écris une suite <code>if / else if / else</code> qui affiche un rang selon le score&nbsp;: «&nbsp;Or&nbsp;» (≥ 100), «&nbsp;Argent&nbsp;» (≥ 50), sinon «&nbsp;Bronze&nbsp;».</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int score = 72;
+if (score &gt;= 100)
+    Debug.Log("Or");
+else if (score &gt;= 50)
+    Debug.Log("Argent");
+else
+    Debug.Log("Bronze");      // ici : Argent</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Avec un <code>switch</code> sur une chaîne d'état d'IA («&nbsp;patrouille&nbsp;», «&nbsp;attaque&nbsp;»…), appelle l'action correspondante. Ajoute un cas <code>default</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>string etat = "attaque";
+switch (etat)
+{
+    case "patrouille":
+        Debug.Log("Je patrouille");
+        break;
+    case "attaque":
+        Debug.Log("J'attaque !");
+        break;
+    default:
+        Debug.Log("J'attends");
+        break;
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Avec un opérateur ternaire, choisis un message court&nbsp;: «&nbsp;Vivant&nbsp;» si les PV sont &gt; 0, sinon «&nbsp;Mort&nbsp;».</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int pv = 0;
+string etat = (pv &gt; 0) ? "Vivant" : "Mort";
+Debug.Log(etat);   // Mort</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -257,6 +326,7 @@ float vitesse = estAccroupi ? 2f : 5f;</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

@@ -201,6 +201,73 @@ public class Joueur : MonoBehaviour
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel type choisir pour une vitesse de 5,5 unités par seconde ?","a":["float (nombre à virgule)","int (nombre entier)","bool","string"],"correct":0,"explain":"int ne stocke que des entiers ; une valeur décimale comme 5,5 demande un float. En C#, on écrit le littéral avec un f : 5.5f."},
+  {"q":"Que fait l'attribut [SerializeField] sur un champ privé ?","a":["Il rend le champ réglable dans l'Inspector sans le rendre public","Il supprime le champ à la compilation","Il transforme le champ en méthode","Il empêche toute modification du champ"],"correct":0,"explain":"[SerializeField] expose un champ private dans l'Inspector tout en préservant l'encapsulation : pratique pour régler une valeur sans ouvrir l'accès au code externe."},
+  {"q":"Que signifie le mot-clé var dans var vitesse = 5f; ?","a":["Le compilateur déduit le type d'après la valeur (ici float)","La variable n'a aucun type","La variable peut changer de type à tout moment","C'est une variable globale"],"correct":0,"explain":"var laisse le compilateur inférer le type à partir de la valeur affectée. Le type reste fixe ensuite : var vitesse = 5f; crée bien un float."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare quatre variables typées pour un personnage&nbsp;: un nom (texte), des points de vie (entier), une vitesse (décimal) et un état vivant (booléen). Affiche-les avec <code>Debug.Log</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>string nom = "Héros";
+int pv = 100;
+float vitesse = 5.5f;
+bool estVivant = true;
+
+Debug.Log(nom + " — PV: " + pv + " — vitesse: " + vitesse + " — vivant: " + estVivant);</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Expose une <code>vitesse</code> réglable dans l'Inspector avec <code>[SerializeField]</code>, sans rendre le champ public. Affiche-la au démarrage.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using UnityEngine;
+
+public class Joueur : MonoBehaviour
+{
+    [SerializeField] private float vitesse = 5f;
+
+    void Start()
+    {
+        Debug.Log("Vitesse réglée dans l'Inspector : " + vitesse);
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Avec <code>var</code>, déclare un score et un bonus, calcule le total, et affiche-le. Vérifie (par survol dans l'éditeur) que le type inféré est bien <code>int</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>var score = 120;     // inféré : int
+var bonus = 30;      // inféré : int
+var total = score + bonus;
+Debug.Log("Total : " + total);   // 150</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -253,6 +320,7 @@ public class Joueur : MonoBehaviour
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

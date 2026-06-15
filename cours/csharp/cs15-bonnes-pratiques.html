@@ -196,6 +196,76 @@ void OnScoreChange(int s) { label.text = "Score : " + s; }</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi préférer [SerializeField] private à public pour exposer un champ ?","a":["On garde l'encapsulation : réglable dans l'Inspector mais protégé du code externe","public est interdit en Unity","private ne s'affiche jamais","Il n'y a aucune différence"],"correct":0,"explain":"public expose le champ à tout le code ET à l'Inspector. [SerializeField] private donne le réglage dans l'éditeur sans ouvrir l'accès au reste du code : plus sûr."},
+  {"q":"Qu'est-ce que le principe de responsabilité unique ?","a":["Chaque script ne gère qu'un seul rôle","Un seul script par projet","Toutes les méthodes sont static","Un script ne doit jamais communiquer"],"correct":0,"explain":"Un script qui gère déplacement + vie + UI + son devient ingérable. On découpe : un rôle par script, et ils communiquent par événements ou références."},
+  {"q":"Pourquoi l'object pooling améliore-t-il les performances ?","a":["Il réutilise des objets désactivés au lieu de les Instantiate/Destroy en boucle","Il réduit la taille des textures","Il compile plus vite","Il supprime le besoin de Rigidbody"],"correct":0,"explain":"Instantiate/Destroy répétés sollicitent le ramasse-miettes et provoquent des saccades. Le pooling garde un stock d'objets réutilisés (activés/désactivés), bien plus fluide."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Reprends un script avec des champs <code>public</code> «&nbsp;pour les voir dans l'Inspector&nbsp;» et convertis-les en <code>[SerializeField] private</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>// Avant
+public float vitesse = 5f;
+
+// Après : visible dans l'Inspector, protégé du code externe
+[SerializeField] private float vitesse = 5f;</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Remplace une mise à jour d'UI faite chaque frame dans <code>Update</code> par une mise à jour déclenchée seulement quand la valeur change (via un événement).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>// ❌ alloue une string à chaque frame
+void Update() { label.text = "Score : " + score; }
+
+// ✅ ne met à jour QUE sur changement
+void OnScoreChange(int s) { label.text = "Score : " + s; }</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Esquisse un mini «&nbsp;pool&nbsp;» de balles&nbsp;: au lieu d'<code>Instantiate</code>/<code>Destroy</code>, réactive une balle inactive d'une liste.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using System.Collections.Generic;
+
+private List&lt;GameObject&gt; pool = new List&lt;GameObject&gt;();
+
+GameObject ObtenirBalle()
+{
+    foreach (GameObject b in pool)
+        if (!b.activeInHierarchy) { b.SetActive(true); return b; }   // réutilise
+
+    GameObject nouvelle = Instantiate(prefabBalle);   // sinon en crée une
+    pool.Add(nouvelle);
+    return nouvelle;
+}
+// Au lieu de Destroy : balle.SetActive(false);</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -252,6 +322,7 @@ void OnScoreChange(int s) { label.text = "Score : " + s; }</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

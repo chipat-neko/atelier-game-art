@@ -200,6 +200,63 @@ string txt = "Vie : " + tronque;   // concaténation : "Vie : 3"</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que vaut 7 / 2 si 7 et 2 sont des int ?","a":["3 (division entière : la partie décimale est perdue)","3.5","4","Une erreur de compilation"],"correct":0,"explain":"Entre deux entiers, / fait une division entière : 7 / 2 = 3. Pour obtenir 3.5, il faut au moins un float : 7f / 2f ou (float)7 / 2."},
+  {"q":"Quelle est la différence entre == et = ?","a":["== compare deux valeurs ; = affecte une valeur à une variable","Ils sont identiques","= compare ; == affecte","== n'existe pas en C#"],"correct":0,"explain":"= est l'affectation (mettre une valeur dans une variable). == est la comparaison d'égalité, utilisée dans les conditions. Les confondre est une erreur classique."},
+  {"q":"Comment calculer correctement un pourcentage pv/pvMax avec deux int ?","a":["Caster en float avant : (float)pv / pvMax * 100","pv / pvMax * 100","pv % pvMax","Mathf.Round(pv / pvMax)"],"correct":0,"explain":"Sans cast, pv / pvMax fait une division entière (souvent 0). En castant un opérande en float, la division devient flottante et le pourcentage est correct."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Calcule des dégâts totaux&nbsp;: une base de 10, multipliée par un bonus critique de 1,5 (en flottants). Affiche le résultat.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>float baseDegats = 10f;
+float bonusCrit = 1.5f;
+float total = baseDegats * bonusCrit;
+Debug.Log("Dégâts : " + total);   // 15</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>À partir de <code>pv = 73</code> et <code>pvMax = 100</code> (deux <code>int</code>), calcule le pourcentage de vie en flottant et arrondis-le avec <code>Mathf.RoundToInt</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int pv = 73, pvMax = 100;
+float ratio = (float)pv / pvMax;          // 0.73
+int pourcent = Mathf.RoundToInt(ratio * 100);
+Debug.Log(pourcent + " %");               // 73 %</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Avec le modulo, détermine si un numéro de tour est pair et affiche «&nbsp;pair&nbsp;» ou «&nbsp;impair&nbsp;». Teste avec plusieurs valeurs.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int tour = 7;
+bool estPair = (tour % 2 == 0);
+Debug.Log(tour + " est " + (estPair ? "pair" : "impair"));   // 7 est impair</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -251,6 +308,7 @@ string txt = "Vie : " + tronque;   // concaténation : "Vie : 3"</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

@@ -202,6 +202,75 @@ void OnDejaTouche()
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi éviter d'appeler GetComponent à chaque frame dans Update ?","a":["GetComponent a un coût : on met la référence en cache (Awake/Start) une seule fois","Parce que GetComponent ne fonctionne pas dans Update","Parce qu'il faut le mettre dans FixedUpdate","Aucune raison, c'est recommandé"],"correct":0,"explain":"GetComponent fait une recherche : appelé chaque frame, il pèse sur les perfs. On le récupère une fois (Awake/Start) et on stocke le résultat dans un champ."},
+  {"q":"Que détruit Destroy(gameObject) ?","a":["L'objet entier qui porte ce script","Seulement le script","Toute la scène","Le composant Transform uniquement"],"correct":0,"explain":"gameObject désigne l'objet courant : Destroy(gameObject) supprime tout l'objet. Destroy(this) ne supprimerait que le composant script."},
+  {"q":"Quelle méthode est préférable pour référencer un autre objet ?","a":["Une référence sérialisée glissée dans l'Inspector","GameObject.Find appelé chaque frame","Chercher par tag dans Update en boucle","Recréer l'objet à chaque fois"],"correct":0,"explain":"Une référence [SerializeField] glissée dans l'Inspector est rapide et explicite. Find/FindWithTag sont lents et fragiles : à éviter, surtout en boucle."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Dans <code>Update</code>, fais glisser l'objet vers la droite avec <code>transform.Translate</code> (× <code>Time.deltaTime</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>void Update()
+{
+    transform.Translate(Vector3.right * 2f * Time.deltaTime);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Récupère le <code>Rigidbody</code> de l'objet <b>en cache</b> dans <code>Awake</code>, puis utilise-le dans <code>Start</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>private Rigidbody rb;
+
+void Awake()
+{
+    rb = GetComponent&lt;Rigidbody&gt;();   // mis en cache une seule fois
+}
+
+void Start()
+{
+    if (rb != null)
+        rb.linearVelocity = Vector3.forward * 5f;
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Expose un <code>prefab</code> dans l'Inspector, instancie-le à la position de l'objet, puis détruis la copie après 3 secondes.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private GameObject prefab;
+
+void Start()
+{
+    GameObject copie = Instantiate(prefab, transform.position, Quaternion.identity);
+    Destroy(copie, 3f);   // disparaît après 3 s
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -254,6 +323,7 @@ void OnDejaTouche()
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

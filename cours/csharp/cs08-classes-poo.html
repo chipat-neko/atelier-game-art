@@ -227,6 +227,94 @@ Ennemi gobelin = new Ennemi("Gobelin", 30);</code></pre>
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que l'encapsulation ?","a":["Cacher les données (private) et exposer une interface contrôlée (public)","Mettre tout le code dans une seule classe","Rendre tous les champs public","Empêcher la création d'objets"],"correct":0,"explain":"L'encapsulation protège l'état interne d'une classe : on déclare les données private et on n'expose que les méthodes/propriétés nécessaires, ce qui évite les modifications incohérentes."},
+  {"q":"Quelle est la différence entre un membre static et un membre d'instance ?","a":["static est partagé par la classe entière ; un membre d'instance appartient à chaque objet","static appartient à chaque objet","Aucune différence","static est forcément private"],"correct":0,"explain":"Un champ d'instance a une valeur par objet créé. Un champ static est unique et partagé (ex. un compteur global), accessible via le nom de la classe."},
+  {"q":"À quoi sert un constructeur ?","a":["Initialiser un objet au moment de sa création","Détruire un objet","Comparer deux objets","Afficher un objet"],"correct":0,"explain":"Le constructeur s'exécute à la création (new) et met l'objet dans un état initial valide (ex. affecter les champs). Note : les MonoBehaviour utilisent Awake/Start plutôt qu'un constructeur."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée une classe simple <code>Arme</code> (hors MonoBehaviour) avec un champ <code>nom</code> et une méthode <code>Decrire()</code> qui l'affiche.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public class Arme
+{
+    public string nom;
+
+    public void Decrire()
+    {
+        Debug.Log("Arme : " + nom);
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Encapsule les munitions&nbsp;: champ <code>private</code>, un constructeur qui les initialise, et une méthode publique <code>Tirer()</code> qui les décrémente sans descendre sous 0.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public class Arme
+{
+    private int munitions;
+
+    public Arme(int munitionsInitiales)
+    {
+        munitions = munitionsInitiales;
+    }
+
+    public void Tirer()
+    {
+        if (munitions &gt; 0)
+        {
+            munitions--;
+            Debug.Log("Pan ! Reste : " + munitions);
+        }
+        else Debug.Log("Plus de munitions");
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un compteur <code>static</code> qui compte le nombre total d'armes créées (incrémenté dans le constructeur).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public class Arme
+{
+    public static int Total = 0;   // partagé par toute la classe
+
+    public Arme()
+    {
+        Total++;
+    }
+}
+
+// Ailleurs :
+new Arme();
+new Arme();
+Debug.Log(Arme.Total);   // 2</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -279,6 +367,7 @@ Ennemi gobelin = new Ennemi("Gobelin", 30);</code></pre>
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

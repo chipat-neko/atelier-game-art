@@ -224,6 +224,80 @@ void Toucher(IDamageable cible)
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que faut-il pour qu'une méthode d'une classe fille remplace celle du parent ?","a":["La méthode parente est virtual et l'enfant la redéfinit avec override","Rien, ça marche automatiquement","La méthode doit être static","La méthode doit être private"],"correct":0,"explain":"Le parent marque la méthode virtual (autorise la redéfinition) et l'enfant la redéfinit avec override. C'est ce qui permet le polymorphisme."},
+  {"q":"Qu'est-ce qu'une interface (ex. IDamageable) ?","a":["Un contrat de membres qu'une classe s'engage à implémenter","Une classe avec du code prêt à l'emploi","Un type de variable","Une méthode static"],"correct":0,"explain":"Une interface ne contient que des signatures (le contrat). Toute classe qui l'implémente doit fournir ces membres. Cela permet de traiter des objets différents de façon uniforme."},
+  {"q":"Qu'est-ce que le polymorphisme permet ?","a":["Traiter des objets de types différents via un type commun, chacun réagissant à sa façon","Créer des objets plus rapidement","Réduire la taille du code compilé","Empêcher l'héritage"],"correct":0,"explain":"Via un type de base (classe ou interface), on appelle une méthode et c'est la version réelle de l'objet qui s'exécute. Ex. : une liste d'IDamageable où chacun encaisse les dégâts à sa manière."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée une classe de base <code>Ennemi</code> avec une méthode <code>virtual void Attaquer()</code>, et une classe <code>Boss</code> qui hérite et redéfinit <code>Attaquer()</code> avec <code>override</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public class Ennemi
+{
+    public virtual void Attaquer() { Debug.Log("Coup simple"); }
+}
+
+public class Boss : Ennemi
+{
+    public override void Attaquer() { Debug.Log("Attaque dévastatrice !"); }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déclare une interface <code>IDamageable</code> avec <code>void SubirDegats(int montant)</code> et fais-la implémenter par deux classes différentes (joueur, caisse).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public interface IDamageable
+{
+    void SubirDegats(int montant);
+}
+
+public class Joueur : IDamageable
+{
+    public void SubirDegats(int montant) { Debug.Log("Joueur blessé : " + montant); }
+}
+
+public class Caisse : IDamageable
+{
+    public void SubirDegats(int montant) { Debug.Log("Caisse cassée"); }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Stocke plusieurs <code>IDamageable</code> dans un tableau et applique des dégâts à chacun&nbsp;: observe le polymorphisme (chacun réagit à sa façon).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>IDamageable[] cibles = { new Joueur(), new Caisse() };
+foreach (IDamageable cible in cibles)
+{
+    cible.SubirDegats(10);   // chaque type réagit différemment
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -275,6 +349,7 @@ void Toucher(IDamageable cible)
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

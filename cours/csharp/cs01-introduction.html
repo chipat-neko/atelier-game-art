@@ -190,6 +190,83 @@ public class MonObjet : MonoBehaviour   // ma classe EST un MonoBehaviour
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Pourquoi le nom du fichier doit-il correspondre au nom de la classe d'un script Unity ?","a":["Unity associe le Component à la classe par ce nom : s'ils diffèrent, le script ne peut pas être attaché","C'est purement esthétique, sans effet","Pour que le fichier s'ouvre plus vite","Pour trier les fichiers par ordre alphabétique"],"correct":0,"explain":"Unity retrouve la classe MonoBehaviour via le nom du fichier .cs. Si le fichier et la classe (public class ...) ne portent pas le même nom, Unity affiche « the script class cannot be found »."},
+  {"q":"Quelle est la différence entre Start() et Update() ?","a":["Start() s'exécute une seule fois au démarrage ; Update() est appelée à chaque image","Start() à chaque image ; Update() une seule fois","Les deux s'exécutent une seule fois","Les deux s'exécutent à chaque image"],"correct":0,"explain":"Start() sert à l'initialisation (appelée une fois). Update() tourne à chaque frame : on y met ce qui doit être vérifié/recalculé en continu (entrées, mouvement)."},
+  {"q":"À quoi sert Debug.Log(\"...\") ?","a":["Afficher un message dans la Console d'Unity, pour suivre l'exécution et déboguer","Compiler le projet","Mettre le jeu en pause","Créer un nouveau GameObject"],"correct":0,"explain":"Debug.Log écrit dans la fenêtre Console. C'est l'outil de base pour vérifier qu'un bout de code s'exécute et inspecter des valeurs pendant le jeu."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée un script <code>Bonjour</code>, attache-le à un GameObject vide, et affiche «&nbsp;Bonjour Unity&nbsp;!&nbsp;» au démarrage.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using UnityEngine;
+
+public class Bonjour : MonoBehaviour
+{
+    void Start()
+    {
+        Debug.Log("Bonjour Unity !");
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Dans le même script, ajoute un message dans <code>Update()</code> et un compteur d'images affiché toutes les 60 frames (indice&nbsp;: une variable <code>int</code> et l'opérateur <code>%</code>).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public class Bonjour : MonoBehaviour
+{
+    int images = 0;
+
+    void Start()
+    {
+        Debug.Log("Bonjour Unity !");
+    }
+
+    void Update()
+    {
+        images++;
+        if (images % 60 == 0)
+            Debug.Log("60 images écoulées : " + images);
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Provoque une erreur de compilation (retire un <code>;</code>), lis le message rouge dans la Console, corrige-la, puis explique en une phrase pourquoi le bouton Play était grisé.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <p>Le point-virgule manquant casse la syntaxe&nbsp;: la compilation échoue, donc Unity refuse d'entrer en mode Play tant que <em>toutes</em> les erreurs ne sont pas corrigées. Double-cliquer l'erreur rouge dans la Console ouvre la ligne fautive dans l'éditeur de code.</p>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>// ❌ erreur : il manque le ;
+Debug.Log("Test")
+
+// ✅ corrigé
+Debug.Log("Test");</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -243,6 +320,7 @@ public class MonObjet : MonoBehaviour   // ma classe EST un MonoBehaviour
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

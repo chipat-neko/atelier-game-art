@@ -222,6 +222,84 @@ public UnityEvent surMort;   // apparaît dans l'Inspector
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel est l'intérêt d'utiliser un event plutôt qu'appeler directement les autres scripts ?","a":["Réduire le couplage : l'émetteur annonce, les abonnés réagissent sans qu'il les connaisse","Aller plus vite à l'écriture","Éviter d'utiliser des méthodes","Supprimer les variables"],"correct":0,"explain":"Avec un event, le script qui « meurt » n'a pas besoin de connaître l'UI, l'audio ou le score : chacun s'abonne. Ajouter une réaction ne modifie pas l'émetteur — c'est le patron observateur."},
+  {"q":"Pourquoi se désabonner d'un event (-=) dans OnDisable/OnDestroy ?","a":["Pour éviter des fuites et des appels sur des objets détruits","Ce n'est jamais nécessaire","Pour accélérer la compilation","Pour rendre l'event public"],"correct":0,"explain":"Si un abonné détruit reste branché, déclencher l'event peut provoquer une erreur ou une fuite mémoire. On se désabonne symétriquement à l'abonnement."},
+  {"q":"Comment déclencher un event sans risque s'il n'a aucun abonné ?","a":["Avec l'opérateur conditionnel : OnMort?.Invoke()","En l'appelant deux fois","En le rendant static","On ne peut pas le déclencher sans abonné"],"correct":0,"explain":"Sans abonné, l'event vaut null : OnMort.Invoke() lèverait une NullReferenceException. OnMort?.Invoke() ne déclenche que s'il y a au moins un abonné."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déclare un <code>event Action OnMort;</code> dans une classe <code>Sante</code> et déclenche-le dans une méthode <code>Mourir()</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using System;
+using UnityEngine;
+
+public class Sante : MonoBehaviour
+{
+    public event Action OnMort;
+
+    public void Mourir()
+    {
+        Debug.Log("Le joueur meurt");
+        OnMort?.Invoke();
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un abonné qui s'abonne dans <code>OnEnable</code> et se désabonne dans <code>OnDisable</code>, et affiche «&nbsp;GAME OVER&nbsp;» à la mort.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public class UIGameOver : MonoBehaviour
+{
+    [SerializeField] private Sante sante;
+
+    void OnEnable()  { sante.OnMort += Afficher; }
+    void OnDisable() { sante.OnMort -= Afficher; }
+
+    void Afficher() { Debug.Log("GAME OVER"); }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Ajoute un event <b>typé</b> <code>event Action&lt;int&gt; OnVieChangee</code> qui transmet les PV, et un abonné qui met à jour un affichage.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>public event Action&lt;int&gt; OnVieChangee;
+
+void Subir(int degats)
+{
+    pv -= degats;
+    OnVieChangee?.Invoke(pv);
+}
+
+// Abonné :
+void MajBarre(int nouveauPV) { Debug.Log("Barre de vie : " + nouveauPV); }</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -273,6 +351,7 @@ public UnityEvent surMort;   // apparaît dans l'Inspector
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

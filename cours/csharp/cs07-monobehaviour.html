@@ -190,6 +190,72 @@ void Update()
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert Time.deltaTime dans Update() ?","a":["À rendre un déplacement indépendant du framerate (temps écoulé depuis la frame précédente)","À mettre le jeu en pause","À compter les images","À mesurer la mémoire"],"correct":0,"explain":"Multiplier une vitesse par Time.deltaTime convertit « par frame » en « par seconde » : le mouvement est identique quel que soit le nombre d'images par seconde."},
+  {"q":"Quelle méthode utiliser pour le code de physique (Rigidbody) ?","a":["FixedUpdate (pas de temps fixe, synchronisé avec la physique)","Update","Awake","LateUpdate"],"correct":0,"explain":"La physique tourne à pas fixe : on agit sur les Rigidbody dans FixedUpdate pour un comportement stable. Update (cadence variable) conviendrait moins."},
+  {"q":"Quelle est la différence entre Awake et Start ?","a":["Awake est appelée à la création du script ; Start juste avant la première frame (après tous les Awake)","Start avant Awake","Les deux à chaque frame","Aucune différence"],"correct":0,"explain":"Awake sert à s'initialiser soi-même (très tôt). Start, appelée après que tous les Awake ont eu lieu, sert à utiliser d'autres objets déjà initialisés."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Affiche un message dans <code>Awake</code>, <code>Start</code> et <code>Update</code>, et observe l'ordre et la fréquence dans la Console.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>void Awake()  { Debug.Log("Awake (une fois, très tôt)"); }
+void Start()  { Debug.Log("Start (une fois, avant la 1re frame)"); }
+void Update() { Debug.Log("Update (chaque frame)"); }</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Déplace un objet vers la droite à vitesse constante, indépendamment du framerate, en utilisant <code>Time.deltaTime</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private float vitesse = 3f;
+
+void Update()
+{
+    transform.Translate(Vector3.right * vitesse * Time.deltaTime);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compare&nbsp;: déplace un objet dans <code>Update</code> et un autre dans <code>FixedUpdate</code>. Explique en commentaire pourquoi la physique va dans <code>FixedUpdate</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>void Update()
+{
+    // Rendu/logique non physique : cadence variable
+    transform.Translate(Vector3.right * 2f * Time.deltaTime);
+}
+
+void FixedUpdate()
+{
+    // Physique : pas de temps fixe => comportement stable des Rigidbody
+    // (ici on utiliserait rb.MovePosition / AddForce)
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -242,6 +308,7 @@ void Update()
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

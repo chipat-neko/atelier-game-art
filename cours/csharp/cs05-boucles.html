@@ -201,6 +201,73 @@ while (munitions &gt; 0)
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle boucle est la plus adaptée pour parcourir tous les éléments d'une List ?","a":["foreach : elle visite chaque élément sans gérer d'index","while (true)","do-while","Aucune, il faut un index manuel"],"correct":0,"explain":"foreach est idéale pour « chaque élément » : pas d'index, pas d'erreur de borne. Le for classique reste utile quand on a besoin de l'index ou de modifier la collection."},
+  {"q":"Quelle est la différence entre break et continue ?","a":["break sort de la boucle ; continue passe directement au tour suivant","break passe au tour suivant ; continue sort","Les deux arrêtent la boucle","Les deux n'ont aucun effet"],"correct":0,"explain":"break interrompt complètement la boucle. continue saute le reste du tour courant et reprend à l'itération suivante."},
+  {"q":"Pourquoi éviter une boucle qui tourne « jusqu'à une condition » dans un jeu ?","a":["Elle s'exécute dans une seule frame et peut geler le jeu","Elle consomme trop de mémoire","Elle est interdite par Unity","Elle ralentit la compilation"],"correct":0,"explain":"Une boucle longue/bloquante s'exécute entièrement sur la même frame : l'image ne se termine jamais et le jeu se fige. Pour étaler dans le temps, on utilise les coroutines (CS14)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Avec une boucle <code>for</code>, calcule la somme des entiers de 1 à 100 et affiche-la.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int somme = 0;
+for (int i = 1; i &lt;= 100; i++)
+    somme += i;
+Debug.Log(somme);   // 5050</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Parcours une liste de PV avec <code>foreach</code> et compte combien d'éléments sont «&nbsp;morts&nbsp;» (≤ 0).</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int[] pvs = { 30, 0, 12, -5, 8 };
+int morts = 0;
+foreach (int pv in pvs)
+{
+    if (pv &lt;= 0)
+        morts++;
+}
+Debug.Log("Morts : " + morts);   // 2</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Dans une boucle, trouve le premier nombre positif d'un tableau en sautant les valeurs nulles avec <code>continue</code> et en sortant avec <code>break</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int[] valeurs = { 0, 0, -3, 7, 9 };
+int trouve = 0;
+foreach (int v in valeurs)
+{
+    if (v &lt;= 0) continue;   // saute les non-positifs
+    trouve = v;
+    break;                  // premier positif trouvé
+}
+Debug.Log(trouve);          // 7</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -252,6 +319,7 @@ while (munitions &gt; 0)
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

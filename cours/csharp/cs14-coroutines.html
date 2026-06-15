@@ -217,6 +217,93 @@ StopAllCoroutines();     // arrêter toutes celles de ce MonoBehaviour</code></p
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment lancer une coroutine ?","a":["Avec StartCoroutine(MaCoroutine())","En l'appelant comme une méthode : MaCoroutine()","Avec Invoke","Avec new Coroutine()"],"correct":0,"explain":"Une coroutine ne démarre pas si on l'appelle directement : il faut StartCoroutine(MaCoroutine()). Appeler MaCoroutine() seul ne fait rien d'utile."},
+  {"q":"Que fait yield return new WaitForSeconds(2f) ?","a":["Suspend la coroutine 2 secondes sans bloquer le jeu, puis reprend","Bloque tout le jeu pendant 2 secondes","Arrête définitivement la coroutine","Attend 2 frames"],"correct":0,"explain":"La coroutine rend la main au moteur : le jeu continue d'afficher les frames, et la coroutine reprend juste après le yield, 2 secondes plus tard."},
+  {"q":"Quel using est nécessaire pour IEnumerator ?","a":["using System.Collections;","using UnityEngine;","using System.Linq;","Aucun"],"correct":0,"explain":"IEnumerator et yield viennent de System.Collections. Oublier ce using provoque une erreur « IEnumerator introuvable »."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Écris une coroutine qui logge un message, attend 3 secondes, puis logge un second message. Lance-la dans <code>Start</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using System.Collections;
+using UnityEngine;
+
+IEnumerator OuvrirApresDelai()
+{
+    Debug.Log("Compte à rebours…");
+    yield return new WaitForSeconds(3f);
+    Debug.Log("Porte ouverte !");
+}
+
+void Start()
+{
+    StartCoroutine(OuvrirApresDelai());
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Écris une coroutine <code>Clignoter(int fois)</code> qui active/désactive un <code>Renderer</code> avec des pauses de 0,1&nbsp;s.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private Renderer rendu;
+
+IEnumerator Clignoter(int fois)
+{
+    for (int i = 0; i &lt; fois; i++)
+    {
+        rendu.enabled = false;
+        yield return new WaitForSeconds(0.1f);
+        rendu.enabled = true;
+        yield return new WaitForSeconds(0.1f);
+    }
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un spawner&nbsp;: une coroutine <code>while(true)</code> qui instancie un objet toutes les 2&nbsp;secondes. Garde la référence pour pouvoir l'arrêter.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private GameObject prefab;
+private Coroutine spawn;
+
+void Start() { spawn = StartCoroutine(SpawnBoucle()); }
+
+IEnumerator SpawnBoucle()
+{
+    while (true)
+    {
+        Instantiate(prefab, transform.position, Quaternion.identity);
+        yield return new WaitForSeconds(2f);
+    }
+}
+
+void Arreter() { if (spawn != null) StopCoroutine(spawn); }</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -268,6 +355,7 @@ StopAllCoroutines();     // arrêter toutes celles de ce MonoBehaviour</code></p
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

@@ -213,6 +213,80 @@ float sourisX = Input.GetAxis("Mouse X");   // déplacement souris (caméra/vis�
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle méthode utiliser pour un saut (action ponctuelle) ?","a":["Input.GetKeyDown : vraie seulement à l'instant de l'appui","Input.GetKey : vraie tant que la touche est tenue","Input.GetAxis","FixedUpdate"],"correct":0,"explain":"GetKeyDown ne renvoie vrai qu'une frame, au moment où la touche est enfoncée : parfait pour sauter/tirer. GetKey (continu) déclencherait le saut en boucle."},
+  {"q":"Où appliquer un déplacement via Rigidbody pour un comportement stable ?","a":["Dans FixedUpdate","Dans Update","Dans Awake","Dans OnDestroy"],"correct":0,"explain":"On lit les entrées dans Update (réactif) mais on applique la physique (Rigidbody) dans FixedUpdate, synchronisé avec le moteur physique, pour éviter les saccades."},
+  {"q":"Que renvoie Input.GetAxis(\"Horizontal\") ?","a":["Une valeur lissée entre -1 et +1 selon la direction","Toujours 0 ou 1","Un booléen","La position de la souris"],"correct":0,"explain":"GetAxis renvoie une valeur continue de -1 (gauche) à +1 (droite), lissée. Pratique pour un déplacement progressif sans coder chaque touche séparément."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Déplace un objet au clavier avec <code>GetAxis</code> (horizontal/vertical), à vitesse réglable et indépendante du framerate.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private float vitesse = 5f;
+
+void Update()
+{
+    float h = Input.GetAxis("Horizontal");
+    float v = Input.GetAxis("Vertical");
+    transform.Translate(new Vector3(h, 0f, v) * vitesse * Time.deltaTime);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Affiche «&nbsp;Saut&nbsp;!&nbsp;» une seule fois par appui sur la barre Espace.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>void Update()
+{
+    if (Input.GetKeyDown(KeyCode.Space))
+        Debug.Log("Saut !");
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Lis l'entrée dans <code>Update</code> et applique le déplacement physique au <code>Rigidbody</code> dans <code>FixedUpdate</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>[SerializeField] private float vitesse = 5f;
+private Rigidbody rb;
+private Vector3 input;
+
+void Awake() { rb = GetComponent&lt;Rigidbody&gt;(); }
+
+void Update()
+{
+    input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+}
+
+void FixedUpdate()
+{
+    rb.MovePosition(rb.position + input * vitesse * Time.fixedDeltaTime);
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -264,6 +338,7 @@ float sourisX = Input.GetAxis("Mouse X");   // déplacement souris (caméra/vis�
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

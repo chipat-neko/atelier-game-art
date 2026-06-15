@@ -209,6 +209,84 @@ void Tirer(int nombre) { /* tirer 'nombre' projectiles */ }
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que signifie le type de retour void dans une signature de méthode ?","a":["La méthode ne renvoie aucune valeur","La méthode renvoie un entier","La méthode est vide","La méthode est privée"],"correct":0,"explain":"void indique qu'une méthode exécute une action mais ne renvoie rien. Si elle doit produire une valeur, on déclare le type renvoyé (int, float…) et on utilise return."},
+  {"q":"Qu'est-ce que la surcharge (overload) d'une méthode ?","a":["Plusieurs méthodes de même nom mais avec des paramètres différents","Une méthode qui s'appelle elle-même","Une méthode trop longue","Une méthode héritée"],"correct":0,"explain":"La surcharge permet d'avoir, par ex., Log(int) et Log(string). Le compilateur choisit la bonne version selon le type des arguments passés."},
+  {"q":"Si l'on passe un int à une méthode et qu'elle le modifie, la variable d'origine change-t-elle ?","a":["Non : les types simples sont passés par valeur (copie)","Oui, toujours","Seulement dans Update","Seulement si elle est public"],"correct":0,"explain":"int, float, bool… sont passés par valeur : la méthode travaille sur une copie. Pour modifier l'original, il faudrait passer par référence (ref) — rarement nécessaire en gameplay courant."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Écris une méthode <code>int CalculerScore(int base, int multi)</code> qui renvoie <code>base * multi</code>, et appelle-la depuis <code>Start</code>.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int CalculerScore(int valeurBase, int multi)
+{
+    return valeurBase * multi;
+}
+
+void Start()
+{
+    Debug.Log(CalculerScore(10, 3));   // 30
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée deux surcharges <code>Afficher</code>&nbsp;: une pour un <code>int</code>, une pour un <code>string</code>. Appelle les deux et observe que le compilateur choisit la bonne.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>void Afficher(int valeur) { Debug.Log("Entier : " + valeur); }
+void Afficher(string texte) { Debug.Log("Texte : " + texte); }
+
+void Start()
+{
+    Afficher(42);          // Entier : 42
+    Afficher("Bonjour");   // Texte : Bonjour
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Découpe une logique en plusieurs méthodes&nbsp;: une méthode <code>bool EstVivant(int pv)</code> et une méthode <code>void Soigner</code> avec un paramètre par défaut. Combine-les.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int pv = 0;
+
+bool EstVivant(int valeur) =&gt; valeur &gt; 0;
+
+void Soigner(int montant = 10)
+{
+    pv += montant;
+}
+
+void Start()
+{
+    if (!EstVivant(pv))
+        Soigner();          // soigne 10 par défaut
+    Debug.Log("PV : " + pv + " — vivant : " + EstVivant(pv));
+}</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -261,6 +339,7 @@ void Tirer(int nombre) { /* tirer 'nombre' projectiles */ }
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

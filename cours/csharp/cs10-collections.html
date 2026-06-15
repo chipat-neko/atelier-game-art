@@ -201,6 +201,72 @@ foreach (var paire in inventaire)
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle collection choisir pour une liste d'ennemis dont la taille varie ?","a":["List<Ennemi> (taille dynamique : Add, Remove)","Un tableau de taille fixe","Dictionary","int"],"correct":0,"explain":"Un tableau a une taille fixe à la création. List<T> grandit/rétrécit avec Add et Remove : idéal pour une liste qui évolue (ennemis, inventaire)."},
+  {"q":"À quoi sert un Dictionary<K,V> ?","a":["Associer une clé à une valeur pour un accès rapide (ex. nom -> score)","Stocker uniquement des nombres","Trier automatiquement les éléments","Remplacer les booléens"],"correct":0,"explain":"Un Dictionary fait correspondre des clés uniques à des valeurs : on retrouve une valeur directement par sa clé, sans parcourir toute la collection."},
+  {"q":"Comment parcourir tous les éléments d'une List sans gérer d'index ?","a":["Avec foreach (var element in maListe)","Avec un switch","Avec while (true)","On ne peut pas"],"correct":0,"explain":"foreach visite chaque élément l'un après l'autre, sans index ni risque de dépassement de borne. Pour modifier la liste pendant le parcours, on préfère une boucle for à l'envers."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Échauffement</span></div>
+                <p>Crée une <code>List&lt;string&gt;</code> d'inventaire, ajoute trois objets, puis affiche le nombre d'éléments.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using System.Collections.Generic;
+
+List&lt;string&gt; inventaire = new List&lt;string&gt;();
+inventaire.Add("Potion");
+inventaire.Add("Épée");
+inventaire.Add("Clé");
+Debug.Log("Objets : " + inventaire.Count);   // 3</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée un <code>Dictionary&lt;string, int&gt;</code> «&nbsp;nom → score&nbsp;», ajoute deux joueurs et affiche le score de l'un par sa clé.</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>using System.Collections.Generic;
+
+Dictionary&lt;string, int&gt; scores = new Dictionary&lt;string, int&gt;();
+scores["Alice"] = 100;
+scores["Bob"] = 75;
+Debug.Log("Score d'Alice : " + scores["Alice"]);   // 100</code></pre>
+                  </div>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Parcours la <code>List</code> d'inventaire avec <code>foreach</code> et compte combien d'objets contiennent la lettre «&nbsp;é&nbsp;».</p>
+                <details class="exo-sol">
+                  <summary>Voir une solution</summary>
+                  <div class="codeblock" data-lang="C#">
+<pre><code>int avecAccent = 0;
+foreach (string objet in inventaire)
+{
+    if (objet.Contains("é"))
+        avecAccent++;
+}
+Debug.Log("Objets avec « é » : " + avecAccent);</code></pre>
+                  </div>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
@@ -252,6 +318,7 @@ foreach (var paire in inventaire)
   <script src="../../js/progress.js"></script>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>
