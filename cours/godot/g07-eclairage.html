@@ -166,6 +166,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que SDFGI dans Godot 4 ?","a":["Une illumination globale temps réel sans préparation, idéale pour de grands mondes dynamiques (Forward+)","Une texture","Un format d'export","Un type de collision"],"correct":0,"explain":"SDFGI (Signed Distance Field GI) calcule la lumière indirecte en temps réel sans baking, pratique pour de vastes scènes dynamiques. Elle nécessite le renderer Forward+."},
+  {"q":"Quand préférer LightmapGI (baked) ?","a":["Pour des scènes statiques économes (mobile/web), au prix d'UV2 et d'un précalcul","Pour les objets qui bougent","Jamais","Pour la 2D"],"correct":0,"explain":"LightmapGI cuit l'éclairage dans des lightmaps : très peu coûteux à l'affichage, idéal sur matériel modeste, mais statique et nécessitant un second jeu d'UV (UV2)."},
+  {"q":"Où se règlent le ciel, la lumière ambiante et le post-processing en Godot ?","a":["Dans la ressource Environment (souvent portée par un WorldEnvironment)","Dans le code uniquement","Dans le project.godot","Dans le Sprite2D"],"correct":0,"explain":"Le WorldEnvironment porte une ressource Environment : ciel, lumière ambiante, reflets, SDFGI et post-processing (glow, tonemap) s'y règlent de façon centralisée."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Éclaire une scène 3D avec une DirectionalLight3D et ajoute un WorldEnvironment avec un ciel.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute une DirectionalLight3D (oriente-la), puis un WorldEnvironment avec un Environment (Sky procédural). Tu obtiens un éclairage extérieur de base et une lumière ambiante venant du ciel.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Active SDFGI dans l'Environment (Forward+) et observe l'éclairage indirect en temps réel.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans l'Environment, active SDFGI. Place des murs colorés&nbsp;: la lumière indirecte « bave » sur les surfaces voisines, sans baking. Déplace la lumière&nbsp;: tout s'adapte en direct.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compare SDFGI (temps réel) et LightmapGI (baked) sur une même scène statique&nbsp;: rendu et coût.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>LightmapGI exige des UV2 et un bake (statique), mais coûte très peu à l'affichage. SDFGI est dynamique mais plus lourd et réservé à Forward+. Choisis selon la plateforme et la nature (statique/dynamique) de la scène.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

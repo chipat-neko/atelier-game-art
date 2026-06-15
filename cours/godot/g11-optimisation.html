@@ -172,6 +172,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"À quoi sert le MultiMeshInstance3D dans Godot ?","a":["Dessiner de nombreuses copies d'un mesh en très peu de draw calls (instancing)","Animer un personnage","Créer des UV","Gérer le son"],"correct":0,"explain":"Le MultiMesh affiche des milliers d'instances d'un même mesh en un nombre minime de draw calls : idéal pour la végétation, les rochers, les foules."},
+  {"q":"À quoi sert la Visibility Range d'un node ?","a":["Définir des distances d'apparition/disparition pour faire du LOD et masquer le lointain","Régler la couleur","Changer le renderer","Définir les collisions"],"correct":0,"explain":"La Visibility Range affiche/masque un node selon la distance à la caméra : on l'utilise pour le LOD (basculer entre versions) et pour ne pas dessiner le lointain inutile."},
+  {"q":"Quel réflexe avant d'optimiser une scène ?","a":["Mesurer avec le moniteur de performances (Debugger ▸ Monitors) pour cibler le vrai goulot","Réduire toutes les textures au hasard","Supprimer des scènes","Désactiver l'éclairage"],"correct":0,"explain":"On mesure d'abord (FPS, draw calls, temps de frame) via les Monitors du Debugger, pour optimiser là où ça compte vraiment plutôt qu'au hasard."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Ouvre les Monitors du Debugger et observe FPS, temps de frame et draw calls de ta scène.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Debugger ▸ Monitors&nbsp;: suis les courbes (FPS, Frame Time, Draw Calls). Ajoute des objets et regarde l'évolution&nbsp;: c'est la base pour cibler une optimisation utile.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Remplace de nombreux objets répétés (herbe, cailloux) par un MultiMeshInstance3D et compare les draw calls.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée un MultiMeshInstance3D, configure le MultiMesh (mesh + nombre d'instances + transforms). Les centaines de copies se dessinent en très peu de draw calls&nbsp;: vérifie la chute dans les Monitors.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets en place une Visibility Range (LOD/masquage) sur des objets lointains et mesure le gain.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Règle Visibility Range Begin/End sur des objets pour qu'ils disparaissent au loin, ou basculent vers une version simplifiée. Vérifie dans les Monitors que moins d'objets/draw calls sont rendus quand la caméra s'éloigne.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

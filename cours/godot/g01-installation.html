@@ -167,6 +167,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle particularité rend Godot très accessible ?","a":["Il est libre (MIT), gratuit sans royalties, et tient dans un petit exécutable sans installation lourde","Il coûte un abonnement mensuel","Il ne fonctionne que sur Linux","Il faut compiler le moteur soi-même"],"correct":0,"explain":"Godot est open source (licence MIT) : gratuit, sans royalties ni seuil de revenus. L'éditeur est un exécutable léger qu'on lance directement."},
+  {"q":"Quels langages peut-on utiliser dans Godot ?","a":["GDScript (natif), C# (.NET), et C++ via GDExtension","Uniquement le C++","Uniquement le Java","Uniquement un langage visuel"],"correct":0,"explain":"GDScript est le langage natif (le plus intégré). Godot supporte aussi le C# (.NET) et le C++ (GDExtension) pour les besoins de performance."},
+  {"q":"Pour quels usages Godot est-il particulièrement réputé ?","a":["Le 2D, les projets indé et le web, tout en montant en puissance en 3D","Uniquement les AAA photoréalistes","Uniquement la VR","Uniquement le mobile"],"correct":0,"explain":"Godot brille en 2D et pour l'indé/web grâce à sa légèreté ; sa 3D progresse vite (Vulkan, SDFGI). C'est un excellent moteur d'apprentissage."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Télécharge Godot, lance l'exécutable et crée un projet vide. Repère le renderer choisi à la création.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Sur godotengine.org, prends la version standard (ou .NET si tu veux le C#). Aucun installeur&nbsp;: on lance le binaire. À la création du projet, on choisit le renderer (Forward+, Mobile ou Compatibility) — détaillé en G3.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Crée une première scène avec un node racine, sauvegarde-la, et lance le projet (F5).</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute un node (ex. Node2D ou Node3D), enregistre la scène (.tscn), définis-la comme scène principale au premier lancement. F5 lance le projet, F6 la scène courante.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Configure un dépôt Git du projet avec un .gitignore adapté à Godot.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Un .gitignore Godot exclut surtout le dossier <code>.godot/</code> (cache régénérable). On versionne les scènes (.tscn), scripts (.gd), ressources (.tres) et <code>project.godot</code>.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

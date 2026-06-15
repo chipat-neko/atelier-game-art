@@ -176,6 +176,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la différence entre GPUParticles et CPUParticles dans Godot ?","a":["GPUParticles simule sur le GPU (grand nombre de particules) ; CPUParticles sur le CPU (plus compatible/portable)","CPUParticles est plus rapide pour des millions de particules","GPUParticles ne s'affiche pas","Ils sont identiques"],"correct":0,"explain":"GPUParticles3D gère de très grands volumes via le GPU. CPUParticles3D, simulé sur CPU, est plus portable (notamment Compatibility/web) mais limité en nombre."},
+  {"q":"Que définit le ProcessMaterial d'un système GPUParticles ?","a":["Le comportement des particules : émission, forces, courbes (scale/color/velocity) sur la durée de vie","La géométrie du sol","Le code du jeu","Les UV"],"correct":0,"explain":"Le ProcessMaterial décrit comment les particules naissent et évoluent (vitesse, gravité, courbes dans le temps). Le Draw Pass définit, lui, ce qui est dessiné par particule."},
+  {"q":"Qu'est-ce qui rend un effet de particules crédible ?","a":["Les courbes d'évolution (taille, couleur, opacité, vitesse) au fil de la vie","Le nombre de polygones du décor","La résolution de l'écran","Le nom du node"],"correct":0,"explain":"Comme partout en VFX, faire varier les paramètres dans le temps (courbes) donne le réalisme, davantage que le nombre brut de particules."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Crée un GPUParticles3D, assigne un ProcessMaterial et un Draw Pass (mesh/quad) pour obtenir des particules visibles.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute le node, crée un ParticleProcessMaterial, et un Draw Pass (un QuadMesh avec un matériau). Règle l'Amount et la durée de vie&nbsp;: tu vois apparaître un flux de particules.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Règle les courbes (taille et couleur dans le temps) pour transformer l'émission en fumée ou étincelles.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans le ProcessMaterial&nbsp;: Scale Curve croissante + Color/Alpha décroissante pour la fumée ; pour les étincelles, vitesse initiale forte, gravité, vie courte. Les courbes font tout le réalisme.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compare un effet dense en GPUParticles vs CPUParticles et note la différence de nombre possible/perf.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Monte l'Amount&nbsp;: GPUParticles encaisse des volumes que CPUParticles ne pourrait pas. Mais CPUParticles reste utile pour la compatibilité (web/Compatibility) ou des besoins de collision côté CPU.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

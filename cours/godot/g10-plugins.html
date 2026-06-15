@@ -158,6 +158,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'est-ce que l'AssetLib de Godot ?","a":["Une bibliothèque d'assets et de plugins intégrée à l'éditeur, communautaire et majoritairement libre","Un moteur de rendu","Un format de fichier","Un service payant obligatoire"],"correct":0,"explain":"L'AssetLib (onglet de l'éditeur) propose des assets et plugins de la communauté, souvent open source et gratuits. On les installe directement depuis Godot."},
+  {"q":"Comment active-t-on un plugin une fois installé ?","a":["Dans Project Settings ▸ Plugins (on l'active explicitement)","Il s'active tout seul définitivement","En recompilant Godot","On ne peut pas le désactiver"],"correct":0,"explain":"Les plugins installés apparaissent dans Project Settings ▸ Plugins, où on les active/désactive. Un plugin actif peut ajouter des docks, nodes ou outils."},
+  {"q":"Quelle bonne pratique avant d'adopter un plugin communautaire ?","a":["Vérifier sa compatibilité avec ta version de Godot et sa maintenance","Le renommer","Le compresser","Désactiver le renderer"],"correct":0,"explain":"Un plugin prévu pour Godot 3 peut ne pas marcher en Godot 4. On vérifie la version supportée, l'activité du dépôt et la licence avant de l'intégrer."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Ouvre l'AssetLib, installe un petit plugin/outil et active-le dans Project Settings ▸ Plugins.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Onglet AssetLib ▸ cherche un plugin compatible Godot 4 ▸ Download/Install. Puis Project Settings ▸ Plugins ▸ Enable. Vérifie qu'il ajoute bien ses options dans l'éditeur.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Installe un asset (ex. un pack de sprites/modèles) depuis l'AssetLib et utilise-le dans une scène.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Télécharge l'asset, choisis quels fichiers importer dans ton projet, puis place-les dans une scène. Vérifie l'échelle et la licence de l'asset avant un usage sérieux.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Évalue un plugin (compatibilité Godot 4, maintenance, licence) et désactive-le proprement si inutile.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Regarde la version cible, la date de dernière mise à jour et la licence (MIT le plus souvent). Pour le retirer, désactive-le dans Plugins puis supprime son dossier addons/. Garde le projet léger.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

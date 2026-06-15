@@ -169,6 +169,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que regroupe la ressource Environment d'un WorldEnvironment ?","a":["Ciel, lumière ambiante, reflets, brouillard et post-processing (glow, tonemap)","Uniquement les collisions","Le code de gameplay","Les UV des objets"],"correct":0,"explain":"L'Environment centralise l'ambiance de la scène : ciel/ambiant, fog, ajustements de couleur, glow et tone mapping. C'est le tableau de bord visuel global."},
+  {"q":"Qu'est-ce que le Glow dans Godot ?","a":["Un effet de bloom : un halo autour des zones très claires/émissives","Une ombre portée","Une collision","Un type de lumière"],"correct":0,"explain":"Le Glow (bloom) fait « rayonner » les zones lumineuses au-delà de leurs contours. Couplé à des matériaux émissifs et au HDR, il donne du punch aux néons, lampes, magie."},
+  {"q":"À quoi sert le brouillard (fog) dans l'Environment ?","a":["Donner de la profondeur/ambiance et masquer le lointain","Augmenter le nombre de polygones","Accélérer le rendu sans contrepartie","Remplacer les textures"],"correct":0,"explain":"Le fog atténue les objets lointains (profondeur atmosphérique) et crée une ambiance. Il aide aussi à cacher la limite de vue (au lieu d'un « pop » brutal)."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Ajoute un WorldEnvironment et active le Glow, puis donne de l'émission à un matériau pour le voir rayonner.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans l'Environment, active Glow. Sur un StandardMaterial3D, monte l'Emission (et son énergie au-dessus de 1 pour le HDR). L'objet se met à « baver » de lumière&nbsp;: effet néon.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Ajoute du brouillard (fog) et règle sa densité/couleur pour créer une ambiance.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Active Fog dans l'Environment, ajuste densité et couleur. Un fog bleuté froid pour une nuit, chaud pour un coucher de soleil. Vérifie l'effet de profondeur sur les objets éloignés.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Compose une ambiance complète (ciel + ambiant + glow + tonemap) cohérente pour une scène donnée.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Choisis un tone mapping (ex. Filmic/ACES), accorde la lumière ambiante au ciel, dose le glow et le fog. Reste subtil&nbsp;: l'ambiance doit servir la lisibilité, pas écraser la scène.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

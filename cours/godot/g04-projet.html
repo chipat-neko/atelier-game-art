@@ -166,6 +166,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Que désigne le chemin res:// dans Godot ?","a":["La racine virtuelle du système de fichiers du projet","Un dossier temporaire","Le dossier d'installation de Godot","Une ressource réseau"],"correct":0,"explain":"res:// est la racine du projet : tous les chemins internes y commencent (res://scenes/joueur.tscn). user:// sert, lui, aux données sauvegardées côté joueur."},
+  {"q":"Quel fichier définit la configuration d'un projet Godot ?","a":["project.godot","main.gd","config.json","settings.ini"],"correct":0,"explain":"project.godot contient les réglages du projet (scène principale, renderer, input map, autoloads…). Il marque aussi la racine du projet pour l'éditeur."},
+  {"q":"Quel dossier ne faut-il PAS versionner dans un projet Godot ?","a":[".godot/ (cache régénérable)","scenes/","scripts/","le dossier des assets"],"correct":0,"explain":"Le dossier .godot/ est un cache d'import régénérable : on l'exclut du dépôt. On versionne les .tscn, .gd, .tres et project.godot."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Organise le projet en dossiers (scenes, scripts, assets) et déplace tes fichiers en conséquence.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans le dock FileSystem, crée des dossiers et glisse-y tes fichiers&nbsp;: Godot met à jour les références automatiquement. Une arborescence claire évite le chaos quand le projet grandit.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Définis la scène principale et règle une option de fenêtre (résolution) dans les Project Settings.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Project Settings ▸ Application ▸ Run ▸ Main Scene. Et ▸ Display ▸ Window pour la résolution/le mode d'étirement. Ces réglages sont stockés dans project.godot.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Mets le projet sous Git avec un .gitignore Godot et vérifie que .godot/ est exclu.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée un .gitignore qui exclut <code>.godot/</code> (et éventuellement les exports). git status ne doit pas lister .godot/. Versionne project.godot, les scènes, scripts et ressources.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

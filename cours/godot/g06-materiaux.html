@@ -191,6 +191,49 @@ void fragment() {
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel matériau PBR clé en main propose Godot pour la 3D ?","a":["StandardMaterial3D (albedo, metallic, roughness, normal, AO, émission)","Uniquement un shader à coder","Un matériau 2D","Aucun"],"correct":0,"explain":"StandardMaterial3D couvre tous les slots PBR standard. Pour des effets sur mesure, on passe au ShaderMaterial (langage de shader Godot ou VisualShader)."},
+  {"q":"Comment créer un effet de shader personnalisé sans tout coder ?","a":["Avec le VisualShader (éditeur à nœuds)","Avec l'Inspector seul","En important une vidéo","Ce n'est pas possible"],"correct":0,"explain":"Le VisualShader permet de construire des shaders en reliant des nœuds. On peut aussi écrire directement en langage de shader Godot (proche du GLSL)."},
+  {"q":"Qu'est-ce qu'une map ORM, souvent gérée par StandardMaterial3D ?","a":["Une texture qui packe Occlusion, Roughness et Metallic dans les canaux R/G/B","Une texture de couleur","Une normal map","Un son"],"correct":0,"explain":"L'ORM regroupe trois maps de données dans une seule image (R=AO, G=Roughness, B=Metallic) pour économiser de la mémoire et des échantillonnages."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Applique un StandardMaterial3D à un mesh et règle albedo, metallic et roughness.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Dans l'Inspector du MeshInstance3D, crée un StandardMaterial3D. Règle Albedo (couleur), Metallic (0 non-métal), Roughness. Observe l'effet sous un éclairage&nbsp;: c'est le PBR de base.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Branche des textures (albedo + normal) et, si tu en as une, une map ORM.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Active les sections Albedo (texture sRGB) et Normal Map. Pour l'ORM, active AO/Roughness/Metallic et indique le canal source (R/G/B) de chaque. Vérifie le rendu sous lumière mobile.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Crée un VisualShader simple (ex. Fresnel vers l'émission) et applique-le via un ShaderMaterial.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Crée un ShaderMaterial ▸ VisualShader. Ajoute un nœud Fresnel relié à Emission pour un contour lumineux. Tu obtiens un effet « rim light » paramétrable, sans écrire de code.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

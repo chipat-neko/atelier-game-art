@@ -185,6 +185,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quelle est la brique de base d'une scène Godot ?","a":["Le node : on assemble un arbre de nodes pour construire une scène","La texture","Le shader","Le script C++"],"correct":0,"explain":"Tout dans Godot est node (sprite, caméra, collision, son…). Une scène est un arbre de nodes ; on compose le jeu par imbrication, sans système de « composants » séparé."},
+  {"q":"Qu'est-ce qu'une scène (.tscn) dans Godot ?","a":["Un arbre de nodes sauvegardé et réutilisable par instanciation (équivalent d'un prefab)","Un fichier image","Un script","Un format d'export final"],"correct":0,"explain":"Une scène regroupe des nodes ; sauvegardée en .tscn, elle s'instancie ailleurs (un ennemi, une UI). C'est le concept central de réutilisation de Godot."},
+  {"q":"À quoi sert le panneau Inspector de Godot ?","a":["Voir et régler les propriétés du node sélectionné","Lister les fichiers du projet","Afficher la console","Compiler le projet"],"correct":0,"explain":"L'Inspector affiche les propriétés du node sélectionné (et les variables @export d'un script attaché), qu'on règle sans toucher au code."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Construis une petite scène 2D&nbsp;: un node racine, un Sprite2D enfant, et règle sa texture dans l'Inspector.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Ajoute un Node2D racine, puis un Sprite2D enfant. Glisse une image dans la propriété Texture de l'Inspector. La hiérarchie de l'arbre détermine l'organisation et les transformations relatives.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Transforme un groupe de nodes en scène réutilisable (.tscn) et instancie-la deux fois.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Sélectionne le node racine du groupe, clic droit ▸ Save Branch as Scene. Puis « Instantiate Child Scene » pour en placer plusieurs copies. Modifier la scène source met à jour toutes les instances.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Organise ton interface (docks) et bascule entre les éditeurs 2D, 3D et Script.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Les boutons 2D / 3D / Script en haut changent le contexte d'édition. Tu peux déplacer/réorganiser les docks (Scene, FileSystem, Inspector) selon ton flux de travail.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

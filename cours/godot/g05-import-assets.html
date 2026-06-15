@@ -168,6 +168,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment importe-t-on un asset dans Godot ?","a":["En le déposant dans le dossier du projet : Godot l'importe automatiquement (et crée un .import)","Via un menu d'installation séparé","En le compilant","On ne peut pas importer d'assets"],"correct":0,"explain":"Glisser un fichier dans le dossier du projet suffit : Godot l'importe et génère un fichier .import avec ses réglages. On ajuste ces réglages dans l'onglet Import."},
+  {"q":"Quel format 3D est recommandé pour Godot ?","a":["glTF/GLB (bien supporté, ouvert)","Uniquement FBX","PSD","BMP"],"correct":0,"explain":"Godot supporte très bien glTF/GLB (ouvert, temps réel). Le FBX est aussi possible (souvent via un module). On vérifie l'échelle et les matériaux après import."},
+  {"q":"Où ajuste-t-on les réglages d'import d'une texture (compression, filtre) ?","a":["Dans l'onglet Import quand l'asset est sélectionné","Dans le code","Dans le project.godot à la main","On ne peut pas"],"correct":0,"explain":"Sélectionner l'asset puis l'onglet Import permet de régler compression, mipmaps, filtre… puis « Reimport ». On peut aussi définir des presets par type."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Prise en main</span></div>
+                <p>Importe une image et un modèle glTF en les déposant dans le projet, puis place-les dans une scène.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Copie les fichiers dans le dossier du projet (ou glisse-les dans FileSystem). Godot les importe automatiquement. Glisse l'image dans un Sprite2D et le glTF dans la scène 3D&nbsp;; vérifie l'échelle.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Modifie les réglages d'import d'une texture (filtre, mipmaps) et réimporte.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Sélectionne la texture ▸ onglet Import ▸ change le filtre (Nearest pour du pixel art, Linear sinon) et les mipmaps, puis Reimport. Tu peux enregistrer un preset par défaut pour ce type d'asset.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Importe un modèle glTF animé et vérifie que ses animations sont accessibles dans Godot.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Un glTF animé arrive avec un AnimationPlayer. Double-clic sur le modèle importé pour configurer (séparer les clips, boucles). Place-le en scène et lis une animation pour vérifier le rig et le skinning.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

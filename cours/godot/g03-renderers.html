@@ -168,6 +168,49 @@
               </div>
             </div>
 
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel renderer Godot 4 est le plus complet pour le desktop ?","a":["Forward+ (Vulkan) — SDFGI, SSR, volumétriques","Compatibility","Mobile uniquement","Aucun"],"correct":0,"explain":"Forward+ (Vulkan) est le renderer haut de gamme de Godot 4 sur desktop : il offre les fonctionnalités avancées (SDFGI, réflexions, volumétriques)."},
+  {"q":"Quand choisir le renderer Compatibility ?","a":["Pour l'export web et le matériel ancien/léger (OpenGL/WebGL)","Pour le rendu le plus réaliste","Pour la VR haut de gamme","Jamais"],"correct":0,"explain":"Compatibility (OpenGL/WebGL) est le plus portable : requis pour l'export web et le matériel modeste. En contrepartie, il a moins de fonctionnalités avancées."},
+  {"q":"Le choix du renderer est-il anodin en cours de projet ?","a":["Non : les fonctionnalités et le rendu diffèrent, mieux vaut choisir tôt selon la cible","Oui, on change sans impact","Il n'affecte que le son","Il se change automatiquement"],"correct":0,"explain":"Chaque renderer expose des fonctionnalités différentes. Changer en cours de route peut altérer le rendu (effets non supportés) : on choisit selon la plateforme cible dès le départ."}
+]
+              </script>
+            </section>
+
+            <section class="exos">
+              <h2>Exercices</h2>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 1</span><span class="exo-level niv-debutant">Observation</span></div>
+                <p>Crée deux projets (Forward+ et Compatibility) avec une même scène simple et compare l'aspect et les options disponibles.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>En Forward+, des effets comme SDFGI sont disponibles dans l'Environment&nbsp;; en Compatibility, ils manquent. Note les différences d'éclairage et de réflexions pour comprendre le compromis fonctionnalités/portabilité.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 2</span><span class="exo-level niv-intermediaire">Application</span></div>
+                <p>Change le renderer d'un projet dans les Project Settings et observe l'impact sur une scène existante.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Project Settings ▸ Rendering ▸ Renderer (Rendering Method). Après changement et redémarrage, certains effets peuvent ne plus s'afficher&nbsp;: c'est pourquoi le choix initial compte.</p>
+                </details>
+              </div>
+
+              <div class="exo">
+                <div class="exo-head"><span class="exo-num">Exercice 3</span><span class="exo-level niv-avance">Défi</span></div>
+                <p>Pour un projet web ciblé, justifie le choix du renderer et liste une contrainte à accepter.</p>
+                <details class="exo-sol">
+                  <summary>Voir une piste</summary>
+                  <p>Pour le web&nbsp;: Compatibility (WebGL) est requis. Contrainte&nbsp;: pas de SDFGI ni de certains effets avancés&nbsp;; on adapte la DA (lightmaps, styles) pour rester performant et compatible navigateur.</p>
+                </details>
+              </div>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
