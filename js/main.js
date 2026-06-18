@@ -57,6 +57,69 @@
     });
   }
 
+  /* ---------- Palette d'accent ---------- */
+  var ACCENTS = [
+    { id: "cyan",      label: "Cyan",      color: "#38bdf8" },
+    { id: "emeraude",  label: "Émeraude",  color: "#34d399" },
+    { id: "ambre",     label: "Ambre",     color: "#fbbf24" },
+    { id: "violet",    label: "Violet",    color: "#a78bfa" },
+    { id: "framboise", label: "Framboise", color: "#fb7185" },
+    { id: "indigo",    label: "Indigo",    color: "#818cf8" }
+  ];
+  function applyAccent(id) {
+    if (id && id !== "cyan") document.documentElement.setAttribute("data-accent", id);
+    else { document.documentElement.removeAttribute("data-accent"); id = "cyan"; }
+    try { localStorage.setItem("ag-accent", id); } catch (e) {}
+    var pop = document.getElementById("accent-pop");
+    if (pop) pop.querySelectorAll(".accent-sw").forEach(function (sw) {
+      sw.classList.toggle("is-active", sw.dataset.accent === id);
+    });
+  }
+  function initAccent() {
+    var saved;
+    try { saved = localStorage.getItem("ag-accent"); } catch (e) {}
+    if (saved) applyAccent(saved);
+    var header = document.querySelector(".site-header");
+    var themeBtn = document.getElementById("theme-toggle");
+    if (!header || !themeBtn) return;
+
+    var wrap = el("div", "accent-picker");
+    var btn = el("button", "icon-btn");
+    btn.id = "accent-toggle";
+    btn.setAttribute("aria-label", "Choisir la couleur d'accent");
+    btn.setAttribute("aria-haspopup", "true");
+    btn.setAttribute("aria-expanded", "false");
+    btn.innerHTML = '<span class="accent-dot"></span>';
+
+    var pop = el("div", "accent-pop");
+    pop.id = "accent-pop";
+    pop.hidden = true;
+    var cur = saved || "cyan";
+    ACCENTS.forEach(function (a) {
+      var sw = el("button", "accent-sw" + (a.id === cur ? " is-active" : ""));
+      sw.type = "button";
+      sw.dataset.accent = a.id;
+      sw.style.background = a.color;
+      sw.title = a.label;
+      sw.setAttribute("aria-label", a.label);
+      sw.addEventListener("click", function () { applyAccent(a.id); closePop(); });
+      pop.appendChild(sw);
+    });
+
+    function openPop() { pop.hidden = false; btn.setAttribute("aria-expanded", "true"); }
+    function closePop() { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); }
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (pop.hidden) openPop(); else closePop();
+    });
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) closePop(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closePop(); });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(pop);
+    header.insertBefore(wrap, themeBtn);
+  }
+
   /* ---------- Liens rapides en tête de sidebar ---------- */
   function buildSidebarLinks() {
     var nav = document.getElementById("sidebar-nav");
@@ -252,6 +315,7 @@
   /* ---------- Init ---------- */
   function init() {
     initTheme();
+    initAccent();
     buildSidebarLinks();
     buildSidebar();
     buildLessonNav();
