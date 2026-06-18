@@ -255,7 +255,16 @@ func _ready():
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé déclare une fonction en GDScript ?","accept":["func"],"placeholder":"un mot-clé","hints":["4 lettres."],"explain":"func nom(): déclare une fonction."}]
+[{"q":"Quel mot-clé déclare une fonction ?","accept":["func"],"placeholder":"un mot-clé","hints":["4 lettres."],"explain":"func."},
+{"q":"Quel mot-clé renvoie une valeur ?","accept":["return"],"placeholder":"un mot-clé","hints":["6 lettres."],"explain":"return."},
+{"q":"Avec  func f(a,b): return a*b ,  f(3,4)  vaut ?","accept":["12"],"placeholder":"un nombre","hints":["3*4."],"explain":"12."},
+{"q":"Une fonction sans return renvoie-t-elle null ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Rien."],"explain":"Oui (null)."},
+{"q":"Peut-on donner une valeur par défaut à un paramètre ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["func f(x = 1)."],"explain":"Oui."},
+{"q":"Quel symbole annonce le type de retour ?  func f() __ int","accept":["->"],"placeholder":"2 caractères","hints":["Flèche."],"explain":"-> (ex. func f() -> int)."},
+{"q":"Avec  func g(n): return n*n ,  g(5)  vaut ?","accept":["25"],"placeholder":"un nombre","hints":["5 au carré."],"explain":"25."},
+{"q":"_ready est-il une fonction ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Callback de node."],"explain":"Oui."},
+{"q":"Appelle-t-on une fonction avec des parenthèses ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["nom()."],"explain":"Oui."},
+{"q":"Les paramètres se mettent entre quels symboles ?","accept":["()","parenthèses","parentheses"],"placeholder":"2 symboles","hints":["( )"],"explain":"()."}]
             </script>
             </section>
 

@@ -208,7 +208,16 @@ frac(x);              // partie fractionnaire (x - floor(x)) : motifs répétés
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle fonction renvoie un mélange linéaire entre a et b ? (nom GLSL ou HLSL)","accept":["mix","lerp","mix/lerp","lerp/mix"],"placeholder":"un nom","hints":["mix en GLSL, lerp en HLSL."],"explain":"mix(a,b,t) en GLSL = lerp(a,b,t) en HLSL : interpolation linéaire."}]
+[{"q":"Quelle fonction interpole linéairement entre a et b ? (GLSL ou HLSL)","accept":["mix","lerp","mix/lerp"],"placeholder":"un nom","hints":["mix / lerp."],"explain":"mix (GLSL) = lerp (HLSL)."},
+{"q":"Comment appelle-t-on l'opération  dot(A, B)  ? (un mot/expression)","accept":["produit scalaire","dot","scalaire"],"placeholder":"...","hints":["A · B."],"explain":"Le produit scalaire."},
+{"q":"Quelle fonction limite une valeur entre deux bornes ?","accept":["clamp"],"placeholder":"un nom","hints":["5 lettres."],"explain":"clamp."},
+{"q":"normalize ramène la longueur d'un vecteur à… ?","accept":["1"],"placeholder":"un nombre","hints":["Vecteur unitaire."],"explain":"1."},
+{"q":"Combien de composantes a un vec3 ?","accept":["3"],"placeholder":"un nombre","hints":["x,y,z."],"explain":"3."},
+{"q":"Combien de composantes a un vec4 ?","accept":["4"],"placeholder":"un nombre","hints":["x,y,z,w."],"explain":"4."},
+{"q":"step(seuil, x) renvoie 0 ou… ?","accept":["1"],"placeholder":"un nombre","hints":["Bascule."],"explain":"0 ou 1."},
+{"q":"Quelle fonction donne la longueur (magnitude) d'un vecteur ?","accept":["length"],"placeholder":"un nom","hints":["6 lettres."],"explain":"length."},
+{"q":"saturate borne une valeur entre 0 et… ?","accept":["1"],"placeholder":"un nombre","hints":["0..1."],"explain":"1."},
+{"q":"sin et cos sont-elles périodiques ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Ondes."],"explain":"Oui."}]
             </script>
             </section>
 

@@ -208,7 +208,17 @@
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Comment appelle-t-on la redéfinition d'un événement/fonction hérité ? (un mot anglais)","accept":["override"],"placeholder":"un mot","hints":["8 lettres."],"explain":"On override (surcharge) un événement hérité dans le Blueprint enfant."}]
+[{"q":"Un Blueprint enfant hérite-t-il du parent ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Variables, logique…"],"explain":"Oui."},
+{"q":"Redéfinir un événement hérité s'appelle… ? (un mot anglais)","accept":["override"],"placeholder":"un mot","hints":["8 lettres."],"explain":"Override."},
+{"q":"Quel nœud appelle l'implémentation parente ? (Parent: ___) — le mot",
+"accept":["parent","parent:"],"placeholder":"un mot","hints":["Parent: NomFonction."],"explain":"Parent:."},
+{"q":"La logique commune va dans le parent ou l'enfant ?","accept":["parent","le parent"],"placeholder":"un mot","hints":["Partagée."],"explain":"Le parent."},
+{"q":"La logique spécifique va dans le… ? (un mot)","accept":["enfant","child","l'enfant"],"placeholder":"un mot","hints":["Spécialisé."],"explain":"L'enfant."},
+{"q":"Quel graphe configure l'apparence à la construction ? (Construction ___)","accept":["script","construction script"],"placeholder":"Construction ...","hints":["Construction S____"],"explain":"Construction Script."},
+{"q":"Le gameplay temps réel va dans quel événement ? (Begin___)","accept":["beginplay","begin play"],"placeholder":"Begin...","hints":["Begin____"],"explain":"BeginPlay."},
+{"q":"Pour un personnage contrôlable, quelle classe parente ? (un mot)","accept":["character","pawn"],"placeholder":"un mot","hints":["Pawn spécialisé."],"explain":"Character."},
+{"q":"L'enfant récupère-t-il les composants du parent ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Hérités."],"explain":"Oui."},
+{"q":"Crée-t-on un enfant via « Create Child Blueprint Class » ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Clic droit."],"explain":"Oui."}]
             </script>
             </section>
 

@@ -209,7 +209,16 @@ Ailleurs : appel du nœud "InfligerDegats" (Montant = 20)</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel événement se déclenche une seule fois au démarrage de l'Actor ? (Event ___)","accept":["beginplay","begin play","event beginplay"],"placeholder":"Event ...","hints":["Begin…"],"explain":"Event BeginPlay s'exécute une fois au démarrage."}]
+[{"q":"Quel événement se déclenche une fois au démarrage ? (Event ___)","accept":["beginplay","begin play"],"placeholder":"Event ...","hints":["Begin…"],"explain":"BeginPlay."},
+{"q":"Quel événement se déclenche à chaque frame ? (Event ___)","accept":["tick"],"placeholder":"Event ...","hints":["4 lettres."],"explain":"Tick."},
+{"q":"Event Tick est-il coûteux ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Chaque frame."],"explain":"Oui."},
+{"q":"Combien de fois se déclenche BeginPlay ?","accept":["1","une","une fois"],"placeholder":"un nombre","hints":["Au démarrage."],"explain":"Une fois."},
+{"q":"Un événement nommé réutilisable s'appelle un… Event ? (un mot)","accept":["custom","custom event","personnalisé"],"placeholder":"un mot","hints":["Custom."],"explain":"Custom Event."},
+{"q":"Que reçoit Tick en paramètre ? (Delta ___)","accept":["seconds","delta seconds","deltatime","dt"],"placeholder":"Delta ...","hints":["Temps de frame."],"explain":"Delta Seconds."},
+{"q":"Multiplie-t-on les vitesses par Delta Seconds ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Framerate."],"explain":"Oui."},
+{"q":"BeginPlay est idéal pour l'… ? (un mot)","accept":["initialisation","init","initialiser"],"placeholder":"un mot","hints":["Régler l'état."],"explain":"L'initialisation."},
+{"q":"Un Custom Event peut-il recevoir des paramètres ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Entrées."],"explain":"Oui."},
+{"q":"Une action d'entrée (Pressed/Released) est un événement d'… ? (un mot)","accept":["entrée","entree","input"],"placeholder":"un mot","hints":["Touches."],"explain":"D'entrée (input)."}]
             </script>
             </section>
 

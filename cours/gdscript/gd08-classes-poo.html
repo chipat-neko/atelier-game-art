@@ -260,7 +260,16 @@ func _init():
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé fait hériter un script d'une classe en GDScript ?","accept":["extends"],"placeholder":"un mot-clé","hints":["7 lettres (ex. extends Node2D)."],"explain":"extends définit la classe parente du script."}]
+[{"q":"Quel mot-clé fait hériter un script d'une classe ?","accept":["extends"],"placeholder":"un mot-clé","hints":["7 lettres."],"explain":"extends."},
+{"q":"Quel mot-clé enregistre une classe globale nommée ?","accept":["class_name","classname"],"placeholder":"class_...","hints":["class_____"],"explain":"class_name."},
+{"q":"Quelle fonction sert de constructeur ?","accept":["_init","_init()"],"placeholder":"_in...","hints":["_i__()"],"explain":"_init()."},
+{"q":"Quel mot-clé appelle la méthode de la classe parente ?","accept":["super"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"super."},
+{"q":"Chaque script GDScript est-il une classe ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Implicitement."],"explain":"Oui."},
+{"q":"À quoi fait référence  self  ? (un mot)","accept":["instance","l'instance","le node","l'objet"],"placeholder":"...","hints":["L'objet courant."],"explain":"À l'instance courante."},
+{"q":"Redéfinir une méthode héritée s'appelle… (un mot anglais) ?","accept":["override","surcharge","redéfinir"],"placeholder":"un mot","hints":["Override."],"explain":"L'override."},
+{"q":"extends Node fait du script un… ? (un mot)","accept":["node","nœud","noeud"],"placeholder":"un mot","hints":["Type de base."],"explain":"Un Node."},
+{"q":"Le mot-clé pour nommer la classe est… ?","accept":["class_name","classname"],"placeholder":"class_...","hints":["class_____"],"explain":"class_name."},
+{"q":"Peut-on hériter avec  extends Node2D  ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Classe parente."],"explain":"Oui."}]
             </script>
             </section>
 

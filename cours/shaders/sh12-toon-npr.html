@@ -199,7 +199,16 @@ float3 couleur = albedo * lerp(_Ombre, 1.0, bandes);</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle fonction crée une bascule nette (seuil) pour un rendu toon ? (nom GLSL)","accept":["step"],"placeholder":"un nom","hints":["4 lettres : renvoie 0 ou 1 selon un seuil."],"explain":"step(seuil, x) renvoie 0 ou 1 : utile pour les bandes nettes du cel shading."}]
+[{"q":"Quelle fonction crée une bascule nette (seuil) pour le toon ?","accept":["step"],"placeholder":"une fonction","hints":["0 ou 1."],"explain":"step."},
+{"q":"Que signifie NPR ? (Non-Photorealistic ___)","accept":["rendering","rendu"],"placeholder":"un mot","hints":["Rendering."],"explain":"Non-Photorealistic Rendering."},
+{"q":"Le rendu cartoon à bandes s'appelle aussi… shading ? (un mot)","accept":["cel","toon","cel shading"],"placeholder":"un mot","hints":["Cel."],"explain":"Cel shading (toon)."},
+{"q":"Le toon quantifie l'éclairage en… ? (un mot)","accept":["bandes","paliers","niveaux"],"placeholder":"un mot","hints":["Tranches nettes."],"explain":"En bandes (paliers)."},
+{"q":"step(seuil, x) renvoie 0 ou… ?","accept":["1"],"placeholder":"un nombre","hints":["Bascule."],"explain":"1."},
+{"q":"Ajoute-t-on souvent un contour (outline) au rendu toon ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Trait noir."],"explain":"Oui."},
+{"q":"Le NPR vise-t-il un style plutôt que le réalisme ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Non-photoréaliste."],"explain":"Oui."},
+{"q":"Le rim light met-il en valeur les bords ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Liseré."],"explain":"Oui."},
+{"q":"Le cel shading réduit-il le nombre de nuances d'éclairage ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Bandes."],"explain":"Oui."},
+{"q":"Quelle fonction quantifie le diffus en paliers ?","accept":["step"],"placeholder":"une fonction","hints":["Seuil."],"explain":"step (ou floor/quantize)."}]
             </script>
             </section>
 

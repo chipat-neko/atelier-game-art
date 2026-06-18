@@ -263,7 +263,16 @@ func lancer_vagues():
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé GDScript (Godot 4) attend la fin d'un signal ou d'une coroutine ?","accept":["await"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"await suspend jusqu'à l'émission d'un signal (ex. await get_tree().create_timer(1).timeout)."}]
+[{"q":"Quel mot-clé (Godot 4) attend la fin d'un signal/coroutine ?","accept":["await"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"await."},
+{"q":"Quel node compte un délai et émet un signal à la fin ?","accept":["timer"],"placeholder":"un node","hints":["5 lettres."],"explain":"Le node Timer."},
+{"q":"Quelle méthode crée un minuteur ponctuel via l'arbre ? (create____)","accept":["create_timer","create_timer()","timer"],"placeholder":"create_...","hints":["create_____"],"explain":"get_tree().create_timer()."},
+{"q":"Peut-on faire  await  sur un signal ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["await objet.signal."],"explain":"Oui."},
+{"q":"Quel signal émet un create_timer à expiration ?","accept":["timeout"],"placeholder":"un signal","hints":["7 lettres."],"explain":"timeout."},
+{"q":"await suspend-il jusqu'à l'émission du signal ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Suspension."],"explain":"Oui."},
+{"q":"Le node Timer émet-il le signal  timeout  ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["À la fin."],"explain":"Oui."},
+{"q":"await get_tree().create_timer(2).timeout attend combien de secondes ?","accept":["2"],"placeholder":"un nombre","hints":["L'argument."],"explain":"2 s."},
+{"q":"Quel mot-clé a remplacé yield en Godot 4 ?","accept":["await"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"await."},
+{"q":"await permet-il d'écrire des séquences temporelles linéaires ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Comme une coroutine."],"explain":"Oui."}]
             </script>
             </section>
 

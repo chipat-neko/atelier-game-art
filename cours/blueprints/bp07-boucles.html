@@ -229,7 +229,16 @@ Hit ─▶ Gate (Enter) ─▶ (passe seulement si Open) ─▶ Appliquer dégâ
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel nœud de Flow Control alterne entre deux sorties A et B à chaque appel ?","accept":["flipflop","flip flop"],"placeholder":"un nœud","hints":["Comme un interrupteur."],"explain":"FlipFlop bascule entre A et B à chaque exécution."}]
+[{"q":"Quel nœud alterne entre A et B à chaque appel ?","accept":["flipflop","flip flop"],"placeholder":"un nœud","hints":["Interrupteur."],"explain":"FlipFlop."},
+{"q":"Sur quelle broche d'une boucle branche-t-on l'action répétée ? (Loop ___)","accept":["body","loop body"],"placeholder":"Loop ...","hints":["Loop B___"],"explain":"Loop Body."},
+{"q":"Quelle broche se déclenche une fois la boucle finie ?","accept":["completed"],"placeholder":"une broche","hints":["9 lettres."],"explain":"Completed."},
+{"q":"Quel nœud ne laisse passer qu'une seule fois ?","accept":["doonce","do once"],"placeholder":"un nœud","hints":["Do ___"],"explain":"DoOnce."},
+{"q":"Quel nœud ouvre/ferme le passage de l'exécution ?","accept":["gate"],"placeholder":"un nœud","hints":["Portail."],"explain":"Gate."},
+{"q":"Quelle boucle parcourt un tableau ? (ForEach___)","accept":["foreachloop","foreach","for each","foreach loop"],"placeholder":"ForEach...","hints":["ForEach____"],"explain":"ForEachLoop."},
+{"q":"Un WhileLoop boucle à l'infini si la condition ne devient jamais… ? (un mot)","accept":["fausse","false","faux"],"placeholder":"un mot","hints":["Doit évoluer."],"explain":"Fausse."},
+{"q":"Quel nœud exécute plusieurs sorties dans l'ordre (Then 0, 1…) ?","accept":["sequence"],"placeholder":"un nœud","hints":["8 lettres."],"explain":"Sequence."},
+{"q":"Faut-il éviter les grosses boucles dans Event Tick ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Chaque frame."],"explain":"Oui."},
+{"q":"La suite après une boucle se branche sur Loop Body ou Completed ?","accept":["completed"],"placeholder":"un mot","hints":["Après la fin."],"explain":"Completed."}]
             </script>
             </section>
 

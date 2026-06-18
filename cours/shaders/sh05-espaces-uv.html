@@ -213,7 +213,16 @@ float4 frag(float3 normalWS : TEXCOORD1) : SV_Target
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Comment appelle-t-on les coordonnées de texture (le mapping) ? (2 lettres)","accept":["uv","les uv","coordonnées uv"],"placeholder":"2 lettres","hints":["U et V."],"explain":"Les coordonnées UV repèrent un point sur la texture (0 à 1)."}]
+[{"q":"Comment appelle-t-on les coordonnées de texture ? (2 lettres)","accept":["uv"],"placeholder":"2 lettres","hints":["U et V."],"explain":"UV."},
+{"q":"Les UV vont typiquement de 0 à… ?","accept":["1"],"placeholder":"un nombre","hints":["Normalisées."],"explain":"De 0 à 1."},
+{"q":"U est l'axe horizontal ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["U horizontal."],"explain":"Oui."},
+{"q":"V est l'axe vertical ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["V vertical."],"explain":"Oui."},
+{"q":"UV (0,0) correspond-il à un coin de la texture ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Un coin."],"explain":"Oui."},
+{"q":"Les UV mappent une texture sur la… ? (un mot)","accept":["surface","mesh","géométrie","geometrie"],"placeholder":"un mot","hints":["Du modèle."],"explain":"La surface (mesh)."},
+{"q":"Répéter une texture s'appelle le… ? (un mot)","accept":["tiling","répétition","repetition","pavage"],"placeholder":"un mot","hints":["Tiling."],"explain":"Le tiling."},
+{"q":"Les UV normalisées sont entre 0 et… ?","accept":["1"],"placeholder":"un nombre","hints":["0..1."],"explain":"1."},
+{"q":"Les espaces (monde, local) existent-ils en plus de l'espace UV ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["World, local…"],"explain":"Oui."},
+{"q":"On échantillonne une texture à l'aide des… ? (2 lettres)","accept":["uv"],"placeholder":"2 lettres","hints":["Coordonnées."],"explain":"Des UV."}]
             </script>
             </section>
 

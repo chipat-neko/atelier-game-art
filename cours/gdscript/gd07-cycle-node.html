@@ -242,7 +242,16 @@ func _process(delta):
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle fonction de rappel est appelée à chaque frame de rendu en Godot ?","accept":["_process","_process()"],"placeholder":"_pro...","hints":["Commence par un underscore.","_p______(delta)"],"explain":"_process(delta) est appelée chaque frame."}]
+[{"q":"Quelle fonction est appelée à chaque frame de rendu ?","accept":["_process","_process()"],"placeholder":"_pro...","hints":["_p______(delta)"],"explain":"_process(delta)."},
+{"q":"Quelle fonction est appelée une fois quand le node entre dans l'arbre ?","accept":["_ready","_ready()"],"placeholder":"_re...","hints":["_r____()"],"explain":"_ready()."},
+{"q":"Quelle fonction tourne à pas de temps fixe (physique) ?","accept":["_physics_process","_physics_process()"],"placeholder":"_physics_...","hints":["_physics_______"],"explain":"_physics_process(delta)."},
+{"q":"Que reçoit  _process  en paramètre ?","accept":["delta","le delta"],"placeholder":"un mot","hints":["Temps de frame."],"explain":"delta."},
+{"q":"Laquelle ne s'exécute qu'une fois : _ready ou _process ?","accept":["_ready"],"placeholder":"_...","hints":["À l'entrée."],"explain":"_ready."},
+{"q":"Multiplie-t-on par delta pour être indépendant du framerate ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["* delta."],"explain":"Oui."},
+{"q":"Quelle fonction de rappel reçoit les entrées ?","accept":["_input","_input()"],"placeholder":"_inp...","hints":["_i____(event)"],"explain":"_input(event)."},
+{"q":"Quelle méthode supprime proprement un node ? (queue___)","accept":["queue_free","queue_free()","free"],"placeholder":"queue_...","hints":["queue_____"],"explain":"queue_free()."},
+{"q":"_process reçoit le temps écoulé : vrai ou faux ?","accept":["vrai","true","oui"],"placeholder":"vrai/faux","hints":["delta."],"explain":"Vrai."},
+{"q":"Quelle fonction marque l'entrée d'un node dans la scène ?","accept":["_ready","_enter_tree","_ready()"],"placeholder":"_...","hints":["_ready / _enter_tree."],"explain":"_ready() (après _enter_tree)."}]
             </script>
             </section>
 

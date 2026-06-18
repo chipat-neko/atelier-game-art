@@ -210,7 +210,16 @@ Event BeginPlay ─exec▶ Set PV</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel nœud ÉCRIT la valeur d'une variable : Get ou Set ?","accept":["set"],"placeholder":"Get / Set","hints":["Celui qui a un fil d'exécution."],"explain":"Set écrit (avec exec) ; Get ne fait que lire."}]
+[{"q":"Quel nœud ÉCRIT une variable : Get ou Set ?","accept":["set"],"placeholder":"Get/Set","hints":["Avec exec."],"explain":"Set."},
+{"q":"Get lit-il ou écrit-il une variable ? (un mot)","accept":["lit","lecture","read"],"placeholder":"un mot","hints":["Donnée pure."],"explain":"Il lit."},
+{"q":"Le type qui vaut vrai/faux s'appelle… ? (un mot)","accept":["boolean","booléen","booleen","bool"],"placeholder":"un type","hints":["Rouge."],"explain":"Boolean."},
+{"q":"Le type (X,Y,Z) pour une position s'appelle… ? (un mot)","accept":["vector"],"placeholder":"un type","hints":["3 composantes."],"explain":"Vector."},
+{"q":"Combien de composantes a un Vector ?","accept":["3"],"placeholder":"un nombre","hints":["X,Y,Z."],"explain":"3."},
+{"q":"La broche d'une variable est colorée selon son… ? (un mot)","accept":["type"],"placeholder":"un mot","hints":["Couleur = type."],"explain":"Son type."},
+{"q":"Le nœud Set possède-t-il un fil d'exécution ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Modifie l'état."],"explain":"Oui."},
+{"q":"Quand peut-on éditer la Default Value ? (après…)","accept":["compile","compilation","compiler","avoir compilé"],"placeholder":"un mot","hints":["Une fois compilé."],"explain":"Après compilation."},
+{"q":"Une variable de référence pointe vers un autre… ? (un mot)","accept":["objet","actor","acteur","object"],"placeholder":"un mot","hints":["Acteur/objet."],"explain":"Un autre objet (Actor)."},
+{"q":"Le type entier s'appelle… ? (un mot)","accept":["integer","entier","int"],"placeholder":"un type","hints":["Nombre entier."],"explain":"Integer."}]
             </script>
             </section>
 

@@ -219,7 +219,16 @@ Joueur ─▶ Cible → Interagir() (message interface)</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel nœud vérifie/convertit une référence vers une classe précise ? (Cast ___)","accept":["cast to","cast","cast to ...","castto"],"placeholder":"Cast ...","hints":["Sortie Cast Failed en cas d'échec."],"explain":"Cast To vérifie le type ; sinon la sortie Cast Failed se déclenche."}]
+[{"q":"Quel nœud vérifie le type d'une référence ? (Cast ___)","accept":["cast to","cast","castto"],"placeholder":"Cast ...","hints":["Cast T_"],"explain":"Cast To."},
+{"q":"Quelle sortie se déclenche si le cast échoue ? (Cast ___)","accept":["failed","cast failed"],"placeholder":"Cast ...","hints":["Cast F_____"],"explain":"Cast Failed."},
+{"q":"Quel canal communique SANS connaître le type exact ? (un mot)","accept":["interface","blueprint interface"],"placeholder":"un mot","hints":["Contrat."],"explain":"Une Blueprint Interface."},
+{"q":"Quel mécanisme diffuse un événement à plusieurs abonnés ? (Event ___)","accept":["dispatcher","event dispatcher"],"placeholder":"Event ...","hints":["1 → plusieurs."],"explain":"Event Dispatcher."},
+{"q":"Pour s'abonner à un Event Dispatcher, on utilise… ? (un mot)","accept":["bind"],"placeholder":"un mot","hints":["4 lettres."],"explain":"Bind."},
+{"q":"L'erreur d'accès à une référence vide s'appelle Accessed… ? (un mot)","accept":["none","accessed none"],"placeholder":"un mot","hints":["Référence nulle."],"explain":"Accessed None."},
+{"q":"Les casts en cascade créent des… ? (un mot)","accept":["dépendances","dependances","dependance","dépendance"],"placeholder":"un mot","hints":["Chargement."],"explain":"Des dépendances dures."},
+{"q":"Une référence directe est-elle couplée ou découplée ?","accept":["couplée","couplee","couplé","couple"],"placeholder":"un mot","hints":["Dépendance."],"explain":"Couplée."},
+{"q":"Une interface offre un couplage faible (découplé) ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Sans cast."],"explain":"Oui."},
+{"q":"Un Event Dispatcher communique plutôt du bas vers le… ? (un mot)","accept":["haut","up","le haut"],"placeholder":"un mot","hints":["Vers le manager."],"explain":"Le haut."}]
             </script>
             </section>
 

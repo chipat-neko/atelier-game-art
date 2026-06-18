@@ -204,7 +204,16 @@ col = lerp(b, a, step(0.5, uv.x));</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Comment appelle-t-on la réexécution du fragment sur des pixels superposés (transparents) ?","accept":["overdraw","l'overdraw"],"placeholder":"over...","hints":["over_____"],"explain":"L'overdraw multiplie le coût en redessinant des pixels superposés."}]
+[{"q":"La réexécution du fragment sur des pixels superposés s'appelle l'… ? (un mot)","accept":["overdraw"],"placeholder":"over...","hints":["over_____"],"explain":"L'overdraw."},
+{"q":"Une branche dynamique (if par pixel) peut-elle coûter cher ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Divergence."],"explain":"Oui."},
+{"q":"On préfère step/lerp aux… ? (un mot)","accept":["if","branches","conditions","branchements"],"placeholder":"un mot","hints":["Conditions."],"explain":"Aux if (branches)."},
+{"q":"Moins d'échantillonnages de texture = meilleures perfs ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Coût mémoire."],"explain":"Oui."},
+{"q":"La transparence génère-t-elle de l'overdraw ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Pixels superposés."],"explain":"Oui."},
+{"q":"Le GPU traite-t-il les pixels en parallèle ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Massivement."],"explain":"Oui."},
+{"q":"Moins d'instructions par pixel = plus rapide ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Coût."],"explain":"Oui."},
+{"q":"Précalculer quand c'est possible aide-t-il les perfs ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Baking."],"explain":"Oui."},
+{"q":"L'overdraw est surtout coûteux sur les… ? (un mot)","accept":["transparents","particules","transparences"],"placeholder":"un mot","hints":["Superpositions."],"explain":"Les transparents/particules."},
+{"q":"Beaucoup de samples de textures coûtent-ils cher ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Bande passante."],"explain":"Oui."}]
             </script>
             </section>
 

@@ -264,7 +264,16 @@ func _process(delta):
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"En GDScript,  var pv = 100  puis  pv -= 25 . Que vaut pv ?","accept":["75"],"placeholder":"un nombre","hints":["pv -= 25 retire 25."],"explain":"100 - 25 = 75."}]
+[{"q":"Avec  var pv = 100 ;  pv -= 25 . pv vaut ?","accept":["75"],"placeholder":"un nombre","hints":["100-25."],"explain":"75."},
+{"q":"Quelle convention de nommage pour les variables/fonctions GDScript ?","accept":["snake_case","snake case"],"placeholder":"..._...","hints":["mots_séparés_par_underscore."],"explain":"snake_case."},
+{"q":"Quelle convention pour les noms de classes/nodes ?","accept":["pascalcase","pascal case"],"placeholder":"...Case","hints":["MajusculeAuDébut."],"explain":"PascalCase."},
+{"q":"Avec  var x = 5 ;  x *= 2 . x vaut ?","accept":["10"],"placeholder":"un nombre","hints":["Double."],"explain":"10."},
+{"q":"Typer ses variables améliore-t-il la clarté/perfs ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["var x: int."],"explain":"Oui."},
+{"q":"Quelle annotation pour référencer un node prêt ? (@___)","accept":["@onready","onready"],"placeholder":"@on...","hints":["@on_____"],"explain":"@onready."},
+{"q":"Avec  var x = 7 ;  x %= 3 . x vaut ?","accept":["1"],"placeholder":"un nombre","hints":["Reste 7/3."],"explain":"1."},
+{"q":"Faut-il garder  _process  léger ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Chaque frame."],"explain":"Oui."},
+{"q":"Quel mot-clé pour une constante ?","accept":["const"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"const."},
+{"q":"Préférer les signaux aux références directes pour découpler ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Faible couplage."],"explain":"Oui."}]
             </script>
             </section>
 

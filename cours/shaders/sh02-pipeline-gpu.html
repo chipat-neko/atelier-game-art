@@ -206,7 +206,16 @@
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel shader s'exécute une fois PAR SOMMET dans le pipeline ?","accept":["vertex","le vertex","vertex shader"],"placeholder":"un type de shader","hints":["Avant la rasterisation."],"explain":"Le vertex shader traite chaque sommet ; le fragment shader chaque pixel."}]
+[{"q":"Le vertex shader s'exécute une fois par… ? (un mot)","accept":["sommet","vertex"],"placeholder":"un mot","hints":["Point du mesh."],"explain":"Par sommet."},
+{"q":"Le fragment shader s'exécute une fois par… ? (un mot)","accept":["pixel","fragment"],"placeholder":"un mot","hints":["Pixel."],"explain":"Par pixel (fragment)."},
+{"q":"Le vertex shader s'exécute-t-il AVANT le fragment ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Ordre du pipeline."],"explain":"Oui."},
+{"q":"La rasterisation transforme les triangles en… ? (un mot)","accept":["pixels","fragments","pixel","fragment"],"placeholder":"un mot","hints":["Fragments."],"explain":"En fragments (pixels)."},
+{"q":"Le vertex shader transforme-t-il les positions des sommets ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Vers l'écran."],"explain":"Oui."},
+{"q":"Après le vertex vient le… ? (un mot)","accept":["fragment","fragment shader"],"placeholder":"un mot","hints":["Par pixel."],"explain":"Le fragment shader."},
+{"q":"Le pipeline GPU est-il parallèle ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Beaucoup d'unités."],"explain":"Oui."},
+{"q":"Chaque pixel produit s'appelle un… ? (un mot)","accept":["fragment"],"placeholder":"un mot","hints":["8 lettres."],"explain":"Un fragment."},
+{"q":"La sortie finale du pipeline est une… ? (un mot)","accept":["image"],"placeholder":"un mot","hints":["À l'écran."],"explain":"Une image."},
+{"q":"Le vertex shader s'exécute-t-il sur le GPU ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["GPU."],"explain":"Oui."}]
             </script>
             </section>
 

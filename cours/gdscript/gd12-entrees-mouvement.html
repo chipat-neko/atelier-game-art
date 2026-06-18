@@ -255,7 +255,16 @@ func _physics_process(delta):
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle fonction de rappel reçoit les événements d'entrée en Godot ?","accept":["_input","_input()"],"placeholder":"_inp...","hints":["_i____(event)"],"explain":"_input(event) reçoit les événements d'entrée."}]
+[{"q":"Quelle fonction de rappel reçoit les entrées ?","accept":["_input","_input()"],"placeholder":"_inp...","hints":["_i____(event)"],"explain":"_input(event)."},
+{"q":"Quel singleton global gère les entrées ?","accept":["input"],"placeholder":"un mot","hints":["5 lettres."],"explain":"Input."},
+{"q":"Quelle méthode teste si une action est maintenue ? (Input.is_action____)","accept":["is_action_pressed","pressed","is_action_pressed()"],"placeholder":"is_action_...","hints":["...pressed"],"explain":"Input.is_action_pressed()."},
+{"q":"Quelle méthode déplace un CharacterBody avec collisions ? (move_and____)","accept":["move_and_slide","move_and_slide()","slide"],"placeholder":"move_and_...","hints":["move_and_____"],"explain":"move_and_slide()."},
+{"q":"Multiplie-t-on par delta pour l'indépendance au framerate ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["* delta."],"explain":"Oui."},
+{"q":"Quelle méthode donne une direction depuis 4 actions ? (Input.get____)","accept":["get_vector","get_vector()","vector"],"placeholder":"get_...","hints":["get______"],"explain":"Input.get_vector()."},
+{"q":"Les actions sont définies dans la Input ___ ? (un mot)","accept":["map","input map","carte"],"placeholder":"un mot","hints":["Project Settings."],"explain":"L'Input Map."},
+{"q":"Quel type de vecteur pour une direction 2D ?","accept":["vector2"],"placeholder":"un type","hints":["X, Y."],"explain":"Vector2."},
+{"q":"is_action_just_pressed détecte-t-il une seule frame ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Au moment de l'appui."],"explain":"Oui."},
+{"q":"Existe-t-il aussi  _unhandled_input  ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Entrées non gérées."],"explain":"Oui."}]
             </script>
             </section>
 

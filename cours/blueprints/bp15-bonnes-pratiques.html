@@ -225,7 +225,16 @@ BP_Joueur
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel préfixe de nommage utilise-t-on pour une Blueprint Class d'Actor ?","accept":["bp_","bp"],"placeholder":"un préfixe","hints":["Deux lettres + underscore."],"explain":"On préfixe par BP_ (et WBP_ pour un Widget, BPI_ pour une interface)."}]
+[{"q":"Quel préfixe pour une Blueprint Class d'Actor ?","accept":["bp_","bp"],"placeholder":"un préfixe","hints":["2 lettres + _"],"explain":"BP_."},
+{"q":"Quel préfixe pour un Widget Blueprint ?","accept":["wbp_","wbp"],"placeholder":"un préfixe","hints":["W + BP_"],"explain":"WBP_."},
+{"q":"Quel préfixe met-on devant un booléen ? (1 lettre)","accept":["b"],"placeholder":"1 lettre","hints":["bIsOpen."],"explain":"b."},
+{"q":"Quelle touche crée une Comment box ?","accept":["c"],"placeholder":"1 lettre","hints":["Pour commenter."],"explain":"C."},
+{"q":"Quel nœud affiche une valeur pour déboguer ? (Print ___)","accept":["string","print string"],"placeholder":"Print ...","hints":["Print S____"],"explain":"Print String."},
+{"q":"Quelle touche pose un Breakpoint sur un nœud ?","accept":["f9"],"placeholder":"une touche","hints":["F + chiffre."],"explain":"F9."},
+{"q":"Quel préfixe pour une Blueprint Interface ?","accept":["bpi_","bpi"],"placeholder":"un préfixe","hints":["BP + I."],"explain":"BPI_."},
+{"q":"Sur un overlap, faut-il gérer Cast Failed ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Autre Actor possible."],"explain":"Oui."},
+{"q":"Faut-il retirer les Print String en production ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Nettoyage."],"explain":"Oui."},
+{"q":"Avec une attaque de 18 sur 100 PV, il reste… ?","accept":["82"],"placeholder":"un nombre","hints":["100-18."],"explain":"82."}]
             </script>
             </section>
 

@@ -198,7 +198,16 @@ positionWS.y += vague;     // puis on reprojette en clip space</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Dans quel shader déplace-t-on les sommets pour créer des vagues ?","accept":["vertex","vertex shader","le vertex"],"placeholder":"un type de shader","hints":["Là où vivent les positions des sommets."],"explain":"On déplace les sommets dans le vertex shader (vertex displacement)."}]
+[{"q":"Dans quel shader déplace-t-on les sommets pour des vagues ?","accept":["vertex","vertex shader","le vertex"],"placeholder":"un shader","hints":["Positions."],"explain":"Le vertex shader."},
+{"q":"Quelle fonction périodique crée des vagues ?","accept":["sin","sinus","sine"],"placeholder":"une fonction","hints":["Onde."],"explain":"sin (sinus)."},
+{"q":"Le déplacement des vagues dépend souvent du… ? (un mot)","accept":["temps","time"],"placeholder":"un mot","hints":["Animation."],"explain":"Du temps."},
+{"q":"Déplacer les sommets s'appelle vertex… ? (un mot)","accept":["displacement","déplacement","deplacement"],"placeholder":"un mot","hints":["Déplacement."],"explain":"Vertex displacement."},
+{"q":"Une normal map qui défile simule la surface de l'… ? (un mot)","accept":["eau","water"],"placeholder":"un mot","hints":["H2O."],"explain":"L'eau."},
+{"q":"sin est-elle périodique ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Onde."],"explain":"Oui."},
+{"q":"L'eau utilise-t-elle souvent de la transparence ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Semi-transparent."],"explain":"Oui."},
+{"q":"Recalcule-t-on les normales après déformation pour l'éclairage ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Lumière correcte."],"explain":"Oui."},
+{"q":"Le vertex shader s'exécute par sommet ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Par vertex."],"explain":"Oui."},
+{"q":"Une variable de temps anime-t-elle les vagues ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["time."],"explain":"Oui."}]
             </script>
             </section>
 

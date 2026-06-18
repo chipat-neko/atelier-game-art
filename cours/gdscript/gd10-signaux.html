@@ -259,7 +259,16 @@ func _on_mort() -&gt; void:
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé déclare un signal personnalisé en GDScript ?","accept":["signal"],"placeholder":"un mot-clé","hints":["6 lettres."],"explain":"signal déclare un signal émis avec emit_signal / .emit()."}]
+[{"q":"Quel mot-clé déclare un signal personnalisé ?","accept":["signal"],"placeholder":"un mot-clé","hints":["6 lettres."],"explain":"signal."},
+{"q":"Quelle méthode émet un signal en Godot 4 ? (.___)","accept":["emit","emit()",".emit","emit_signal"],"placeholder":".em...","hints":[".emit()"],"explain":"mon_signal.emit()."},
+{"q":"Quelle méthode abonne une fonction à un signal ? (.___)","accept":["connect","connect()",".connect"],"placeholder":".con...","hints":[".connect()"],"explain":"signal.connect(fonction)."},
+{"q":"Les signaux implémentent quel patron de conception ? (un mot)","accept":["observateur","observer"],"placeholder":"un mot","hints":["Observer."],"explain":"L'observateur."},
+{"q":"Quel signal un Button émet-il quand on clique ?","accept":["pressed"],"placeholder":"un mot","hints":["7 lettres."],"explain":"pressed."},
+{"q":"Les signaux découplent-ils les nodes ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Faible couplage."],"explain":"Oui."},
+{"q":"Un signal notifie-t-il un-vers-plusieurs ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Plusieurs abonnés."],"explain":"Oui."},
+{"q":"Peut-on connecter un signal dans l'éditeur ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Onglet Node."],"explain":"Oui (ou par code)."},
+{"q":"Quel mot-clé déclare le signal ?","accept":["signal"],"placeholder":"un mot-clé","hints":["6 lettres."],"explain":"signal."},
+{"q":"Émet-on avec  nom_signal.emit()  en Godot 4 ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Nouvelle syntaxe."],"explain":"Oui."}]
             </script>
             </section>
 

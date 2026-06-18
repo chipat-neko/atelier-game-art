@@ -213,7 +213,16 @@ La valeur de Score est lue au moment du Print.</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"De quelle couleur est le fil d'EXÉCUTION dans un Blueprint ?","accept":["blanc","blanche","white"],"placeholder":"une couleur","hints":["Il indique l'ordre des actions."],"explain":"Le fil d'exécution est blanc ; les fils de données sont colorés par type."}]
+[{"q":"De quelle couleur est le fil d'EXÉCUTION ?","accept":["blanc","blanche","white"],"placeholder":"une couleur","hints":["Ordre."],"explain":"Blanc."},
+{"q":"Dans quel sens lit-on le graphe ? (un mot)","accept":["droite","gauche à droite","gauche-droite","right"],"placeholder":"un mot","hints":["→"],"explain":"De gauche à droite."},
+{"q":"La broche de données est colorée selon son… ? (un mot)","accept":["type"],"placeholder":"un mot","hints":["bool, float…"],"explain":"Son type."},
+{"q":"Un nœud sans fil d'exécution s'exécute-t-il ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Pas branché."],"explain":"Non."},
+{"q":"Les données sont-elles calculées à la demande (pull) ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Au moment voulu."],"explain":"Oui."},
+{"q":"Un nœud Get seul (sans consommateur) tourne-t-il ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Fournit une donnée."],"explain":"Non."},
+{"q":"Le fil blanc indique-t-il l'ordre d'exécution ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Séquence."],"explain":"Oui."},
+{"q":"Relie-t-on une broche exec à une broche de données ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Types incompatibles."],"explain":"Non (exec→exec, data→data)."},
+{"q":"La broche d'exécution a la forme d'une… ? (un mot)","accept":["flèche","fleche","arrow"],"placeholder":"un mot","hints":["→"],"explain":"Une flèche."},
+{"q":"Un fil de données transporte une… ? (un mot)","accept":["valeur","value","donnée","donnee"],"placeholder":"un mot","hints":["Pas un déclenchement."],"explain":"Une valeur."}]
             </script>
             </section>
 

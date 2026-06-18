@@ -250,7 +250,16 @@ func _ready():
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle annotation expose une variable dans l'inspecteur en Godot 4 ? (avec l'arobase)","accept":["@export","export"],"placeholder":"@...","hints":["Commence par @."],"explain":"@export rend la variable éditable dans l'inspecteur."}]
+[{"q":"Quelle annotation expose une variable dans l'inspecteur ? (avec @)","accept":["@export","export"],"placeholder":"@...","hints":["@______"],"explain":"@export."},
+{"q":"@export rend la variable éditable dans l'éditeur ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Inspecteur."],"explain":"Oui."},
+{"q":"Quelle classe de base sert à stocker des données réutilisables ?","accept":["resource"],"placeholder":"un type","hints":["8 lettres."],"explain":"Resource."},
+{"q":"Quelle extension porte une ressource sauvegardée ? (avec le point)","accept":[".tres","tres"],"placeholder":".t...","hints":["Text RESource."],"explain":".tres."},
+{"q":"Quelle fonction charge une ressource à la compilation ?","accept":["preload","preload()"],"placeholder":"pre...","hints":["pre____"],"explain":"preload()."},
+{"q":"Quelle fonction charge une ressource au runtime ?","accept":["load","load()"],"placeholder":"une fonction","hints":["4 lettres."],"explain":"load()."},
+{"q":"Quelle annotation diffère l'initialisation jusqu'à _ready ? (avec @)","accept":["@onready","onready"],"placeholder":"@on...","hints":["@on_____"],"explain":"@onready."},
+{"q":"L'export permet-il de générer le jeu pour plusieurs plateformes ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Export presets."],"explain":"Oui."},
+{"q":"Une Resource personnalisée peut-elle stocker des données de jeu ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Data-driven."],"explain":"Oui."},
+{"q":"@export var apparaît-il dans l'inspecteur ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Éditable."],"explain":"Oui."}]
             </script>
             </section>
 

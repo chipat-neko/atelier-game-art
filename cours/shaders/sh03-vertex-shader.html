@@ -220,7 +220,16 @@ Sortie vert(Entree v)
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Le vertex shader traite chaque… ? (un mot)","accept":["sommet","vertex","vertice","vertices"],"placeholder":"un mot","hints":["Le point d'un maillage."],"explain":"Il s'exécute pour chaque sommet (vertex) du maillage."}]
+[{"q":"Le vertex shader traite chaque… ? (un mot)","accept":["sommet","vertex"],"placeholder":"un mot","hints":["Point du mesh."],"explain":"Chaque sommet."},
+{"q":"Le vertex shader produit-il une position ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["clip space."],"explain":"Oui."},
+{"q":"Déplacer les sommets pour des vagues s'appelle vertex… ? (un mot)","accept":["displacement","déplacement","deplacement"],"placeholder":"un mot","hints":["Déplacement."],"explain":"Vertex displacement."},
+{"q":"Peut-on déformer un mesh dans le vertex shader ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Vagues, vent."],"explain":"Oui."},
+{"q":"Le vertex shader s'exécute-t-il avant le fragment ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Ordre."],"explain":"Oui."},
+{"q":"La normale est-elle une donnée par sommet ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Par vertex."],"explain":"Oui."},
+{"q":"Les UV passent-elles du vertex au fragment ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Interpolées."],"explain":"Oui."},
+{"q":"Le vertex shader tourne-t-il sur le GPU ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["GPU."],"explain":"Oui."},
+{"q":"La sortie de position est exprimée en espace… ? (clip/écran)","accept":["clip","écran","ecran","screen"],"placeholder":"un mot","hints":["clip space."],"explain":"En clip space."},
+{"q":"Le vertex shader transforme du repère modèle vers l'… ? (un mot)","accept":["écran","ecran","clip","screen"],"placeholder":"un mot","hints":["Vers l'affichage."],"explain":"Vers l'écran (clip space)."}]
             </script>
             </section>
 

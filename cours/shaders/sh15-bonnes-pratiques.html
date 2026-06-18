@@ -209,7 +209,16 @@ return float4(normalize(N) * 0.5 + 0.5, 1.0);</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Combien de canaux possède une couleur RVB (sans le canal alpha) ?","accept":["3"],"placeholder":"un nombre","hints":["Rouge, Vert, Bleu."],"explain":"RVB = 3 canaux (R, V, B) ; avec l'alpha cela ferait 4 (RVBA)."}]
+[{"q":"Combien de canaux a une couleur RVB ?","accept":["3"],"placeholder":"un nombre","hints":["R,V,B."],"explain":"3."},
+{"q":"Combien de canaux avec l'alpha (RVBA) ?","accept":["4"],"placeholder":"un nombre","hints":["+A."],"explain":"4."},
+{"q":"Garder un shader simple aide-t-il les perfs ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Moins d'instructions."],"explain":"Oui."},
+{"q":"Quelle fonction interpole entre a et b ?","accept":["mix","lerp","mix/lerp"],"placeholder":"un nom","hints":["mix/lerp."],"explain":"mix (GLSL) / lerp (HLSL)."},
+{"q":"step renvoie 0 ou… ?","accept":["1"],"placeholder":"un nombre","hints":["Bascule."],"explain":"1."},
+{"q":"Normalise-t-on un vecteur avant un dot ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Unitaire."],"explain":"Oui."},
+{"q":"Le canal alpha encode la… ? (un mot)","accept":["transparence","alpha"],"placeholder":"un mot","hints":["Opacité."],"explain":"La transparence."},
+{"q":"Réutiliser des sous-graphes/fonctions est-il une bonne pratique ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["DRY."],"explain":"Oui."},
+{"q":"Commenter un graphe de nœuds aide-t-il à la maintenance ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Lisibilité."],"explain":"Oui."},
+{"q":"Profiler avant d'optimiser ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Mesurer."],"explain":"Oui."}]
             </script>
             </section>
 

@@ -215,7 +215,16 @@
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel nœud crée un nouvel Actor pendant le jeu ? (Spawn ___)","accept":["spawn actor","spawn actor from class","spawn","spawnactor"],"placeholder":"Spawn ...","hints":["Spawn…"],"explain":"Spawn Actor from Class instancie une classe et renvoie sa référence."}]
+[{"q":"Quel nœud crée un Actor au runtime ? (Spawn ___)","accept":["spawn actor","spawn","spawnactor","spawn actor from class"],"placeholder":"Spawn ...","hints":["Spawn A____"],"explain":"Spawn Actor from Class."},
+{"q":"Que renvoie Spawn Actor ? (une… )","accept":["référence","reference","référence d'acteur"],"placeholder":"un mot","hints":["Vers l'Actor créé."],"explain":"Une référence."},
+{"q":"Quel nœud retire un Actor du jeu ? (Destroy ___)","accept":["destroy actor","destroy","destroyactor"],"placeholder":"Destroy ...","hints":["Destroy A____"],"explain":"Destroy Actor."},
+{"q":"Comment s'appelle le composant racine ? (Root ___)","accept":["root","root component","component"],"placeholder":"Root ...","hints":["La racine."],"explain":"Root Component."},
+{"q":"Les composants enfants sont attachés à la… ? (un mot)","accept":["racine","root"],"placeholder":"un mot","hints":["Sous le root."],"explain":"La racine."},
+{"q":"La transform d'un enfant est relative à son… ? (un mot)","accept":["parent"],"placeholder":"un mot","hints":["Hiérarchie."],"explain":"Son parent."},
+{"q":"Teste-t-on IsValid avant d'utiliser une référence ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Éviter Accessed None."],"explain":"Oui."},
+{"q":"Après Destroy Actor, la référence est-elle invalide ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Ne plus l'utiliser."],"explain":"Oui."},
+{"q":"Cite un composant utile pour détecter le joueur (un mot) :","accept":["collision","box collision","sphere collision"],"placeholder":"un mot","hints":["Overlap."],"explain":"Une Collision."},
+{"q":"Spawn Actor a-t-il besoin d'un Transform (position) ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Où le placer."],"explain":"Oui."}]
             </script>
             </section>
 

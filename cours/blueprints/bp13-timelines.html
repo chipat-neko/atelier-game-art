@@ -212,7 +212,16 @@ Update ─▶ Set Relative Rotation = Lerp(0°, 90°, Alpha) (autour de Z)</code
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel nœud joue une courbe dans le temps pour animer sans code ? (un mot)","accept":["timeline"],"placeholder":"un nœud","hints":["8 lettres ; sorties Update / Finished."],"explain":"Le nœud Timeline anime une valeur dans le temps."}]
+[{"q":"Quel nœud joue une courbe dans le temps pour animer ?","accept":["timeline"],"placeholder":"un nœud","hints":["8 lettres."],"explain":"Timeline."},
+{"q":"Sur quelle sortie applique-t-on le mouvement chaque frame ?","accept":["update"],"placeholder":"une sortie","hints":["6 lettres."],"explain":"Update."},
+{"q":"Quelle sortie se déclenche à la fin de la Timeline ?","accept":["finished"],"placeholder":"une sortie","hints":["8 lettres."],"explain":"Finished."},
+{"q":"Quelle fonction interpole entre A et B ?","accept":["lerp"],"placeholder":"une fonction","hints":["4 lettres."],"explain":"Lerp."},
+{"q":"Cite un type de track d'une Timeline (un mot) :","accept":["float","vector","event"],"placeholder":"un type","hints":["Float/Vector/Event."],"explain":"Float (ou Vector, Event)."},
+{"q":"Pour fermer ce qu'on a ouvert, on utilise quelle entrée ? (un mot)","accept":["reverse"],"placeholder":"un mot","hints":["Play / ?"],"explain":"Reverse."},
+{"q":"Peut-on mettre une Timeline dans une fonction ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Nœud latent."],"explain":"Non (Event Graph)."},
+{"q":"Pour repartir du début, on utilise Play from… ? (un mot)","accept":["start","play from start"],"placeholder":"Play from ...","hints":["Du début."],"explain":"Play from Start."},
+{"q":"La Timeline anime-t-elle sans écrire de code ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Visuel."],"explain":"Oui."},
+{"q":"Applique-t-on la valeur interpolée sur la sortie Update ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Chaque frame."],"explain":"Oui."}]
             </script>
             </section>
 

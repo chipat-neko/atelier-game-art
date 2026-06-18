@@ -208,7 +208,16 @@ float4 frag(float2 uv : TEXCOORD0) : SV_Target
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel shader calcule la couleur de chaque pixel/fragment ?","accept":["fragment","le fragment","fragment shader","pixel shader","pixel"],"placeholder":"un type de shader","hints":["Aussi appelé pixel shader."],"explain":"Le fragment (pixel) shader produit la couleur finale de chaque fragment."}]
+[{"q":"Le fragment shader calcule la couleur de chaque… ? (un mot)","accept":["pixel","fragment"],"placeholder":"un mot","hints":["Pixel."],"explain":"Chaque pixel."},
+{"q":"Le fragment shader est aussi appelé… shader ? (un mot)","accept":["pixel"],"placeholder":"un mot","hints":["Par pixel."],"explain":"Pixel shader."},
+{"q":"Combien de canaux a une couleur RVBA ?","accept":["4"],"placeholder":"un nombre","hints":["R,V,B,A."],"explain":"4."},
+{"q":"Combien de canaux a une couleur RVB (sans alpha) ?","accept":["3"],"placeholder":"un nombre","hints":["R,V,B."],"explain":"3."},
+{"q":"Le canal alpha encode la… ? (un mot)","accept":["transparence","alpha"],"placeholder":"un mot","hints":["Opacité."],"explain":"La transparence."},
+{"q":"Le fragment shader s'exécute-t-il après la rasterisation ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Après les triangles→pixels."],"explain":"Oui."},
+{"q":"Le fragment shader échantillonne-t-il des textures ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Sampling."],"explain":"Oui."},
+{"q":"La couleur finale d'un pixel vient du shader… ? (un mot)","accept":["fragment","pixel"],"placeholder":"un mot","hints":["Par pixel."],"explain":"Du fragment shader."},
+{"q":"Le fragment shader s'exécute-t-il par pixel sur le GPU ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["GPU."],"explain":"Oui."},
+{"q":"Renvoie-t-il une couleur RVBA ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["4 canaux."],"explain":"Oui."}]
             </script>
             </section>
 
