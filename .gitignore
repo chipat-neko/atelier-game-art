@@ -6,3 +6,6 @@ desktop.ini
 # Outils locaux
 .blackboxrules
 _build/
+
+# Doc de référence privée (non publiée)
+paramettre.md
