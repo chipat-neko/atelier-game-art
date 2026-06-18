@@ -18,7 +18,7 @@
   function setStat(id, val) { var e = $(id); if (e) e.textContent = val; }
   setStat("ds-lessons", sum.done + " / " + sum.total);
   setStat("ds-pct", sum.pct + "%");
-  setStat("ds-pistes", pistesDone + " / " + sum.pistes.length);
+  setStat("ds-pistes-done", pistesDone + " / " + sum.pistes.length);
   setStat("ds-streak", P.streak());
   setStat("ds-best-streak", P.bestStreak());
 
