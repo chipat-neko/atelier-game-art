@@ -13,7 +13,11 @@
     "ag-quiz": "Meilleurs scores de QCM",
     "ag-theme": "Thème (clair / sombre)",
     "ag-accent": "Palette d'accent",
-    "ag-notes": "Notes & surlignages"
+    "ag-notes": "Notes de leçon",
+    "ag-hl": "Surlignages",
+    "ag-revision": "Révision (flashcards, Leitner)",
+    "ag-pomodoro": "Sessions Pomodoro (par jour)",
+    "ag-pomo-state": "Minuteur Pomodoro (état)"
   };
 
   function $(id) { return document.getElementById(id); }
