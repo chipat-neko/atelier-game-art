@@ -212,7 +212,11 @@
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel node définit le ciel et l'ambiance globale d'une scène 3D Godot ? (World ___)","accept":["environment","worldenvironment","environnement","world environment"],"placeholder":"World ...","hints":["WorldEnvironment"],"explain":"Le WorldEnvironment porte ciel, brouillard, tonemapping et ambiance."}]
+[{"q":"Quel node définit ciel et ambiance globale ? (World___)","accept":["worldenvironment","environment","world environment"],"placeholder":"World...","hints":["WorldEnvironment."],"explain":"Le WorldEnvironment."},
+{"q":"L'Environment porte-t-il ciel, brouillard et tonemapping ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Réglages globaux."],"explain":"Oui."},
+{"q":"Peut-on définir un ciel (sky) en arrière-plan ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Sky."],"explain":"Oui."},
+{"q":"Le brouillard (fog) ajoute-t-il de l'atmosphère ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Fog."],"explain":"Oui."},
+{"q":"A-t-on en général un seul WorldEnvironment par scène ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Global."],"explain":"Oui."}]
             </script>
             </section>
 
