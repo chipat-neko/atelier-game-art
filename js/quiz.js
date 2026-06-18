@@ -118,6 +118,10 @@
         score.textContent = "Score : " + good + " / " + total +
           (good === total ? " — parfait ! 🎉" : "");
         score.classList.add("is-final");
+        // Persiste le meilleur score de ce QCM (tableau de bord).
+        if (window.Progress && window.Progress.recordQuiz && window.CURRENT_LESSON) {
+          window.Progress.recordQuiz(window.CURRENT_LESSON, good, total);
+        }
       }
     }
     updateScore();

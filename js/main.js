@@ -238,6 +238,8 @@
     initDoneCheckbox();
     initMobileMenu();
     initSearchShortcut();
+    // Engagement : enregistre la visite de la leçon (activité du jour + « Reprendre »).
+    if (CUR && window.Progress && window.Progress.touch) window.Progress.touch(CUR);
     window.addEventListener("storage", function (e) { if (e.key === "ag-progress") refreshSidebarProgress(); });
   }
 
