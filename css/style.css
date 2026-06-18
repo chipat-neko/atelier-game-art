@@ -659,6 +659,38 @@ figure.schema figcaption b { color: var(--text); }
 .pomo-sub { margin: 12px 0 0; font-size: .8rem; color: var(--text-faint); text-align: center; }
 .pomo-sub b { color: var(--text-dim); font-family: var(--font-mono); }
 
+/* ===== Flashcards de révision (revision.html) ===== */
+.rv-toolbar { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; margin: 18px 0 14px; }
+.rv-select { padding: 9px 13px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface-2); color: var(--text); font-size: .9rem; font-family: inherit; }
+.rv-select:focus { outline: none; border-color: var(--accent); box-shadow: var(--ring); }
+.rv-stats { display: flex; gap: 18px; font-size: .85rem; color: var(--text-dim); }
+.rv-stats b { font-family: var(--font-mono); color: var(--accent); }
+.rv-progress { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-bottom: 22px; }
+.rv-progress-fill { height: 100%; width: 0%; background: var(--brand-grad); border-radius: 99px; transition: width .35s; }
+
+.rv-stage { max-width: 600px; margin: 0 auto; }
+.rv-card { position: relative; min-height: 230px; border: 1px solid var(--border-strong); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); cursor: pointer; padding: 30px; display: grid; transition: border-color .2s, transform .12s; }
+.rv-card:hover { border-color: var(--accent); }
+.rv-card:active { transform: scale(.997); }
+.rv-face { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; }
+.rv-front { }
+.rv-back { display: none; text-align: left; align-items: stretch; justify-content: flex-start; }
+.rv-card.is-flipped .rv-front { display: none; }
+.rv-card.is-flipped .rv-back { display: flex; }
+.rv-box { position: absolute; top: 14px; right: 16px; font-size: .7rem; font-family: var(--font-mono); color: var(--text-faint); border: 1px solid var(--border); border-radius: 99px; padding: 2px 9px; }
+.rv-term { font-family: var(--font-head); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.01em; }
+.rv-hint { font-size: .8rem; color: var(--text-faint); }
+.rv-def { font-size: 1rem; line-height: 1.6; color: var(--text); }
+.rv-alias { margin: 12px 0 0; font-size: .85rem; color: var(--text-faint); }
+.rv-lesson { display: inline-block; margin-top: 14px; font-size: .85rem; font-weight: 600; color: var(--accent); }
+.rv-controls { display: flex; gap: 12px; margin-top: 16px; }
+.rv-controls[hidden] { display: none; }
+.rv-controls .btn { flex: 1; justify-content: center; }
+.rv-progress-txt { text-align: center; margin: 14px 0 0; font-size: .8rem; color: var(--text-faint); }
+.rv-empty { text-align: center; padding: 40px 20px; }
+.rv-empty p { font-size: 1.1rem; margin-bottom: 18px; }
+kbd { font-family: var(--font-mono); font-size: .78rem; background: var(--surface-2); border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; color: var(--text-dim); }
+
 /* Notes (panneau) */
 .notes-area { width: 100%; min-height: 150px; resize: vertical; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface-2); color: var(--text); font-family: inherit; font-size: .88rem; line-height: 1.5; }
 .notes-area:focus { outline: none; border-color: var(--accent); box-shadow: var(--ring); }
