@@ -277,7 +277,16 @@ if (C)
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"De quelle classe de base héritent les objets plaçables dans le monde Unreal ? (le nom)","accept":["aactor","actor"],"placeholder":"A...","hints":["Préfixe A + Actor."],"explain":"AActor est la base des objets placés dans un niveau."}]
+[{"q":"De quelle classe héritent les objets plaçables ?","accept":["aactor","actor"],"placeholder":"A...","hints":["A + Actor."],"explain":"AActor."},
+{"q":"Quelle méthode d'un Actor est appelée chaque frame ?","accept":["tick","tick()"],"placeholder":"une méthode","hints":["4 lettres."],"explain":"Tick()."},
+{"q":"Quelle méthode est appelée au démarrage de l'Actor ? (Begin___)","accept":["beginplay","beginplay()","begin play"],"placeholder":"Begin...","hints":["Begin____"],"explain":"BeginPlay()."},
+{"q":"Quel préfixe pour les classes de composants UObject ?","accept":["u"],"placeholder":"1 lettre","hints":["UActorComponent."],"explain":"U."},
+{"q":"Quel composant affiche un mesh statique ? (Static Mesh ___)","accept":["component","static mesh component","staticmeshcomponent"],"placeholder":"Static Mesh ...","hints":["...Component"],"explain":"UStaticMeshComponent."},
+{"q":"Comment s'appelle le composant racine d'un Actor ? (Root___)","accept":["rootcomponent","root","root component"],"placeholder":"Root...","hints":["Root_________"],"explain":"RootComponent."},
+{"q":"Quelle fonction crée un Actor au runtime ? (Spawn___)","accept":["spawnactor","spawn actor","spawnactor()"],"placeholder":"Spawn...","hints":["Spawn_____"],"explain":"SpawnActor()."},
+{"q":"Quelle méthode détruit un Actor ?","accept":["destroy","destroy()"],"placeholder":"une méthode","hints":["7 lettres."],"explain":"Destroy()."},
+{"q":"Que reçoit  Tick  en paramètre ? (Delta___)","accept":["deltatime","delta time","delta"],"placeholder":"Delta...","hints":["Durée de frame."],"explain":"DeltaTime."},
+{"q":"Un Actor vit dans un… ? (un mot)","accept":["niveau","level","monde","world"],"placeholder":"un mot","hints":["La scène."],"explain":"Un niveau (level)."}]
             </script>
             </section>
 

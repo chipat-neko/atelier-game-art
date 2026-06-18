@@ -287,7 +287,16 @@ void FixedUpdate()
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle classe de l'ancien système d'entrées Unity lit clavier et souris ?","accept":["input"],"placeholder":"une classe","hints":["Input.GetKey(...)"],"explain":"La classe Input gère les entrées (ancien Input Manager)."}]
+[{"q":"Quelle classe (ancien système) lit les entrées clavier/souris ?","accept":["input"],"placeholder":"une classe","hints":["5 lettres."],"explain":"Input."},
+{"q":"Quelle méthode teste si une touche est maintenue ? (Get___)","accept":["getkey","getkey()","getkeydown"],"placeholder":"Get...","hints":["Get___"],"explain":"Input.GetKey()."},
+{"q":"Quelle méthode lit un axe (-1 à 1) ? (Get___)","accept":["getaxis","getaxis()"],"placeholder":"Get...","hints":["Get____"],"explain":"Input.GetAxis()."},
+{"q":"Quelle méthode du Transform déplace l'objet ?","accept":["translate","translate()"],"placeholder":"une méthode","hints":["9 lettres."],"explain":"transform.Translate()."},
+{"q":"GetAxis(\"Horizontal\") renvoie une valeur entre quoi et quoi ?","accept":["-1 et 1","-1 à 1","-1 1","-1..1"],"placeholder":"de ... à ...","hints":["Symétrique."],"explain":"Entre -1 et 1."},
+{"q":"Quel type de vecteur pour une direction 3D ?","accept":["vector3"],"placeholder":"un type","hints":["X, Y, Z."],"explain":"Vector3."},
+{"q":"Par quoi multiplie-t-on le mouvement pour être indépendant du framerate ?","accept":["time.deltatime","deltatime","delta time"],"placeholder":"Time....","hints":["Durée de frame."],"explain":"Time.deltaTime."},
+{"q":"Quelle méthode lit un bouton de souris ? (GetMouse___)","accept":["getmousebutton","getmousebutton()","getmousebuttondown"],"placeholder":"GetMouse...","hints":["GetMouse______"],"explain":"Input.GetMouseButton()."},
+{"q":"Comment s'appelle le nouveau système d'entrées d'Unity ? (deux mots)","accept":["input system","new input system"],"placeholder":"... ...","hints":["Input ______"],"explain":"L'Input System."},
+{"q":"GetKeyDown détecte la touche à l'enfoncement ou en continu ?","accept":["enfoncement","à l'enfoncement","appui"],"placeholder":"un mot","hints":["Une seule frame."],"explain":"À l'enfoncement (1 frame)."}]
             </script>
             </section>
 

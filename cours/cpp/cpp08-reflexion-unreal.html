@@ -274,7 +274,16 @@ EEtatIA Etat = EEtatIA::Patrouille;</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle macro expose une classe au système de reflection d'Unreal ?","accept":["uclass","uclass()"],"placeholder":"UC...","hints":["U_____()"],"explain":"UCLASS() rend la classe visible par le moteur (et les Blueprints)."}]
+[{"q":"Quelle macro expose une classe à la reflection Unreal ?","accept":["uclass","uclass()"],"placeholder":"UC...","hints":["U_____()"],"explain":"UCLASS()."},
+{"q":"Quelle macro expose une variable membre ?","accept":["uproperty","uproperty()"],"placeholder":"UP...","hints":["U________()"],"explain":"UPROPERTY()."},
+{"q":"Quelle macro expose une fonction ?","accept":["ufunction","ufunction()"],"placeholder":"UF...","hints":["U________()"],"explain":"UFUNCTION()."},
+{"q":"Quelle macro expose une struct ?","accept":["ustruct","ustruct()"],"placeholder":"US...","hints":["U______()"],"explain":"USTRUCT()."},
+{"q":"Quelle macro obligatoire place-t-on dans le corps d'une UCLASS ? (GENERATED____)","accept":["generated_body","generated body","generated_body()"],"placeholder":"GENERATED_...","hints":["GENERATED_____"],"explain":"GENERATED_BODY()."},
+{"q":"UPROPERTY(EditAnywhere) rend la variable éditable dans l'éditeur ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Dans Details."],"explain":"Oui."},
+{"q":"Quel préfixe pour les classes Actor ?","accept":["a"],"placeholder":"1 lettre","hints":["AActor."],"explain":"A (ex. AActor)."},
+{"q":"Quel préfixe pour les UObject non-Actor ?","accept":["u"],"placeholder":"1 lettre","hints":["UObject."],"explain":"U (ex. UObject)."},
+{"q":"La reflection permet-elle d'exposer du C++ aux Blueprints ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["UFUNCTION/UPROPERTY."],"explain":"Oui."},
+{"q":"Quel mot-clé d'UFUNCTION rend la fonction appelable depuis un Blueprint ? (Blueprint___)","accept":["blueprintcallable","callable","blueprint callable"],"placeholder":"Blueprint...","hints":["Blueprint________"],"explain":"BlueprintCallable."}]
             </script>
             </section>
 

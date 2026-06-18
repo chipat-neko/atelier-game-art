@@ -233,7 +233,16 @@ print(etat)   -- mort</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"En Lua, la valeur 0 est-elle vraie ou fausse dans un  if  ? (réponds : vrai ou faux)","accept":["vrai","vraie","true"],"placeholder":"vrai / faux","hints":["Seuls false et nil sont faux en Lua."],"explain":"0 est vrai : seuls false et nil sont faux."}]
+[{"q":"Quel mot-clé ferme un bloc if en Lua ?","accept":["end"],"placeholder":"un mot-clé","hints":["3 lettres."],"explain":"end ferme le bloc."},
+{"q":"En Lua, 0 est-il vrai ou faux dans un if ?","accept":["vrai","true","vraie"],"placeholder":"vrai/faux","hints":["Seuls false et nil sont faux."],"explain":"0 est truthy."},
+{"q":"Comment écrit-on « sinon si » en Lua ?","accept":["elseif"],"placeholder":"un mot","hints":["Un seul mot."],"explain":"elseif."},
+{"q":"Quelles deux valeurs sont fausses ? false et… ?","accept":["nil"],"placeholder":"3 lettres","hints":["L'absence de valeur."],"explain":"Seuls false et nil sont faux."},
+{"q":"Quel mot-clé ouvre le corps après la condition d'un if ?","accept":["then"],"placeholder":"un mot-clé","hints":["4 lettres."],"explain":"if cond then …"},
+{"q":"La chaîne vide \"\" est-elle vraie ou fausse en Lua ?","accept":["vrai","true","vraie"],"placeholder":"vrai/faux","hints":["Ce n'est ni false ni nil."],"explain":"\"\" est truthy."},
+{"q":"Quel mot-clé introduit le cas par défaut d'un if ?","accept":["else"],"placeholder":"un mot-clé","hints":["4 lettres."],"explain":"else = sinon."},
+{"q":"Quels deux mots simulent un ternaire ? (cond ___ a ___ b)","accept":["and or","and/or","and ... or"],"placeholder":"... ...","hints":["cond and a or b."],"explain":"and/or imitent le ternaire."},
+{"q":"nil est-il considéré comme vrai ou faux ?","accept":["faux","false","fausse"],"placeholder":"vrai/faux","hints":["Comme false."],"explain":"nil est faux."},
+{"q":"Que vaut la condition  if 5 > 2 then  ? (true/false)","accept":["true","vrai"],"placeholder":"true/false","hints":["5 plus grand que 2."],"explain":"5>2 = true."}]
             </script>
             </section>
 

@@ -234,7 +234,16 @@ return M
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé charge un module en Lua ?","accept":["require"],"placeholder":"un mot-clé","hints":["On l'écrit require(\"...\")."],"explain":"require charge le module (et le met en cache)."}]
+[{"q":"Quel mot-clé charge un module en Lua ?","accept":["require"],"placeholder":"un mot-clé","hints":["7 lettres."],"explain":"require(\"mod\")."},
+{"q":"Que doit renvoyer un module à la fin ? (mot-clé + quoi)","accept":["table","une table","la table","return"],"placeholder":"un mot","hints":["return M."],"explain":"Il renvoie sa table (return M)."},
+{"q":"require recharge-t-il le module à chaque appel ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Mise en cache."],"explain":"Non : il met en cache (chargement unique)."},
+{"q":"Dans quelle table sont mis en cache les modules chargés ?","accept":["package.loaded","loaded","package loaded"],"placeholder":"package....","hints":["package.______."],"explain":"package.loaded."},
+{"q":"Comment écrit-on require pour le fichier  jeu/player.lua  ?","accept":["require(\"jeu.player\")","jeu.player"],"placeholder":"require(\"...\")","hints":["Le point sépare les dossiers."],"explain":"require(\"jeu.player\") (sans .lua)."},
+{"q":"Inclut-on l'extension .lua dans require ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Juste le nom."],"explain":"Non, on omet .lua."},
+{"q":"Si un module ne fait pas return, que renvoie require ? (vrai/une table)","accept":["true","vrai"],"placeholder":"un mot","hints":["Valeur par défaut."],"explain":"true (à défaut de table)."},
+{"q":"Pour éviter les fuites entre fichiers, on évite les variables… ? (un mot)","accept":["globales","globale","global"],"placeholder":"un mot","hints":["Opposé de local."],"explain":"On évite les globales."},
+{"q":"Deux require du même module renvoient-ils la même table ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Grâce au cache."],"explain":"Oui : même table mise en cache."},
+{"q":"Un module est typiquement quel type de valeur ?","accept":["table","une table"],"placeholder":"un type","hints":["Structure de Lua."],"explain":"Une table."}]
             </script>
             </section>
 

@@ -298,7 +298,16 @@ foreach (IDamageable cible in cibles)
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé permet de redéfinir une méthode virtuelle héritée en C# ?","accept":["override"],"placeholder":"un mot-clé","hints":["On redéfinit une méthode virtual."],"explain":"override redéfinit une méthode virtual de la classe parente."}]
+[{"q":"Quel mot-clé redéfinit une méthode virtuelle ?","accept":["override"],"placeholder":"un mot-clé","hints":["8 lettres."],"explain":"override."},
+{"q":"Quel mot-clé rend une méthode redéfinissable ?","accept":["virtual"],"placeholder":"un mot-clé","hints":["7 lettres."],"explain":"virtual."},
+{"q":"Quel symbole indique l'héritage/implémentation en C# ?","accept":[":"],"placeholder":"1 caractère","hints":["class A : B"],"explain":"Les deux-points :."},
+{"q":"Un contrat sans implémentation s'appelle une… ?","accept":["interface"],"placeholder":"un mot","hints":["9 lettres."],"explain":"Une interface."},
+{"q":"Quel mot-clé empêche d'hériter d'une classe ?","accept":["sealed"],"placeholder":"un mot-clé","hints":["6 lettres."],"explain":"sealed."},
+{"q":"Quel mot-clé appelle l'implémentation de la classe parente ?","accept":["base"],"placeholder":"un mot-clé","hints":["4 lettres."],"explain":"base."},
+{"q":"Les méthodes d'une interface ont-elles un corps (par défaut) ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Juste la signature."],"explain":"Non (avant C# 8)."},
+{"q":"Quel mot-clé déclare une classe/méthode à implémenter obligatoirement ?","accept":["abstract"],"placeholder":"un mot-clé","hints":["8 lettres."],"explain":"abstract."},
+{"q":"Une classe peut-elle implémenter plusieurs interfaces ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Plusieurs contrats."],"explain":"Oui."},
+{"q":"Une classe peut-elle hériter de plusieurs classes en C# ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Héritage simple."],"explain":"Non (héritage simple)."}]
             </script>
             </section>
 

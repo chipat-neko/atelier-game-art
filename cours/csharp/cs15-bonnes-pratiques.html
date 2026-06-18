@@ -266,7 +266,16 @@ GameObject ObtenirBalle()
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Avec  int pv = 100; pv -= 30;  quelle est la valeur finale de pv ?","accept":["70"],"placeholder":"un nombre","hints":["pv -= 30 retire 30."],"explain":"100 - 30 = 70."}]
+[{"q":"Avec  int pv = 100; pv -= 30;  pv vaut ?","accept":["70"],"placeholder":"un nombre","hints":["100-30."],"explain":"70."},
+{"q":"Quelle convention de nommage pour une classe ?","accept":["pascalcase","pascal case"],"placeholder":"...Case","hints":["MajusculeAuDébut."],"explain":"PascalCase."},
+{"q":"Avec  int x = 5; x *= 2;  x vaut ?","accept":["10"],"placeholder":"un nombre","hints":["x double."],"explain":"10."},
+{"q":"Quel mot-clé pour une valeur qui ne change jamais ?","accept":["const"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"const."},
+{"q":"On met en cache GetComponent pour éviter de l'appeler chaque… ? (un mot)","accept":["frame","update"],"placeholder":"un mot","hints":["Dans Update."],"explain":"Chaque frame (Update)."},
+{"q":"Quel attribut expose un champ privé dans l'Inspector ?","accept":["[serializefield]","serializefield"],"placeholder":"[Serialize...]","hints":["[Serialize_____]"],"explain":"[SerializeField]."},
+{"q":"Avec  int x = 9; x %= 4;  x vaut ?","accept":["1"],"placeholder":"un nombre","hints":["Reste 9/4."],"explain":"1."},
+{"q":"Dans quelle méthode ÉVITE-t-on le code lourd ?","accept":["update","update()"],"placeholder":"une méthode","hints":["Chaque frame."],"explain":"Update()."},
+{"q":"Quelle méthode pour la physique / pas de temps fixe ?","accept":["fixedupdate","fixedupdate()"],"placeholder":"une méthode","hints":["Fixed____"],"explain":"FixedUpdate()."},
+{"q":"Quelle convention de nommage pour une méthode publique ?","accept":["pascalcase","pascal case"],"placeholder":"...Case","hints":["Comme les classes."],"explain":"PascalCase."}]
             </script>
             </section>
 

@@ -235,7 +235,16 @@ return M
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Dans LÖVE, quelle fonction est appelée une seule fois au démarrage ? (nom complet)","accept":["love.load","love.load()"],"placeholder":"love....","hints":["love.____"],"explain":"love.load() s'exécute une fois au lancement."}]
+[{"q":"Dans LÖVE, quelle fonction est appelée une fois au démarrage ?","accept":["love.load","love.load()"],"placeholder":"love....","hints":["love.____."],"explain":"love.load()."},
+{"q":"Quel dialecte de Lua utilise Roblox ?","accept":["luau"],"placeholder":"un mot","hints":["Lua + u."],"explain":"Luau."},
+{"q":"Dans Roblox, quelle méthode abonne une fonction à un événement ?","accept":[":connect","connect","event:connect"],"placeholder":":C...","hints":["Event:______(fn)."],"explain":"Event:Connect(fn)."},
+{"q":"Dans LÖVE, quelle fonction dessine chaque frame ?","accept":["love.draw","love.draw()"],"placeholder":"love....","hints":["love.____."],"explain":"love.draw()."},
+{"q":"Dans LÖVE, quelle fonction met à jour chaque frame (avec dt) ?","accept":["love.update","love.update()"],"placeholder":"love....","hints":["love.______(dt)."],"explain":"love.update(dt)."},
+{"q":"« Lua embarqué » signifie qu'il est intégré à un programme… ? (un mot)","accept":["hôte","hote","moteur"],"placeholder":"un mot","hints":["En C/C++."],"explain":"Un programme hôte (le moteur)."},
+{"q":"Dans Roblox, on obtient un service via  game:Get___  ?","accept":["service","getservice","game:getservice"],"placeholder":"Get...","hints":["game:Get______."],"explain":"game:GetService(\"...\")."},
+{"q":"Quel autre moteur Lua structure le jeu en game objects + scripts ?","accept":["defold"],"placeholder":"un moteur","hints":["6 lettres."],"explain":"Defold."},
+{"q":"Le code moteur (love.* / game.*) est-il portable d'un moteur à l'autre ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["API spécifique."],"explain":"Non : on garde la logique pure portable, isolée de l'API."},
+{"q":"Qui appelle love.update et love.draw : toi ou LÖVE ?","accept":["löve","love","le moteur","löve"],"placeholder":"...","hints":["Callbacks."],"explain":"LÖVE les appelle (callbacks)."}]
             </script>
             </section>
 

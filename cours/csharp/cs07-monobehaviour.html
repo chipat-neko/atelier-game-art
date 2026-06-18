@@ -256,7 +256,16 @@ void FixedUpdate()
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle méthode MonoBehaviour est appelée une fois, juste avant la première frame ?","accept":["start","start()"],"placeholder":"une méthode","hints":["Pas Awake : celle juste avant la 1re frame.","S____()"],"explain":"Start() s'exécute une fois avant la première frame de l'objet."},{"q":"Quelle méthode MonoBehaviour est appelée à chaque frame ?","accept":["update","update()"],"placeholder":"une méthode","hints":["U____()"],"explain":"Update() est appelée à chaque frame."}]
+[{"q":"Quelle méthode est appelée une fois, avant la 1re frame ?","accept":["start","start()"],"placeholder":"une méthode","hints":["S____()"],"explain":"Start()."},
+{"q":"Quelle méthode est appelée à chaque frame ?","accept":["update","update()"],"placeholder":"une méthode","hints":["U_____()"],"explain":"Update()."},
+{"q":"Quelle méthode est appelée à pas de temps fixe (physique) ?","accept":["fixedupdate","fixedupdate()"],"placeholder":"une méthode","hints":["Fixed____()"],"explain":"FixedUpdate()."},
+{"q":"De quelle classe héritent les scripts Unity ?","accept":["monobehaviour"],"placeholder":"une classe","hints":["Mono________"],"explain":"MonoBehaviour."},
+{"q":"Quelle méthode est appelée le plus tôt : Awake ou Start ?","accept":["awake","awake()"],"placeholder":"une méthode","hints":["Avant Start."],"explain":"Awake()."},
+{"q":"Quelle propriété donne le temps de la frame précédente ? (Time.___)","accept":["time.deltatime","deltatime","delta time"],"placeholder":"Time....","hints":["Time.delta____"],"explain":"Time.deltaTime."},
+{"q":"Combien de fois Start() s'exécute-t-il ?","accept":["1","une","une fois"],"placeholder":"un nombre","hints":["Au démarrage."],"explain":"Une seule fois."},
+{"q":"Quelle méthode est appelée au début d'une collision physique ? (OnCollision___)","accept":["oncollisionenter","oncollisionenter()"],"placeholder":"OnCollision...","hints":["...Enter"],"explain":"OnCollisionEnter()."},
+{"q":"Quel attribut rend un champ privé visible dans l'Inspector ?","accept":["[serializefield]","serializefield"],"placeholder":"[Serialize...]","hints":["[Serialize_____]"],"explain":"[SerializeField]."},
+{"q":"Quelle méthode est appelée à chaque détection d'overlap (trigger) au début ? (OnTrigger___)","accept":["ontriggerenter","ontriggerenter()"],"placeholder":"OnTrigger...","hints":["...Enter"],"explain":"OnTriggerEnter()."}]
             </script>
             </section>
 

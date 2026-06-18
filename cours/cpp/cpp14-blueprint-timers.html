@@ -270,7 +270,16 @@ void ASpawner::Stop()
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle macro rend une fonction C++ appelable depuis les Blueprints ?","accept":["ufunction","ufunction()"],"placeholder":"UF...","hints":["U_______()"],"explain":"UFUNCTION(BlueprintCallable) expose la fonction aux Blueprints."}]
+[{"q":"Quelle macro rend une fonction appelable depuis les Blueprints ?","accept":["ufunction","ufunction()"],"placeholder":"UF...","hints":["U________()"],"explain":"UFUNCTION(BlueprintCallable)."},
+{"q":"Quel spécificateur d'UFUNCTION rend la fonction appelable en BP ? (Blueprint___)","accept":["blueprintcallable","callable","blueprint callable"],"placeholder":"Blueprint...","hints":["Blueprint________"],"explain":"BlueprintCallable."},
+{"q":"Quel gestionnaire planifie une fonction après un délai ? (FTimer___)","accept":["ftimermanager","timermanager","timer manager"],"placeholder":"FTimer...","hints":["FTimer______"],"explain":"FTimerManager."},
+{"q":"Quelle méthode programme un minuteur ? (Set___)","accept":["settimer","settimer()","set timer"],"placeholder":"Set...","hints":["Set_____"],"explain":"SetTimer()."},
+{"q":"Quel spécificateur d'UPROPERTY expose une variable en lecture/écriture au BP ? (Blueprint___)","accept":["blueprintreadwrite","readwrite","blueprint readwrite"],"placeholder":"Blueprint...","hints":["Blueprint_________"],"explain":"BlueprintReadWrite."},
+{"q":"Quel type d'événement est défini en C++ mais implémenté en BP ? (Blueprint___Event)","accept":["blueprintimplementableevent","implementable","blueprint implementable event"],"placeholder":"Blueprint...Event","hints":["...Implementable..."],"explain":"BlueprintImplementableEvent."},
+{"q":"Quelle macro expose une variable membre à la reflection ?","accept":["uproperty","uproperty()"],"placeholder":"UP...","hints":["U________()"],"explain":"UPROPERTY()."},
+{"q":"Le délai d'un timer est exprimé en… ? (un mot)","accept":["secondes","seconds"],"placeholder":"un mot","hints":["Unité de temps."],"explain":"En secondes."},
+{"q":"Quel spécificateur rend une UFUNCTION « pure » (sans broche exec) ? (Blueprint___)","accept":["blueprintpure","pure","blueprint pure"],"placeholder":"Blueprint...","hints":["Blueprint____"],"explain":"BlueprintPure."},
+{"q":"GetWorldTimerManager() renvoie le gestionnaire de minuteurs ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Accès au FTimerManager."],"explain":"Oui."}]
             </script>
             </section>
 

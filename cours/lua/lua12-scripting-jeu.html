@@ -241,7 +241,16 @@ emit("niveauTermine", 3)</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Par quelle valeur multiplie-t-on les vitesses pour être indépendant du framerate ? (l'abréviation)","accept":["dt","delta time","delta","le delta time"],"placeholder":"2 lettres","hints":["C'est la durée de la frame précédente."],"explain":"On multiplie par dt (delta time)."}]
+[{"q":"Par quelle valeur multiplie-t-on les vitesses pour être indépendant du framerate ?","accept":["dt","delta time","delta","le delta time"],"placeholder":"2 lettres","hints":["Durée de la frame."],"explain":"dt (delta time)."},
+{"q":"Quelle fonction met à jour la LOGIQUE chaque frame ? (mot)","accept":["update"],"placeholder":"un mot","hints":["Pas draw."],"explain":"update gère la logique."},
+{"q":"Quelle fonction DESSINE l'image chaque frame ? (mot)","accept":["draw"],"placeholder":"un mot","hints":["Affichage seul."],"explain":"draw affiche l'état."},
+{"q":"update doit-il modifier l'état ou seulement afficher ?","accept":["modifier","modifier l'état","logique"],"placeholder":"un mot","hints":["draw = afficher."],"explain":"update modifie l'état ; draw affiche."},
+{"q":"Une fonction appelée par le moteur au bon moment s'appelle un… ? (un mot)","accept":["callback","rappel"],"placeholder":"un mot","hints":["« rappel »."],"explain":"Un callback."},
+{"q":"Combien de fois par seconde tourne environ la boucle de jeu ?","accept":["60"],"placeholder":"un nombre","hints":["fps usuel."],"explain":"≈ 60 fois/s."},
+{"q":"Qui possède la boucle de jeu : toi ou le moteur ?","accept":["le moteur","moteur"],"placeholder":"...","hints":["Inversion de contrôle."],"explain":"Le moteur ; tu fournis les callbacks."},
+{"q":"Un système où des fonctions s'abonnent à un signal s'appelle un système d'… ? (un mot)","accept":["événements","evenements","événement","evenement"],"placeholder":"un mot","hints":["on/emit."],"explain":"Un système d'événements."},
+{"q":"Mettre tout dans update à chaque frame est-il économe ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Coûteux."],"explain":"Non : préférer l'événementiel quand possible."},
+{"q":"Sans multiplier par dt, la vitesse dépend de quoi ?","accept":["framerate","du framerate","fps","des fps"],"placeholder":"un mot","hints":["Images/seconde."],"explain":"Du framerate (fps)."}]
             </script>
             </section>
 

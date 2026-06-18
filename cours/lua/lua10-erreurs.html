@@ -243,7 +243,16 @@ print(config.volume)   -- 50</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Si l'appel réussit, quelle est la 1re valeur renvoyée par  pcall  ? (true ou false)","accept":["true","vrai"],"placeholder":"true / false","hints":["pcall renvoie ok, puis le résultat."],"explain":"pcall renvoie true en cas de succès, false sinon."}]
+[{"q":"Quelle fonction exécute du code en le protégeant des erreurs ?","accept":["pcall"],"placeholder":"un mot","hints":["protected call."],"explain":"pcall."},
+{"q":"Si l'appel réussit, quelle est la 1re valeur renvoyée par pcall ? (true/false)","accept":["true","vrai"],"placeholder":"true/false","hints":["ok."],"explain":"true en cas de succès."},
+{"q":"Quelle fonction lève une erreur ?","accept":["error"],"placeholder":"un mot","hints":["5 lettres."],"explain":"error(\"msg\")."},
+{"q":"Quelle fonction valide une précondition et lève une erreur sinon ?","accept":["assert"],"placeholder":"un mot","hints":["6 lettres."],"explain":"assert(cond, msg)."},
+{"q":"En cas d'échec, quelle est la 1re valeur de pcall ? (true/false)","accept":["false","faux"],"placeholder":"true/false","hints":["Échec."],"explain":"false en cas d'erreur."},
+{"q":"Quelle variante de pcall ajoute un gestionnaire d'erreur ?","accept":["xpcall"],"placeholder":"un mot","hints":["x + pcall."],"explain":"xpcall."},
+{"q":"Passe-t-on la fonction ou son résultat à pcall ?","accept":["la fonction","fonction"],"placeholder":"...","hints":["pcall(f, args)."],"explain":"On passe la fonction et ses arguments."},
+{"q":"La 2e valeur de pcall en cas d'échec contient… ? (un mot)","accept":["message","le message","erreur","message d'erreur"],"placeholder":"un mot","hints":["Le texte d'erreur."],"explain":"Le message d'erreur."},
+{"q":"Quelle fonction donne la pile d'appels pour le débogage ?","accept":["debug.traceback","traceback"],"placeholder":"debug....","hints":["debug.________."],"explain":"debug.traceback()."},
+{"q":"Le programme plante-t-il quand on utilise pcall ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["L'erreur devient une valeur."],"explain":"Non : l'erreur est capturée."}]
             </script>
             </section>
 

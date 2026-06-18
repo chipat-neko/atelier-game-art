@@ -240,7 +240,16 @@ print(pairs2(), pairs2(), pairs2())   -- 2  4  6
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé suspend une coroutine ? (le mot)","accept":["yield","coroutine.yield"],"placeholder":"un mot-clé","hints":["coroutine.____"],"explain":"yield suspend la coroutine et rend la main à resume."}]
+[{"q":"Quel mot-clé suspend une coroutine ?","accept":["yield","coroutine.yield"],"placeholder":"un mot","hints":["coroutine.____."],"explain":"yield."},
+{"q":"Quelle fonction lance ou reprend une coroutine ?","accept":["resume","coroutine.resume"],"placeholder":"un mot","hints":["coroutine.______."],"explain":"resume."},
+{"q":"Quelle fonction crée une coroutine ?","accept":["create","coroutine.create"],"placeholder":"un mot","hints":["coroutine.______."],"explain":"create."},
+{"q":"Les coroutines sont-elles parallèles ou coopératives ?","accept":["coopératives","cooperatives","coopérative","cooperative"],"placeholder":"un mot","hints":["Une à la fois."],"explain":"Coopératives : une seule tourne à la fois."},
+{"q":"Quel statut a une coroutine terminée ?","accept":["dead"],"placeholder":"un mot","hints":["En anglais."],"explain":"\"dead\"."},
+{"q":"resume sur une coroutine dead renvoie d'abord… ? (true/false)","accept":["false","faux"],"placeholder":"true/false","hints":["Échec."],"explain":"false."},
+{"q":"Quelle fonction renvoie le statut d'une coroutine ?","accept":["status","coroutine.status"],"placeholder":"un mot","hints":["coroutine.______."],"explain":"status."},
+{"q":"yield est-il valable hors d'une coroutine ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Seulement dedans."],"explain":"Non, uniquement dans une coroutine."},
+{"q":"Quelle fonction renvoie une fonction qui reprend automatiquement la coroutine ?","accept":["wrap","coroutine.wrap"],"placeholder":"un mot","hints":["coroutine.____."],"explain":"coroutine.wrap."},
+{"q":"Après un yield, le prochain resume reprend où ? (avant/après le yield)","accept":["après","apres","après le yield"],"placeholder":"un mot","hints":["Juste à la suite."],"explain":"Juste après le yield."}]
             </script>
             </section>
 

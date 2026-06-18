@@ -281,7 +281,16 @@ UInputAction* ActionDeplacer;</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle méthode d'un Actor Unreal est appelée à chaque frame ?","accept":["tick","tick()"],"placeholder":"une méthode","hints":["4 lettres."],"explain":"Tick(DeltaTime) est appelée chaque frame."}]
+[{"q":"Quelle méthode d'un Actor est appelée chaque frame ?","accept":["tick","tick()"],"placeholder":"une méthode","hints":["4 lettres."],"explain":"Tick()."},
+{"q":"Quelle méthode est appelée au démarrage de l'Actor ?","accept":["beginplay","beginplay()","begin play"],"placeholder":"Begin...","hints":["Begin____"],"explain":"BeginPlay()."},
+{"q":"DeltaTime sert à être indépendant du framerate ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["* DeltaTime."],"explain":"Oui."},
+{"q":"Quelle méthode déplace un Actor à une position ? (SetActor___)","accept":["setactorlocation","setactorlocation()","setactorlocation(...)"],"placeholder":"SetActor...","hints":["SetActor________"],"explain":"SetActorLocation()."},
+{"q":"Quel type a 3 composantes (X, Y, Z) dans Unreal ?","accept":["fvector","vector"],"placeholder":"F...","hints":["F______"],"explain":"FVector."},
+{"q":"Combien de composantes a un FVector ?","accept":["3"],"placeholder":"un nombre","hints":["X, Y, Z."],"explain":"3."},
+{"q":"Comment s'appelle le système d'entrées moderne d'Unreal ? (Enhanced ___)","accept":["enhanced input","input","enhanced input system"],"placeholder":"Enhanced ...","hints":["Enhanced _____"],"explain":"Enhanced Input."},
+{"q":"Quelle classe gère les entrées d'un joueur ? (Player___)","accept":["playercontroller","controller","player controller"],"placeholder":"Player...","hints":["Player__________"],"explain":"PlayerController."},
+{"q":"Multiplie-t-on le déplacement par DeltaTime ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Indépendance fps."],"explain":"Oui."},
+{"q":"Quelle méthode lit la position d'un Actor ? (GetActor___)","accept":["getactorlocation","getactorlocation()"],"placeholder":"GetActor...","hints":["GetActor________"],"explain":"GetActorLocation()."}]
             </script>
             </section>
 

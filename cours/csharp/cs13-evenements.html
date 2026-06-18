@@ -300,7 +300,16 @@ void MajBarre(int nouveauPV) { Debug.Log("Barre de vie : " + nouveauPV); }</code
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé déclare un événement en C# ?","accept":["event"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"event déclare un événement basé sur un delegate."}]
+[{"q":"Quel mot-clé déclare un événement ?","accept":["event"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"event."},
+{"q":"Sur quel type repose un événement C# ?","accept":["delegate","délégué","delegue"],"placeholder":"un mot","hints":["Pointe vers des méthodes."],"explain":"Un delegate."},
+{"q":"Quel opérateur abonne une méthode à un événement ?","accept":["+="],"placeholder":"2 caractères","hints":["Ajout."],"explain":"+=."},
+{"q":"Quel opérateur désabonne une méthode ?","accept":["-="],"placeholder":"2 caractères","hints":["Retrait."],"explain":"-=."},
+{"q":"Quel delegate générique intégré ne renvoie rien ?","accept":["action"],"placeholder":"un type","hints":["6 lettres."],"explain":"Action."},
+{"q":"Quel delegate générique RENVOIE une valeur ?","accept":["func"],"placeholder":"un type","hints":["4 lettres."],"explain":"Func."},
+{"q":"Un événement découple l'émetteur de ses… ? (un mot)","accept":["abonnés","abonnes","récepteurs","recepteurs","listeners"],"placeholder":"un mot","hints":["Ils s'abonnent."],"explain":"Ses abonnés."},
+{"q":"Un  event  peut-il être déclenché de l'extérieur de sa classe ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Encapsulation."],"explain":"Non : seul le déclarant l'invoque."},
+{"q":"Quel type d'événement visible dans l'Inspector fournit Unity ?","accept":["unityevent"],"placeholder":"un type","hints":["Unity_____"],"explain":"UnityEvent."},
+{"q":"Le patron publication/abonnement s'appelle le patron… ? (un mot)","accept":["observateur","observer"],"placeholder":"un mot","hints":["Observer."],"explain":"L'Observateur (Observer)."}]
             </script>
             </section>
 

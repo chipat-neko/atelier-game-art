@@ -254,7 +254,16 @@ end</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle est la sortie de  for i = 1, 3 do io.write(i) end  ?","accept":["123"],"placeholder":"des chiffres","hints":["io.write n'ajoute pas de retour à la ligne.","La borne de fin est incluse."],"explain":"i prend 1, 2, 3 et io.write les colle : 123."}]
+[{"q":"Sortie de  for i=1,3 do io.write(i) end  ?","accept":["123"],"placeholder":"chiffres","hints":["Borne incluse."],"explain":"1,2,3 → 123."},
+{"q":"Quel itérateur suit la séquence ordonnée 1..n ?","accept":["ipairs"],"placeholder":"un mot","hints":["i comme index."],"explain":"ipairs suit la séquence."},
+{"q":"Quelle boucle s'exécute au moins une fois ?","accept":["repeat","repeat until","repeat...until","repeat … until"],"placeholder":"un mot","hints":["Test à la fin."],"explain":"repeat … until teste après le corps."},
+{"q":"Quel mot-clé sort d'une boucle ?","accept":["break"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"break interrompt la boucle."},
+{"q":"Dans  for i=1,5  , quelle est la dernière valeur de i ?","accept":["5"],"placeholder":"un nombre","hints":["Borne incluse."],"explain":"La borne de fin est incluse."},
+{"q":"while teste la condition avant ou après le corps ?","accept":["avant"],"placeholder":"avant/après","hints":["À l'entrée."],"explain":"while teste avant chaque tour."},
+{"q":"Que vaut  #{10, 20, 30}  ?","accept":["3"],"placeholder":"un nombre","hints":["3 éléments."],"explain":"Longueur 3."},
+{"q":"Sortie de  for i=2,6,2 do io.write(i) end  ?","accept":["246"],"placeholder":"chiffres","hints":["Pas de 2."],"explain":"2,4,6 → 246."},
+{"q":"Lua possède-t-il un mot-clé continue ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["On l'imite avec if/goto."],"explain":"Pas de continue natif."},
+{"q":"pairs garantit-il un ordre de parcours ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Ordre non garanti."],"explain":"pairs ne garantit aucun ordre."}]
             </script>
             </section>
 

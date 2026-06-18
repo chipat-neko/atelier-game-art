@@ -295,7 +295,16 @@ void UBarreVieUI::Init(USante* Sante)
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Comment qualifie-t-on un delegate Unreal capable de diffuser à plusieurs abonnés ? (un mot)","accept":["multicast"],"placeholder":"un mot","hints":["Diffusion un-vers-plusieurs."],"explain":"Un Multicast Delegate notifie plusieurs fonctions abonnées."}]
+[{"q":"Comment qualifie-t-on un delegate diffusant à plusieurs abonnés ?","accept":["multicast"],"placeholder":"un mot","hints":["Diffusion."],"explain":"Multicast."},
+{"q":"Un delegate pointe vers une… ? (un mot)","accept":["fonction","méthode","methode","function"],"placeholder":"un mot","hints":["À appeler."],"explain":"Une fonction/méthode."},
+{"q":"Quelle méthode déclenche un multicast delegate ?","accept":["broadcast","broadcast()"],"placeholder":"une méthode","hints":["9 lettres."],"explain":"Broadcast()."},
+{"q":"Quelle méthode abonne une UFUNCTION à un delegate dynamique ?","accept":["adddynamic","adddynamic()","bind","add"],"placeholder":"AddD...","hints":["AddDynamic."],"explain":"AddDynamic()."},
+{"q":"Un dynamic multicast delegate peut-il être exposé aux Blueprints ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Event Dispatcher."],"explain":"Oui (= Event Dispatcher BP)."},
+{"q":"Un delegate single-cast appelle combien de fonctions ?","accept":["1","une"],"placeholder":"un nombre","hints":["Une seule."],"explain":"1."},
+{"q":"Les delegates découplent l'émetteur de ses… ? (un mot)","accept":["abonnés","abonnes","récepteurs","recepteurs"],"placeholder":"un mot","hints":["Ils s'abonnent."],"explain":"Ses abonnés."},
+{"q":"Un Event Dispatcher Blueprint correspond à quoi côté C++ ? (un mot)","accept":["delegate","multicast delegate","multicast"],"placeholder":"un mot","hints":["Diffusion."],"explain":"Un (multicast) delegate."},
+{"q":"AddDynamic exige une fonction marquée… ? (UFUNCTION)","accept":["ufunction","ufunction()"],"placeholder":"UF...","hints":["U________"],"explain":"UFUNCTION()."},
+{"q":"La macro pour déclarer un delegate commence par DECLARE_… ? (oui/non, c'est bien DECLARE)","accept":["oui","declare"],"placeholder":"oui/non","hints":["DECLARE_DELEGATE…"],"explain":"Oui : DECLARE_DELEGATE / DECLARE_DYNAMIC_MULTICAST_DELEGATE."}]
             </script>
             </section>
 

@@ -243,7 +243,16 @@ for i, obj in ipairs(inv) do print(i, obj) end</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Avec  t = {10, 20, 30} , que vaut  t[2]  ? (indices à partir de 1)","accept":["20"],"placeholder":"un nombre","hints":["En Lua, le premier indice est 1."],"explain":"t[1]=10, t[2]=20."},{"q":"Que vaut  #t  pour  t = {10, 20, 30}  ?","accept":["3"],"placeholder":"un nombre","hints":["# donne la taille d'une séquence dense."],"explain":"La table contient 3 éléments."}]
+[{"q":"Avec  t = {10,20,30} ,  t[2]  vaut ?","accept":["20"],"placeholder":"un nombre","hints":["Indices dès 1."],"explain":"t[2] = 20."},
+{"q":"À quel indice commence une séquence en Lua ?","accept":["1"],"placeholder":"un nombre","hints":["Pas 0."],"explain":"Les indices commencent à 1."},
+{"q":"Que vaut  #t  pour  t = {1,2,3}  ?","accept":["3"],"placeholder":"un nombre","hints":["Longueur."],"explain":"3 éléments."},
+{"q":"Avec  t = {5,6} ,  t[1]  vaut ?","accept":["5"],"placeholder":"un nombre","hints":["Premier élément."],"explain":"t[1] = 5."},
+{"q":"table.insert ajoute par défaut à quelle extrémité ? (début/fin)","accept":["fin","la fin","end"],"placeholder":"un mot","hints":["Après le dernier."],"explain":"À la fin par défaut."},
+{"q":"Combien de structures de données natives a Lua ?","accept":["1","une","une seule"],"placeholder":"un nombre","hints":["La table."],"explain":"Une seule : la table."},
+{"q":"joueur[\"nom\"] équivaut à joueur.___ ?","accept":["nom"],"placeholder":"un mot","hints":["Notation point."],"explain":"joueur.nom."},
+{"q":"Comment écrit-on une table vide ?","accept":["{}"],"placeholder":"2 caractères","hints":["Deux accolades."],"explain":"{} crée une table vide."},
+{"q":"Les tables sont-elles copiées ou passées par référence ?","accept":["référence","reference","par référence","par reference"],"placeholder":"un mot","hints":["b = a partagent la même table."],"explain":"Les tables sont des références."},
+{"q":"Que vaut  t[0]  pour  t = {10,20}  ?","accept":["nil"],"placeholder":"3 lettres","hints":["Pas d'indice 0."],"explain":"t[0] = nil (séquence dès 1)."}]
             </script>
             </section>
 

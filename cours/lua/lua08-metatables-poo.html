@@ -253,7 +253,16 @@ function Joueur:gagnerXp(n) self.xp = self.xp + n end</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quelle métaméthode permet de chercher une clé absente (base de l'héritage) ? (le nom exact)","accept":["__index","index"],"placeholder":"__...","hints":["Elle commence par deux underscores.","__i..."],"explain":"__index indique où poursuivre la recherche d'une clé."}]
+[{"q":"Quelle métaméthode permet l'héritage (clé absente) ?","accept":["__index","index"],"placeholder":"__...","hints":["Deux underscores."],"explain":"__index."},
+{"q":"Quelle fonction attache une métatable à une table ?","accept":["setmetatable"],"placeholder":"set...","hints":["set______."],"explain":"setmetatable(t, mt)."},
+{"q":"Que passe automatiquement le  :  lors d'un appel de méthode ?","accept":["self"],"placeholder":"4 lettres","hints":["L'instance courante."],"explain":"obj:m() passe self."},
+{"q":"Lua possède-t-il un mot-clé class natif ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["On construit la POO avec des tables."],"explain":"Pas de class : on utilise les métatables."},
+{"q":"Pattern classe :  Classe.__index = ___  ?","accept":["classe","classe (elle-même)"],"placeholder":"un mot","hints":["Elle-même."],"explain":"Classe.__index = Classe."},
+{"q":"Une métatable décrit le comportement d'une… ? (un mot)","accept":["table"],"placeholder":"un mot","hints":["L'autre objet."],"explain":"Elle décrit le comportement d'une table."},
+{"q":"Quelle fonction lit la métatable d'une table ?","accept":["getmetatable"],"placeholder":"get...","hints":["get______."],"explain":"getmetatable(t)."},
+{"q":"obj:methode() équivaut à obj.methode(___) ?","accept":["obj","self"],"placeholder":"un mot","hints":["L'objet lui-même."],"explain":"obj.methode(obj)."},
+{"q":"Où stocke-t-on l'état propre à chaque instance ? (mot)","accept":["self"],"placeholder":"4 lettres","hints":["Pas dans la classe."],"explain":"Dans self."},
+{"q":"new renvoie souvent  setmetatable({}, ___)  ?","accept":["classe","classe (la classe)"],"placeholder":"un mot","hints":["La table classe."],"explain":"setmetatable({}, Classe)."}]
             </script>
             </section>
 

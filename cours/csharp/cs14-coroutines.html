@@ -304,7 +304,16 @@ void Arreter() { if (spawn != null) StopCoroutine(spawn); }</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Par quoi commence une instruction d'attente dans une coroutine C# Unity ? (deux mots)","accept":["yield return","yield"],"placeholder":"yield ...","hints":["yield ______"],"explain":"yield return suspend la coroutine (ex. yield return null)."}]
+[{"q":"Par quoi commence une attente dans une coroutine ? (deux mots)","accept":["yield return","yield"],"placeholder":"yield ...","hints":["yield ______"],"explain":"yield return."},
+{"q":"Quel est le type de retour d'une coroutine ?","accept":["ienumerator"],"placeholder":"un type","hints":["I__________"],"explain":"IEnumerator."},
+{"q":"Quelle méthode lance une coroutine ?","accept":["startcoroutine","startcoroutine()"],"placeholder":"Start...","hints":["Start_________"],"explain":"StartCoroutine()."},
+{"q":"yield return new WaitForSeconds(2) attend combien de secondes ?","accept":["2"],"placeholder":"un nombre","hints":["L'argument."],"explain":"2 secondes."},
+{"q":"Pour attendre UNE frame :  yield return ___  ?","accept":["null"],"placeholder":"un mot-clé","hints":["4 lettres."],"explain":"yield return null."},
+{"q":"Quelle méthode arrête une coroutine ?","accept":["stopcoroutine","stopcoroutine()"],"placeholder":"Stop...","hints":["Stop_________"],"explain":"StopCoroutine()."},
+{"q":"Les coroutines tournent-elles sur le thread principal ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Pas du multithreading."],"explain":"Oui (main thread)."},
+{"q":"WaitForSeconds est-il affecté par Time.timeScale ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Temps de jeu."],"explain":"Oui (utiliser WaitForSecondsRealtime sinon)."},
+{"q":"Une coroutine doit être démarrée avec quelle méthode ?","accept":["startcoroutine","startcoroutine()"],"placeholder":"Start...","hints":["Pas un simple appel."],"explain":"StartCoroutine()."},
+{"q":"Quel mot-clé suspend l'exécution dans une coroutine ?","accept":["yield"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"yield."}]
             </script>
             </section>
 

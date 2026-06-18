@@ -233,7 +233,16 @@ end</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel mot-clé rend une variable plus rapide d'accès (vs globale) en Lua ?","accept":["local"],"placeholder":"un mot-clé","hints":["L'opposé de global."],"explain":"Une variable local vit dans un registre : accès plus rapide."}]
+[{"q":"Quel mot-clé rend une variable plus rapide d'accès qu'une globale ?","accept":["local"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"local (registre vs recherche dans _G)."},
+{"q":"Comment réduire les pauses du ramasse-miettes : allouer moins ou plus ?","accept":["moins","allouer moins"],"placeholder":"un mot","hints":["Moins de déchets."],"explain":"Allouer moins (réutiliser les tables)."},
+{"q":"Comment appelle-t-on le ramasse-miettes (sigle anglais) ?","accept":["gc"],"placeholder":"2 lettres","hints":["Garbage Collector."],"explain":"GC."},
+{"q":"Sur une table à trou,  #t  est-il fiable ? (oui/non)","accept":["non"],"placeholder":"oui/non","hints":["Résultat indéterminé."],"explain":"Non : # n'est fiable que sur une séquence dense."},
+{"q":"Dans quelle table vivent les variables globales ?","accept":["_g","_G"],"placeholder":"_..","hints":["Underscore + lettre."],"explain":"_G."},
+{"q":"Réutiliser une table au lieu d'en créer une par frame réduit quoi ? (un mot)","accept":["allocations","les allocations","allocation","déchets"],"placeholder":"un mot","hints":["Le travail du GC."],"explain":"Les allocations (donc le GC)."},
+{"q":"Une réserve d'objets recyclés s'appelle un… ? (un mot, anglais)","accept":["pool","object pool"],"placeholder":"un mot","hints":["4 lettres."],"explain":"Un pool d'objets."},
+{"q":"Avant d'optimiser, que faut-il faire d'abord ? (un mot)","accept":["mesurer","profiler","mesure"],"placeholder":"un mot","hints":["Ne pas deviner."],"explain":"Mesurer (profiler)."},
+{"q":"Mettre en cache  local sqrt = math.sqrt  accélère-t-il l'accès ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["Accès local."],"explain":"Oui : accès local plus rapide."},
+{"q":"Quelle fonction affiche la mémoire utilisée ?  collectgarbage(\"___\")","accept":["count"],"placeholder":"un mot","hints":["compte les Ko."],"explain":"collectgarbage(\"count\")."}]
             </script>
             </section>
 

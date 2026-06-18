@@ -233,7 +233,16 @@ print(type(x))   -- nil</code></pre>
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Que renvoie  type(\"Lua\")  ? (le mot exact)","accept":["string"],"placeholder":"un type","hints":["C'est le type d'une chaîne de caractères."],"explain":"type renvoie le nom du type : string."},{"q":"Que renvoie  type(42)  ?","accept":["number"],"placeholder":"un type","hints":["Lua n'a qu'un seul type numérique."],"explain":"En Lua, tous les nombres sont de type number."}]
+[{"q":"Que renvoie  type(\"Lua\")  ?","accept":["string"],"placeholder":"un type","hints":["Une chaîne."],"explain":"type(\"Lua\") = string."},
+{"q":"Que renvoie  type(42)  ?","accept":["number"],"placeholder":"un type","hints":["Un nombre."],"explain":"Tous les nombres sont des number."},
+{"q":"Que renvoie  type(true)  ?","accept":["boolean"],"placeholder":"un type","hints":["Vrai/faux."],"explain":"true est un boolean."},
+{"q":"Quelle valeur représente l'absence de valeur en Lua ?","accept":["nil"],"placeholder":"3 lettres","hints":["« rien »."],"explain":"nil = absence de valeur."},
+{"q":"Que renvoie  type(nil)  ?","accept":["nil"],"placeholder":"un type","hints":["Son propre type."],"explain":"type(nil) = nil."},
+{"q":"Que renvoie  type({})  ?","accept":["table"],"placeholder":"un type","hints":["La structure unique de Lua."],"explain":"{} est une table."},
+{"q":"Le typage de Lua est-il dynamique ou statique ?","accept":["dynamique","dynamic"],"placeholder":"un mot","hints":["Le type est porté par la valeur."],"explain":"Lua a un typage dynamique."},
+{"q":"Que renvoie  tonumber(\"5\")  ?","accept":["5"],"placeholder":"un nombre","hints":["Conversion chaîne→nombre."],"explain":"tonumber(\"5\") = 5."},
+{"q":"Quel mot-clé déclare une variable locale ?","accept":["local"],"placeholder":"un mot-clé","hints":["5 lettres."],"explain":"local déclare une variable de portée locale."},
+{"q":"Une variable jamais déclarée vaut… ?","accept":["nil"],"placeholder":"3 lettres","hints":["Pas d'erreur, mais…"],"explain":"Une variable non définie vaut nil."}]
             </script>
             </section>
 

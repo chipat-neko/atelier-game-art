@@ -284,7 +284,16 @@ UE_LOG(LogTemp, Log, TEXT("Nb niveaux : %d"), Visites.Num());   // 1</code></pre
               </div>
                         <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
             <script type="application/json" data-exos>
-[{"q":"Quel conteneur de tableau dynamique fournit Unreal ? (le nom, sans chevrons)","accept":["tarray"],"placeholder":"TArr...","hints":["T____ "],"explain":"TArray est le tableau dynamique d'Unreal."}]
+[{"q":"Quel conteneur de tableau dynamique fournit Unreal ?","accept":["tarray"],"placeholder":"TArr...","hints":["T_____"],"explain":"TArray."},
+{"q":"Quel conteneur associatif (clé→valeur) fournit Unreal ?","accept":["tmap"],"placeholder":"TM...","hints":["T___"],"explain":"TMap."},
+{"q":"Quel conteneur d'éléments uniques fournit Unreal ?","accept":["tset"],"placeholder":"TS...","hints":["T___"],"explain":"TSet."},
+{"q":"Quel tableau dynamique de la STL ?","accept":["vector","std::vector"],"placeholder":"std::...","hints":["std::______"],"explain":"std::vector."},
+{"q":"Quelle méthode ajoute un élément à un TArray ?","accept":["add","add()"],"placeholder":"une méthode","hints":["3 lettres."],"explain":"Add()."},
+{"q":"À quel indice commence un TArray ?","accept":["0"],"placeholder":"un nombre","hints":["Zéro."],"explain":"0."},
+{"q":"Quelle méthode donne le nombre d'éléments d'un TArray ?","accept":["num","num()"],"placeholder":"une méthode","hints":["3 lettres."],"explain":"Num()."},
+{"q":"Un TMap stocke des paires… ? (deux mots)","accept":["clé-valeur","clé valeur","cle-valeur","key-value","clé/valeur"],"placeholder":"...-...","hints":["clé → valeur."],"explain":"Clé-valeur."},
+{"q":"Une boucle range-based for fonctionne sur un TArray ? (oui/non)","accept":["oui"],"placeholder":"oui/non","hints":["for (auto& x : arr)."],"explain":"Oui."},
+{"q":"std::string représente une… ? (un mot)","accept":["chaîne","chaine","string"],"placeholder":"un mot","hints":["Texte."],"explain":"Une chaîne de caractères."}]
             </script>
             </section>
 
