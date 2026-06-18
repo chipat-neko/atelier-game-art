@@ -312,6 +312,256 @@
     if (trigger) trigger.addEventListener("click", function () { if (window.Search) window.Search.open(); });
   }
 
+  /* ---------- Dock d'outils (flottant, bas-droite) ---------- */
+  function ensureDock() {
+    var dock = document.getElementById("tools-dock");
+    if (!dock) {
+      dock = el("div", "tools-dock");
+      dock.id = "tools-dock";
+      document.body.appendChild(dock);
+    }
+    return dock;
+  }
+
+  /* ---------- Pomodoro (minuteur d'étude, persistant entre pages) ---------- */
+  function initPomodoro() {
+    var SKEY = "ag-pomo-state", CKEY = "ag-pomodoro";
+    var DEF = { mode: "focus", running: false, endTime: 0, remaining: 25 * 60000, focusMin: 25, breakMin: 5 };
+    function load() { try { return Object.assign({}, DEF, JSON.parse(localStorage.getItem(SKEY)) || {}); } catch (e) { return Object.assign({}, DEF); } }
+    function save(s) { try { localStorage.setItem(SKEY, JSON.stringify(s)); } catch (e) {} }
+    function logSession() {
+      try {
+        var c = JSON.parse(localStorage.getItem(CKEY)) || {};
+        var d = new Date(), k = d.getFullYear() + "-" + (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1) + "-" + (d.getDate() < 10 ? "0" : "") + d.getDate();
+        c[k] = (c[k] || 0) + 1;
+        localStorage.setItem(CKEY, JSON.stringify(c));
+      } catch (e) {}
+    }
+    function todayCount() {
+      try {
+        var c = JSON.parse(localStorage.getItem(CKEY)) || {};
+        var d = new Date(), k = d.getFullYear() + "-" + (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1) + "-" + (d.getDate() < 10 ? "0" : "") + d.getDate();
+        return c[k] || 0;
+      } catch (e) { return 0; }
+    }
+
+    var s = load();
+    var dock = ensureDock();
+    var wrap = el("div", "tool-item");
+    var btn = el("button", "tool-btn");
+    btn.id = "pomo-btn";
+    btn.setAttribute("aria-label", "Minuteur Pomodoro");
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><span class="tool-badge" id="pomo-badge" hidden></span>';
+    var panel = el("div", "tool-panel pomo-panel");
+    panel.hidden = true;
+    panel.innerHTML =
+      '<div class="tp-head"><b>Minuteur d’étude</b><button class="tp-close" aria-label="Fermer">&times;</button></div>' +
+      '<div class="pomo-mode"><button data-mode="focus" class="pomo-tab">Focus 25</button><button data-mode="break" class="pomo-tab">Pause 5</button></div>' +
+      '<div class="pomo-time" id="pomo-time">25:00</div>' +
+      '<div class="pomo-actions"><button class="btn btn-primary btn-sm" id="pomo-start">Démarrer</button><button class="btn btn-ghost btn-sm" id="pomo-reset">Réinitialiser</button></div>' +
+      '<p class="pomo-sub">Sessions de focus aujourd’hui : <b id="pomo-count">0</b></p>';
+    wrap.appendChild(panel);
+    wrap.appendChild(btn);
+    dock.appendChild(wrap);
+
+    var timeEl = panel.querySelector("#pomo-time");
+    var startBtn = panel.querySelector("#pomo-start");
+    var countEl = panel.querySelector("#pomo-count");
+    var badge = btn.querySelector("#pomo-badge");
+    var tabs = panel.querySelectorAll(".pomo-tab");
+    var tick = null;
+
+    function durMs() { return (s.mode === "focus" ? s.focusMin : s.breakMin) * 60000; }
+    function remainingMs() { return s.running ? Math.max(0, s.endTime - Date.now()) : s.remaining; }
+    function fmt(ms) {
+      var t = Math.ceil(ms / 1000), m = Math.floor(t / 60), sec = t % 60;
+      return (m < 10 ? "0" : "") + m + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+    function paint() {
+      var ms = remainingMs();
+      timeEl.textContent = fmt(ms);
+      startBtn.textContent = s.running ? "Pause" : "Démarrer";
+      countEl.textContent = todayCount();
+      tabs.forEach(function (t) { t.classList.toggle("is-active", t.dataset.mode === s.mode); });
+      panel.classList.toggle("is-break", s.mode === "break");
+      if (s.running) { badge.textContent = fmt(ms); badge.hidden = false; }
+      else badge.hidden = true;
+    }
+    function stopTick() { if (tick) { clearInterval(tick); tick = null; } }
+    function startTick() {
+      stopTick();
+      tick = setInterval(function () {
+        if (remainingMs() <= 0) {
+          stopTick();
+          s.running = false; s.remaining = durMs();
+          if (s.mode === "focus") { logSession(); s.mode = "break"; s.remaining = s.breakMin * 60000; }
+          else { s.mode = "focus"; s.remaining = s.focusMin * 60000; }
+          save(s); paint();
+          try { document.title = "⏰ Terminé — " + document.title.replace(/^⏰ Terminé — /, ""); } catch (e) {}
+        } else paint();
+      }, 1000);
+    }
+    function setMode(m) {
+      if (s.running) return;
+      s.mode = m; s.remaining = durMs(); save(s); paint();
+    }
+
+    startBtn.addEventListener("click", function () {
+      if (s.running) { s.remaining = remainingMs(); s.running = false; stopTick(); }
+      else { s.endTime = Date.now() + remainingMs(); s.running = true; startTick(); }
+      save(s); paint();
+    });
+    panel.querySelector("#pomo-reset").addEventListener("click", function () {
+      s.running = false; s.remaining = durMs(); stopTick(); save(s); paint();
+    });
+    tabs.forEach(function (t) { t.addEventListener("click", function () { setMode(t.dataset.mode); }); });
+    panel.querySelector(".tp-close").addEventListener("click", function () { panel.hidden = true; });
+    btn.addEventListener("click", function () {
+      // ferme les autres panneaux du dock
+      dock.querySelectorAll(".tool-panel").forEach(function (p) { if (p !== panel) p.hidden = true; });
+      panel.hidden = !panel.hidden;
+    });
+
+    // Reprend l'état au chargement
+    if (s.running && remainingMs() > 0) startTick();
+    else if (s.running) { s.running = false; s.remaining = durMs(); save(s); }
+    paint();
+  }
+
+  /* ---------- Notes & surlignages (pages de leçon) ---------- */
+  function initLessonTools() {
+    if (!CUR) return;
+    var prose = document.querySelector(".prose");
+
+    /* --- Notes --- */
+    var NKEY = "ag-notes";
+    function loadNotes() { try { return JSON.parse(localStorage.getItem(NKEY)) || {}; } catch (e) { return {}; } }
+    function saveNote(txt) {
+      var all = loadNotes();
+      if (txt && txt.trim()) all[CUR] = txt; else delete all[CUR];
+      try { localStorage.setItem(NKEY, JSON.stringify(all)); } catch (e) {}
+    }
+    var dock = ensureDock();
+    var item = el("div", "tool-item");
+    var nbtn = el("button", "tool-btn");
+    nbtn.setAttribute("aria-label", "Mes notes sur cette leçon");
+    nbtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg><span class="tool-badge" id="notes-dot" hidden>•</span>';
+    var npanel = el("div", "tool-panel notes-panel");
+    npanel.hidden = true;
+    npanel.innerHTML =
+      '<div class="tp-head"><b>Notes — cette leçon</b><button class="tp-close" aria-label="Fermer">&times;</button></div>' +
+      '<textarea class="notes-area" placeholder="Tes notes personnelles sur cette leçon… (enregistrées dans ce navigateur)"></textarea>' +
+      '<p class="notes-status" id="notes-status">Enregistrement automatique</p>';
+    item.appendChild(npanel);
+    item.appendChild(nbtn);
+    dock.appendChild(item);
+
+    var area = npanel.querySelector(".notes-area");
+    var status = npanel.querySelector("#notes-status");
+    var dot = nbtn.querySelector("#notes-dot");
+    area.value = loadNotes()[CUR] || "";
+    dot.hidden = !area.value;
+    var tmr = null;
+    area.addEventListener("input", function () {
+      status.textContent = "Enregistrement…";
+      clearTimeout(tmr);
+      tmr = setTimeout(function () {
+        saveNote(area.value);
+        dot.hidden = !area.value.trim();
+        status.textContent = "Enregistré ✓";
+      }, 400);
+    });
+    nbtn.addEventListener("click", function () {
+      dock.querySelectorAll(".tool-panel").forEach(function (p) { if (p !== npanel) p.hidden = true; });
+      npanel.hidden = !npanel.hidden;
+      if (!npanel.hidden) area.focus();
+    });
+    npanel.querySelector(".tp-close").addEventListener("click", function () { npanel.hidden = true; });
+
+    /* --- Surlignages --- */
+    if (!prose) return;
+    var HKEY = "ag-hl";
+    function loadHl() { try { return JSON.parse(localStorage.getItem(HKEY)) || {}; } catch (e) { return {}; } }
+    function saveHl(list) {
+      var all = loadHl();
+      if (list && list.length) all[CUR] = list; else delete all[CUR];
+      try { localStorage.setItem(HKEY, JSON.stringify(all)); } catch (e) {}
+    }
+    function currentList() { return (loadHl()[CUR] || []).slice(); }
+
+    // Enveloppe une range dans un <mark> (échoue proprement si multi-éléments).
+    function wrapRange(range) {
+      try { var m = document.createElement("mark"); m.className = "ag-hl"; range.surroundContents(m); return m; } catch (e) { return null; }
+    }
+    function bindRemove(m) {
+      m.title = "Cliquer pour retirer le surlignage";
+      m.addEventListener("click", function () {
+        var txt = m.textContent;
+        var parent = m.parentNode;
+        while (m.firstChild) parent.insertBefore(m.firstChild, m);
+        parent.removeChild(m);
+        parent.normalize();
+        var list = currentList(), i = list.indexOf(txt);
+        if (i !== -1) { list.splice(i, 1); saveHl(list); }
+      });
+    }
+    // Ré-applique un texte stocké : 1re occurrence dans un nœud texte de .prose.
+    function applyStored(text) {
+      var walk = document.createTreeWalker(prose, NodeFilter.SHOW_TEXT, null);
+      var node;
+      while ((node = walk.nextNode())) {
+        if (node.parentNode && node.parentNode.classList && node.parentNode.classList.contains("ag-hl")) continue;
+        var idx = node.nodeValue.indexOf(text);
+        if (idx !== -1) {
+          var r = document.createRange();
+          r.setStart(node, idx); r.setEnd(node, idx + text.length);
+          var m = wrapRange(r);
+          if (m) { bindRemove(m); return true; }
+        }
+      }
+      return false;
+    }
+    // Restaure les surlignages enregistrés.
+    var stored = currentList(), kept = [];
+    stored.forEach(function (t) { if (applyStored(t)) kept.push(t); });
+    if (kept.length !== stored.length) saveHl(kept);
+
+    // Bouton flottant « Surligner » sur sélection.
+    var hlBtn = el("button", "hl-float");
+    hlBtn.type = "button";
+    hlBtn.textContent = "Surligner";
+    hlBtn.hidden = true;
+    document.body.appendChild(hlBtn);
+    function hideHl() { hlBtn.hidden = true; }
+    prose.addEventListener("mouseup", function () {
+      setTimeout(function () {
+        var sel = window.getSelection();
+        if (!sel || sel.isCollapsed) { hideHl(); return; }
+        var txt = sel.toString();
+        if (!txt.trim() || txt.length > 300) { hideHl(); return; }
+        var anc = sel.anchorNode;
+        if (!anc || !prose.contains(anc)) { hideHl(); return; }
+        if (anc.parentNode && anc.parentNode.closest && anc.parentNode.closest(".ag-hl")) { hideHl(); return; }
+        var rect = sel.getRangeAt(0).getBoundingClientRect();
+        hlBtn.style.top = (window.scrollY + rect.top - 38) + "px";
+        hlBtn.style.left = (window.scrollX + rect.left + rect.width / 2) + "px";
+        hlBtn.hidden = false;
+      }, 0);
+    });
+    hlBtn.addEventListener("mousedown", function (e) { e.preventDefault(); });
+    hlBtn.addEventListener("click", function () {
+      var sel = window.getSelection();
+      if (!sel || sel.isCollapsed) { hideHl(); return; }
+      var txt = sel.toString();
+      var m = wrapRange(sel.getRangeAt(0));
+      if (m) { bindRemove(m); var list = currentList(); list.push(txt); saveHl(list); }
+      sel.removeAllRanges();
+      hideHl();
+    });
+    document.addEventListener("mousedown", function (e) { if (e.target !== hlBtn) hideHl(); });
+    window.addEventListener("scroll", hideHl, { passive: true });
+  }
+
   /* ---------- Init ---------- */
   function init() {
     initTheme();
@@ -323,6 +573,8 @@
     initDoneCheckbox();
     initMobileMenu();
     initSearchShortcut();
+    initPomodoro();
+    initLessonTools();
     // Engagement : enregistre la visite de la leçon (activité du jour + « Reprendre »).
     if (CUR && window.Progress && window.Progress.touch) window.Progress.touch(CUR);
     window.addEventListener("storage", function (e) { if (e.key === "ag-progress") refreshSidebarProgress(); });
