@@ -206,6 +206,10 @@ frac(x);              // partie fractionnaire (x - floor(x)) : motifs répétés
                   <p>float2 g = frac(uv * densite); float ligne = smoothstep(0.0, 0.03, g.x) * smoothstep(0.0, 0.03, g.y); — affiche des lignes fines régulières. frac crée la répétition, smoothstep adoucit les lignes.</p>
                 </details>
               </div>
+                        <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
+            <script type="application/json" data-exos>
+[{"q":"Quelle fonction renvoie un mélange linéaire entre a et b ? (nom GLSL ou HLSL)","accept":["mix","lerp","mix/lerp","lerp/mix"],"placeholder":"un nom","hints":["mix en GLSL, lerp en HLSL."],"explain":"mix(a,b,t) en GLSL = lerp(a,b,t) en HLSL : interpolation linéaire."}]
+            </script>
             </section>
 
             <div class="callout retenir">

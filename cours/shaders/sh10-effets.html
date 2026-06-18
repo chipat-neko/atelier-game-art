@@ -200,6 +200,10 @@ float3 couleur = albedo + _CouleurRim * rim;</code></pre>
                   <p>lignes = smoothstep(0.4, 0.5, frac(posY * densite - temps)) ; fresnel pour les bords ; alpha = base + lignes*0.2 + fresnel ; matériau transparent. Chaque morceau est simple&nbsp;: c'est leur combinaison qui crée l'hologramme.</p>
                 </details>
               </div>
+                        <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
+            <script type="application/json" data-exos>
+[{"q":"Quel canal d'une couleur encode la transparence ?","accept":["alpha","le canal alpha","canal alpha","a"],"placeholder":"un mot","hints":["Le 4e canal après R, V, B."],"explain":"Le canal alpha (A) encode la transparence (0 = transparent, 1 = opaque)."}]
+            </script>
             </section>
 
             <div class="callout retenir">

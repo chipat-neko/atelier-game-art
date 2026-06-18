@@ -197,6 +197,10 @@ float3 couleur = albedo * lerp(_Ombre, 1.0, bandes);</code></pre>
                   <p>Combine cel shading (bandes), une couleur d'ombre décalée en teinte, un spéculaire seuillé (step) pour une tache, et un outline. Reste sobre&nbsp;: 2-3 bandes suffisent pour un rendu propre et lisible.</p>
                 </details>
               </div>
+                        <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
+            <script type="application/json" data-exos>
+[{"q":"Quelle fonction crée une bascule nette (seuil) pour un rendu toon ? (nom GLSL)","accept":["step"],"placeholder":"un nom","hints":["4 lettres : renvoie 0 ou 1 selon un seuil."],"explain":"step(seuil, x) renvoie 0 ou 1 : utile pour les bandes nettes du cel shading."}]
+            </script>
             </section>
 
             <div class="callout retenir">

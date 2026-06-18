@@ -205,6 +205,10 @@ float3 couleur = albedo * diffus + couleurLumiere * spec;</code></pre>
                   <p>H = normalize(L+V); spec = pow(max(0, dot(N,H)), brillance). Brillance haute (128) → petit point net (poli)&nbsp;; basse (8) → reflet large (mat). C'est l'intuition derrière la roughness du PBR (SH9).</p>
                 </details>
               </div>
+                        <div class="exo-int-lead">Exercices express &mdash; auto-corrig&eacute;s<small>Tape ta r&eacute;ponse et v&eacute;rifie-la imm&eacute;diatement.</small></div>
+            <script type="application/json" data-exos>
+[{"q":"Quelle opération entre la normale N et la direction de lumière L donne l'intensité diffuse ? (le nom)","accept":["produit scalaire","dot","produit scalaire (dot)","scalaire"],"placeholder":"une opération","hints":["N · L"],"explain":"Le produit scalaire dot(N, L) donne l'intensité diffuse (loi de Lambert)."}]
+            </script>
             </section>
 
             <div class="callout retenir">
