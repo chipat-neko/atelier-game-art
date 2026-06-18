@@ -277,6 +277,21 @@ func _process(delta):
             </script>
             </section>
 
+            <section class="lesson-check bilan-quiz">
+              <h2>QCM-bilan du parcours</h2>
+              <p class="lesson-check-intro">Un r&eacute;capitulatif de toute la piste &mdash; fais le point sur l'essentiel&nbsp;!</p>
+              <script type="application/json" data-quiz-bilan>
+[
+{"q":"Fonction qui affiche dans la console ?","a":["print","echo","log","Debug.Log"],"correct":0,"explain":"print()."},
+{"q":"Mot-clé pour déclarer une fonction ?","a":["func","def","function","fn"],"correct":0,"explain":"func."},
+{"q":"Mot-clé d'héritage ?","a":["extends","inherits","class_name","super"],"correct":0,"explain":"extends."},
+{"q":"Callback appelé à chaque frame ?","a":["_process","_ready","_input","_init"],"correct":0,"explain":"_process(delta)."},
+{"q":"Mot-clé « sinon si » ?","a":["elif","else if","elseif","elsif"],"correct":0,"explain":"elif."},
+{"q":"Annotation pour exposer une variable à l'inspecteur ?","a":["@export","@onready","@tool","@icon"],"correct":0,"explain":"@export."}
+]
+              </script>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

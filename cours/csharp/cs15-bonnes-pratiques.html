@@ -279,6 +279,21 @@ GameObject ObtenirBalle()
             </script>
             </section>
 
+            <section class="lesson-check bilan-quiz">
+              <h2>QCM-bilan du parcours</h2>
+              <p class="lesson-check-intro">Un r&eacute;capitulatif de toute la piste &mdash; fais le point sur l'essentiel&nbsp;!</p>
+              <script type="application/json" data-quiz-bilan>
+[
+{"q":"Méthode MonoBehaviour appelée à chaque frame ?","a":["Update","Start","Awake","OnDestroy"],"correct":0,"explain":"Update()."},
+{"q":"Mot-clé pour instancier un objet ?","a":["new","var","class","this"],"correct":0,"explain":"new."},
+{"q":"Symbole pour hériter/implémenter en C# ?","a":[": (deux-points)","->","=>","::"],"correct":0,"explain":"Les deux-points :."},
+{"q":"Collection liste dynamique générique ?","a":["List","Array","int","string"],"correct":0,"explain":"List."},
+{"q":"Attente dans une coroutine C# Unity ?","a":["yield return","await","return","wait"],"correct":0,"explain":"yield return."},
+{"q":"Que vaut 7 / 2 (deux int) ?","a":["3","3.5","4","2"],"correct":0,"explain":"3 (division entière)."}
+]
+              </script>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>

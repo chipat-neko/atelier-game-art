@@ -36,8 +36,7 @@
     return arr.slice(k).concat(arr.slice(0, k));
   }
 
-  function initQuiz() {
-    var holder = document.querySelector("[data-quiz]");
+  function mountQuiz(holder, recordKey) {
     if (!holder) return;
 
     var data;
@@ -119,8 +118,8 @@
           (good === total ? " — parfait ! 🎉" : "");
         score.classList.add("is-final");
         // Persiste le meilleur score de ce QCM (tableau de bord).
-        if (window.Progress && window.Progress.recordQuiz && window.CURRENT_LESSON) {
-          window.Progress.recordQuiz(window.CURRENT_LESSON, good, total);
+        if (window.Progress && window.Progress.recordQuiz && recordKey) {
+          window.Progress.recordQuiz(recordKey, good, total);
         }
       }
     }
@@ -130,6 +129,14 @@
     if (holder.parentNode) {
       holder.parentNode.insertBefore(mount, holder.nextSibling);
     }
+  }
+
+  function initQuiz() {
+    var cur = window.CURRENT_LESSON || null;
+    // QCM « Vérifie ta compréhension » de la leçon.
+    mountQuiz(document.querySelector("[data-quiz]"), cur);
+    // QCM-bilan de fin de piste (clé distincte pour ne pas écraser le score de leçon).
+    mountQuiz(document.querySelector("[data-quiz-bilan]"), cur ? cur + "-bilan" : null);
   }
 
   if (document.readyState === "loading") {

@@ -285,6 +285,21 @@ UE_LOG(LogJeu, Warning, TEXT("PV du héros : %d"), PV);</code></pre>
             </script>
             </section>
 
+            <section class="lesson-check bilan-quiz">
+              <h2>QCM-bilan du parcours</h2>
+              <p class="lesson-check-intro">Un r&eacute;capitulatif de toute la piste &mdash; fais le point sur l'essentiel&nbsp;!</p>
+              <script type="application/json" data-quiz-bilan>
+[
+{"q":"Macro qui écrit dans le log d'Unreal ?","a":["UE_LOG","printf","cout","Debug.Log"],"correct":0,"explain":"UE_LOG."},
+{"q":"Classe de base des objets plaçables ?","a":["AActor","UObject","FVector","FString"],"correct":0,"explain":"AActor."},
+{"q":"Macro exposant une classe à la reflection ?","a":["UCLASS","UPROPERTY","UFUNCTION","USTRUCT"],"correct":0,"explain":"UCLASS()."},
+{"q":"Opérateur de déréférencement d'un pointeur ?","a":["*","&","->","::"],"correct":0,"explain":"* (l'astérisque)."},
+{"q":"Conteneur tableau dynamique d'Unreal ?","a":["TArray","TMap","TSet","FString"],"correct":0,"explain":"TArray."},
+{"q":"Que vaut 7 % 3 ?","a":["1","2","0","3"],"correct":0,"explain":"1 (reste)."}
+]
+              </script>
+            </section>
+
             <div class="callout retenir">
               <div class="callout-title"><span class="ico">📌</span>À retenir</div>
               <ul>
