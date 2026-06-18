@@ -138,3 +138,110 @@
     initQuiz();
   }
 })();
+
+
+/* =========================================================================
+   Exercices auto-corrigés — lit les blocs <script type="application/json"
+   data-exos> et rend, pour chacun, une question à réponse saisie, corrigée
+   localement (indices progressifs, explication). Adapté à tous les langages
+   (on fait « prédire la sortie / donner la valeur »). 100% local.
+   Format : [ { "q":"…", "accept":["…","…"], "placeholder":"…",
+                "hints":["…"], "explain":"…" } ]
+   ========================================================================= */
+(function () {
+  "use strict";
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return c === "&" ? "&amp;" : c === "<" ? "&lt;" : c === ">" ? "&gt;" : "&quot;";
+    });
+  }
+  // Normalise pour comparer : minuscules, sans accents, espaces compactés.
+  function norm(s) {
+    return String(s).trim().toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function renderExos(holder) {
+    var data;
+    try { data = JSON.parse(holder.textContent); } catch (e) { return; }
+    if (!data || !data.length) return;
+
+    var mount = document.createElement("div");
+    mount.className = "exos-int";
+
+    data.forEach(function (item, i) {
+      var accept = (item.accept || []).map(norm);
+      var hints = item.hints || [];
+      var card = document.createElement("div");
+      card.className = "exo-int";
+
+      var html =
+        '<div class="exo-int-head"><span class="exo-int-num">Exercice express ' + (i + 1) + '</span></div>' +
+        '<p class="exo-int-q">' + esc(item.q) + '</p>' +
+        '<div class="exo-int-row">' +
+          '<input type="text" class="exo-int-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + esc(item.placeholder || "Ta réponse…") + '">' +
+          '<button type="button" class="btn btn-primary btn-sm exo-int-check">Vérifier</button>' +
+        '</div>' +
+        '<div class="exo-int-feedback" hidden></div>';
+      if (hints.length) {
+        html += '<button type="button" class="exo-int-hint-btn">Besoin d’un indice&nbsp;?</button>' +
+                '<ul class="exo-int-hints"></ul>';
+      }
+      card.innerHTML = html;
+
+      var input = card.querySelector(".exo-int-input");
+      var checkBtn = card.querySelector(".exo-int-check");
+      var fb = card.querySelector(".exo-int-feedback");
+      var solved = false;
+
+      function check() {
+        if (solved) return;
+        var val = norm(input.value);
+        if (!val) return;
+        if (accept.indexOf(val) !== -1) {
+          solved = true;
+          card.classList.add("is-solved");
+          input.disabled = true; checkBtn.disabled = true;
+          fb.className = "exo-int-feedback is-ok";
+          fb.innerHTML = "✓ Correct&nbsp;!" + (item.explain ? ' <span class="exo-int-explain">' + esc(item.explain) + "</span>" : "");
+          fb.hidden = false;
+        } else {
+          card.classList.remove("is-ok");
+          fb.className = "exo-int-feedback is-err";
+          fb.textContent = "Pas encore. Réessaie" + (hints.length ? " — ou affiche un indice." : ".");
+          fb.hidden = false;
+        }
+      }
+      checkBtn.addEventListener("click", check);
+      input.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); check(); } });
+
+      var hintBtn = card.querySelector(".exo-int-hint-btn");
+      if (hintBtn) {
+        var shown = 0, list = card.querySelector(".exo-int-hints");
+        hintBtn.addEventListener("click", function () {
+          if (shown >= hints.length) return;
+          var li = document.createElement("li");
+          li.textContent = hints[shown];
+          list.appendChild(li);
+          shown++;
+          if (shown >= hints.length) { hintBtn.disabled = true; hintBtn.textContent = "Plus d’indice"; }
+          else hintBtn.textContent = "Autre indice (" + shown + "/" + hints.length + ")";
+        });
+      }
+
+      mount.appendChild(card);
+    });
+
+    if (holder.parentNode) holder.parentNode.insertBefore(mount, holder.nextSibling);
+  }
+
+  function initExos() {
+    var holders = document.querySelectorAll('script[type="application/json"][data-exos]');
+    for (var i = 0; i < holders.length; i++) renderExos(holders[i]);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initExos);
+  else initExos();
+})();
+
