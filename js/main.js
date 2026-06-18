@@ -57,6 +57,26 @@
     });
   }
 
+  /* ---------- Liens rapides en tête de sidebar ---------- */
+  function buildSidebarLinks() {
+    var nav = document.getElementById("sidebar-nav");
+    if (!nav || nav.previousElementSibling && nav.previousElementSibling.classList.contains("sidebar-links")) return;
+    var links = [
+      { href: "index.html", label: "Accueil", svg: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/>' },
+      { href: "progression.html", label: "Ma progression", svg: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>' },
+      { href: "donnees-perso.html", label: "Mes données", svg: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>' },
+      { href: "glossaire.html", label: "Glossaire", svg: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' }
+    ];
+    var box = el("div", "sidebar-links");
+    links.forEach(function (lk) {
+      var a = el("a", "sidebar-link");
+      a.href = ROOT + lk.href;
+      a.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + lk.svg + '</svg><span>' + lk.label + '</span>';
+      box.appendChild(a);
+    });
+    nav.parentNode.insertBefore(box, nav);
+  }
+
   /* ---------- Sidebar ---------- */
   function buildSidebar() {
     var host = document.getElementById("sidebar-nav");
@@ -232,6 +252,7 @@
   /* ---------- Init ---------- */
   function init() {
     initTheme();
+    buildSidebarLinks();
     buildSidebar();
     buildLessonNav();
     buildTOC();
