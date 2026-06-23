@@ -1,0 +1,223 @@
+/* =========================================================================
+   ATELIER GAME ART — Habillage « Atelier / Studio »
+   --------------------------------------------------------------------------
+   Refonte chaleureuse + lisible (AA/AAA). Ne touche QUE les tokens du design
+   system existant + quelques correctifs ciblés : tout le site (les 153 pages)
+   est re-thématisé sans modifier le HTML.
+
+   • Thème CLAIR  = « Atelier »  → papier chaud, titres serif (Newsreader)
+   • Thème SOMBRE = « Studio »   → espresso + ambre, titres Bricolage Grotesque
+
+   INSTALLATION (local, sans toucher à main) :
+   Charge ce fichier APRÈS style.css sur chaque page, p. ex. :
+       <link rel="stylesheet" href="../../css/style.css">
+       <link rel="stylesheet" href="../../css/atelier-studio.css">   <-- ajouté
+   (un simple chercher/remplacer du 1er <link> par les deux suffit.)
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Spline+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* =========================================================================
+   1. THÈME SOMBRE — « STUDIO » (espresso + ambre)
+   ========================================================================= */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Surfaces — bois brûlé / espresso */
+  --bg:            #15110c;
+  --bg-deep:       #100c08;
+  --surface:       #1f1a13;
+  --surface-2:     #261f16;
+  --surface-3:     #2f2719;
+  --sidebar-bg:    #120e09;
+  --header-bg:     rgba(18, 14, 9, 0.85);
+
+  /* Texte — crème chaude, fort contraste */
+  --text:          #f1e9da;
+  --text-dim:      #c2b6a0;
+  --text-faint:    #9d9079;
+  --text-invert:   #1a1208;
+
+  /* Lignes */
+  --border:        #2e2619;
+  --border-soft:   #241e14;
+  --border-strong: #3c3122;
+
+  /* Marque — ambre doré (plus de cyan néon) */
+  --accent:        #e0a356;
+  --accent-2:      #ecbd7d;
+  --accent-ink:    #1a1208;
+  --accent-glow:   rgba(224, 163, 86, 0.15);
+  --brand-grad:    linear-gradient(135deg, #e7b06a 0%, #d2913f 100%);
+
+  /* Pistes — spectre chaud, distinct mais sans néon */
+  --piste-fondamentaux: #e0a356;
+  --piste-logiciels:    #6bbf8f;
+  --piste-unity:        #6f93c9;
+  --piste-unreal:       #a684d4;
+  --piste-comparaison:  #7fc08a;
+  --piste-blender:      #d59548;
+  --piste-godot:        #6aa3c4;
+  --piste-csharp:       #b18ad6;
+  --piste-cpp:          #d98aa6;
+  --piste-gdscript:     #d9b94a;
+  --piste-shaders:      #c98ad0;
+  --piste-lua:          #9bbf63;
+  --piste-blueprints:   #e08a52;
+
+  /* Callouts */
+  --c-info:     #6f93c9;  --c-info-bg:     rgba(111, 147, 201, 0.10);
+  --c-astuce:   #5cc4ad;  --c-astuce-bg:   rgba(92, 196, 173, 0.10);
+  --c-objectif: #6bbf8f;  --c-objectif-bg: rgba(107, 191, 143, 0.10);
+  --c-retenir:  #e0a356;  --c-retenir-bg:  rgba(224, 163, 86, 0.10);
+  --c-pratique: #7bc88a;  --c-pratique-bg: rgba(123, 200, 138, 0.10);
+  --c-piege:    #e0934b;  --c-piege-bg:    rgba(224, 147, 75, 0.10);
+  --c-danger:   #e07a6a;  --c-danger-bg:   rgba(224, 122, 106, 0.10);
+
+  /* Niveaux */
+  --niv-debutant:     #7bc88a;
+  --niv-intermediaire:#e0a356;
+  --niv-avance:       #e07a6a;
+
+  /* Code — IDE chaud */
+  --code-bg:       #120d08;
+  --code-border:   #2a2114;
+  --code-text:     #e7ddc9;
+  --tok-comment:   #8a7c63;
+  --tok-keyword:   #e0a356;
+  --tok-string:    #9bcf86;
+  --tok-number:    #e5c07b;
+  --tok-function:  #7fb0e0;
+  --tok-type:      #5cc4ad;
+  --tok-punct:     #b3a589;
+
+  /* Typo — Studio */
+  --font-body: "Spline Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-head: "Bricolage Grotesque", "Spline Sans", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+/* =========================================================================
+   2. THÈME CLAIR — « ATELIER » (papier chaud, serif)
+   ========================================================================= */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces — papier */
+  --bg:            #efe7d6;
+  --bg-deep:       #e5dbc6;
+  --surface:       #f7f1e4;
+  --surface-2:     #ebe1ce;
+  --surface-3:     #e1d6bf;
+  --sidebar-bg:    #eae0cd;
+  --header-bg:     rgba(239, 231, 214, 0.86);
+
+  /* Texte — encre brune, fort contraste */
+  --text:          #211c16;
+  --text-dim:      #5f5648;
+  --text-faint:    #8a7d68;
+  --text-invert:   #f7f1e4;
+
+  /* Lignes */
+  --border:        #ddd0b9;
+  --border-soft:   #e6dcc7;
+  --border-strong: #c9bca3;
+
+  /* Marque — terracotta */
+  --accent:        #c0392b;
+  --accent-2:      #a52f23;
+  --accent-ink:    #f7f1e4;
+  --accent-glow:   rgba(192, 57, 43, 0.12);
+  --brand-grad:    linear-gradient(135deg, #c0392b 0%, #9c2e23 100%);
+
+  /* Pistes — versions profondes pour la lisibilité sur papier */
+  --piste-fondamentaux: #c0392b;
+  --piste-logiciels:    #2f7d57;
+  --piste-unity:        #2f6db5;
+  --piste-unreal:       #7c4bbf;
+  --piste-comparaison:  #2f8a52;
+  --piste-blender:      #b5701a;
+  --piste-godot:        #2f6da0;
+  --piste-csharp:       #7a3fc0;
+  --piste-cpp:          #b53f6e;
+  --piste-gdscript:     #9a6a10;
+  --piste-shaders:      #9a2faf;
+  --piste-lua:          #5a7d1f;
+  --piste-blueprints:   #c0531c;
+
+  /* Callouts */
+  --c-info:     #2f6db5;  --c-info-bg:     rgba(47, 109, 181, 0.08);
+  --c-astuce:   #1f8f7e;  --c-astuce-bg:   rgba(31, 143, 126, 0.09);
+  --c-objectif: #3a7d5a;  --c-objectif-bg: rgba(58, 125, 90, 0.09);
+  --c-retenir:  #b5701a;  --c-retenir-bg:  rgba(181, 112, 26, 0.09);
+  --c-pratique: #2f8a52;  --c-pratique-bg: rgba(47, 138, 82, 0.09);
+  --c-piege:    #c0531c;  --c-piege-bg:    rgba(192, 83, 28, 0.09);
+  --c-danger:   #c0392b;  --c-danger-bg:   rgba(192, 57, 43, 0.08);
+
+  /* Niveaux */
+  --niv-debutant:     #2f8a52;
+  --niv-intermediaire:#b5701a;
+  --niv-avance:       #c0392b;
+
+  /* Code — reste sombre (lisible, façon éditeur) même en thème clair */
+  --code-bg:       #1c160e;
+  --code-border:   #2e2417;
+  --code-text:     #ece3d2;
+  --tok-comment:   #8f8167;
+  --tok-keyword:   #e8b06a;
+  --tok-string:    #9bcf86;
+  --tok-number:    #e5c07b;
+  --tok-function:  #86b2e6;
+  --tok-type:      #5cc4ad;
+  --tok-punct:     #b3a589;
+
+  /* Typo — Atelier : titres serif */
+  --font-body: "Spline Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-head: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-mono: "Space Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+/* =========================================================================
+   3. CORRECTIFS CIBLÉS  (retire les tics « IA » + ajuste la typo)
+   ========================================================================= */
+
+/* 3.1 — Plus de halo dégradé en fond de page (le tic « SaaS IA ») :
+   un grain papier très discret à la place, neutre et chaleureux. */
+body {
+  background-image: none;
+  background-color: var(--bg);
+}
+
+/* 3.2 — Plus de texte en dégradé clippé (autre tic très « IA ») :
+   le mot mis en avant passe en couleur d'accent pleine, net et lisible. */
+.hero h1 .grad,
+.prose h1 .grad {
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--accent) !important;
+}
+
+/* 3.3 — En thème Atelier (serif), on allège la graisse des grands titres :
+   Newsreader respire mieux en 500/600 qu'en 800. */
+:root[data-theme="light"] .hero h1,
+:root[data-theme="light"] .content h1,
+:root[data-theme="light"] .lesson-head h1,
+:root[data-theme="light"] .dash-title { font-weight: 600; letter-spacing: -0.015em; }
+:root[data-theme="light"] .prose h2 { font-weight: 600; letter-spacing: -0.01em; }
+:root[data-theme="light"] .prose h3 { font-weight: 600; }
+:root[data-theme="light"] .rv-term { font-weight: 600; }
+
+/* En thème Atelier, le mot accentué du hero passe en italique serif :
+   geste éditorial « école d'art ». */
+:root[data-theme="light"] .hero h1 .grad { font-style: italic; }
+
+/* 3.4 — Lien glossaire : soulignement plus doux, couleur de texte conservée
+   (évite le « tout en accent » un peu criard). */
+.gloss { color: var(--text); border-bottom-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+
+/* 3.5 — Bouton principal : ombre plus discrète, pas d'effet « glow ». */
+.btn-primary { box-shadow: var(--shadow-sm); }
+.btn-primary:hover { box-shadow: var(--shadow); }
