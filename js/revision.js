@@ -132,7 +132,14 @@
       '<p class="rv-progress-txt">Carte ' + (pos + 1) + ' / ' + queue.length + '</p>';
 
     var cardEl = $("rv-card");
+    // Opérable au clavier : focusable + Entrée/Espace pour révéler.
+    cardEl.tabIndex = 0;
+    cardEl.setAttribute("role", "button");
+    cardEl.setAttribute("aria-label", flipped ? "Définition affichée" : "Cliquer ou Entrée pour révéler la définition");
     cardEl.addEventListener("click", function () { if (!flipped) { flipped = true; render(); } });
+    cardEl.addEventListener("keydown", function (e) {
+      if (!flipped && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); flipped = true; render(); }
+    });
     if (flipped) {
       $("rv-yes").addEventListener("click", function (e) { e.stopPropagation(); answer(true); });
       $("rv-no").addEventListener("click", function (e) { e.stopPropagation(); answer(false); });

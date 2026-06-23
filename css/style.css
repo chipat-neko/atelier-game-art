@@ -206,7 +206,14 @@
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+  /* Supprime les déplacements au survol/clic (pas seulement leur animation),
+     sans toucher aux transforms de mise en page (sidebar mobile, icônes…). */
+  .accent-sw:hover, .lesson-nav a:hover, .btn-primary:hover, .resume-banner:hover,
+  .tool-btn:hover, .badge-chip.is-earned:hover, .piste-card:hover, .rv-card:active { transform: none !important; }
+}
 
 body {
   font-family: var(--font-body);
@@ -674,6 +681,7 @@ figure.schema figcaption b { color: var(--text); }
 .rv-stage { max-width: 600px; margin: 0 auto; }
 .rv-card { position: relative; min-height: 230px; border: 1px solid var(--border-strong); border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); cursor: pointer; padding: 30px; display: grid; transition: border-color .2s, transform .12s; }
 .rv-card:hover { border-color: var(--accent); }
+.rv-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .rv-card:active { transform: scale(.997); }
 .rv-face { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 12px; }
 .rv-front { }
