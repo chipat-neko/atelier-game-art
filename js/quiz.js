@@ -79,25 +79,25 @@
       }
       q.innerHTML = html;
 
-      var locked = false;
+      // Seconde chance : le score retient la PREMIÈRE tentative, mais on laisse
+      // l'apprenant continuer à cliquer jusqu'à trouver la bonne réponse.
+      var firstDone = false, solved = false;
       q.querySelectorAll(".quiz__opt").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          if (locked) return;
-          locked = true;
+          if (solved) return;
           var ok = btn.getAttribute("data-correct") === "1";
-          answered++;
+          if (!firstDone) { answered++; if (ok) good++; firstDone = true; }
           if (ok) {
-            good++;
+            solved = true;
             btn.classList.add("is-correct");
+            q.querySelectorAll(".quiz__opt").forEach(function (b) { b.disabled = true; });
+            var ex = q.querySelector(".quiz__explain");
+            if (ex) ex.hidden = false;
           } else {
+            // mauvaise réponse : on la grise, on garde les autres cliquables.
             btn.classList.add("is-wrong");
-            q.querySelectorAll('.quiz__opt[data-correct="1"]').forEach(function (g) {
-              g.classList.add("is-correct");
-            });
+            btn.disabled = true;
           }
-          q.querySelectorAll(".quiz__opt").forEach(function (b) { b.disabled = true; });
-          var ex = q.querySelector(".quiz__explain");
-          if (ex) ex.hidden = false;
           updateScore();
         });
       });
@@ -168,6 +168,27 @@
       .normalize("NFD").replace(/[̀-ͯ]/g, "")
       .replace(/\s+/g, " ");
   }
+  // Nombres en lettres → chiffres (0–16) pour accepter « trois » comme « 3 ».
+  var NUMW = { zero:"0", un:"1", une:"1", deux:"2", trois:"3", quatre:"4",
+    cinq:"5", six:"6", sept:"7", huit:"8", neuf:"9", dix:"10", onze:"11",
+    douze:"12", treize:"13", quatorze:"14", quinze:"15", seize:"16" };
+  function w2d(s) {
+    return s.replace(/\b(zero|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize)\b/g,
+      function (m) { return NUMW[m] || m; });
+  }
+  // Réponse correcte ? Tolère « trois »/« 3 » et un nombre noyé dans une phrase
+  // (« i = 5 », « 3 éléments »), sans rien lâcher sur les réponses symboliques.
+  function matches(ans, list) {
+    var na = w2d(ans);
+    for (var i = 0; i < list.length; i++) { if (na === w2d(list[i])) return true; }
+    var nums = na.match(/\d+/g);
+    if (nums) {
+      for (var j = 0; j < list.length; j++) {
+        if (/^\d+$/.test(list[j]) && nums.indexOf(list[j]) !== -1) return true;
+      }
+    }
+    return false;
+  }
 
   function renderExos(holder) {
     var data;
@@ -206,7 +227,7 @@
         if (solved) return;
         var val = norm(input.value);
         if (!val) return;
-        if (accept.indexOf(val) !== -1) {
+        if (matches(val, accept)) {
           solved = true;
           card.classList.add("is-solved");
           input.disabled = true; checkBtn.disabled = true;
