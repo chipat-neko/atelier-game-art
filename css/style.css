@@ -197,6 +197,7 @@
 .accent-pop { position: absolute; top: calc(100% + 8px); right: 0; z-index: 60; display: grid; grid-template-columns: repeat(3, auto); gap: 8px; padding: 12px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-lg); }
 .accent-pop[hidden] { display: none; }
 .accent-sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; position: relative; transition: transform .12s; }
+.accent-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .accent-sw:hover { transform: scale(1.12); }
 .accent-sw.is-active { border-color: var(--text); }
 .accent-sw.is-active::after { content: ""; position: absolute; inset: 0; margin: auto; width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.25); }
@@ -504,9 +505,11 @@ img, svg { max-width: 100%; height: auto; }
 /* ---------- 10. BLOCS DE CODE ---------- */
 .codeblock { position: relative; margin: 1.6em 0; border-radius: var(--radius-sm); border: 1px solid var(--code-border); background: var(--code-bg); overflow: hidden; }
 .codeblock .cb-head { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; background: rgba(255,255,255,.03); border-bottom: 1px solid var(--code-border); }
-.codeblock .cb-lang { font-size: .7rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: .1em; }
-.codeblock .cb-copy { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--code-border); color: var(--text-dim); font-size: .72rem; padding: 3px 9px; border-radius: 6px; cursor: pointer; font-family: var(--font-body); }
-.codeblock .cb-copy:hover { color: var(--accent); border-color: var(--border-strong); }
+/* Le fond de la barre de code est TOUJOURS sombre (même en thème clair) :
+   on fige des couleurs claires pour garantir la lisibilité de l'en-tête. */
+.codeblock .cb-lang { font-size: .7rem; color: rgba(236,227,210,.55); text-transform: uppercase; letter-spacing: .1em; }
+.codeblock .cb-copy { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid var(--code-border); color: rgba(236,227,210,.78); font-size: .72rem; padding: 3px 9px; border-radius: 6px; cursor: pointer; font-family: var(--font-body); }
+.codeblock .cb-copy:hover { color: #fff; border-color: rgba(236,227,210,.5); }
 .codeblock .cb-copy.copied { color: var(--c-pratique); border-color: var(--c-pratique); }
 .codeblock .cb-copy svg { width: 13px; height: 13px; }
 .codeblock pre { margin: 0; padding: 14px 16px; overflow-x: auto; font-family: var(--font-mono); font-size: .85rem; line-height: 1.62; color: var(--code-text); }
@@ -854,6 +857,15 @@ mark.ag-hl:hover { background: color-mix(in srgb, #ef4444 35%, transparent); }
   .lesson-nav { grid-template-columns: 1fr; }
   .brand .brand-sub { display: none; }
   .hero { padding-top: 36px; }
+  /* Cibles tactiles plus confortables (WCAG 2.5.5) */
+  .nav-lessons a { padding: 7px 9px; }
+  .accent-sw { width: 38px; height: 38px; }
+  .alpha-nav a { width: 38px; height: 38px; }
+  .sidebar-links .sidebar-link { padding: 9px; }
+  /* Dock flottant : ne pas chevaucher le contenu ni déborder à droite */
+  .tools-dock { right: 12px; bottom: 12px; gap: 10px; }
+  .tool-btn { width: 42px; height: 42px; }
+  .tool-panel { width: min(250px, calc(100vw - 28px)); right: 0; }
 }
 
 /* ---------- 20. IMPRESSION ---------- */

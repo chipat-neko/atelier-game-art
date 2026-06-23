@@ -115,7 +115,7 @@
       if (pop.hidden) openPop(); else closePop();
     });
     document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) closePop(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closePop(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !pop.hidden) { closePop(); btn.focus(); } });
 
     wrap.appendChild(btn);
     wrap.appendChild(pop);
