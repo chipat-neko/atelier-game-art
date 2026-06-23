@@ -67,8 +67,10 @@
     { id: "indigo",    label: "Indigo",    color: "#818cf8" }
   ];
   function applyAccent(id) {
-    if (id && id !== "cyan") document.documentElement.setAttribute("data-accent", id);
-    else { document.documentElement.removeAttribute("data-accent"); id = "cyan"; }
+    if (!id) id = "cyan";
+    // Pose toujours data-accent (y compris « cyan ») pour que les palettes
+    // s'appliquent dans tous les thèmes, y compris l'habillage Atelier/Studio.
+    document.documentElement.setAttribute("data-accent", id);
     try { localStorage.setItem("ag-accent", id); } catch (e) {}
     var pop = document.getElementById("accent-pop");
     if (pop) pop.querySelectorAll(".accent-sw").forEach(function (sw) {

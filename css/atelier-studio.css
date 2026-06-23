@@ -493,3 +493,29 @@ body {
 /* 3.5 — Bouton principal : ombre plus discrète, pas d'effet « glow ». */
 .btn-primary { box-shadow: var(--shadow-sm); }
 .btn-primary:hover { box-shadow: var(--shadow); }
+
+/* =========================================================================
+   4. PALETTES D'ACCENT — adaptées à l'habillage « Atelier / Studio »
+   --------------------------------------------------------------------------
+   Le sélecteur de couleur (pastille du header) pose data-accent sur <html>.
+   Ces règles, plus spécifiques que :root[data-theme="…"] et placées APRÈS,
+   reprennent donc la main : la palette fonctionne en clair ET en sombre.
+   « Cyan » (pastille par défaut) retire data-accent → accent signature du
+   thème (ambre en Studio, terracotta en Atelier).
+   ========================================================================= */
+
+/* ---- Thème SOMBRE « Studio » (sur fond espresso) ---- */
+:root[data-theme="dark"][data-accent="emeraude"]  { --accent:#34d399; --accent-2:#6ee7b7; --accent-ink:#04140d; --accent-glow:rgba(52,211,153,.16); --brand-grad:linear-gradient(135deg,#34d399 0%,#10b981 100%); }
+:root[data-theme="dark"][data-accent="ambre"]      { --accent:#f2b24a; --accent-2:#f8cd7e; --accent-ink:#1a1204; --accent-glow:rgba(242,178,74,.16); --brand-grad:linear-gradient(135deg,#f2b24a 0%,#dd9433 100%); }
+:root[data-theme="dark"][data-accent="violet"]     { --accent:#b79cf5; --accent-2:#cdb8fb; --accent-ink:#140a26; --accent-glow:rgba(183,156,245,.16); --brand-grad:linear-gradient(135deg,#b79cf5 0%,#8b5cf6 100%); }
+:root[data-theme="dark"][data-accent="framboise"]  { --accent:#fb7185; --accent-2:#fda4af; --accent-ink:#1f0a10; --accent-glow:rgba(251,113,133,.16); --brand-grad:linear-gradient(135deg,#fb7185 0%,#f43f5e 100%); }
+:root[data-theme="dark"][data-accent="indigo"]     { --accent:#8aa0f8; --accent-2:#aab8fc; --accent-ink:#0b0f24; --accent-glow:rgba(138,160,248,.16); --brand-grad:linear-gradient(135deg,#8aa0f8 0%,#6366f1 100%); }
+:root[data-theme="dark"][data-accent="cyan"]       { --accent:#48b6c9; --accent-2:#7fd0dd; --accent-ink:#06181c; --accent-glow:rgba(72,182,201,.16); --brand-grad:linear-gradient(135deg,#48b6c9 0%,#2f97ab 100%); }
+
+/* ---- Thème CLAIR « Atelier » (sur fond papier) ---- */
+:root[data-theme="light"][data-accent="emeraude"]  { --accent:#2f7d57; --accent-2:#1f6b48; --accent-ink:#f7f1e4; --accent-glow:rgba(47,125,87,.12); --brand-grad:linear-gradient(135deg,#2f7d57 0%,#236045 100%); }
+:root[data-theme="light"][data-accent="ambre"]      { --accent:#b5701a; --accent-2:#955b12; --accent-ink:#f7f1e4; --accent-glow:rgba(181,112,26,.12); --brand-grad:linear-gradient(135deg,#b5701a 0%,#955b12 100%); }
+:root[data-theme="light"][data-accent="violet"]     { --accent:#7a3fc0; --accent-2:#6730a8; --accent-ink:#f7f1e4; --accent-glow:rgba(122,63,192,.12); --brand-grad:linear-gradient(135deg,#7a3fc0 0%,#6730a8 100%); }
+:root[data-theme="light"][data-accent="framboise"]  { --accent:#b53f6e; --accent-2:#9a2f59; --accent-ink:#f7f1e4; --accent-glow:rgba(181,63,110,.12); --brand-grad:linear-gradient(135deg,#b53f6e 0%,#9a2f59 100%); }
+:root[data-theme="light"][data-accent="indigo"]     { --accent:#4f46e5; --accent-2:#4035c4; --accent-ink:#f7f1e4; --accent-glow:rgba(79,70,229,.12); --brand-grad:linear-gradient(135deg,#4f46e5 0%,#4035c4 100%); }
+:root[data-theme="light"][data-accent="cyan"]       { --accent:#1f7d8c; --accent-2:#176471; --accent-ink:#f7f1e4; --accent-glow:rgba(31,125,140,.12); --brand-grad:linear-gradient(135deg,#1f7d8c 0%,#176471 100%); }
