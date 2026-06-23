@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projet fil rouge — Atelier Game Art</title>
+  <meta name="description" content="Un projet transversal de bout en bout : modéliser, déplier, texturer en PBR, exporter, importer dans le moteur, éclairer, scripter et optimiser un asset de jeu — en reliant les leçons de toutes les pistes.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/atelier-studio.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <a class="brand" href="index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <section class="section dashboard">
+        <span class="eyebrow">Projet transversal &middot; fil rouge</span>
+        <h1 class="dash-title">Crée un asset de jeu, de A à Z</h1>
+        <p class="section-sub">Le fil rouge qui relie toutes les pistes&nbsp;: choisis un <b>prop simple</b> (une caisse, une épée, une lampe, une potion…) et fais-le passer du <b>blockout</b> jusqu'au <b>moteur, animé et optimisé</b>. Chaque étape pointe vers les leçons utiles&nbsp;; coche-les au fil de l'eau, ta progression du projet se met à jour.</p>
+
+        <div class="fr-progress-wrap">
+          <div class="fr-progress-head"><span>Avancement du projet</span><span id="fr-pct">0 %</span></div>
+          <div class="progress-track"><div class="progress-fill" id="fr-fill"></div></div>
+          <p class="fr-progress-sub" id="fr-sub">0 / 0 leçon liée terminée</p>
+        </div>
+
+        <div class="fr-engine-note callout-box">
+          <b>Ton moteur&nbsp;?</b> Certaines étapes dépendent du moteur. Suis la colonne <b>Unity</b>, <b>Unreal</b> ou <b>Godot</b> selon ton choix — la méthode reste la même.
+        </div>
+
+        <ol id="fr-steps" class="fr-steps"></ol>
+
+        <div class="callout-box fr-outro">
+          <b>Bravo&nbsp;!</b> Tu viens de parcourir tout le pipeline d'un asset de jeu. Refais-le avec un objet plus ambitieux (personnage simple, petite scène) pour ancrer durablement la méthode.
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <div class="sf-inner">
+          <span>Atelier Game Art — cours hors-ligne. Aucune donnée n'est envoyée : tout vit dans ton navigateur.</span>
+          <span><a href="index.html">Accueil</a> &middot; <a href="progression.html">Progression</a> &middot; <a href="glossaire.html">Glossaire</a></span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="js/site-data.js"></script>
+  <script src="js/glossaire-data.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/search-index.js"></script>
+  <script src="js/main.js"></script>
+  <script src="assets/vendor/highlight-mini.js"></script>
+  <script>
+    (function () {
+      var host = document.getElementById("fr-steps");
+      if (!host || !window.SITE_DATA) return;
+      var byId = {};
+      (window.SITE_DATA.flat || []).forEach(function (l) { byId[l.id] = l; });
+      var P = window.Progress;
+
+      // Étapes du fil rouge. `lessons` = ids communs ; `engines` = ids par moteur.
+      var STEPS = [
+        { ico: "📐", title: "Cadrer & modéliser",
+          desc: "Pars d'un blockout (formes simples) pour valider proportions et silhouette, puis modélise proprement ton prop.",
+          lessons: ["f05", "f04", "b03", "b04"] },
+        { ico: "🗺️", title: "Déplier les UV",
+          desc: "Mets la surface à plat pour pouvoir la texturer sans déformation. Place tes coutures avec soin.",
+          lessons: ["f06", "b06"] },
+        { ico: "🪨", title: "Détails (option) : sculpt & retopo",
+          desc: "Pour plus de relief : sculpte un high-poly, puis reconstruis une topologie propre (retopologie).",
+          lessons: ["b05", "l04"] },
+        { ico: "🎨", title: "Texturer en PBR",
+          desc: "Crée tes maps : albedo, normal, roughness, metallic, AO. Comprends d'abord la logique PBR, puis peins.",
+          lessons: ["f07", "f08", "l02", "b08", "sh09"] },
+        { ico: "📦", title: "Exporter pour le moteur",
+          desc: "Choisis le bon format (FBX / glTF), vérifie l'échelle et les normales, puis exporte.",
+          lessons: ["f03", "b11", "c02"] },
+        { ico: "🧩", title: "Importer & créer le matériau",
+          desc: "Importe ton asset dans le moteur de ton choix et branche tes textures dans un matériau.",
+          engines: { unity: ["u05", "u06"], unreal: ["e04", "e05"], godot: ["g05", "g06"] } },
+        { ico: "💡", title: "Éclairer la scène",
+          desc: "Pose une lumière directionnelle (soleil) et soigne l'ambiance pour mettre ton asset en valeur.",
+          engines: { unity: ["u07"], unreal: ["e06"], godot: ["g07"] } },
+        { ico: "🕹️", title: "Donner vie : script",
+          desc: "Fais bouger/réagir ton objet avec du code (rotation, ramassage, interaction) — ou en Blueprints.",
+          engines: { unity: ["cs07", "cs12"], unreal: ["bp05", "bp11"], godot: ["gd07", "gd12"] } },
+        { ico: "✨", title: "VFX & finitions (option)",
+          desc: "Ajoute un effet (particules, halo, shader) pour donner du caractère à ta scène.",
+          engines: { unity: ["u09"], unreal: ["e08"], godot: ["g09"] } },
+        { ico: "⚙️", title: "Optimiser & livrer",
+          desc: "Vérifie le coût (draw calls, LOD), nettoie, et exporte un build propre.",
+          lessons: ["f12"], engines: { unity: ["u11"], unreal: ["e10"], godot: ["g11"] } }
+      ];
+
+      var ENGINE_LABEL = { unity: "Unity", unreal: "Unreal", godot: "Godot" };
+
+      function chip(id) {
+        var l = byId[id];
+        if (!l) return "";
+        var done = P && P.isDone(id);
+        return '<a class="fr-chip' + (done ? " is-done" : "") + '" href="' + l.href + '" title="' + l.pisteTitre + '">' +
+          '<span class="fr-chk">' + (done ? "✓" : "") + '</span>' + l.titre + '</a>';
+      }
+      function chips(ids) { return (ids || []).map(chip).join(""); }
+
+      // collecte de tous les ids référencés (pour le % d'avancement)
+      var allIds = {};
+      function collect(ids) { (ids || []).forEach(function (id) { if (byId[id]) allIds[id] = 1; }); }
+
+      var html = "";
+      STEPS.forEach(function (s, i) {
+        collect(s.lessons);
+        if (s.engines) Object.keys(s.engines).forEach(function (k) { collect(s.engines[k]); });
+
+        html += '<li class="fr-step">' +
+          '<div class="fr-num"><span class="fr-ico">' + s.ico + '</span><span class="fr-n">' + (i + 1) + '</span></div>' +
+          '<div class="fr-body">' +
+            '<h3 class="fr-title">' + s.title + '</h3>' +
+            '<p class="fr-desc">' + s.desc + '</p>';
+        if (s.lessons && s.lessons.length) {
+          html += '<div class="fr-lessons">' + chips(s.lessons) + '</div>';
+        }
+        if (s.engines) {
+          html += '<div class="fr-engines">';
+          Object.keys(s.engines).forEach(function (k) {
+            html += '<div class="fr-engine"><span class="fr-engine-name">' + ENGINE_LABEL[k] + '</span>' +
+              '<div class="fr-lessons">' + chips(s.engines[k]) + '</div></div>';
+          });
+          html += '</div>';
+        }
+        html += '</div></li>';
+      });
+      host.innerHTML = html;
+
+      // Avancement : leçons liées terminées / total
+      var ids = Object.keys(allIds);
+      var doneN = P ? ids.filter(function (id) { return P.isDone(id); }).length : 0;
+      var pct = ids.length ? Math.round(doneN / ids.length * 100) : 0;
+      var fill = document.getElementById("fr-fill"); if (fill) fill.style.width = pct + "%";
+      var ptc = document.getElementById("fr-pct"); if (ptc) ptc.textContent = pct + " %";
+      var sub = document.getElementById("fr-sub");
+      if (sub) sub.textContent = doneN + " / " + ids.length + " leçon" + (ids.length > 1 ? "s" : "") + " liée" + (ids.length > 1 ? "s" : "") + " terminée" + (doneN > 1 ? "s" : "");
+    })();
+  </script>
+</body>
+</html>
