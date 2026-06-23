@@ -32,6 +32,33 @@
   // Barre globale
   var gf = $("ds-global-fill"); if (gf) gf.style.width = sum.pct + "%";
 
+  /* ---- Badges (dérivés des données existantes) ---- */
+  (function () {
+    var host = $("ds-badges"); if (!host) return;
+    var perfect = qIds.filter(function (k) { return allQuiz[k].best === allQuiz[k].total; }).length;
+    var best = P.bestStreak();
+    var badges = [
+      { ico: "🌱", label: "Première leçon",        ok: sum.done >= 1,    hint: "Termine 1 leçon" },
+      { ico: "🎯", label: "Premier parcours",      ok: pistesDone >= 1,  hint: "Termine un parcours entier" },
+      { ico: "⛰️", label: "Mi-chemin",             ok: sum.pct >= 50,    hint: "Atteins 50 % du programme" },
+      { ico: "🏁", label: "Marathon · 50 leçons",  ok: sum.done >= 50,   hint: "Termine 50 leçons" },
+      { ico: "👑", label: "Programme terminé",     ok: sum.pct >= 100,   hint: "Termine les 153 leçons" },
+      { ico: "🔥", label: "Série · 3 jours",       ok: best >= 3,        hint: "Étudie 3 jours d'affilée" },
+      { ico: "⚡", label: "Régulier · 7 jours",    ok: best >= 7,        hint: "Étudie 7 jours d'affilée" },
+      { ico: "💎", label: "QCM parfait",           ok: perfect >= 1,     hint: "Réussis un QCM à 100 %" },
+      { ico: "🧠", label: "10 QCM parfaits",       ok: perfect >= 10,    hint: "Réussis 10 QCM à 100 %" }
+    ];
+    var earned = badges.filter(function (b) { return b.ok; }).length;
+    var html = '<p class="ds-badges-count">' + earned + ' / ' + badges.length + ' débloqué' + (earned > 1 ? "s" : "") + '</p><div class="badges-grid">';
+    badges.forEach(function (b) {
+      html += '<div class="badge-chip' + (b.ok ? " is-earned" : "") + '" title="' + (b.ok ? "Débloqué" : b.hint) + '">' +
+        '<span class="bc-ico">' + b.ico + '</span><span class="bc-label">' + b.label + '</span>' +
+        (b.ok ? '' : '<span class="bc-hint">' + b.hint + '</span>') + '</div>';
+    });
+    html += '</div>';
+    host.innerHTML = html;
+  })();
+
   /* ---- Bandeau « Reprendre » ---- */
   (function () {
     var b = $("ds-resume"); if (!b) return;

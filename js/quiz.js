@@ -86,7 +86,10 @@
         btn.addEventListener("click", function () {
           if (solved) return;
           var ok = btn.getAttribute("data-correct") === "1";
-          if (!firstDone) { answered++; if (ok) good++; firstDone = true; }
+          if (!firstDone) {
+            answered++; if (ok) good++; firstDone = true;
+            if (window.Progress && window.Progress.logActivity) window.Progress.logActivity();
+          }
           if (ok) {
             solved = true;
             btn.classList.add("is-correct");
@@ -229,6 +232,7 @@
         if (!val) return;
         if (matches(val, accept)) {
           solved = true;
+          if (window.Progress && window.Progress.logActivity) window.Progress.logActivity();
           card.classList.add("is-solved");
           input.disabled = true; checkBtn.disabled = true;
           fb.className = "exo-int-feedback is-ok";

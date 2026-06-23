@@ -276,6 +276,7 @@
     cb.checked = window.Progress.isDone(CUR);
     cb.addEventListener("change", function () {
       window.Progress.set(CUR, cb.checked);
+      if (cb.checked && window.Progress.logActivity) window.Progress.logActivity();
       refreshSidebarProgress();
     });
   }

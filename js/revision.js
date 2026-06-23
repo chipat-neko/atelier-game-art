@@ -32,15 +32,22 @@
   });
 
   var state = load();
-  var queue = [], pos = 0, flipped = false, currentFilter = "all";
+  var queue = [], pos = 0, flipped = false, currentFilter = "all", onlyDone = false;
 
   function due(term) { var r = state[term]; return !r || (r.due || 0) <= Date.now(); }
   function filtered() {
     return CARDS.filter(function (c) {
+      if (onlyDone && !(window.Progress && c.src && window.Progress.isDone(c.src))) return false;
       if (currentFilter === "all") return true;
       var p = pisteOf(c); return p && p.id === currentFilter;
     });
   }
+
+  /* ---- Filtre « seulement mes leçons terminées » ---- */
+  (function () {
+    var cb = $("rv-done-only"); if (!cb) return;
+    cb.addEventListener("change", function () { onlyDone = cb.checked; startSession(); });
+  })();
 
   /* ---- Filtre par piste ---- */
   (function () {
@@ -79,6 +86,7 @@
     box = known ? Math.min(5, box + 1) : 1;
     state[card.terme] = { box: box, due: Date.now() + (INTERVAL[box] || 0) };
     save(state);
+    if (window.Progress && window.Progress.logActivity) window.Progress.logActivity();
     pos++; flipped = false;
     refreshStats();
     render();

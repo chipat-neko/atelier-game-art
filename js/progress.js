@@ -93,9 +93,11 @@
       return (l && l.id) ? l : null;
     },
 
-    /* ----- Visite d'une leçon : marque l'activité + la dernière leçon ----- */
+    /* ----- Visite d'une leçon : mémorise la dernière leçon (« Reprendre »).
+       L'activité (séries/heatmap) n'est PAS comptée sur une simple visite :
+       elle l'est sur une vraie action d'apprentissage (cf. logActivity ci-dessous,
+       appelé sur leçon terminée, QCM/exercice répondu, flashcard notée). ----- */
     touch: function (id) {
-      this.logActivity();
       this.setLast(id);
     },
 
