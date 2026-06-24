@@ -436,6 +436,21 @@ img, svg { max-width: 100%; height: auto; }
 .callout.retenir  { --cc: var(--c-retenir);  --ccbg: var(--c-retenir-bg); }
 .callout.pratique { --cc: var(--c-pratique); --ccbg: var(--c-pratique-bg); }
 .callout.danger   { --cc: var(--c-danger);   --ccbg: var(--c-danger-bg); }
+.callout.filrouge { --cc: #d9544d; --ccbg: color-mix(in srgb, #d9544d 9%, var(--surface)); }
+
+/* Bandeau « Projet fil rouge » (injecté en bas de chaque leçon par main.js) */
+.filrouge-banner { display: flex; align-items: center; gap: 14px; margin: 30px 0 6px; padding: 14px 18px; border: 1px solid color-mix(in srgb, #d9544d 32%, var(--border)); border-left: 3px solid #d9544d; border-radius: var(--radius-sm); background: color-mix(in srgb, #d9544d 6%, var(--surface)); }
+.filrouge-banner .frb-ico { font-size: 1.5rem; line-height: 1; flex: none; }
+.filrouge-banner .frb-body { min-width: 0; flex: 1; }
+.filrouge-banner .frb-title { font-weight: 700; font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: #d9544d; }
+.filrouge-banner .frb-action { color: var(--text); margin-top: 2px; font-size: .92rem; }
+.filrouge-banner .frb-prog { display: flex; align-items: center; gap: 9px; margin-top: 8px; font-size: .74rem; color: var(--text-faint); }
+.filrouge-banner .frb-bar { width: 110px; height: 5px; border-radius: 99px; background: var(--surface-2); overflow: hidden; flex: none; }
+.filrouge-banner .frb-bar i { display: block; height: 100%; background: #d9544d; border-radius: 99px; transition: width .4s; }
+.filrouge-banner .frb-link { flex: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: #d9544d; white-space: nowrap; }
+.filrouge-banner .frb-link:hover { text-decoration: none; filter: brightness(1.1); }
+.filrouge-banner .frb-link svg { width: 16px; height: 16px; }
+@media (max-width: 640px) { .filrouge-banner { flex-wrap: wrap; gap: 10px; } .filrouge-banner .frb-link { margin-left: auto; } }
 
 /* Objectifs : liste à puces "check" */
 .callout.objectif ul { list-style: none; padding-left: 0; }

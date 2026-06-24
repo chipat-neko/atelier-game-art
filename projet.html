@@ -89,39 +89,9 @@
       (window.SITE_DATA.flat || []).forEach(function (l) { byId[l.id] = l; });
       var P = window.Progress;
 
-      // Étapes du fil rouge. `lessons` = ids communs ; `engines` = ids par moteur.
-      var STEPS = [
-        { ico: "📐", title: "Cadrer & modéliser",
-          desc: "Pars d'un blockout (formes simples) pour valider proportions et silhouette, puis modélise proprement ton prop.",
-          lessons: ["f05", "f04", "b03", "b04"] },
-        { ico: "🗺️", title: "Déplier les UV",
-          desc: "Mets la surface à plat pour pouvoir la texturer sans déformation. Place tes coutures avec soin.",
-          lessons: ["f06", "b06"] },
-        { ico: "🪨", title: "Détails (option) : sculpt & retopo",
-          desc: "Pour plus de relief : sculpte un high-poly, puis reconstruis une topologie propre (retopologie).",
-          lessons: ["b05", "l04"] },
-        { ico: "🎨", title: "Texturer en PBR",
-          desc: "Crée tes maps : albedo, normal, roughness, metallic, AO. Comprends d'abord la logique PBR, puis peins.",
-          lessons: ["f07", "f08", "l02", "b08", "sh09"] },
-        { ico: "📦", title: "Exporter pour le moteur",
-          desc: "Choisis le bon format (FBX / glTF), vérifie l'échelle et les normales, puis exporte.",
-          lessons: ["f03", "b11", "c02"] },
-        { ico: "🧩", title: "Importer & créer le matériau",
-          desc: "Importe ton asset dans le moteur de ton choix et branche tes textures dans un matériau.",
-          engines: { unity: ["u05", "u06"], unreal: ["e04", "e05"], godot: ["g05", "g06"] } },
-        { ico: "💡", title: "Éclairer la scène",
-          desc: "Pose une lumière directionnelle (soleil) et soigne l'ambiance pour mettre ton asset en valeur.",
-          engines: { unity: ["u07"], unreal: ["e06"], godot: ["g07"] } },
-        { ico: "🕹️", title: "Donner vie : script",
-          desc: "Fais bouger/réagir ton objet avec du code (rotation, ramassage, interaction) — ou en Blueprints.",
-          engines: { unity: ["cs07", "cs12"], unreal: ["bp05", "bp11"], godot: ["gd07", "gd12"] } },
-        { ico: "✨", title: "VFX & finitions (option)",
-          desc: "Ajoute un effet (particules, halo, shader) pour donner du caractère à ta scène.",
-          engines: { unity: ["u09"], unreal: ["e08"], godot: ["g09"] } },
-        { ico: "⚙️", title: "Optimiser & livrer",
-          desc: "Vérifie le coût (draw calls, LOD), nettoie, et exporte un build propre.",
-          lessons: ["f12"], engines: { unity: ["u11"], unreal: ["e10"], godot: ["g11"] } }
-      ];
+      // Source unique : les étapes sont définies dans main.js (window.FILROUGE),
+      // partagées avec le bandeau fil rouge affiché sur chaque leçon.
+      var STEPS = (window.FILROUGE && window.FILROUGE.steps) || [];
 
       var ENGINE_LABEL = { unity: "Unity", unreal: "Unreal", godot: "Godot" };
 

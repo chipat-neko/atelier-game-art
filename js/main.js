@@ -41,6 +41,85 @@
     return e;
   }
 
+  /* ---------- Projet fil rouge (source unique, partagée avec projet.html) ----------
+     `action` = consigne courte affichée dans le bandeau de leçon. */
+  var FILROUGE_STEPS = [
+    { ico: "📐", title: "Cadrer & modéliser",
+      desc: "Pars d'un blockout (formes simples) pour valider proportions et silhouette, puis modélise proprement ton prop.",
+      action: "Choisis ton prop fil rouge (caisse, épée, lampe…) et fais-en un blockout aux bonnes proportions.",
+      lessons: ["f05", "f04", "b03", "b04"] },
+    { ico: "🗺️", title: "Déplier les UV",
+      desc: "Mets la surface à plat pour pouvoir la texturer sans déformation. Place tes coutures avec soin.",
+      action: "Déplie les UV de ton prop (coutures discrètes) pour préparer le texturing.",
+      lessons: ["f06", "b06"] },
+    { ico: "🪨", title: "Détails (option) : sculpt & retopo",
+      desc: "Pour plus de relief : sculpte un high-poly, puis reconstruis une topologie propre (retopologie).",
+      action: "Optionnel : sculpte du relief sur ton prop, puis retopologie une version propre.",
+      lessons: ["b05", "l04"] },
+    { ico: "🎨", title: "Texturer en PBR",
+      desc: "Crée tes maps : albedo, normal, roughness, metallic, AO. Comprends d'abord la logique PBR, puis peins.",
+      action: "Crée les maps PBR de ton prop (albedo, normal, roughness, metallic, AO).",
+      lessons: ["f07", "f08", "l02", "b08", "sh09"] },
+    { ico: "📦", title: "Exporter pour le moteur",
+      desc: "Choisis le bon format (FBX / glTF), vérifie l'échelle et les normales, puis exporte.",
+      action: "Exporte ton prop (FBX/glTF) : vérifie l'échelle et l'orientation des normales.",
+      lessons: ["f03", "b11", "c02"] },
+    { ico: "🧩", title: "Importer & créer le matériau",
+      desc: "Importe ton asset dans le moteur de ton choix et branche tes textures dans un matériau.",
+      action: "Importe ton prop dans ton moteur et branche tes textures dans un matériau.",
+      engines: { unity: ["u05", "u06"], unreal: ["e04", "e05"], godot: ["g05", "g06"] } },
+    { ico: "💡", title: "Éclairer la scène",
+      desc: "Pose une lumière directionnelle (soleil) et soigne l'ambiance pour mettre ton asset en valeur.",
+      action: "Pose une lumière et soigne l'ambiance autour de ton prop.",
+      engines: { unity: ["u07"], unreal: ["e06"], godot: ["g07"] } },
+    { ico: "🕹️", title: "Donner vie : script",
+      desc: "Fais bouger/réagir ton objet avec du code (rotation, ramassage, interaction) — ou en Blueprints.",
+      action: "Fais réagir ton prop (rotation, ramassage, interaction) par script ou Blueprints.",
+      engines: { unity: ["cs07", "cs12"], unreal: ["bp05", "bp11"], godot: ["gd07", "gd12"] } },
+    { ico: "✨", title: "VFX & finitions (option)",
+      desc: "Ajoute un effet (particules, halo, shader) pour donner du caractère à ta scène.",
+      action: "Optionnel : ajoute un effet (particules, halo, shader) pour le caractère.",
+      engines: { unity: ["u09"], unreal: ["e08"], godot: ["g09"] } },
+    { ico: "⚙️", title: "Optimiser & livrer",
+      desc: "Vérifie le coût (draw calls, LOD), nettoie, et exporte un build propre.",
+      action: "Vérifie le coût (draw calls, LOD), nettoie et exporte un build propre.",
+      lessons: ["f12"], engines: { unity: ["u11"], unreal: ["e10"], godot: ["g11"] } }
+  ];
+  var FR_INDEX = (function () {
+    var idx = {}, all = {};
+    FILROUGE_STEPS.forEach(function (s, i) {
+      function add(ids) { (ids || []).forEach(function (id) { all[id] = 1; if (!idx[id]) idx[id] = { n: i + 1, title: s.title, ico: s.ico, action: s.action }; }); }
+      add(s.lessons);
+      if (s.engines) Object.keys(s.engines).forEach(function (k) { add(s.engines[k]); });
+    });
+    return { idx: idx, all: Object.keys(all) };
+  })();
+  window.FILROUGE = { steps: FILROUGE_STEPS, lessonStep: FR_INDEX.idx, allIds: FR_INDEX.all };
+
+  function initFilRouge() {
+    if (!CUR) return;
+    var prose = document.querySelector(".prose");
+    if (!prose) return;
+    var total = FR_INDEX.all.length, done = 0;
+    if (window.Progress) FR_INDEX.all.forEach(function (id) { if (window.Progress.isDone(id)) done++; });
+    var step = FR_INDEX.idx[CUR];
+    var head = step ? ("Étape " + step.n + " / " + FILROUGE_STEPS.length + " · " + step.title) : "Projet fil rouge";
+    var action = step ? step.action : "Ce que tu apprends ici nourrit ton projet de bout en bout.";
+    var banner = el("aside", "filrouge-banner" + (step ? " is-step" : ""));
+    banner.innerHTML =
+      '<span class="frb-ico">🧵</span>' +
+      '<div class="frb-body">' +
+        '<div class="frb-title">' + head + '</div>' +
+        '<div class="frb-action">' + action + '</div>' +
+        '<div class="frb-prog"><span class="frb-bar"><i style="width:' + (total ? Math.round(done / total * 100) : 0) + '%"></i></span>' + done + ' / ' + total + ' leçons clés du projet</div>' +
+      '</div>' +
+      '<a class="frb-link" href="' + ROOT + 'projet.html">Ouvrir le projet ' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>';
+    var anchor = document.querySelector(".lesson-done");
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(banner, anchor);
+    else prose.appendChild(banner);
+  }
+
   /* ---------- Thème clair/sombre ---------- */
   function applyTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
@@ -131,6 +210,7 @@
       { href: "progression.html", label: "Ma progression", svg: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>' },
       { href: "projet.html", label: "Projet fil rouge", svg: '<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>' },
       { href: "revision.html", label: "Réviser (flashcards)", svg: '<rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3h12a2 2 0 0 1 2 2v13"/>' },
+      { href: "projet.html", label: "Projet fil rouge", svg: '<path d="M4 22V4a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v18"/><path d="M6 4h11l-2.5 3.5L17 11H6"/>' },
       { href: "donnees-perso.html", label: "Mes données", svg: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>' },
       { href: "glossaire.html", label: "Glossaire", svg: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' }
     ];
@@ -580,6 +660,7 @@
     initSearchShortcut();
     initPomodoro();
     initLessonTools();
+    initFilRouge();
     // Engagement : enregistre la visite de la leçon (activité du jour + « Reprendre »).
     if (CUR && window.Progress && window.Progress.touch) window.Progress.touch(CUR);
     window.addEventListener("storage", function (e) { if (e.key === "ag-progress") refreshSidebarProgress(); });
