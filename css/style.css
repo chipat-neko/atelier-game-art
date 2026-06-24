@@ -450,6 +450,15 @@ img, svg { max-width: 100%; height: auto; }
 .filrouge-banner .frb-go svg { width: 15px; height: 15px; }
 @media (max-width: 640px) { .filrouge-banner .frb-action { white-space: normal; } .filrouge-banner .frb-go span { display: none; } }
 
+/* Repère dans la piste (en-tête de leçon) */
+.lesson-stepper { margin: 16px 0 2px; }
+.lesson-stepper .ls-row { display: flex; align-items: baseline; gap: 10px; font-size: .82rem; margin-bottom: 6px; }
+.lesson-stepper .ls-pos { font-weight: 700; color: var(--text); flex: none; }
+.lesson-stepper .ls-piste { color: var(--text-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lesson-stepper .ls-done { margin-left: auto; flex: none; font-family: var(--font-mono); font-size: .76rem; color: var(--text-faint); }
+.lesson-stepper .ls-bar { height: 5px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.lesson-stepper .ls-bar i { display: block; height: 100%; border-radius: 99px; background: var(--c, var(--accent)); transition: width .4s; }
+
 /* Lien « Suivre dans le projet » au pied des consignes contextuelles */
 .callout.filrouge .fr-cta { margin: 10px 0 0; font-size: .85rem; }
 .callout.filrouge .fr-cta a { color: var(--accent); font-weight: 600; }

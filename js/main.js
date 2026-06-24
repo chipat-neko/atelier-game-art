@@ -118,6 +118,36 @@
     else prose.insertBefore(banner, prose.firstChild);
   }
 
+  /* ---------- Repère dans la piste (compteur leçon X/N + mini-barre) ---------- */
+  function initLessonStepper() {
+    if (!CUR || !DATA) return;
+    var head = document.querySelector(".lesson-head");
+    if (!head) return;
+    var piste = null, idx = -1;
+    for (var i = 0; i < DATA.pistes.length && !piste; i++) {
+      var p = DATA.pistes[i];
+      for (var j = 0; j < p.lecons.length; j++) {
+        if (p.lecons[j].id === CUR) { piste = p; idx = j; break; }
+      }
+    }
+    if (!piste || idx < 0) return;
+    var total = piste.lecons.length, pos = idx + 1, done = 0;
+    if (window.Progress) piste.lecons.forEach(function (l) { if (window.Progress.isDone(l.id)) done++; });
+    var pct = total ? Math.round(done / total * 100) : 0;
+    var box = el("div", "lesson-stepper");
+    box.style.setProperty("--c", piste.couleur);
+    box.innerHTML =
+      '<div class="ls-row">' +
+        '<span class="ls-pos">Leçon ' + pos + ' / ' + total + '</span>' +
+        '<span class="ls-piste">' + piste.titre + '</span>' +
+        '<span class="ls-done">' + done + ' / ' + total + ' terminée' + (done > 1 ? 's' : '') + '</span>' +
+      '</div>' +
+      '<div class="ls-bar"><i style="width:' + pct + '%"></i></div>';
+    var meta = head.querySelector(".lesson-meta");
+    if (meta && meta.nextSibling) head.insertBefore(box, meta.nextSibling);
+    else head.appendChild(box);
+  }
+
   /* ---------- Thème clair/sombre ---------- */
   function applyTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
@@ -657,6 +687,7 @@
     initSearchShortcut();
     initPomodoro();
     initLessonTools();
+    initLessonStepper();
     initFilRouge();
     // Engagement : enregistre la visite de la leçon (activité du jour + « Reprendre »).
     if (CUR && window.Progress && window.Progress.touch) window.Progress.touch(CUR);
