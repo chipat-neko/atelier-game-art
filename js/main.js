@@ -98,26 +98,24 @@
 
   function initFilRouge() {
     if (!CUR) return;
+    var step = FR_INDEX.idx[CUR];
+    if (!step) return; // bandeau discret affiché UNIQUEMENT sur les leçons liées à une étape
     var prose = document.querySelector(".prose");
     if (!prose) return;
-    var total = FR_INDEX.all.length, done = 0;
-    if (window.Progress) FR_INDEX.all.forEach(function (id) { if (window.Progress.isDone(id)) done++; });
-    var step = FR_INDEX.idx[CUR];
-    var head = step ? ("Étape " + step.n + " / " + FILROUGE_STEPS.length + " · " + step.title) : "Projet fil rouge";
-    var action = step ? step.action : "Ce que tu apprends ici nourrit ton projet de bout en bout.";
-    var banner = el("aside", "filrouge-banner" + (step ? " is-step" : ""));
+    var banner = el("a", "filrouge-banner");
+    banner.href = ROOT + "projet.html";
     banner.innerHTML =
       '<span class="frb-ico">🧵</span>' +
-      '<div class="frb-body">' +
-        '<div class="frb-title">' + head + '</div>' +
-        '<div class="frb-action">' + action + '</div>' +
-        '<div class="frb-prog"><span class="frb-bar"><i style="width:' + (total ? Math.round(done / total * 100) : 0) + '%"></i></span>' + done + ' / ' + total + ' leçons clés du projet</div>' +
-      '</div>' +
-      '<a class="frb-link" href="' + ROOT + 'projet.html">Ouvrir le projet ' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>';
-    var anchor = document.querySelector(".lesson-done");
-    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(banner, anchor);
-    else prose.appendChild(banner);
+      '<span class="frb-body">' +
+        '<span class="frb-title">Projet fil rouge · Étape ' + step.n + ' / ' + FILROUGE_STEPS.length + '</span>' +
+        '<span class="frb-action">' + step.action + '</span>' +
+      '</span>' +
+      '<span class="frb-go"><span>Projet</span> ' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>';
+    // En HAUT de la leçon : juste après le callout d'objectifs s'il existe.
+    var obj = prose.querySelector(".callout.objectif");
+    if (obj) { if (obj.nextSibling) prose.insertBefore(banner, obj.nextSibling); else prose.appendChild(banner); }
+    else prose.insertBefore(banner, prose.firstChild);
   }
 
   /* ---------- Thème clair/sombre ---------- */
