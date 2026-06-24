@@ -208,7 +208,6 @@
       { href: "progression.html", label: "Ma progression", svg: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>' },
       { href: "projet.html", label: "Projet fil rouge", svg: '<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>' },
       { href: "revision.html", label: "Réviser (flashcards)", svg: '<rect x="3" y="5" width="14" height="16" rx="2"/><path d="M7 5V3h12a2 2 0 0 1 2 2v13"/>' },
-      { href: "projet.html", label: "Projet fil rouge", svg: '<path d="M4 22V4a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v18"/><path d="M6 4h11l-2.5 3.5L17 11H6"/>' },
       { href: "donnees-perso.html", label: "Mes données", svg: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>' },
       { href: "glossaire.html", label: "Glossaire", svg: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' }
     ];
