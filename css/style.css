@@ -436,23 +436,23 @@ img, svg { max-width: 100%; height: auto; }
 .callout.retenir  { --cc: var(--c-retenir);  --ccbg: var(--c-retenir-bg); }
 .callout.pratique { --cc: var(--c-pratique); --ccbg: var(--c-pratique-bg); }
 .callout.danger   { --cc: var(--c-danger);   --ccbg: var(--c-danger-bg); }
-.callout.filrouge { --cc: #d9544d; --ccbg: color-mix(in srgb, #d9544d 9%, var(--surface)); }
+.callout.filrouge { --cc: var(--accent); --ccbg: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
 
 /* Bandeau « Projet fil rouge » — strip compact et discret, en haut de la leçon
    (uniquement sur les leçons liées à une étape). Injecté par main.js. */
-.filrouge-banner { display: flex; align-items: center; gap: 11px; margin: 16px 0 22px; padding: 9px 13px; border: 1px solid color-mix(in srgb, #d9544d 22%, var(--border)); border-left: 3px solid #d9544d; border-radius: var(--radius-sm); background: color-mix(in srgb, #d9544d 5%, var(--surface)); color: var(--text); text-decoration: none; transition: border-color .15s, background .15s; }
-.filrouge-banner:hover { text-decoration: none; border-color: #d9544d; background: color-mix(in srgb, #d9544d 9%, var(--surface)); }
+.filrouge-banner { display: flex; align-items: center; gap: 11px; margin: 16px 0 22px; padding: 9px 13px; border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border)); border-left: 3px solid var(--accent); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); color: var(--text); text-decoration: none; transition: border-color .15s, background .15s; }
+.filrouge-banner:hover { text-decoration: none; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, var(--surface)); }
 .filrouge-banner .frb-ico { font-size: 1.1rem; line-height: 1; flex: none; }
 .filrouge-banner .frb-body { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.3; }
-.filrouge-banner .frb-title { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #d9544d; }
+.filrouge-banner .frb-title { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
 .filrouge-banner .frb-action { font-size: .85rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.filrouge-banner .frb-go { flex: none; display: inline-flex; align-items: center; gap: 5px; font-size: .8rem; font-weight: 600; color: #d9544d; }
+.filrouge-banner .frb-go { flex: none; display: inline-flex; align-items: center; gap: 5px; font-size: .8rem; font-weight: 600; color: var(--accent); }
 .filrouge-banner .frb-go svg { width: 15px; height: 15px; }
 @media (max-width: 640px) { .filrouge-banner .frb-action { white-space: normal; } .filrouge-banner .frb-go span { display: none; } }
 
 /* Lien « Suivre dans le projet » au pied des consignes contextuelles */
 .callout.filrouge .fr-cta { margin: 10px 0 0; font-size: .85rem; }
-.callout.filrouge .fr-cta a { color: #d9544d; font-weight: 600; }
+.callout.filrouge .fr-cta a { color: var(--accent); font-weight: 600; }
 
 /* Objectifs : liste à puces "check" */
 .callout.objectif ul { list-style: none; padding-left: 0; }
