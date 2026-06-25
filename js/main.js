@@ -277,7 +277,7 @@
         var a = el("a");
         a.href = ROOT + piste.dossier + l.fichier;
         a.dataset.lesson = l.id;
-        if (l.id === CUR) a.className = "active";
+        if (l.id === CUR) { a.className = "active"; a.setAttribute("aria-current", "page"); }
         a.innerHTML =
           '<span class="lesson-check">' + ICONS.check + '</span>' +
           '<span class="l-title">' + l.titre + '</span>';
@@ -528,10 +528,14 @@
     });
     tabs.forEach(function (t) { t.addEventListener("click", function () { setMode(t.dataset.mode); }); });
     panel.querySelector(".tp-close").addEventListener("click", function () { panel.hidden = true; });
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.setAttribute("aria-expanded", "false");
     btn.addEventListener("click", function () {
       // ferme les autres panneaux du dock
       dock.querySelectorAll(".tool-panel").forEach(function (p) { if (p !== panel) p.hidden = true; });
+      dock.querySelectorAll(".tool-btn[aria-expanded]").forEach(function (b) { if (b !== btn) b.setAttribute("aria-expanded", "false"); });
       panel.hidden = !panel.hidden;
+      btn.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
     });
 
     // Reprend l'état au chargement
@@ -583,9 +587,13 @@
         status.textContent = "Enregistré ✓";
       }, 400);
     });
+    nbtn.setAttribute("aria-haspopup", "dialog");
+    nbtn.setAttribute("aria-expanded", "false");
     nbtn.addEventListener("click", function () {
       dock.querySelectorAll(".tool-panel").forEach(function (p) { if (p !== npanel) p.hidden = true; });
+      dock.querySelectorAll(".tool-btn[aria-expanded]").forEach(function (b) { if (b !== nbtn) b.setAttribute("aria-expanded", "false"); });
       npanel.hidden = !npanel.hidden;
+      nbtn.setAttribute("aria-expanded", npanel.hidden ? "false" : "true");
       if (!npanel.hidden) area.focus();
     });
     npanel.querySelector(".tp-close").addEventListener("click", function () { npanel.hidden = true; });
@@ -674,9 +682,26 @@
     window.addEventListener("scroll", hideHl, { passive: true });
   }
 
+  /* ---------- Accessibilité (lien d'évitement, landmarks) ---------- */
+  function initA11y() {
+    var main = document.querySelector(".content-wrap");
+    if (main && !document.querySelector(".skip-link")) {
+      if (!main.id) main.id = "contenu";
+      main.setAttribute("tabindex", "-1");
+      var skip = el("a", "skip-link", "Aller au contenu");
+      skip.href = "#" + main.id;
+      document.body.insertBefore(skip, document.body.firstChild);
+    }
+    var snav = document.getElementById("sidebar-nav");
+    if (snav) snav.setAttribute("aria-label", "Programme du cours");
+    var toc = document.getElementById("toc");
+    if (toc) toc.setAttribute("aria-label", "Sommaire de la leçon");
+  }
+
   /* ---------- Init ---------- */
   function init() {
     initTheme();
+    initA11y();
     initAccent();
     buildSidebarLinks();
     buildSidebar();

@@ -245,6 +245,11 @@ img, svg { max-width: 100%; height: auto; }
 .sidebar-links .sidebar-link:focus-visible,
 .search-results .sr-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: var(--ring); }
 
+/* Lien d'évitement (visible au focus clavier uniquement) */
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 200; padding: 10px 16px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-weight: 700; box-shadow: var(--shadow-lg); transform: translateY(-160%); transition: transform .15s; }
+.skip-link:focus { transform: translateY(0); text-decoration: none; outline: 2px solid var(--text); outline-offset: 2px; }
+.content-wrap:focus { outline: none; }
+
 /* Libellés techniques en monospace (identité « outil ») */
 .label-mono,
 .brand-sub, .eyebrow, .pc-kicker, .callout > .callout-title, .sidebar-head h2,
