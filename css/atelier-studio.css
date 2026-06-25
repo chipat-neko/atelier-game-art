@@ -296,25 +296,25 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  /* Surfaces — bois brûlé / espresso */
-  --bg:            #15110c;
-  --bg-deep:       #100c08;
-  --surface:       #1f1a13;
-  --surface-2:     #261f16;
-  --surface-3:     #2f2719;
-  --sidebar-bg:    #120e09;
-  --header-bg:     rgba(18, 14, 9, 0.85);
+  /* Surfaces — gris neutre (fond « espresso » retiré) */
+  --bg:            #14161a;
+  --bg-deep:       #0f1013;
+  --surface:       #1b1e23;
+  --surface-2:     #23262c;
+  --surface-3:     #2b2f36;
+  --sidebar-bg:    #121418;
+  --header-bg:     rgba(20, 22, 26, 0.85);
 
-  /* Texte — crème chaude, fort contraste */
-  --text:          #f1e9da;
-  --text-dim:      #c2b6a0;
-  --text-faint:    #b3a78e;  /* éclairci : meilleur contraste de la micro-typo sur l'espresso */
-  --text-invert:   #1a1208;
+  /* Texte — neutre, fort contraste */
+  --text:          #ececf0;
+  --text-dim:      #b9bcc4;
+  --text-faint:    #8b909b;
+  --text-invert:   #14161a;
 
   /* Lignes */
-  --border:        #2e2619;
-  --border-soft:   #241e14;
-  --border-strong: #3c3122;
+  --border:        #2a2e35;
+  --border-soft:   #20242a;
+  --border-strong: #383d46;
 
   /* Marque — ambre doré (plus de cyan néon) */
   --accent:        #e0a356;
@@ -376,25 +376,25 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
-  /* Surfaces — papier */
-  --bg:            #efe7d6;
-  --bg-deep:       #e5dbc6;
-  --surface:       #f7f1e4;
-  --surface-2:     #ebe1ce;
-  --surface-3:     #e1d6bf;
-  --sidebar-bg:    #eae0cd;
-  --header-bg:     rgba(239, 231, 214, 0.86);
+  /* Surfaces — gris clair neutre (fond « papier » retiré) */
+  --bg:            #f3f4f6;
+  --bg-deep:       #e9ebef;
+  --surface:       #ffffff;
+  --surface-2:     #eef0f3;
+  --surface-3:     #e3e6ea;
+  --sidebar-bg:    #f7f8fa;
+  --header-bg:     rgba(243, 244, 246, 0.86);
 
-  /* Texte — encre brune, fort contraste */
-  --text:          #211c16;
-  --text-dim:      #5f5648;
-  --text-faint:    #6e6354;  /* assombri : meilleur contraste de la micro-typo sur le papier */
-  --text-invert:   #f7f1e4;
+  /* Texte — neutre, fort contraste */
+  --text:          #1a1d23;
+  --text-dim:      #4b515c;
+  --text-faint:    #717784;
+  --text-invert:   #ffffff;
 
   /* Lignes */
-  --border:        #ddd0b9;
-  --border-soft:   #e6dcc7;
-  --border-strong: #c9bca3;
+  --border:        #dfe2e7;
+  --border-soft:   #e9ebef;
+  --border-strong: #c8ccd3;
 
   /* Marque — terracotta */
   --accent:        #c0392b;
