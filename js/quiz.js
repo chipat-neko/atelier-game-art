@@ -214,7 +214,7 @@
           '<input type="text" class="exo-int-input" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="' + esc(item.placeholder || "Ta réponse…") + '">' +
           '<button type="button" class="btn btn-primary btn-sm exo-int-check">Vérifier</button>' +
         '</div>' +
-        '<div class="exo-int-feedback" hidden></div>';
+        '<div class="exo-int-feedback" role="status" aria-live="polite" hidden></div>';
       if (hints.length) {
         html += '<button type="button" class="exo-int-hint-btn">Besoin d’un indice&nbsp;?</button>' +
                 '<ul class="exo-int-hints"></ul>';

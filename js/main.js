@@ -466,6 +466,8 @@
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg><span class="tool-badge" id="pomo-badge" hidden></span>';
     var panel = el("div", "tool-panel pomo-panel");
     panel.hidden = true;
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-label", "Minuteur d'étude Pomodoro");
     panel.innerHTML =
       '<div class="tp-head"><b>Minuteur d’étude</b><button class="tp-close" aria-label="Fermer">&times;</button></div>' +
       '<div class="pomo-mode"><button data-mode="focus" class="pomo-tab">Focus 25</button><button data-mode="break" class="pomo-tab">Pause 5</button></div>' +
@@ -564,10 +566,12 @@
     nbtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg><span class="tool-badge" id="notes-dot" hidden>•</span>';
     var npanel = el("div", "tool-panel notes-panel");
     npanel.hidden = true;
+    npanel.setAttribute("role", "dialog");
+    npanel.setAttribute("aria-label", "Notes de la leçon");
     npanel.innerHTML =
       '<div class="tp-head"><b>Notes — cette leçon</b><button class="tp-close" aria-label="Fermer">&times;</button></div>' +
-      '<textarea class="notes-area" placeholder="Tes notes personnelles sur cette leçon… (enregistrées dans ce navigateur)"></textarea>' +
-      '<p class="notes-status" id="notes-status">Enregistrement automatique</p>';
+      '<textarea class="notes-area" aria-label="Tes notes sur cette leçon" placeholder="Tes notes personnelles sur cette leçon… (enregistrées dans ce navigateur)"></textarea>' +
+      '<p class="notes-status" id="notes-status" aria-live="polite">Enregistrement automatique</p>';
     item.appendChild(npanel);
     item.appendChild(nbtn);
     dock.appendChild(item);
@@ -696,6 +700,16 @@
     if (snav) snav.setAttribute("aria-label", "Programme du cours");
     var toc = document.getElementById("toc");
     if (toc) toc.setAttribute("aria-label", "Sommaire de la leçon");
+    // Échap ferme un panneau ouvert du dock (Pomodoro/Notes) et rend le focus au bouton.
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      var dock = document.getElementById("tools-dock"); if (!dock) return;
+      dock.querySelectorAll(".tool-panel:not([hidden])").forEach(function (p) {
+        p.hidden = true;
+        var item = p.parentNode, b = item && item.querySelector(".tool-btn");
+        if (b) { b.setAttribute("aria-expanded", "false"); b.focus(); }
+      });
+    });
   }
 
   /* ---------- Init ---------- */
