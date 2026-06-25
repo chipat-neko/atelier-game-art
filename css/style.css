@@ -209,6 +209,8 @@ html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px)
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { animation: none !important; transition: none !important; }
+  /* neutralise aussi les translations/échelles décoratives au survol (pas de « saut ») */
+  *:hover { transform: none !important; }
   /* Supprime les déplacements au survol/clic (pas seulement leur animation),
      sans toucher aux transforms de mise en page (sidebar mobile, icônes…). */
   .accent-sw:hover, .lesson-nav a:hover, .btn-primary:hover, .resume-banner:hover,
@@ -235,6 +237,13 @@ img, svg { max-width: 100%; height: auto; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+/* Focus clavier net sur les conteneurs cliquables non-natifs (fond susceptible de masquer l'outline) */
+.header-search:focus-visible,
+.piste-card:focus-visible,
+.resume-banner:focus-visible,
+.filrouge-banner:focus-visible,
+.sidebar-links .sidebar-link:focus-visible,
+.search-results .sr-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: var(--ring); }
 
 /* Libellés techniques en monospace (identité « outil ») */
 .label-mono,
