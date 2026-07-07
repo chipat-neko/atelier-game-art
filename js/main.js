@@ -229,6 +229,87 @@
     header.insertBefore(wrap, themeBtn);
   }
 
+  /* ---------- Journal des nouveautés (cloche) ----------
+     À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
+  var CHANGELOG = [
+    { id: 7, date: "23 juin 2026", title: "Cloche de nouveautés & cours Logiciels enrichis", items: [
+      "Nouvelle cloche 🔔 : le journal des nouveautés (ce que tu lis).",
+      "Cours Logiciels approfondis : rendu Blender, masques & bake Substance, sprite sheet 2D, brosses de sculpt, licences d'assets.",
+      "Exercices : les réponses symboliques acceptent aussi leur nom écrit (« point-virgule » = « ; »).",
+      "Accessibilité : lien d'évitement, focus clavier net, régions live, Échap sur les panneaux."
+    ] },
+    { id: 6, date: "23 juin 2026", title: "Fond neutre & repère dans la piste", items: [
+      "Retrait du fond « espresso » : fond neutre en thème clair et sombre.",
+      "En-tête de leçon : compteur « Leçon X / N » + mini-barre d'avancement de la piste."
+    ] },
+    { id: 5, date: "22 juin 2026", title: "Projet fil rouge", items: [
+      "Un projet transversal relie toutes les pistes (du blockout au moteur).",
+      "Bandeau fil rouge et consignes dans les leçons clés du pipeline."
+    ] },
+    { id: 4, date: "21 juin 2026", title: "Motivation & justesse des exercices", items: [
+      "Badges, filtre flashcards « mes leçons terminées », série liée aux actions.",
+      "QCM : seconde chance ; exercices : « trois » accepté pour « 3 »."
+    ] },
+    { id: 3, date: "20 juin 2026", title: "Tableau de bord, révision & outils", items: [
+      "Page Progression (heatmap, séries, scores), Flashcards (glossaire), Pomodoro, Notes, surlignages.",
+      "Page « Mes données » (export/import) et sélecteur de palette d'accent."
+    ] },
+    { id: 2, date: "18 juin 2026", title: "Exercices auto-corrigés", items: [
+      "Un « Exercice express » auto-corrigé au bas de chaque leçon."
+    ] },
+    { id: 1, date: "14 juin 2026", title: "Nouvelles pistes de programmation", items: [
+      "Ajout des pistes Lua, Blueprints et Shaders."
+    ] }
+  ];
+
+  function initChangelog() {
+    if (!CHANGELOG.length) return;
+    var header = document.querySelector(".site-header");
+    var themeBtn = document.getElementById("theme-toggle");
+    if (!header || !themeBtn) return;
+    var SEEN = "ag-changelog-seen";
+    var seen = 0; try { seen = parseInt(localStorage.getItem(SEEN), 10) || 0; } catch (e) {}
+    var newest = CHANGELOG[0].id;
+    var unread = CHANGELOG.filter(function (e) { return e.id > seen; }).length;
+
+    var wrap = el("div", "cl-wrap");
+    var btn = el("button", "icon-btn");
+    btn.setAttribute("aria-label", "Nouveautés du site");
+    btn.setAttribute("aria-haspopup", "dialog");
+    btn.setAttribute("aria-expanded", "false");
+    btn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>' +
+      (unread ? '<span class="cl-badge">' + unread + '</span>' : '');
+
+    var pop = el("div", "cl-pop");
+    pop.hidden = true;
+    pop.setAttribute("role", "dialog");
+    pop.setAttribute("aria-label", "Journal des nouveautés");
+    var html = '<div class="cl-head"><b>🔔 Nouveautés</b><button class="cl-close" aria-label="Fermer">&times;</button></div><div class="cl-list">';
+    CHANGELOG.forEach(function (e) {
+      html += '<div class="cl-entry"><div class="cl-date">' + e.date + '</div><div class="cl-title">' + e.title + '</div><ul>';
+      (e.items || []).forEach(function (it) { html += '<li>' + it + '</li>'; });
+      html += '</ul></div>';
+    });
+    html += '</div>';
+    pop.innerHTML = html;
+
+    function open() {
+      pop.hidden = false; btn.setAttribute("aria-expanded", "true");
+      try { localStorage.setItem(SEEN, String(newest)); } catch (e) {}
+      var b = btn.querySelector(".cl-badge"); if (b) b.parentNode.removeChild(b);
+    }
+    function close() { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); }
+    btn.addEventListener("click", function (e) { e.stopPropagation(); if (pop.hidden) open(); else close(); });
+    pop.querySelector(".cl-close").addEventListener("click", close);
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) close(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !pop.hidden) { close(); btn.focus(); } });
+
+    wrap.appendChild(btn);
+    wrap.appendChild(pop);
+    header.insertBefore(wrap, themeBtn);
+  }
+
   /* ---------- Liens rapides en tête de sidebar ---------- */
   function buildSidebarLinks() {
     var nav = document.getElementById("sidebar-nav");
@@ -716,6 +797,7 @@
   function init() {
     initTheme();
     initA11y();
+    initChangelog();
     initAccent();
     buildSidebarLinks();
     buildSidebar();

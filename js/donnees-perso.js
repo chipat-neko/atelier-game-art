@@ -17,7 +17,8 @@
     "ag-hl": "Surlignages",
     "ag-revision": "Révision (flashcards, Leitner)",
     "ag-pomodoro": "Sessions Pomodoro (par jour)",
-    "ag-pomo-state": "Minuteur Pomodoro (état)"
+    "ag-pomo-state": "Minuteur Pomodoro (état)",
+    "ag-changelog-seen": "Nouveautés déjà vues"
   };
 
   function $(id) { return document.getElementById(id); }
