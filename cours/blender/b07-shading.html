@@ -135,7 +135,7 @@
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Sélectionne ton objet déplié (<a href="../../cours/blender/b06-uv.html">B6</a>), va dans le Workspace <em>Shading</em>, crée un matériau (<span class="menu-path">New</span>).</li>
-              <li>Avec Node Wrangler&nbsp;: sélectionne le Principled BSDF, <span class="kbd">Ctrl</span>+<span class="kbd">T</span> n'ajoute qu'une texture&nbsp;; sinon ajoute un <em>Image Texture</em> (<span class="kbd">Maj</span>+<span class="kbd">A</span> ▸ Texture) et charge ta Base Color → branche sur Base Color (laisse sRGB).</li>
+              <li>Avec Node Wrangler&nbsp;: sélectionne le Principled BSDF, <span class="kbd">Ctrl</span>+<span class="kbd">T</span> ajoute d'un coup un <em>Image Texture</em> déjà relié, précédé de ses nœuds <em>Mapping</em> et <em>Texture Coordinate</em>&nbsp;; sinon ajoute un <em>Image Texture</em> à la main (<span class="kbd">Maj</span>+<span class="kbd">A</span> ▸ Texture) et charge ta Base Color → branche sur Base Color (laisse sRGB).</li>
               <li>Ajoute la Roughness en Image Texture → passe son <em>Color Space</em> en <b>Non-Color</b> → branche sur Roughness.</li>
               <li>Ajoute la Normal en Image Texture (<b>Non-Color</b>) → nœud <em>Normal Map</em> → entrée Normal.</li>
               <li>Bascule en <em>Material Preview</em> ou <em>Rendered</em> (EEVEE) pour voir le résultat&nbsp;; ajuste.</li>
