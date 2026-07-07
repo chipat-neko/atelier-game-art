@@ -773,6 +773,39 @@ mark.ag-hl:hover { background: color-mix(in srgb, #ef4444 35%, transparent); }
 .cl-entry li { font-size: .86rem; color: var(--text-dim); margin: 3px 0; line-height: 1.45; }
 @media (max-width: 640px) { .cl-pop { right: -46px; } }
 
+/* Panneau : lignes de notification cliquables */
+.cl-list { padding: 6px; }
+.cl-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; padding: 10px 12px; border: none; border-radius: 9px; background: none; color: var(--text); cursor: pointer; font: inherit; }
+.cl-item:hover { background: var(--surface-2); }
+.cl-item-main { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.cl-item-title { font-weight: 600; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; }
+.cl-item-date { font-size: .7rem; font-family: var(--font-mono); color: var(--text-faint); }
+.cl-item-chev { width: 16px; height: 16px; flex: none; color: var(--text-faint); }
+.cl-foot { padding: 8px 14px 12px; border-top: 1px solid var(--border); text-align: center; }
+.cl-foot a { font-size: .82rem; font-weight: 600; color: var(--accent); }
+
+/* Modale centrale : détail d'une mise à jour */
+.cl-modal { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 20px; }
+.cl-modal[hidden] { display: none; }
+.cl-modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.55); }
+.cl-modal-box { position: relative; z-index: 1; width: min(560px, 100%); max-height: 82vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 16px; box-shadow: var(--shadow-lg); padding: 26px 28px; }
+.cl-modal-box:focus { outline: none; }
+.cl-modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--text-faint); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.cl-modal-close:hover { color: var(--text); }
+.cl-modal-date { font-size: .72rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--accent); }
+.cl-modal-title { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; margin: 4px 0 14px; }
+.cl-modal-items { margin: 0; padding-left: 20px; }
+.cl-modal-items li { margin: 8px 0; color: var(--text); line-height: 1.5; }
+.cl-modal-all { display: inline-block; margin-top: 18px; font-weight: 600; color: var(--accent); }
+
+/* Page changelog complète */
+.changelog-page { max-width: 720px; }
+.changelog-page .cl-entry { padding: 18px 0; }
+.changelog-page .cl-date { font-size: .72rem; }
+.changelog-page .cl-title { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; margin: 4px 0 10px; }
+.changelog-page .cl-entry ul { margin: 0; padding-left: 20px; }
+.changelog-page .cl-entry li { margin: 6px 0; color: var(--text-dim); line-height: 1.5; }
+
 /* Liens rapides en tête de sidebar */
 .sidebar-links { display: flex; flex-direction: column; gap: 1px; padding: 6px 0 10px; margin-bottom: 8px; border-bottom: 1px solid var(--border); }
 .sidebar-links .sidebar-link { display: flex; align-items: center; gap: 9px; padding: 6px 9px; border-radius: 6px; font-size: .86rem; color: var(--text-dim); font-weight: 500; }

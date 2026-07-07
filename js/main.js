@@ -261,6 +261,7 @@
       "<b>Nouvelles pistes</b> — Lua, Blueprints et Shaders."
     ] }
   ];
+  window.CHANGELOG = CHANGELOG; // partagé avec la page changelog.html
 
   function initChangelog() {
     if (!CHANGELOG.length) return;
@@ -281,18 +282,54 @@
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>' +
       (unread ? '<span class="cl-badge">' + (unread > 9 ? '9+' : unread) + '</span>' : '');
 
+    var clRoot = window.SITE_ROOT || "";
+
+    // Modale centrale : détail complet d'une mise à jour.
+    var modal = el("div", "cl-modal");
+    modal.hidden = true;
+    modal.innerHTML =
+      '<div class="cl-modal-backdrop"></div>' +
+      '<div class="cl-modal-box" role="dialog" aria-modal="true" aria-label="Détail de la mise à jour" tabindex="-1">' +
+        '<button class="cl-modal-close" aria-label="Fermer">&times;</button>' +
+        '<div class="cl-modal-date"></div><h3 class="cl-modal-title"></h3><ul class="cl-modal-items"></ul>' +
+        '<a class="cl-modal-all" href="' + clRoot + 'changelog.html">Voir tout le journal →</a>' +
+      '</div>';
+    document.body.appendChild(modal);
+    function closeModal() { modal.hidden = true; }
+    modal.querySelector(".cl-modal-close").addEventListener("click", closeModal);
+    modal.querySelector(".cl-modal-backdrop").addEventListener("click", closeModal);
+    function openModal(entry) {
+      modal.querySelector(".cl-modal-date").textContent = entry.date;
+      modal.querySelector(".cl-modal-title").textContent = entry.title;
+      var ul = modal.querySelector(".cl-modal-items"); ul.innerHTML = "";
+      (entry.items || []).forEach(function (it) { var li = document.createElement("li"); li.innerHTML = it; ul.appendChild(li); });
+      modal.hidden = false;
+      modal.querySelector(".cl-modal-box").focus();
+    }
+
+    // Panneau : liste de notifications (titre + date), chacune ouvre la modale.
     var pop = el("div", "cl-pop");
     pop.hidden = true;
     pop.setAttribute("role", "dialog");
     pop.setAttribute("aria-label", "Journal des nouveautés");
     var html = '<div class="cl-head"><b>🔔 Nouveautés</b><button class="cl-close" aria-label="Fermer">&times;</button></div><div class="cl-list">';
     CHANGELOG.forEach(function (e) {
-      html += '<div class="cl-entry"><div class="cl-date">' + e.date + (e.id > seen ? ' <span class="cl-new">Nouveau</span>' : '') + '</div><div class="cl-title">' + e.title + '</div><ul>';
-      (e.items || []).forEach(function (it) { html += '<li>' + it + '</li>'; });
-      html += '</ul></div>';
+      html += '<button type="button" class="cl-item" data-id="' + e.id + '">' +
+        '<span class="cl-item-main"><span class="cl-item-title">' + e.title + '</span>' +
+        '<span class="cl-item-date">' + e.date + '</span></span>' +
+        (e.id > seen ? '<span class="cl-new">Nouveau</span>' : '') +
+        '<svg class="cl-item-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
+        '</button>';
     });
-    html += '</div>';
+    html += '</div><div class="cl-foot"><a href="' + clRoot + 'changelog.html">Voir tout le journal →</a></div>';
     pop.innerHTML = html;
+    pop.querySelectorAll(".cl-item").forEach(function (item) {
+      item.addEventListener("click", function () {
+        var id = parseInt(item.getAttribute("data-id"), 10);
+        var entry = CHANGELOG.filter(function (e) { return e.id === id; })[0];
+        if (entry) openModal(entry);
+      });
+    });
 
     var opened = false;
     function open() { pop.hidden = false; btn.setAttribute("aria-expanded", "true"); opened = true; }
@@ -308,8 +345,12 @@
     }
     btn.addEventListener("click", function (e) { e.stopPropagation(); if (pop.hidden) open(); else close(); });
     pop.querySelector(".cl-close").addEventListener("click", close);
-    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) close(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !pop.hidden) { close(); btn.focus(); } });
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target) && modal.hidden) close(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      if (!modal.hidden) closeModal();
+      else if (!pop.hidden) { close(); btn.focus(); }
+    });
 
     wrap.appendChild(btn);
     wrap.appendChild(pop);
