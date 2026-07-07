@@ -232,6 +232,10 @@
   /* ---------- Journal des nouveautés (cloche) ----------
      À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
   var CHANGELOG = [
+    { id: 9, date: "7 juillet 2026", title: "Cours : exercices alignés sur les leçons", items: [
+      "<b>Audit d'alignement</b> — vérification que chaque réponse d'exercice auto-corrigé est bien enseignée dans la prose (99 leçons passées au crible).",
+      "<b>21 notions ajoutées</b> là où un exercice attendait un terme jamais expliqué : collisions/triggers &amp; <code>ref</code>/<code>Func</code>/<code>sealed</code> en C#, <code>SetActorLocation</code>/<code>FVector</code> en C++, <code>texel</code>/AO/<code>length</code> en shaders, extension <code>.gd</code>, GDExtension, <code>getmetatable</code>, Blender Foundation, World Partition…"
+    ] },
     { id: 8, date: "7 juillet 2026", title: "Nouveautés, cours Logiciels & finitions", items: [
       "<b>Cloche 🔔</b> — notifications cliquables, détail en fenêtre centrale, et une page «&nbsp;Nouveautés&nbsp;» dédiée.",
       "<b>Cours Logiciels</b> approfondis : rendu Blender, masques & bake Substance, sprite sheet 2D, brosses de sculpt, licences d'assets.",

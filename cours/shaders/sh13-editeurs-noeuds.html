@@ -80,7 +80,7 @@
             <h2>Théorie en profondeur</h2>
 
             <h3>1. Un nœud = une opération</h3>
-            <p>Dans un graph, on relie des nœuds&nbsp;: une texture (sample), une multiplication, un <code>Lerp</code>, un <code>Fresnel</code>, un <code>Time</code>… jusqu'au nœud de sortie (Base Color, Emission, etc.). C'est exactement le code de fragment, dessiné. Le <b>flux de données</b> va de gauche (entrées) à droite (sortie).</p>
+            <p>Dans un graph, on relie des nœuds par des <b>fils</b> (aussi appelés liens ou <em>wires</em>)&nbsp;: une texture (sample), une multiplication, un <code>Lerp</code>, un <code>Fresnel</code>, un <code>Time</code>… jusqu'au nœud de sortie (Base Color, Emission, etc.). C'est exactement le code de fragment, dessiné&nbsp;: chaque fil transporte une valeur d'une sortie vers une entrée. Le <b>flux de données</b> va de gauche (entrées) à droite (sortie).</p>
 
             <h3>2. Les trois grands éditeurs</h3>
             <div class="table-wrap">

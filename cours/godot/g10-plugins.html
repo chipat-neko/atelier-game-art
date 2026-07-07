@@ -88,6 +88,9 @@
             <h3>3. Activer / désactiver un plugin</h3>
             <p>On gère les plugins dans <span class="menu-path">Project<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Plugins</span>&nbsp;: la liste des plugins présents dans <code>addons/</code>, chacun avec une case <em>Enable</em>. Activer un plugin charge son outil dans l'éditeur (parfois un nouveau dock, un menu, un type de node). Pas de redémarrage nécessaire dans la plupart des cas.</p>
 
+            <h3>4. Aller plus loin : le code natif avec GDExtension</h3>
+            <p>La plupart des plugins sont écrits en GDScript. Mais quand on a besoin de <b>performances natives</b> ou de réutiliser une bibliothèque existante, Godot propose <span class="term">GDExtension</span>&nbsp;: un système qui permet de brancher du <b>code natif</b> compilé (<b>C++</b>, mais aussi Rust, C#, etc.) au moteur, <b>sans recompiler Godot lui-même</b>. C'est le successeur de l'ancien GDNative&nbsp;: idéal pour un calcul lourd (génération procédurale, physique custom) exposé ensuite comme un node ou une classe utilisable en GDScript.</p>
+
             <figure class="schema">
               <svg viewBox="0 0 640 180" role="img" aria-label="Sources d'extension Godot : AssetLib et plugin tiers vers addons/ puis activation">
                 <defs><marker id="g10ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>

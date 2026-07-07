@@ -108,6 +108,7 @@ InfligerDegats(10);
 InfligerDegats(25);</code></pre>
             </div>
             <p>On peut avoir plusieurs paramètres séparés par des virgules&nbsp;: <code>void Soigner(int montant, bool effetVisuel)</code>.</p>
+            <p>Par défaut, les types simples (<code>int</code>, <code>float</code>, <code>bool</code>…) sont passés <b>par valeur</b>&nbsp;: la méthode reçoit une <em>copie</em>, modifier le paramètre ne change pas la variable d'origine. Pour qu'une méthode modifie <b>directement</b> la variable appelante, on la passe <b>par référence</b> avec le mot-clé <code>ref</code> (ou <code>out</code> quand la valeur est entièrement produite par la méthode)&nbsp;: <code>void Recharger(ref int munitions)</code>. C'est rare en gameplay courant, mais pratique pour renvoyer plusieurs résultats à la fois.</p>
 
             <h3>3. Valeur de retour : récupérer un résultat</h3>
             <p>Si la méthode <b>calcule</b> quelque chose, on déclare le <b>type de retour</b> (au lieu de <code>void</code>) et on utilise <code>return</code>&nbsp;:</p>

@@ -113,6 +113,13 @@ protected:
     UInputAction* ActionDeplacer;
 };</code></pre>
             </div>
+            <p>Déplacer un Actor «&nbsp;à la main&nbsp;» passe par sa <b>position dans le monde</b>, décrite par un <code>FVector</code> — le type à <b>trois composantes</b> (X, Y, Z) d'Unreal. On la lit avec <code>GetActorLocation()</code> et on la fixe avec <code>SetActorLocation(NouvellePosition)</code>&nbsp;:</p>
+            <div class="codeblock" data-lang="C++">
+<pre><code>FVector Pos = GetActorLocation();      // position actuelle (X, Y, Z)
+Pos.Z += 100.f;                        // monter de 100 unités
+SetActorLocation(Pos);                 // appliquer la nouvelle position</code></pre>
+            </div>
+            <p>Pour un personnage, on privilégie <code>AddMovementInput</code> (ci-dessous), qui respecte la physique et les collisions&nbsp;; <code>SetActorLocation</code> «&nbsp;téléporte&nbsp;» et sert plutôt aux objets simples ou au placement initial.</p>
 
             <h3>3. Enhanced Input : Mapping Context &amp; Input Action</h3>
             <p>Deux assets à créer dans l'éditeur&nbsp;:</p>

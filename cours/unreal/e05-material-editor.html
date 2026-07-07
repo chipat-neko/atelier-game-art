@@ -82,7 +82,7 @@
             <h2>Théorie en profondeur</h2>
 
             <h3>1. Le Material Editor, un éditeur de shaders à nœuds</h3>
-            <p>On ouvre le Material Editor en double-cliquant sur un asset <span class="term">Material</span> dans le <span class="gloss">Content Browser</span>. Au lieu d'écrire du <span class="gloss">HLSL</span> à la main, on relie des <b>nœuds</b> (des petites boîtes qui calculent quelque chose) jusqu'à un nœud final. Unreal traduit ensuite ce graphe en code shader compilé pour chaque plateforme. C'est l'équivalent du <a href="../../cours/unity/u06-materiaux.html">Shader Graph d'Unity</a>, avec sa propre logique.</p>
+            <p>On ouvre le Material Editor en double-cliquant sur un asset <span class="term">Material</span> dans le <span class="gloss">Content Browser</span>. Au lieu d'écrire du <span class="gloss">HLSL</span> à la main, on relie des <b>nœuds</b> jusqu'à un nœud final. Chaque nœud représente une <b>opération</b> (une petite fonction du shader)&nbsp;: échantillonner une texture, multiplier, interpoler, calculer un Fresnel… Unreal traduit ensuite ce graphe en code shader compilé pour chaque plateforme. C'est l'équivalent du <a href="../../cours/unity/u06-materiaux.html">Shader Graph d'Unity</a>, avec sa propre logique.</p>
             <p>Un point conceptuel essentiel (rappel de <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>)&nbsp;: ce graphe est évalué <b>par pixel</b>, des millions de fois par image. Chaque nœud ajouté est une instruction de plus exécutée pour chaque pixel à l'écran couvert par le matériau. «&nbsp;Ça marche&nbsp;» et «&nbsp;ça coûte cher&nbsp;» sont deux questions différentes qu'il faut se poser en même temps.</p>
 
             <h3>2. Anatomie de la fenêtre</h3>

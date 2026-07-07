@@ -103,6 +103,7 @@ Action&lt;int&gt; afficher = n =&gt; Debug.Log("PV : " + n);
 afficher(100);                     // Action&lt;int&gt; = prend un int</code></pre>
             </div>
             <p>On peut <b>cumuler</b> plusieurs méthodes dans une Action avec <code>+=</code> (multicast)&nbsp;: les appeler toutes d'un coup. C'est la base de l'événement.</p>
+            <p><code>Action</code> ne renvoie <em>rien</em>. Quand tu as besoin d'un delegate qui <b>renvoie une valeur</b>, utilise <code>System.Func</code>&nbsp;: le <b>dernier</b> paramètre générique est le type de retour. <code>Func&lt;int&gt;</code> ne prend rien et renvoie un <code>int</code>&nbsp;; <code>Func&lt;int,int,bool&gt;</code> prend deux <code>int</code> et renvoie un <code>bool</code>. Pratique pour passer une règle de calcul (ex. une fonction de dégâts) en paramètre.</p>
 
             <h3>2. L'événement C# : annoncer, s'abonner</h3>
             <div class="codeblock" data-lang="C#">

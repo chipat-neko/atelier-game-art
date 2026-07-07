@@ -80,7 +80,7 @@
             <h2>Théorie en profondeur</h2>
 
             <h3>1. Échantillonner = lire un pixel de texture à une UV</h3>
-            <p>Une texture est une image&nbsp;; on lit sa couleur à la coordonnée UV du pixel courant. La fonction varie selon le langage (<code>tex2D</code>/<code>SAMPLE_TEXTURE2D</code> en HLSL, <code>texture()</code> en GLSL), mais l'idée est la même.</p>
+            <p>Une texture est une image&nbsp;; on lit sa couleur à la coordonnée UV du pixel courant. On appelle <span class="term">texel</span> (<em>texture element</em>) un point d'une texture — le pendant du pixel pour une image d'écran. La fonction varie selon le langage (<code>tex2D</code>/<code>SAMPLE_TEXTURE2D</code> en HLSL, <code>texture()</code> en GLSL), mais l'idée est la même&nbsp;: échantillonner, c'est lire un texel.</p>
             <div class="codeblock" data-lang="HLSL">
 <pre><code>float4 frag(float2 uv : TEXCOORD0) : SV_Target
 {
@@ -104,6 +104,7 @@ float2 uv3 = uv + float2(temps * 0.1, 0.0);  // défile vers la droite</code></p
 
             <h3>4. Combiner avec un masque</h3>
             <p>On mélange deux textures selon un <b>masque</b> (une 3ᵉ texture en niveaux de gris, ou un canal). <code>lerp(a, b, masque)</code> interpole entre les deux selon le masque (vu en <a href="../../cours/shaders/sh07-maths.html">SH7</a>)&nbsp;: c'est la base des terrains (herbe/roche), de l'usure, etc.</p>
+            <p>Beaucoup de maps en niveaux de gris sont des masques déguisés. L'une des plus courantes est l'<b>occlusion ambiante</b> (<span class="term">AO</span>, <em>ambient occlusion</em>)&nbsp;: une texture qui <b>assombrit les recoins</b> et les creux là où la lumière ambiante pénètre mal. On la multiplie sur la couleur/l'éclairage indirect pour ancrer l'objet. On retrouve l'AO comme map à part entière du workflow PBR (voir <a href="../../cours/shaders/sh09-pbr.html">SH9</a>).</p>
 
             <figure class="schema">
               <svg viewBox="0 0 640 150" role="img" aria-label="UV plus texture donne une couleur ; tiling répète ; masque mélange deux textures">

@@ -109,6 +109,7 @@
               <li><b>Top Down</b> (Vue de dessus)&nbsp;: caméra en plongée, déplacement au clic. Base des jeux type action-RPG ou stratégie.</li>
             </ul>
             <p>Le point essentiel à comprendre&nbsp;: un template n'est <b>pas un carcan</b>. Tu peux toujours ajouter ou retirer ce qu'il contient. Mais choisir le bon template t'évite de bâtir (ou de supprimer) de la logique inutile. Pour ce cours, on prendra <b>Third Person</b>&nbsp;: il offre un personnage à observer, une caméra qui suit, et un terrain de jeu concret pour poser des assets et tester l'éclairage.</p>
+            <p>Un mot au passage sur les <b>très grands mondes</b>&nbsp;: le template <b>Open World</b> active <span class="term">World Partition</span>, le système d'Unreal qui découpe automatiquement une immense carte en cellules et ne <b>charge en streaming</b> que celles proches du joueur. C'est ce qui permet des mondes ouverts sans faire exploser la mémoire. On reste sur Third Person pour apprendre, mais retiens le nom&nbsp;: dès qu'un niveau devient énorme, c'est World Partition qui gère le chargement.</p>
 
             <h3>Blueprint ou C++&nbsp;: deux façons de programmer le jeu</h3>
             <p>Le navigateur te demande de choisir entre un projet <b>Blueprint</b> et un projet <b>C++</b>. C'est un choix sur la <b>manière d'écrire la logique</b> de ton jeu, pas sur le rendu graphique.</p>

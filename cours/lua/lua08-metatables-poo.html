@@ -81,6 +81,7 @@
 
             <h3>1. Métatable &amp; __index</h3>
             <p>Quand on lit une clé absente d'une table, Lua consulte sa <b>métatable</b>. Si celle-ci a un champ <code>__index</code> pointant vers une autre table, la recherche s'y poursuit&nbsp;: c'est le mécanisme d'héritage.</p>
+            <p>Deux fonctions encadrent ce mécanisme&nbsp;: <code>setmetatable(t, mt)</code> <b>attache</b> la métatable <code>mt</code> à la table <code>t</code> (et renvoie <code>t</code>), tandis que <code>getmetatable(t)</code> <b>lit</b> la métatable actuelle d'une table. Tu utiliseras <code>setmetatable</code> à chaque création d'objet&nbsp;; <code>getmetatable</code> sert surtout à inspecter ou comparer le «&nbsp;type&nbsp;» d'une table.</p>
             <div class="codeblock" data-lang="Lua">
 <pre><code>local base = {salut = function() print("Hello") end}
 local obj = setmetatable({}, {__index = base})

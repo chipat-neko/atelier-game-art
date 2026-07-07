@@ -94,6 +94,7 @@
                 </tbody>
               </table>
             </div>
+            <p>Unity envoie aussi des <b>messages de physique</b> quand deux objets se touchent. Sur un collider «&nbsp;solide&nbsp;», <code>OnCollisionEnter(Collision c)</code> est appelée au <b>début d'un contact</b> (et <code>OnCollisionExit</code> à la fin). Sur un collider coché <em>Is Trigger</em> (traversable), c'est <code>OnTriggerEnter(Collider other)</code> qui se déclenche à l'<b>entrée dans la zone</b> (avec <code>OnTriggerStay</code>/<code>OnTriggerExit</code>). On s'en sert pour ramasser un objet, encaisser des dégâts, franchir une ligne d'arrivée&nbsp;: c'est le point d'entrée de presque toute interaction de gameplay.</p>
 
             <h3>2. Awake vs Start : l'ordre qui sauve des bugs</h3>
             <p>Unity appelle <b>tous</b> les <code>Awake()</code> de la scène <b>avant</b> n'importe quel <code>Start()</code>. Conséquence pratique&nbsp;: dans <code>Awake</code>, initialise ce qui te concerne <em>toi</em>&nbsp;; dans <code>Start</code>, accède aux <em>autres</em> objets (ils ont déjà fait leur Awake, donc sont prêts). C'est la cause n°1 d'un <code>NullReferenceException</code> au lancement&nbsp;: chercher un autre script dans Awake alors qu'il n'est pas encore initialisé.</p>

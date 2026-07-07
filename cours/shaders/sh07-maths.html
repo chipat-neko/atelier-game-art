@@ -81,6 +81,7 @@
 
             <h3>1. Vecteurs &amp; swizzle</h3>
             <p>Les types <code>float2/3/4</code> regroupent des composantes. On accède à <code>.x .y .z .w</code> (ou <code>.r .g .b .a</code>), et on peut les réarranger (<b>swizzle</b>)&nbsp;: <code>couleur.rgb</code>, <code>uv.yx</code>. Les opérations s'appliquent composante par composante.</p>
+            <p>Deux fonctions reviennent sans cesse&nbsp;: <code>length(v)</code> donne la <b>longueur</b> (magnitude) d'un vecteur — par exemple <code>length(p - centre)</code> pour une distance — et <code>normalize(v)</code> renvoie un vecteur de <b>même direction mais de longueur&nbsp;1</b> (un vecteur unitaire), indispensable avant un <code>dot</code> d'éclairage.</p>
 
             <h3>2. dot &amp; cross</h3>
             <ul>

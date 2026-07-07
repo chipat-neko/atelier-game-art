@@ -111,6 +111,7 @@ public class Gobelin : Ennemi
 }</code></pre>
             </div>
             <p>Points clés&nbsp;: <code>Gobelin : Ennemi</code> = «&nbsp;Gobelin est un Ennemi&nbsp;». <code>protected</code> = accessible par la classe et ses filles (entre <code>private</code> et <code>public</code>). <code>virtual</code> autorise la redéfinition&nbsp;; <code>override</code> la réalise&nbsp;; <code>base.Mourir()</code> appelle la version parente.</p>
+            <p>À l'inverse de <code>virtual</code>, le mot-clé <code>sealed</code> <b>interdit</b> d'aller plus loin&nbsp;: une classe <code>sealed class Boss : Ennemi</code> ne peut plus servir de parent, et un <code>sealed override</code> bloque toute redéfinition ultérieure. On «&nbsp;scelle&nbsp;» une classe quand on veut garantir que son comportement ne sera pas modifié par héritage (sécurité et, accessoirement, petite optimisation).</p>
 
             <h3>2. abstract : forcer une implémentation</h3>
             <p>Une classe/méthode <code>abstract</code> définit un <b>contrat sans corps</b> que les filles <b>doivent</b> remplir. On ne peut pas instancier une classe abstraite&nbsp;:</p>

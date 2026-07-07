@@ -80,7 +80,7 @@
             <h2>Théorie en profondeur</h2>
 
             <h3>1. TArray : la liste dynamique</h3>
-            <p>Le conteneur le plus utilisé&nbsp;: une suite ordonnée, indexée à partir de 0, de taille variable.</p>
+            <p>Le conteneur le plus utilisé&nbsp;: une suite ordonnée, indexée à partir de 0, de taille variable. C'est l'équivalent Unreal du tableau dynamique de la bibliothèque standard C++ (la STL), le <code>std::vector</code> — mais <code>TArray</code> est intégré au moteur (réflexion, ramasse-miettes, sérialisation), c'est pourquoi on l'utilise partout dans Unreal à la place de <code>std::vector</code>.</p>
             <div class="codeblock" data-lang="C++">
 <pre><code>UPROPERTY()
 TArray&lt;AActor*&gt; Ennemis;     // déclaration
