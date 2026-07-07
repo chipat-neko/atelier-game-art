@@ -757,7 +757,8 @@ mark.ag-hl:hover { background: color-mix(in srgb, #ef4444 35%, transparent); }
 
 /* Cloche « Nouveautés » (changelog) */
 .cl-wrap { position: relative; }
-.cl-badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: .6rem; font-weight: 800; line-height: 15px; text-align: center; box-shadow: 0 0 0 2px var(--bg); pointer-events: none; }
+.cl-badge { position: absolute; top: 1px; right: 1px; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 99px; background: #ef4444; color: #fff; font-size: .6rem; font-weight: 800; line-height: 15px; text-align: center; box-shadow: 0 0 0 2px var(--bg); pointer-events: none; }
+.cl-new { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 99px; background: color-mix(in srgb, var(--accent) 16%, var(--surface)); color: var(--accent); font-family: var(--font-body); font-size: .6rem; font-weight: 800; letter-spacing: .03em; vertical-align: middle; }
 .cl-pop { position: absolute; top: calc(100% + 8px); right: 0; z-index: 60; width: min(350px, calc(100vw - 24px)); max-height: 72vh; overflow-y: auto; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-lg); }
 .cl-pop[hidden] { display: none; }
 .cl-head { position: sticky; top: 0; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }

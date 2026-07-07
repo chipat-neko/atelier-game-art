@@ -233,32 +233,32 @@
      À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
   var CHANGELOG = [
     { id: 7, date: "23 juin 2026", title: "Cloche de nouveautés & cours Logiciels enrichis", items: [
-      "Nouvelle cloche 🔔 : le journal des nouveautés (ce que tu lis).",
-      "Cours Logiciels approfondis : rendu Blender, masques & bake Substance, sprite sheet 2D, brosses de sculpt, licences d'assets.",
-      "Exercices : les réponses symboliques acceptent aussi leur nom écrit (« point-virgule » = « ; »).",
-      "Accessibilité : lien d'évitement, focus clavier net, régions live, Échap sur les panneaux."
+      "<b>Cloche 🔔</b> — un journal des nouveautés (ce que tu lis en ce moment).",
+      "<b>Cours Logiciels</b> approfondis : rendu Blender, masques & bake Substance, sprite sheet 2D, brosses de sculpt, licences d'assets.",
+      "<b>Exercices</b> — les réponses symboliques acceptent aussi leur nom écrit («&nbsp;point-virgule&nbsp;» = «&nbsp;;&nbsp;»).",
+      "<b>Accessibilité</b> — lien d'évitement, focus clavier net, régions live, Échap sur les panneaux."
     ] },
     { id: 6, date: "23 juin 2026", title: "Fond neutre & repère dans la piste", items: [
-      "Retrait du fond « espresso » : fond neutre en thème clair et sombre.",
-      "En-tête de leçon : compteur « Leçon X / N » + mini-barre d'avancement de la piste."
+      "<b>Fond neutre</b> — retrait du fond «&nbsp;espresso&nbsp;» en thème clair comme sombre.",
+      "<b>Repère de leçon</b> — compteur «&nbsp;Leçon X / N&nbsp;» + mini-barre d'avancement de la piste."
     ] },
     { id: 5, date: "22 juin 2026", title: "Projet fil rouge", items: [
-      "Un projet transversal relie toutes les pistes (du blockout au moteur).",
-      "Bandeau fil rouge et consignes dans les leçons clés du pipeline."
+      "<b>Projet transversal</b> — un fil rouge relie toutes les pistes, du blockout au moteur.",
+      "<b>Consignes intégrées</b> — bandeau et rappels dans les leçons clés du pipeline."
     ] },
     { id: 4, date: "21 juin 2026", title: "Motivation & justesse des exercices", items: [
-      "Badges, filtre flashcards « mes leçons terminées », série liée aux actions.",
-      "QCM : seconde chance ; exercices : « trois » accepté pour « 3 »."
+      "<b>Motivation</b> — badges, filtre flashcards «&nbsp;mes leçons terminées&nbsp;», série liée aux actions.",
+      "<b>Correction plus juste</b> — QCM avec seconde chance ; «&nbsp;trois&nbsp;» accepté pour «&nbsp;3&nbsp;»."
     ] },
     { id: 3, date: "20 juin 2026", title: "Tableau de bord, révision & outils", items: [
-      "Page Progression (heatmap, séries, scores), Flashcards (glossaire), Pomodoro, Notes, surlignages.",
-      "Page « Mes données » (export/import) et sélecteur de palette d'accent."
+      "<b>Progression</b> — page dédiée (heatmap, séries, scores) et <b>flashcards</b> du glossaire.",
+      "<b>Outils</b> — Pomodoro, Notes, surlignages, «&nbsp;Mes données&nbsp;» (export/import), palette d'accent."
     ] },
     { id: 2, date: "18 juin 2026", title: "Exercices auto-corrigés", items: [
-      "Un « Exercice express » auto-corrigé au bas de chaque leçon."
+      "<b>Exercice express</b> — un exercice auto-corrigé au bas de chaque leçon."
     ] },
     { id: 1, date: "14 juin 2026", title: "Nouvelles pistes de programmation", items: [
-      "Ajout des pistes Lua, Blueprints et Shaders."
+      "<b>Nouvelles pistes</b> — Lua, Blueprints et Shaders."
     ] }
   ];
 
@@ -279,7 +279,7 @@
     btn.setAttribute("aria-expanded", "false");
     btn.innerHTML =
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>' +
-      (unread ? '<span class="cl-badge">' + unread + '</span>' : '');
+      (unread ? '<span class="cl-badge">' + (unread > 9 ? '9+' : unread) + '</span>' : '');
 
     var pop = el("div", "cl-pop");
     pop.hidden = true;
@@ -287,19 +287,25 @@
     pop.setAttribute("aria-label", "Journal des nouveautés");
     var html = '<div class="cl-head"><b>🔔 Nouveautés</b><button class="cl-close" aria-label="Fermer">&times;</button></div><div class="cl-list">';
     CHANGELOG.forEach(function (e) {
-      html += '<div class="cl-entry"><div class="cl-date">' + e.date + '</div><div class="cl-title">' + e.title + '</div><ul>';
+      html += '<div class="cl-entry"><div class="cl-date">' + e.date + (e.id > seen ? ' <span class="cl-new">Nouveau</span>' : '') + '</div><div class="cl-title">' + e.title + '</div><ul>';
       (e.items || []).forEach(function (it) { html += '<li>' + it + '</li>'; });
       html += '</ul></div>';
     });
     html += '</div>';
     pop.innerHTML = html;
 
-    function open() {
-      pop.hidden = false; btn.setAttribute("aria-expanded", "true");
-      try { localStorage.setItem(SEEN, String(newest)); } catch (e) {}
-      var b = btn.querySelector(".cl-badge"); if (b) b.parentNode.removeChild(b);
+    var opened = false;
+    function open() { pop.hidden = false; btn.setAttribute("aria-expanded", "true"); opened = true; }
+    function close() {
+      pop.hidden = true; btn.setAttribute("aria-expanded", "false");
+      // On ne marque « vu » qu'à la FERMETURE : le badge reste tant qu'on lit.
+      if (opened) {
+        opened = false;
+        try { localStorage.setItem(SEEN, String(newest)); } catch (e) {}
+        var b = btn.querySelector(".cl-badge"); if (b) b.parentNode.removeChild(b);
+        pop.querySelectorAll(".cl-new").forEach(function (n) { n.parentNode.removeChild(n); });
+      }
     }
-    function close() { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); }
     btn.addEventListener("click", function (e) { e.stopPropagation(); if (pop.hidden) open(); else close(); });
     pop.querySelector(".cl-close").addEventListener("click", close);
     document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) close(); });
