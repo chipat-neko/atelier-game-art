@@ -318,6 +318,31 @@
             </ul>
             <p>Deux add-ons intégrés à connaître&nbsp;: <b>Node Wrangler</b> (raccourcis surpuissants dans le Shader Editor&nbsp;: <kbd>Ctrl+Shift+T</kbd> branche automatiquement un jeu complet de textures PBR sur le Principled BSDF) et <b>LoopTools</b> (outils de boucles d'arêtes&nbsp;: arrondir, espacer, ponter). Active-les une fois, ils te font gagner un temps fou.</p>
 
+            <h3>11. Éclairer, cadrer et lancer un rendu</h3>
+            <p>Un modèle bien texturé mais mal éclairé rend mal. Voici la chaîne complète pour obtenir une image finale (l'objectif de l'exercice 2).</p>
+            <ul>
+              <li><b>Lumière.</b> <code>Add ▸ Light ▸ Area</code> (lumière douce de studio) ou <code>Sun</code> (directionnelle, comme le soleil). Sélectionne-la, puis dans les <b>Object Data Properties</b> (icône ampoule) monte la <i>Power</i> et règle la taille (plus l'Area est grande, plus l'ombre est douce). Le <b>World</b> (Properties ▸ World) ajoute une lumière d'ambiance globale — mets une couleur neutre ou branche une <b>HDRI</b> pour un éclairage réaliste d'un coup.</li>
+              <li><b>Caméra.</b> <code>Add ▸ Camera</code>. Oriente ta vue comme tu veux le cadrage, puis <b>Ctrl+Alt+Numpad 0</b> («&nbsp;Align Active Camera to View&nbsp;») colle la caméra à ta vue. <b>Numpad 0</b> entre/sort de la vue caméra&nbsp;; le cadre blanc montre ce qui sera rendu.</li>
+              <li><b>Moteur de rendu.</b> Dans <b>Render Properties</b>&nbsp;: <b>EEVEE</b> (temps réel, rapide, idéal pour itérer) ou <b>Cycles</b> (path tracing, plus réaliste mais lent). Règle les <i>Samples</i> — plus il y en a, moins il y a de bruit. En EEVEE, active <i>Ambient Occlusion</i> et <i>Bloom</i> pour enrichir l'image sans effort.</li>
+              <li><b>Rendre &amp; enregistrer.</b> <b>F12</b> lance le rendu de l'image courante. Dans la fenêtre de rendu, <code>Image ▸ Save As…</code> pour l'exporter en PNG. Pour une animation, <code>Render ▸ Render Animation</code>.</li>
+            </ul>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Astuce cadrage</div>
+              <p>Verrouille la caméra à la vue (barre latérale <kbd>N</kbd> ▸ View ▸ <i>Lock Camera to View</i>) pour composer en naviguant directement dans l'œil de la caméra, puis décoche pour figer le cadrage.</p>
+            </div>
+
+            <h3>12. Raccourcis essentiels (à garder sous la main)</h3>
+            <p>90&nbsp;% du travail passe par une poignée de touches. Garde-les à portée&nbsp;:</p>
+            <div class="codeblock" data-lang="Blender">
+<pre><code>Navigation : clic-milieu = orbiter · Maj+clic-milieu = panoramique · molette = zoom
+Transformer: G déplacer · R tourner · S mettre à l'échelle  (puis X/Y/Z = contraindre un axe)
+Modes      : Tab (Object ⇄ Edit) · en Edit : 1/2/3 = sommets/arêtes/faces
+Éditer     : E extrude · I inset · Ctrl+B bevel · Ctrl+R loop cut · M merge · X supprimer
+Sélection  : A tout · Alt+clic = boucle d'arêtes · L = îlot lié sous le curseur
+Divers     : Maj+A ajouter · Ctrl+A appliquer les transforms · Maj+C recentrer le curseur 3D
+Rendu      : Numpad 0 = vue caméra · F12 = rendre l'image</code></pre>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Fil rouge&nbsp;: <b>modéliser une caisse en bois, lui donner un matériau PBR, la déplier, l'exporter en glTF</b> prête pour un moteur.</p>
             <ol>

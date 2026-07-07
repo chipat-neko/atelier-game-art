@@ -143,6 +143,32 @@
   <p>Si l'abonnement n'est pas une option&nbsp;: <b>ArmorPaint</b> (peinture PBR open source, payant en binaire mais bon marché, gratuit à compiler), <b>Material Maker</b> (équivalent gratuit de Designer, par nœuds), <b>Quixel Mixer</b> (héritage, gratuit mais arrêté), et le <b>mode Texture Paint</b> de <a href="../../cours/logiciels/l01-blender.html">Blender</a> (suffisant pour des cas simples). Aucun n'égale encore l'écosystème de smart materials de Painter, mais les concepts (calques, masques, mesh maps, PBR) sont transférables.</p>
 </div>
 
+<h3>Anatomie d'un calque&nbsp;: les canaux</h3>
+<p>Un calque dans Painter n'écrit pas «&nbsp;une couleur&nbsp;» mais peut alimenter <b>plusieurs canaux à la fois</b>&nbsp;: Base Color, Roughness, Metallic, Height, Normal (et Opacity). En haut des propriétés du calque, tu actives/désactives chaque canal. Peindre de la «&nbsp;rouille&nbsp;» modifie en même temps la Base Color (brun), la Roughness (plus mat/rugueux) et parfois la Height (relief)&nbsp;: c'est ce qui donne le réalisme. Opacité et modes de fusion s'appliquent par canal, exactement comme dans un logiciel 2D.</p>
+<ul>
+  <li><b>Fill layer</b>&nbsp;: remplit uniformément les canaux cochés — la base idéale à masquer ensuite.</li>
+  <li><b>Paint layer</b>&nbsp;: peinture manuelle au pinceau, pour les détails uniques (coulures, salissures ciblées).</li>
+  <li><b>Height</b>&nbsp;: un relief en niveaux de gris que Painter convertit en Normal à la volée — parfait pour rayures et joints <i>sans</i> toucher la géométrie.</li>
+</ul>
+
+<h3>Les masques&nbsp;: peindre, générer, ancrer</h3>
+<p>Un masque décide <b>où</b> le calque est visible (blanc&nbsp;= visible, noir&nbsp;= caché). Trois façons de le remplir&nbsp;:</p>
+<ul>
+  <li><b>À la main</b>&nbsp;: peins en blanc/noir sur le masque (contrôle total, mais long).</li>
+  <li><b>Générateur</b>&nbsp;: <i>Curvature / Metal Edge Wear</i> (usure des arêtes), <i>Dirt</i> (saleté dans les creux), <i>Ambient Occlusion</i>… Ils <b>lisent les mesh maps bakées</b> pour se placer automatiquement — d'où l'importance du bake.</li>
+  <li><b>Anchor Point</b>&nbsp;: réutilise le relief/masque d'un autre calque comme référence (ex.&nbsp;faire couler la rouille depuis une rayure précise).</li>
+</ul>
+<p>On empile ensuite des <b>filtres</b> sur le masque (Blur, Levels, Warp) pour doser l'effet finement.</p>
+
+<h3>Résoudre un bake raté (80&nbsp;% des problèmes)</h3>
+<p>Si le texturing tourne mal, la cause est presque toujours le bake. Symptômes fréquents et remèdes&nbsp;:</p>
+<div class="piege-grid">
+  <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Traits ou halos sombres sur la Normal / l'AO.</div><div class="pi-cause"><b>Cause</b>Cage de projection trop courte&nbsp;: le high-poly déborde.</div><div class="pi-fix"><b>Correction</b>Augmente <i>Max Frontal/Rear Distance</i>, ou active <i>Average Normals</i>.</div></div>
+  <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Les détails d'une pièce «&nbsp;saignent&nbsp;» sur une autre.</div><div class="pi-cause"><b>Cause</b>Bake global sans séparation des objets.</div><div class="pi-fix"><b>Correction</b>Nomme tes meshes avec les suffixes <code>_low</code> / <code>_high</code> et coche <i>By Mesh Name</i>.</div></div>
+  <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Les générateurs n'ont aucun effet.</div><div class="pi-cause"><b>Cause</b>Mesh maps non bakées (Curvature / AO absentes).</div><div class="pi-fix"><b>Correction</b>Texture Set Settings ▸ <i>Bake Mesh Maps</i> avant de texturer.</div></div>
+  <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Coutures visibles sur la texture finale.</div><div class="pi-cause"><b>Cause</b>Îlots UV trop serrés / padding insuffisant.</div><div class="pi-fix"><b>Correction</b>Redéplie avec plus de marge (voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) ou augmente le <i>Dilation/Padding</i> à l'export.</div></div>
+</div>
+
 <h2>🔧 Démonstration pas à pas</h2>
 <p>Objectif&nbsp;: texturer une caisse métallique en «&nbsp;métal rouillé&nbsp;», ajouter une usure sur les arêtes, et exporter pour Unreal. On part d'un low-poly déjà déplié (UV faits, voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) et d'un high-poly pour le bake.</p>
 <ol>

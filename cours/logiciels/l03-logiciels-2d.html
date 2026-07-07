@@ -282,6 +282,29 @@
               <li><b>Dimensions en puissances de deux</b> (256, 512, 1024, 2048…). Le GPU calcule mieux les <span class="gloss">mipmap</span> et l'adressage sur ces tailles (F1). Une texture en 1000×1000 sera souvent rééchantillonnée ou refusée par la compression. Pour le <em>tiling</em>, c'est doublement important&nbsp;: une tuile carrée en puissance de deux se répète proprement.</li>
             </ul>
 
+            <h3>10. Composer une image avec des calques (pas à pas)</h3>
+            <p>Le cœur du travail 2D non destructif&nbsp;: on empile des calques, on masque au lieu d'effacer, on ajuste l'ordre et les modes de fusion. La recette (menus GIMP&nbsp;; équivalents Krita/Photoshop identiques)&nbsp;:</p>
+            <ul>
+              <li><b>Créer les calques.</b> <code>Calque ▸ Nouveau calque</code> pour chaque plan (fond, objet, détail). Le calque du dessus recouvre ceux du dessous&nbsp;: réorganise par glisser dans le panneau Calques.</li>
+              <li><b>Masquer au lieu d'effacer.</b> Clic droit sur un calque ▸ <i>Ajouter un masque de calque</i> (blanc = tout visible). Peins en <b>noir</b> sur le masque pour révéler le calque du dessous&nbsp;; en <b>blanc</b> pour re-cacher. Rien n'est détruit&nbsp;: c'est réversible à tout moment.</li>
+              <li><b>Modes de fusion.</b> En haut du panneau Calques, change le <i>Mode</i>&nbsp;: <b>Multiply</b> (assombrit, pose des ombres), <b>Screen/Écran</b> (éclaircit, lumières), <b>Overlay/Incrustation</b> (contraste et couleur). C'est ainsi qu'on peint ombres et lumières sans salir la couleur de base.</li>
+              <li><b>Ajuster.</b> <code>Couleurs ▸ Niveaux / Courbes</code> pour le contraste, <code>Teinte-Saturation</code> pour la couleur. Sur un calque d'ajustement séparé si le logiciel le permet (non destructif).</li>
+            </ul>
+
+            <h3>11. Fabriquer un sprite sheet (atlas d'animation)</h3>
+            <p>Un <b>sprite sheet</b> (ou atlas) réunit toutes les images (frames) d'une animation 2D dans une seule texture, en grille régulière. Le moteur (ou un shader <i>flipbook</i>) fait ensuite défiler les cases. Marche à suivre&nbsp;:</p>
+            <ul>
+              <li><b>Grille régulière.</b> Fixe une taille de case en puissance de deux (ex. 64×64) et un nombre de cases (ex. 4×4 = 16 frames). Document total&nbsp;: 256×256. Active la grille&nbsp;: <code>Image ▸ Configurer la grille</code> (64&nbsp;px) et <code>Affichage ▸ Afficher la grille</code> + <i>Aligner sur la grille</i>.</li>
+              <li><b>Une frame par case.</b> Dessine chaque étape de l'animation dans sa case, en gardant le sujet <b>centré et à la même échelle</b> d'une case à l'autre (sinon l'animation «&nbsp;saute&nbsp;»). Un calque par frame aide à comparer/onion-skin.</li>
+              <li><b>Le padding anti-bleeding.</b> Laisse une marge vide autour de chaque dessin&nbsp;: au filtrage, le moteur peut «&nbsp;baver&nbsp;» (bleeding) les cases voisines. Une case un peu plus grande que le dessin évite les liserés.</li>
+              <li><b>Exporter.</b> <code>Fichier ▸ Exporter sous…</code> en <b>PNG</b> avec transparence (alpha). Ordre des frames&nbsp;: généralement gauche→droite puis ligne suivante — c'est l'ordre que lira le flipbook.</li>
+              <li><b>Côté moteur.</b> On indique le nombre de colonnes/lignes&nbsp;; le shader calcule l'UV de la case courante à partir du temps (framerate). Même principe pour les VFX (feu, fumée) en flipbook.</li>
+            </ul>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Gagner du temps</div>
+              <p>Des outils comme <b>TexturePacker</b> (ou l'export atlas d'Aseprite pour le pixel-art) assemblent automatiquement des frames séparées en un sprite sheet + un fichier de données (positions). Pratique dès que le nombre de frames grandit.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Objectif&nbsp;: prendre une photo de mur de <b>briques</b> et en faire une texture <b>tileable</b> exportée en PNG. Les menus ci-dessous sont donnés pour <b>GIMP</b> (gratuit) ; les équivalents Krita/Photoshop sont indiqués. La logique est identique partout.</p>
             <ol>

@@ -264,6 +264,40 @@
             <h3>6. Quand le sculpt n'est PAS utile</h3>
             <p>Le sculpt fascine, au point qu'on est tenté de tout sculpter. Erreur. Pour un objet <b>hard-surface géométrique simple</b> — une caisse, une table, un mur, une poutre, un panneau métallique plat —, le sculpt n'apporte <b>rien</b>, voire complique tout. Ces objets sont mieux servis par la <b>modélisation classique</b> (arêtes nettes, <b>Bevel</b> contrôlé, modifiers) et par un détail de surface ajouté <b>en texture</b> dans un outil comme Substance (voir <a href="../../cours/logiciels/l02-substance.html">L2</a>). Sculpter une simple caisse, c'est dépenser des heures et des millions de polygones pour un résultat qu'une bonne <b>normal map de bois</b> donne en deux minutes. La règle&nbsp;: <b>sculpte ce qui est organique ou riche en accidents&nbsp;; modélise et texture ce qui est géométrique et régulier.</b></p>
 
+            <h3>7. Les brosses essentielles (aide-mémoire)</h3>
+            <p>On sculpte avec une dizaine de brosses seulement. Les noms sont ceux de Blender&nbsp;; ZBrush a des équivalents (Move, Clay Buildup, Dam Standard, hPolish…).</p>
+            <ul>
+              <li><b>Grab</b> (G)&nbsp;: attrape et tire de gros volumes — pour bloquer la forme générale.</li>
+              <li><b>Draw / Clay</b>&nbsp;: dépose de la matière régulièrement. <b>Clay Strips</b> ajoute des bandes franches pour bâtir muscles et masses.</li>
+              <li><b>Draw Sharp</b>&nbsp;: trace net et creux — rides, plis, coutures. Maintiens <kbd>Ctrl</kbd> pour inverser (creuser au lieu d'ajouter).</li>
+              <li><b>Crease</b>&nbsp;: creuse un sillon marqué (fentes, séparations).</li>
+              <li><b>Smooth</b> (maintenir <kbd>Maj</kbd>)&nbsp;: adoucit et unifie — le «&nbsp;polish&nbsp;» qui distingue un sculpt propre.</li>
+              <li><b>Inflate / Pinch / Scrape / Flatten</b>&nbsp;: gonfler, resserrer, raboter, aplanir — pour affiner les surfaces.</li>
+              <li><b>Mask</b> (maintenir <kbd>Ctrl</kbd>+tracer)&nbsp;: protège une zone&nbsp;; on ne sculpte que le reste. <kbd>Ctrl</kbd>+clic dans le vide efface le masque.</li>
+            </ul>
+            <p>Règles de main&nbsp;: <kbd>F</kbd> change la taille de brosse, <kbd>Maj+F</kbd> la force&nbsp;; le <b>symmetry</b> (X) sculpte les deux côtés à la fois — indispensable pour un visage.</p>
+
+            <h3>8. Où trouver la matière : Dyntopo, Remesh, Multires</h3>
+            <p>Le vrai problème technique du sculpt&nbsp;: une sphère n'a pas assez de polygones pour du détail fin. Trois façons d'en ajouter, à ne pas confondre&nbsp;:</p>
+            <ul>
+              <li><b>Dyntopo (Dynamic Topology)</b>&nbsp;: crée des polygones sous la brosse <i>en direct</i> pendant que tu modèles librement. Idéal pour la phase de <b>blocage/exploration</b>. Inconvénient&nbsp;: topologie irrégulière.</li>
+              <li><b>Remesh</b>&nbsp;: recalcule d'un coup un maillage <b>uniforme</b> à une densité choisie (Voxel Remesh). Parfait pour «&nbsp;repartir propre&nbsp;» quand le maillage s'étire, avant de détailler.</li>
+              <li><b>Multiresolution</b>&nbsp;: ajoute des <b>paliers</b> de subdivision (Subdivide ×2/×3). Tu sculptes le fin sur le niveau haut tout en pouvant redescendre corriger un volume — et c'est ce modifier qui prépare proprement le <b>bake</b> vers le low-poly.</li>
+            </ul>
+
+            <h3>9. Détails de surface : les alphas (stamps)</h3>
+            <p>Un <b>alpha</b> est une image en niveaux de gris utilisée comme tampon de relief&nbsp;: écailles, pores de peau, motifs, symboles, fissures. Dans les réglages de la brosse&nbsp;: section <i>Texture</i> ▸ charge une image d'alpha, règle le mode (<i>Stencil</i> pour tamponner à un endroit précis, ou drag pour répéter). En un clic, tu déposes un détail qu'il serait interminable de sculpter à la main. ⚠️ Il faut assez de polygones (remesh/subdivise avant) sinon le motif «&nbsp;bave&nbsp;».</p>
+
+            <h3>10. De ton high-poly sculpté à un asset jouable</h3>
+            <p>Le sculpt ne va <b>jamais</b> directement dans le moteur (trop lourd). La passation, étape par étape&nbsp;:</p>
+            <ol>
+              <li><b>Retopologie</b>&nbsp;: reconstruis par-dessus un <b>low-poly propre</b> (quads, boucles suivant les formes). Outils&nbsp;: Blender (add-on <i>Retopoflow</i> ou snapping manuel), Maya QuadDraw, ou l'auto-retopo comme point de départ.</li>
+              <li><b>UV</b>&nbsp;: déplie le low-poly (voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>).</li>
+              <li><b>Baking</b>&nbsp;: transfère les détails du high vers le low dans des maps — <b>Normal</b> (le relief), <b>AO</b> (occlusion), <b>Curvature</b> (arêtes). Voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>.</li>
+              <li><b>Texturing PBR</b>&nbsp;: peins le low-poly dans Substance (voir <a href="../../cours/logiciels/l02-substance.html">L2</a>) en t'appuyant sur les mesh maps bakées.</li>
+              <li><b>Export</b>&nbsp;: FBX/glTF vers le moteur. Le low-poly + normal map donne l'illusion du high-poly, pour une fraction du coût.</li>
+            </ol>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Démonstration <b>conceptuelle</b> dans le <b>mode Sculpt de Blender</b> (gratuit). Objectif&nbsp;: comprendre le rythme «&nbsp;bloquer → subdiviser → détailler → polir&nbsp;» sur une petite tête de créature, sans viser la perfection.</p>
             <ol>

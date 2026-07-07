@@ -297,6 +297,40 @@
               <figcaption>Le réflexe à automatiser&nbsp;: pas de licence → on s'arrête&nbsp;; sinon on vérifie commercial, puis attribution, puis redistribution avant d'intégrer.</figcaption>
             </figure>
 
+            <h3>5. Décoder une licence (la checklist)</h3>
+            <p>Avant d'utiliser un asset, réponds à quatre questions — c'est ce qui distingue un usage légal d'un problème.</p>
+            <ul>
+              <li><b>Usage commercial autorisé&nbsp;?</b> Peux-tu vendre ton jeu avec cet asset dedans&nbsp;? (Les licences <i>NC — Non Commercial</i> l'interdisent.)</li>
+              <li><b>Attribution requise&nbsp;?</b> Dois-tu créditer l'auteur&nbsp;? (<i>BY</i> = oui&nbsp;; <i>CC0</i> = non.)</li>
+              <li><b>Modification autorisée&nbsp;?</b> As-tu le droit de retoucher/remixer&nbsp;? (<i>ND — No Derivatives</i> l'interdit.)</li>
+              <li><b>Redistribution&nbsp;?</b> Peux-tu partager le fichier source&nbsp;? (Souvent non pour les assets de store.)</li>
+            </ul>
+            <p>Les grandes familles&nbsp;:</p>
+            <ul>
+              <li><b>CC0</b> (domaine public)&nbsp;: fais-en ce que tu veux, sans crédit. Le plus permissif (Poly Haven, ambientCG).</li>
+              <li><b>CC-BY</b>&nbsp;: libre, mais crédite l'auteur. <b>CC-BY-SA</b> ajoute «&nbsp;partage à l'identique&nbsp;», <b>CC-BY-NC</b> interdit le commercial, <b>CC-BY-ND</b> interdit les modifs.</li>
+              <li><b>EULA de store</b> (Fab, asset stores)&nbsp;: licence propriétaire propre au vendeur — lis-la&nbsp;; typiquement usage dans tes projets OK, redistribution du fichier interdite.</li>
+              <li><b>Royalty-free</b>&nbsp;: tu paies une fois, pas de royalties ensuite (≠ «&nbsp;gratuit&nbsp;»). À distinguer du <i>rights-managed</i> (licence par usage).</li>
+            </ul>
+            <div class="callout piege">
+              <div class="callout-title"><span class="ico">⚠️</span>Le piège de l'IA &amp; du scan</div>
+              <p>Un modèle «&nbsp;scanné&nbsp;» d'un objet de marque (logo, personnage, design protégé) reste soumis au <b>droit d'auteur / aux marques</b>, même si le fichier 3D est «&nbsp;libre&nbsp;». Vérifie toujours ce que <b>représente</b> l'asset, pas seulement sa licence de fichier.</p>
+            </div>
+
+            <h3>6. Importer et nettoyer un asset téléchargé</h3>
+            <p>Un asset «&nbsp;prêt à l'emploi&nbsp;» a presque toujours besoin d'un passage à l'atelier avant d'entrer proprement dans ton jeu&nbsp;:</p>
+            <ul>
+              <li><b>Échelle &amp; unités.</b> Vérifie que 1&nbsp;unité correspond à ton moteur (1&nbsp;m en Unity/Godot, 1&nbsp;cm en Unreal). Applique les transforms avant export (voir <a href="../../cours/logiciels/l01-blender.html">L1</a>, Ctrl+A).</li>
+              <li><b>Pivot &amp; orientation.</b> Recentre le point d'origine (souvent à la base de l'objet) et aligne l'axe «&nbsp;devant&nbsp;»&nbsp;; sinon l'objet tourne autour d'un mauvais point en jeu.</li>
+              <li><b>Textures &amp; matériaux.</b> Reconnecte les maps (Base Color en sRGB, données en linéaire — voir <a href="../../cours/logiciels/l02-substance.html">L2</a>), et renomme proprement pour t'y retrouver.</li>
+              <li><b>Poids &amp; LOD.</b> Un asset marketplace peut être très lourd&nbsp;: vérifie le polycount et la taille des textures, génère des <b>LOD</b> et une <b>collision</b> simplifiée si le moteur ne le fait pas.</li>
+              <li><b>Cohérence artistique.</b> Un asset acheté a son propre style/échelle de détail&nbsp;: retexture ou ajuste pour qu'il s'accorde au reste de ta scène (sinon il «&nbsp;jure&nbsp;»).</li>
+            </ul>
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Bonne habitude</div>
+              <p>Garde une note (fichier <code>CREDITS.txt</code>) avec la <b>source</b>, l'<b>auteur</b> et la <b>licence</b> de chaque asset importé. Le jour où tu publies, ton attribution est déjà prête et tu évites toute mauvaise surprise.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Objectif concret&nbsp;: récupérer un <b>HDRI</b> gratuit sur Poly Haven et s'en servir pour <b>éclairer</b> une scène, en suivant la règle de licence du début à la fin. On verra aussi comment importer depuis Fab.</p>
 
