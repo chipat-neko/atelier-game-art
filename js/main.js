@@ -232,32 +232,36 @@
   /* ---------- Journal des nouveautés (cloche) ----------
      À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
   var CHANGELOG = [
-    { id: 7, date: "23 juin 2026", title: "Cloche de nouveautés & cours Logiciels enrichis", items: [
-      "<b>Cloche 🔔</b> — un journal des nouveautés (ce que tu lis en ce moment).",
+    { id: 8, date: "7 juillet 2026", title: "Nouveautés, cours Logiciels & finitions", items: [
+      "<b>Cloche 🔔</b> — notifications cliquables, détail en fenêtre centrale, et une page «&nbsp;Nouveautés&nbsp;» dédiée.",
       "<b>Cours Logiciels</b> approfondis : rendu Blender, masques & bake Substance, sprite sheet 2D, brosses de sculpt, licences d'assets.",
-      "<b>Exercices</b> — les réponses symboliques acceptent aussi leur nom écrit («&nbsp;point-virgule&nbsp;» = «&nbsp;;&nbsp;»).",
+      "<b>Exercices</b> — les réponses symboliques acceptent aussi leur nom écrit («&nbsp;point-virgule&nbsp;» = «&nbsp;;&nbsp;»)."
+    ] },
+    { id: 7, date: "25 juin 2026", title: "Fond neutre & accessibilité", items: [
+      "<b>Fond neutre</b> — retrait du fond «&nbsp;espresso&nbsp;» en thème clair comme sombre.",
       "<b>Accessibilité</b> — lien d'évitement, focus clavier net, régions live, Échap sur les panneaux."
     ] },
-    { id: 6, date: "23 juin 2026", title: "Fond neutre & repère dans la piste", items: [
-      "<b>Fond neutre</b> — retrait du fond «&nbsp;espresso&nbsp;» en thème clair comme sombre.",
+    { id: 6, date: "24 juin 2026", title: "Projet fil rouge & repère de leçon", items: [
+      "<b>Projet transversal</b> — un fil rouge relie toutes les pistes, du blockout au moteur, avec des consignes dans les leçons clés.",
       "<b>Repère de leçon</b> — compteur «&nbsp;Leçon X / N&nbsp;» + mini-barre d'avancement de la piste."
     ] },
-    { id: 5, date: "22 juin 2026", title: "Projet fil rouge", items: [
-      "<b>Projet transversal</b> — un fil rouge relie toutes les pistes, du blockout au moteur.",
-      "<b>Consignes intégrées</b> — bandeau et rappels dans les leçons clés du pipeline."
+    { id: 5, date: "23 juin 2026", title: "Habillage Atelier/Studio & palette d'accent", items: [
+      "<b>Nouvel habillage</b> — thème «&nbsp;Atelier / Studio&nbsp;» avec polices locales (100&nbsp;% hors-ligne).",
+      "<b>Palette d'accent</b> — 6 couleurs au choix, en thème clair et sombre.",
+      "<b>Finitions visuelles</b> — dock mobile, cibles tactiles, barre de code lisible."
     ] },
-    { id: 4, date: "21 juin 2026", title: "Motivation & justesse des exercices", items: [
+    { id: 4, date: "23 juin 2026", title: "Motivation & justesse des exercices", items: [
       "<b>Motivation</b> — badges, filtre flashcards «&nbsp;mes leçons terminées&nbsp;», série liée aux actions.",
       "<b>Correction plus juste</b> — QCM avec seconde chance ; «&nbsp;trois&nbsp;» accepté pour «&nbsp;3&nbsp;»."
     ] },
-    { id: 3, date: "20 juin 2026", title: "Tableau de bord, révision & outils", items: [
+    { id: 3, date: "18 juin 2026", title: "Tableau de bord, révision & outils", items: [
       "<b>Progression</b> — page dédiée (heatmap, séries, scores) et <b>flashcards</b> du glossaire.",
-      "<b>Outils</b> — Pomodoro, Notes, surlignages, «&nbsp;Mes données&nbsp;» (export/import), palette d'accent."
+      "<b>Outils</b> — Pomodoro, Notes, surlignages, «&nbsp;Mes données&nbsp;» (export/import)."
     ] },
     { id: 2, date: "18 juin 2026", title: "Exercices auto-corrigés", items: [
-      "<b>Exercice express</b> — un exercice auto-corrigé au bas de chaque leçon."
+      "<b>Exercice express</b> — un exercice auto-corrigé sur chaque leçon (jusqu'à 10 par leçon de code) + QCM-bilan de fin de piste."
     ] },
-    { id: 1, date: "14 juin 2026", title: "Nouvelles pistes de programmation", items: [
+    { id: 1, date: "15 juin 2026", title: "Nouvelles pistes de programmation", items: [
       "<b>Nouvelles pistes</b> — Lua, Blueprints et Shaders."
     ] }
   ];
