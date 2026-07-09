@@ -186,6 +186,11 @@
               <figcaption>La carte mentale à mémoriser&nbsp;: <b>Hierarchy</b> (arbre des objets) à gauche, <b>Scene/Game</b> au centre (édition vs rendu joueur), <b>Inspector</b> (propriétés) à droite, <b>Project</b> (disque) et <b>Console</b> (messages) en bas. Tu peux tout réorganiser&nbsp;; cette disposition n'est qu'un point de départ.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~30 s</span></p>
+              <p>Ouvre un projet Unity (même vide). Dans la vue Scene&nbsp;: <b>clic droit maintenu + ZQSD/WASD</b> pour voler, <b>molette</b> pour zoomer, <b>Alt+clic gauche</b> pour orbiter. Sélectionne un objet et presse <kbd>F</kbd> pour le recadrer. La navigation fluide, c'est la moitié de la vitesse d'un artiste.</p>
+            </div>
+
             <h3>2. Naviguer dans la vue Scene</h3>
             <p>Savoir bouger la caméra d'édition rapidement est ce qui sépare un débutant lent d'un artiste fluide. Il y a deux familles de navigation.</p>
             <h4>Navigation «&nbsp;à la main&nbsp;» (autour d'un point)</h4>
@@ -226,6 +231,11 @@
               <li><b>Global</b> vs <b>Local</b> — en <b>Global</b>, les flèches s'alignent sur les axes du monde (X toujours horizontal). En <b>Local</b>, elles s'alignent sur l'<b>orientation propre de l'objet</b>&nbsp;: si l'objet est tourné à 45°, ses flèches le sont aussi. Indispensable pour déplacer un objet «&nbsp;vers l'avant&nbsp;» selon <em>sa</em> direction, pas celle du monde.</li>
               <li><b>Pivot</b> vs <b>Center</b> — détermine le point autour duquel s'opère la transformation&nbsp;: le <b>point de pivot réel</b> de l'objet (souvent défini en modélisation), ou le <b>centre géométrique</b> de la sélection. Crucial dès qu'on sélectionne plusieurs objets à la fois.</li>
             </ul>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans la <b>Hierarchy</b>, clic droit <span class="arrow">▸</span> <b>Create Empty</b>. Sélectionne l'objet, puis dans l'<b>Inspector</b> clique <b>Add Component</b> et ajoute par exemple un <b>Rigidbody</b>. Un GameObject nu + des Components empilés&nbsp;: c'est tout le modèle d'Unity, en une manip.</p>
+            </div>
 
             <h3>4. Le modèle GameObject + Components&nbsp;: le cœur d'Unity</h3>
             <p>On arrive au concept le plus important de toute la piste. Dans Unity, <b>tout ce qui existe dans une scène est un <span class="term">GameObject</span></b>&nbsp;: un personnage, une lumière, une caméra, un mur, une zone de déclenchement invisible. Mais — et c'est contre-intuitif — un GameObject en lui-même est un <b>conteneur quasiment vide</b>. Il n'a ni forme, ni couleur, ni comportement propre. Il n'a qu'une chose garantie&nbsp;: un nom, et un component <b>Transform</b> (on y revient).</p>
@@ -517,6 +527,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

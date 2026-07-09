@@ -17,6 +17,7 @@
   /* ---- Cartes de stats ---- */
   function setStat(id, val) { var e = $(id); if (e) e.textContent = val; }
   setStat("ds-lessons", sum.done + " / " + sum.total);
+  setStat("ds-practiced", sum.practiced + " / " + sum.total);
   setStat("ds-pct", sum.pct + "%");
   setStat("ds-pistes-done", pistesDone + " / " + sum.pistes.length);
   setStat("ds-streak", P.streak());
@@ -113,10 +114,11 @@
     var host = $("ds-pistes"); if (!host) return;
     var html = "";
     sum.pistes.forEach(function (p) {
+      var prLabel = p.practiced ? '<span class="dsp-prat" title="Leçons dont les critères de réussite sont validés">✓ ' + p.practiced + ' pratiquée' + (p.practiced > 1 ? 's' : '') + '</span>' : '';
       html +=
         '<div class="dsp-row" style="--pc:' + p.couleur + '">' +
           '<div class="dsp-head"><span class="dsp-name">' + p.titre + '</span>' +
-          '<span class="dsp-num">' + p.done + ' / ' + p.total + '</span></div>' +
+          '<span class="dsp-num">' + prLabel + p.done + ' / ' + p.total + '</span></div>' +
           '<div class="dsp-bar"><i style="width:' + p.pct + '%"></i></div>' +
         '</div>';
     });

@@ -225,6 +225,11 @@
               <figcaption>À gauche, les carrés du damier restent carrés et de même taille&nbsp;: la texture se posera sans déformation. À droite, ils s'allongent et changent de taille&nbsp;: la texture sera étirée et localement plus floue. La <b>checker map</b> rend l'invisible visible.</figcaption>
             </figure>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b06-uv.webp" width="1280" height="800" loading="lazy" alt="Capture de l'espace UV Editing de Blender : à gauche l'éditeur UV montre les îlots dépliés d'une caisse, à droite le viewport affiche la même caisse avec une texture damier dont les carreaux sont réguliers.">
+              <figcaption>Le même principe dans un vrai logiciel (ici Blender, espace <b>UV Editing</b>)&nbsp;: à gauche le <b>dépliage</b>, à droite le <b>damier</b> posé sur le modèle. Des carreaux carrés et homogènes confirment un bon dépliage&nbsp;; s'ils s'étirent, l'UV est à corriger. On le refait pas à pas en <a href="../../cours/blender/b06-uv.html">B6</a>.</figcaption>
+            </figure>
+
             <h3>4. Le packing&nbsp;: ranger les îlots dans le carré</h3>
             <p>Une fois les morceaux aplatis, il faut les <b>ranger</b> dans le carré <code>0–1</code> sans qu'ils se chevauchent et en gaspillant le moins d'espace possible. C'est le <b>packing</b> (ou <i>layout</i>). Plus l'espace est rempli, plus chaque îlot reçoit de pixels donc de netteté&nbsp;: le packing influe directement sur la qualité finale.</p>
 
@@ -483,6 +488,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

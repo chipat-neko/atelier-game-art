@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G2+ — Guide complet de l'interface Godot · Atelier Game Art</title>
+  <meta name="description" content="Le tour complet de l'éditeur Godot 4.x en vraies captures : chaque menu (Scene, Project, Debug, Editor, Help), les onglets, la barre d'outils 3D, les docks et les panneaux du bas, avec un tableau expliquant chaque entrée.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g2b";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>Guide complet de l'interface</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G2+ — Guide complet de l'interface Godot</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g02-editeur.html">G2 — Anatomie de l'éditeur</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif de cette leçon</div>
+              <p>Un <b>tour complet et illustré</b> de l'éditeur Godot 4.x, en vraies captures&nbsp;: chaque <b>menu</b> ouvert, chaque <b>onglet</b>, la <b>barre d'outils 3D</b>, les <b>docks</b> et les <b>panneaux du bas</b> — avec, pour chaque zone, un <b>tableau qui explique chaque entrée</b>. L'idée&nbsp;: après cette page, plus besoin d'aller chercher ailleurs «&nbsp;à quoi sert ce bouton&nbsp;».</p>
+            </div>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">ℹ️</span>Comment lire ce guide</div>
+              <p>C'est une <b>leçon de référence</b>&nbsp;: parcours-la une fois pour te repérer, puis reviens-y quand tu croises un bouton inconnu. Toutes les captures sont <b>cliquables</b> pour s'agrandir. Les raccourcis sont notés en gris <span class="ds-dim">(comme ceci)</span>. Interface montrée&nbsp;: Godot 4.7 stable.</p>
+            </div>
+
+            <h2>Vue d'ensemble&nbsp;: les 6 zones</h2>
+            <p>Avant les détails, la carte générale. L'éditeur se découpe toujours en six zones, quel que soit ce que tu fais.</p>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-overview.webp" width="1280" height="800" loading="lazy" alt="Éditeur Godot annoté en 6 zones : 1 le dock Scene à gauche, 2 la barre d'outils 3D, 3 le viewport au centre, 4 l'Inspector à droite, 5 le FileSystem en bas à gauche, 6 les panneaux du bas.">
+              <figcaption>Les six zones de l'éditeur&nbsp;: la <b>barre de menus</b> tout en haut (traitée ci-dessous), puis <b>(1)</b> l'arbre des nodes, <b>(2)</b> la barre d'outils, <b>(3)</b> le viewport, <b>(4)</b> l'Inspector, <b>(5)</b> le FileSystem et <b>(6)</b> les panneaux du bas.</figcaption>
+            </figure>
+
+            <h2>1. La barre de menus</h2>
+            <p>Cinq menus tout en haut à gauche&nbsp;: <b>Scene</b>, <b>Project</b>, <b>Debug</b>, <b>Editor</b>, <b>Help</b>. On les passe en revue un par un.</p>
+
+            <h3>Menu <b>Scene</b> — fichiers de scène</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-menu-scene.webp" width="696" height="1032" loading="lazy" alt="Menu Scene de Godot ouvert : New Scene, New Inherited Scene, Open Scene, Reopen Closed Scene, Open Recent, Save Scene, Save Scene As, Save All Scenes, Quick Open, Export As, Undo, Redo, Reload Saved Scene, Close Scene, Close All Scenes, Quit.">
+              <figcaption>Le menu <b>Scene</b> gère les fichiers <code>.tscn</code>&nbsp;: créer, ouvrir, sauvegarder, exporter, fermer.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>New Scene</b> <span class="ds-dim">(Ctrl N)</span></td><td>Créer une nouvelle scène vide (on choisit ensuite son node racine).</td></tr>
+                <tr><td><b>New Inherited Scene…</b> <span class="ds-dim">(Ctrl Shift N)</span></td><td>Créer une scène qui <b>hérite</b> d'une autre (part d'une base et la spécialise).</td></tr>
+                <tr><td><b>Open Scene…</b> <span class="ds-dim">(Ctrl O)</span></td><td>Ouvrir un fichier de scène <code>.tscn</code> existant.</td></tr>
+                <tr><td><b>Reopen Closed Scene</b> <span class="ds-dim">(Ctrl Shift T)</span></td><td>Rouvrir la dernière scène fermée (pratique après une fermeture par erreur).</td></tr>
+                <tr><td><b>Open Recent</b> <span class="ds-dim">▸</span></td><td>Liste des scènes récemment ouvertes.</td></tr>
+                <tr><td><b>Save Scene</b> <span class="ds-dim">(Ctrl S)</span></td><td>Enregistrer la scène courante.</td></tr>
+                <tr><td><b>Save Scene As…</b> <span class="ds-dim">(Ctrl Shift S)</span></td><td>Enregistrer sous un nouveau nom/emplacement.</td></tr>
+                <tr><td><b>Save All Scenes</b> <span class="ds-dim">(Ctrl Alt Shift S)</span></td><td>Enregistrer toutes les scènes ouvertes d'un coup.</td></tr>
+                <tr><td><b>Quick Open…</b> <span class="ds-dim">(Alt Shift O)</span></td><td>Ouvrir <b>n'importe quelle</b> ressource en tapant son nom.</td></tr>
+                <tr><td><b>Quick Open Scene…</b> <span class="ds-dim">(Ctrl Shift O)</span></td><td>Ouvrir rapidement une scène par son nom.</td></tr>
+                <tr><td><b>Quick Open Script…</b> <span class="ds-dim">(Ctrl Alt O)</span></td><td>Ouvrir rapidement un script par son nom.</td></tr>
+                <tr><td><b>Export As…</b> <span class="ds-dim">▸</span></td><td>Exporter la scène (par ex. en <b>glTF/MeshLibrary</b>).</td></tr>
+                <tr><td><b>Undo / Redo</b> <span class="ds-dim">(Ctrl Z / Ctrl Shift Z)</span></td><td>Annuler / rétablir la dernière action d'édition.</td></tr>
+                <tr><td><b>Reload Saved Scene</b></td><td>Recharger la scène depuis le disque (abandonne les changements non enregistrés).</td></tr>
+                <tr><td><b>Close Scene</b> <span class="ds-dim">(Ctrl Shift W)</span></td><td>Fermer l'onglet de scène courant.</td></tr>
+                <tr><td><b>Close All Scenes</b></td><td>Fermer tous les onglets de scène.</td></tr>
+                <tr><td><b>Quit</b> <span class="ds-dim">(Ctrl Q)</span></td><td>Quitter l'éditeur Godot.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Project</b> — réglages du projet</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-menu-project.webp" width="792" height="632" loading="lazy" alt="Menu Project de Godot ouvert : Project Settings, Find in Files, Version Control, Export, Pack Project as ZIP, Install Android Build Template, Open User Data Folder, Tools, Reload Current Project, Quit to Project List.">
+              <figcaption>Le menu <b>Project</b>&nbsp;: tout ce qui concerne le projet entier — réglages, export, contrôle de version.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Project Settings…</b></td><td>Le grand panneau de configuration&nbsp;: nom, résolution, calques physiques, <b>input map</b>, autoloads, <b>rendering</b> (le renderer, renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>)…</td></tr>
+                <tr><td><b>Find in Files…</b> <span class="ds-dim">(Ctrl Shift F)</span></td><td>Rechercher du texte dans tous les fichiers du projet (scripts, scènes).</td></tr>
+                <tr><td><b>Version Control</b> <span class="ds-dim">▸</span></td><td>Intégration Git (statut, commits) si le plugin est activé.</td></tr>
+                <tr><td><b>Export…</b></td><td>Ouvrir le gestionnaire d'export vers les plateformes (Windows, Linux, Android, Web…).</td></tr>
+                <tr><td><b>Pack Project as ZIP…</b></td><td>Empaqueter tout le projet dans une archive ZIP.</td></tr>
+                <tr><td><b>Install Android Build Template…</b></td><td>Installer les fichiers nécessaires pour un export Android personnalisé.</td></tr>
+                <tr><td><b>Open User Data Folder</b></td><td>Ouvrir le dossier des données utilisateur (<code>user://</code>&nbsp;: sauvegardes, logs).</td></tr>
+                <tr><td><b>Tools</b> <span class="ds-dim">▸</span></td><td>Outils divers (orphan explorer, upgrade de projet…).</td></tr>
+                <tr><td><b>Reload Current Project</b></td><td>Recharger le projet entier.</td></tr>
+                <tr><td><b>Quit to Project List</b> <span class="ds-dim">(Ctrl Shift Q)</span></td><td>Revenir au gestionnaire de projets.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Debug</b> — options de test</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-menu-debug.webp" width="672" height="680" loading="lazy" alt="Menu Debug de Godot ouvert : Deploy with Remote Debug, Small Deploy with Network Filesystem, Visible Collision Shapes, Visible Paths, Visible Navigation, Visible Avoidance, Debug CanvasItem Redraws, Synchronize Scene Changes, Synchronize Script Changes, Keep Debug Server Open, Customize Run Instances.">
+              <figcaption>Le menu <b>Debug</b> règle ce qui est visible et synchronisé <b>quand tu lances le jeu</b> depuis l'éditeur.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Deploy with Remote Debug</b></td><td>Déboguer une build exportée à distance (sur téléphone par ex.).</td></tr>
+                <tr><td><b>Small Deploy with Network Filesystem</b></td><td>Déploiement allégé&nbsp;: les fichiers sont servis par le réseau (itérations mobiles rapides).</td></tr>
+                <tr><td><b>Visible Collision Shapes</b></td><td>Afficher les formes de collision pendant le jeu (débogage physique).</td></tr>
+                <tr><td><b>Visible Paths</b></td><td>Afficher les chemins (Path2D/3D) en cours d'exécution.</td></tr>
+                <tr><td><b>Visible Navigation</b></td><td>Afficher les maillages de navigation (NavMesh) pendant le jeu.</td></tr>
+                <tr><td><b>Visible Avoidance</b></td><td>Visualiser l'évitement d'obstacles des agents de navigation.</td></tr>
+                <tr><td><b>Debug CanvasItem Redraws</b></td><td>Mettre en évidence les éléments 2D qui se redessinent (optimisation UI).</td></tr>
+                <tr><td><b>Synchronize Scene Changes</b></td><td>Répercuter en <b>direct</b> tes modifs de scène dans le jeu qui tourne.</td></tr>
+                <tr><td><b>Synchronize Script Changes</b></td><td>Idem pour les scripts&nbsp;: rechargés à chaud pendant l'exécution.</td></tr>
+                <tr><td><b>Keep Debug Server Open</b></td><td>Garder le serveur de debug ouvert entre deux lancements.</td></tr>
+                <tr><td><b>Customize Run Instances…</b></td><td>Lancer plusieurs instances du jeu à la fois (test multijoueur en local).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Editor</b> — l'éditeur lui-même</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-menu-editor.webp" width="724" height="676" loading="lazy" alt="Menu Editor de Godot ouvert : Editor Settings, Command Palette, Editor Docks, Editor Layout, Take Screenshot, Toggle Fullscreen, Open Editor Data Folder, Open Editor Settings Folder, Manage Editor Features, Manage Export Templates, Configure FBX Importer.">
+              <figcaption>Le menu <b>Editor</b> configure l'outil (pas le jeu)&nbsp;: réglages, disposition des docks, thème, templates.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Editor Settings…</b></td><td>Préférences globales de l'éditeur (thème, police, navigation, raccourcis) — valables pour tous tes projets.</td></tr>
+                <tr><td><b>Command Palette…</b> <span class="ds-dim">(Ctrl Shift P)</span></td><td>Lancer n'importe quelle commande en tapant son nom (comme dans VS Code).</td></tr>
+                <tr><td><b>Editor Docks</b> <span class="ds-dim">▸</span></td><td>Afficher/masquer les docks (Scene, Inspector, FileSystem…).</td></tr>
+                <tr><td><b>Editor Layout</b> <span class="ds-dim">▸</span></td><td>Enregistrer/charger une <b>disposition</b> de fenêtres personnalisée.</td></tr>
+                <tr><td><b>Take Screenshot</b> <span class="ds-dim">(Ctrl F12)</span></td><td>Capturer l'éditeur (l'image va dans le dossier de données de l'éditeur).</td></tr>
+                <tr><td><b>Toggle Fullscreen</b> <span class="ds-dim">(Shift F11)</span></td><td>Passer l'éditeur en plein écran.</td></tr>
+                <tr><td><b>Open Editor Data / Settings Folder</b></td><td>Ouvrir les dossiers de config de l'éditeur (utile pour sauvegarder/migrer ses réglages).</td></tr>
+                <tr><td><b>Manage Editor Features…</b></td><td>Activer/désactiver des fonctionnalités pour alléger l'interface (profils).</td></tr>
+                <tr><td><b>Manage Export Templates…</b></td><td>Télécharger/gérer les <b>templates d'export</b> (nécessaires pour exporter le jeu).</td></tr>
+                <tr><td><b>Configure FBX Importer…</b></td><td>Configurer l'import FBX (via FBX2glTF) si tu utilises ce format.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Help</b> — aide et documentation</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-menu-help.webp" width="612" height="620" loading="lazy" alt="Menu Help de Godot ouvert : Search Help, Online Documentation, Forum, Community, Copy System Info, Report a Bug, Suggest a Feature, Send Docs Feedback, About Godot, Support Godot Development.">
+              <figcaption>Le menu <b>Help</b>&nbsp;: la doc intégrée des classes, les liens communautaires et le diagnostic système.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Search Help…</b> <span class="ds-dim">(F1)</span></td><td>Chercher dans la <b>doc des classes</b> intégrée (méthodes, propriétés) — sans quitter l'éditeur.</td></tr>
+                <tr><td><b>Online Documentation</b></td><td>Ouvrir la documentation officielle en ligne.</td></tr>
+                <tr><td><b>Forum</b> / <b>Community</b></td><td>Accès au forum et aux espaces communautaires.</td></tr>
+                <tr><td><b>Copy System Info</b></td><td>Copier les infos système (OS, GPU, version) — à joindre à un rapport de bug.</td></tr>
+                <tr><td><b>Report a Bug</b> / <b>Suggest a Feature</b></td><td>Ouvrir le suivi de problèmes du projet Godot.</td></tr>
+                <tr><td><b>Send Docs Feedback</b></td><td>Signaler un souci dans la documentation.</td></tr>
+                <tr><td><b>About Godot</b></td><td>Version, licence, liste des contributeurs.</td></tr>
+                <tr><td><b>Support Godot Development</b></td><td>Soutenir le développement (Godot est un logiciel libre financé par dons).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h2>2. Les onglets d'écran principal</h2>
+            <p>Au centre du bandeau supérieur, on bascule entre les grands <b>modes de travail</b>. Le node sélectionné et la scène restent les mêmes&nbsp;: on change juste l'éditeur affiché.</p>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-tabs.webp" width="1245" height="88" loading="lazy" alt="Onglets d'écran principal de Godot : 2D, 3D, Script, Game, Asset Store.">
+              <figcaption>Les onglets d'écran principal, en haut au centre&nbsp;: <b>2D</b>, <b>3D</b>, <b>Script</b>, <b>Game</b>, <b>Asset Store</b>.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Onglet</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>2D</b></td><td>L'éditeur 2D (sprites, UI, tilemaps)&nbsp;: vue plane avec repère en pixels.</td></tr>
+                <tr><td><b>3D</b></td><td>L'éditeur 3D&nbsp;: le viewport avec caméra orbitale et gizmos de transformation.</td></tr>
+                <tr><td><b>Script</b></td><td>L'éditeur de code (GDScript/C#)&nbsp;: script, débogueur, doc des classes.</td></tr>
+                <tr><td><b>Game</b></td><td>Vue du jeu en cours d'exécution, intégrée à l'éditeur (debug «&nbsp;dans&nbsp;» la partie).</td></tr>
+                <tr><td><b>Asset Store</b> (AssetLib)</td><td>La <b>bibliothèque d'assets</b> officielle&nbsp;: plugins, modèles, démos à télécharger (renvoi <a href="../../cours/godot/g10-plugins.html">G10</a>).</td></tr>
+              </tbody>
+            </table></div>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">▶️</span>Et les boutons de lecture&nbsp;?</div>
+              <p>Tout en haut à <b>droite</b> se trouvent les boutons <b>Run Project</b> <span class="ds-dim">(F5)</span>, <b>Run Current Scene</b> <span class="ds-dim">(F6)</span>, <b>Pause</b> et <b>Stop</b> <span class="ds-dim">(F8)</span>&nbsp;: c'est de là qu'on lance et arrête le jeu pour le tester.</p>
+            </div>
+
+            <h2>3. La barre d'outils 3D</h2>
+            <p>Juste au-dessus du viewport 3D&nbsp;: les outils pour <b>sélectionner</b>, <b>transformer</b> et régler la vue. De gauche à droite&nbsp;:</p>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-toolbar3d.webp" width="1400" height="80" loading="lazy" alt="Barre d'outils 3D de Godot : sélectionner, déplacer, tourner, redimensionner, puis outils de verrouillage, règle, aimantation, aperçu du soleil et de l'environnement, et menus Transform et View.">
+              <figcaption>La barre d'outils du viewport 3D&nbsp;: les quatre premiers icônes sont les outils de transformation, les suivants gèrent le verrouillage, l'aimantation (snap) et les aides d'affichage.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Outil</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Select</b> <span class="ds-dim">(Q)</span></td><td>Le mode sélection (curseur)&nbsp;: cliquer pour choisir un node sans le déplacer.</td></tr>
+                <tr><td><b>Move</b> <span class="ds-dim">(W)</span></td><td>Déplacer le node sélectionné (gizmo à flèches rouge/vert/bleu = X/Y/Z).</td></tr>
+                <tr><td><b>Rotate</b> <span class="ds-dim">(E)</span></td><td>Faire tourner le node (gizmo en anneaux).</td></tr>
+                <tr><td><b>Scale</b> <span class="ds-dim">(R)</span></td><td>Redimensionner le node (gizmo à cubes).</td></tr>
+                <tr><td><b>Sélection par zone / listes</b></td><td>Sélectionner les nodes contenus dans un rectangle, ou choisir dans une liste sous le curseur.</td></tr>
+                <tr><td><b>Lock / Group</b> <span class="ds-dim">(cadenas)</span></td><td>Verrouiller la sélection (empêche de bouger par erreur) ou la traiter comme un groupe.</td></tr>
+                <tr><td><b>Ruler / Measure</b></td><td>Outil de <b>mesure</b> de distances dans la scène.</td></tr>
+                <tr><td><b>Snap</b> <span class="ds-dim">(aimant)</span></td><td>Activer l'<b>aimantation</b> à la grille/angle&nbsp;; le bouton voisin ouvre ses réglages (pas de grille…).</td></tr>
+                <tr><td><b>Local / World space</b></td><td>Basculer le gizmo entre repère <b>local</b> (orienté objet) et <b>global</b> (axes du monde).</td></tr>
+                <tr><td><b>Aperçu soleil / environnement</b> <span class="ds-dim">(☀ / 🌐)</span></td><td>Éclairer le viewport avec un <b>soleil</b> et un <b>environnement</b> de prévisualisation, même sans lumière dans la scène.</td></tr>
+                <tr><td><b>⋮ (plus d'options)</b></td><td>Réglages avancés du viewport (gizmos affichés, informations, FPS…).</td></tr>
+                <tr><td><b>Transform</b> (menu)</td><td>Saisir des transformations précises au clavier, figer/appliquer, etc.</td></tr>
+                <tr><td><b>View</b> (menu)</td><td>Régler l'affichage&nbsp;: caméra (perspective/orthogonale), grille, gizmos, vues prédéfinies (dessus, face…).</td></tr>
+              </tbody>
+            </table></div>
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">🖱️</span>Naviguer dans la vue 3D</div>
+              <p><b>Clic-molette</b> pour orbiter, <span class="kbd">Maj</span>+molette pour le panoramique, <b>rouleau</b> pour zoomer. Maintiens le <b>clic droit</b> pour passer en mode «&nbsp;survol&nbsp;» et te déplacer en <span class="kbd">Z</span><span class="kbd">Q</span><span class="kbd">S</span><span class="kbd">D</span> (ou <span class="kbd">W</span><span class="kbd">A</span><span class="kbd">S</span><span class="kbd">D</span>). <span class="kbd">F</span> recentre la vue sur le node sélectionné.</p>
+            </div>
+
+            <h2>4. Les docks</h2>
+            <p>Les panneaux latéraux — les <b>docks</b> — se répartissent autour du viewport. On peut les déplacer, mais voici leur rôle par défaut (repère-toi sur la vue d'ensemble plus haut).</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Dock</th><th>Position</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Scene</b></td><td>Haut-gauche</td><td>L'<b>arbre des nodes</b> de la scène ouverte. Bouton <span class="kbd">+</span> <span class="ds-dim">(Ctrl A)</span> pour ajouter un node&nbsp;; icône chaîne pour instancier une scène.</td></tr>
+                <tr><td><b>Import</b></td><td>Haut-gauche (onglet)</td><td>Les <b>réglages d'import</b> du fichier sélectionné dans le FileSystem (glTF, texture…) — renvoi <a href="../../cours/godot/g05-import-assets.html">G5</a>.</td></tr>
+                <tr><td><b>FileSystem</b></td><td>Bas-gauche</td><td>Tous les <b>fichiers du projet</b> sous <code>res://</code> (scènes, modèles, textures, scripts) — renvoi <a href="../../cours/godot/g04-projet.html">G4</a>.</td></tr>
+                <tr><td><b>History</b></td><td>Bas-gauche (onglet)</td><td>L'historique des actions d'édition (undo/redo visualisé).</td></tr>
+                <tr><td><b>Inspector</b></td><td>Droite</td><td>Toutes les <b>propriétés</b> du node/ressource sélectionné (Transform, mesh, matériau, ombres…).</td></tr>
+                <tr><td><b>Signals</b></td><td>Droite (onglet)</td><td>Les <b>signaux</b> émis par le node (événements) — à connecter à des fonctions.</td></tr>
+                <tr><td><b>Node</b></td><td>Droite (onglet)</td><td>Onglet du dock de droite&nbsp;: gérer les <b>signaux</b> et les <b>groupes</b> du node.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h2>5. Les panneaux du bas</h2>
+            <p>La barre du bas ouvre des panneaux contextuels. Ils s'affichent en cliquant leur nom&nbsp;; certains apparaissent tout seuls (le Debugger quand une erreur survient, par exemple).</p>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/gui-bottom.webp" width="1540" height="75" loading="lazy" alt="Panneaux du bas de Godot : Output, Debugger, Audio, Animation, Shader Editor.">
+              <figcaption>Les panneaux du bas&nbsp;: <b>Output</b>, <b>Debugger</b>, <b>Audio</b>, <b>Animation</b>, <b>Shader Editor</b>.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Panneau</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Output</b></td><td>La <b>console</b>&nbsp;: messages <code>print()</code>, avertissements et erreurs du jeu qui tourne.</td></tr>
+                <tr><td><b>Debugger</b></td><td>Le <b>débogueur</b>&nbsp;: pile d'appels, variables, points d'arrêt, profileur, moniteurs de performance.</td></tr>
+                <tr><td><b>Audio</b></td><td>Le mixeur audio&nbsp;: <b>bus</b>, effets et volumes.</td></tr>
+                <tr><td><b>Animation</b></td><td>L'éditeur d'<b>animations</b> (AnimationPlayer)&nbsp;: pistes, clés, courbes.</td></tr>
+                <tr><td><b>Shader Editor</b></td><td>Éditer les <b>shaders</b> (code ou graphe de nodes visuel) — renvoi <a href="../../cours/godot/g06-materiaux.html">G6</a>.</td></tr>
+              </tbody>
+            </table></div>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>La <b>barre de menus</b> (Scene / Project / Debug / Editor / Help) couvre respectivement les fichiers de scène, le projet entier, les options de test, l'outil lui-même et l'aide.</li>
+                <li>Les <b>onglets</b> 2D / 3D / Script / Game / Asset Store changent de mode de travail&nbsp;; les boutons de <b>lecture</b> sont en haut à droite.</li>
+                <li>La <b>barre d'outils 3D</b> = sélectionner + déplacer/tourner/redimensionner, plus le snap et les aperçus d'éclairage.</li>
+                <li>Les <b>docks</b> (Scene, Import, FileSystem, Inspector, Node) et les <b>panneaux du bas</b> (Output, Debugger, Audio, Animation, Shader) complètent le tour.</li>
+              </ul>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Dans quel menu règle-t-on le renderer et l'input map du projet ?","a":["Project ▸ Project Settings","Editor ▸ Editor Settings","Scene ▸ New Scene","Debug"],"correct":0,"explain":"Project Settings configure le projet lui-même (rendu, calques, entrées, autoloads). Editor Settings, lui, ne concerne que l'outil (thème, raccourcis)."},
+  {"q":"Où télécharge-t-on les templates nécessaires pour exporter le jeu ?","a":["Editor ▸ Manage Export Templates","Help ▸ Online Documentation","Scene ▸ Export As","Debug ▸ Deploy with Remote Debug"],"correct":0,"explain":"Les templates d'export se gèrent dans le menu Editor ▸ Manage Export Templates. Sans eux, l'export vers une plateforme échoue."},
+  {"q":"À quoi servent les boutons ☀ et 🌐 de la barre d'outils 3D ?","a":["Prévisualiser un soleil et un environnement dans le viewport, même sans lumière dans la scène","Lancer le jeu","Activer l'aimantation","Changer de renderer"],"correct":0,"explain":"Ce sont des aides d'édition : elles éclairent la vue pour travailler confortablement, sans rien ajouter à la scène finale."}
+]
+              </script>
+            </section>
+
+            <div class="exercice">
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Je sais où sont les 5 menus et ce que couvre chacun.</li>
+                  <li>Je distingue Project Settings (le projet) de Editor Settings (l'outil).</li>
+                  <li>Je repère les onglets 2D/3D/Script/Game/Asset Store et les boutons de lecture.</li>
+                  <li>Je nomme les 4 outils de transformation (Q/W/E/R) et le snap.</li>
+                  <li>Je situe les docks (Scene, Import, FileSystem, Inspector, Node) et les panneaux du bas.</li>
+                </ul>
+              </div>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/godot/g03-renderers.html">G3 — Choisir son renderer</a>&nbsp;: Forward+, Mobile, Compatibility.</li>
+              <li><a href="../../cours/godot/g04-projet.html">G4 — Créer &amp; configurer un projet</a>&nbsp;: organiser <code>res://</code>.</li>
+              <li><a href="../../cours/blender/b01b-guide-interface.html">B1+ — Guide de l'interface Blender</a>&nbsp;: le même tour complet, côté Blender.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

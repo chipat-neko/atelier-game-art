@@ -115,6 +115,11 @@
               <p>Le raccourci universel <kbd>X</kbd> intervertit les couleurs de premier plan/arrière-plan. Sur un masque, ça permet d'alterner instantanément entre «&nbsp;cacher&nbsp;» (noir) et «&nbsp;révéler&nbsp;» (blanc) avec le même pinceau&nbsp;: on «&nbsp;gomme&nbsp;» et on «&nbsp;dégomme&nbsp;» sans changer d'outil.</p>
             </div>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans <b>Krita</b> ou <b>GIMP</b> (gratuits), crée deux calques&nbsp;: un fond gris, un calque rouge au-dessus. Passe le calque du haut en <b>Multiply</b>, puis en <b>Screen</b>, et observe&nbsp;: Multiply assombrit, Screen éclaircit. Les modes de fusion ne sont que des opérations par pixel.</p>
+            </div>
+
             <h3>4. Les modes de fusion&nbsp;: comment deux calques se combinent</h3>
             <p>Par défaut, un calque <b>recouvre</b> celui du dessous (mode <em>Normal</em>). Un <span class="term">mode de fusion</span> (blend mode) change la formule mathématique qui mélange le calque avec ce qu'il y a dessous. Ce ne sont pas des effets magiques&nbsp;: ce sont de simples opérations par pixel. En comprendre trois suffit pour 90&nbsp;% du travail de texture.</p>
 
@@ -193,6 +198,11 @@
             <div class="callout piege">
               <div class="callout-title"><span class="ico">⚠️</span>Toujours exporter en straight + edge padding</div>
               <p>Pour le jeu, exporte en <span class="term">PNG</span> (ou TGA) avec alpha <b>straight</b> (non prémultiplié) et applique un <b>edge padding</b> de quelques pixels. C'est la combinaison qui élimine les halos dans Unity comme dans Unreal. Un PNG «&nbsp;qui rend bien dans l'éditeur 2D&nbsp;» peut révéler son liseré seulement une fois en jeu, à cause du mipmapping.</p>
+            </div>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prends une texture quelconque et applique un décalage&nbsp;: dans GIMP, <b>Filtres <span class="arrow">▸</span> Carte <span class="arrow">▸</span> Décalage</b> à la moitié de la largeur et de la hauteur. Les <b>coutures</b> sautent alors au centre de l'image&nbsp;: c'est précisément ce qu'une texture tileable propre doit faire disparaître.</p>
             </div>
 
             <h3>7. La texture tileable (répétable)&nbsp;: pourquoi et comment</h3>
@@ -480,6 +490,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

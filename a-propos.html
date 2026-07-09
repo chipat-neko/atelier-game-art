@@ -55,6 +55,136 @@
             <p>Suis la <b>Piste&nbsp;0 (Fondamentaux)</b> en premier, dans l'ordre&nbsp;: tout le reste s'appuie dessus. Ensuite, fais la <b>Piste&nbsp;1 (Logiciels)</b> pour un panorama des outils, puis approfondis l'outil 3D gratuit avec la <b>Piste&nbsp;2 (Blender)</b>, de A à Z. Choisis alors ton moteur (Piste&nbsp;3 Unity, Piste&nbsp;4 Unreal <em>ou</em> Piste&nbsp;5 Godot — le moteur libre)&nbsp;; la <b>Piste&nbsp;6</b> t'aide justement à choisir. Coche «&nbsp;Leçon terminée&nbsp;» au fur et à mesure&nbsp;: ta progression s'affiche dans la barre latérale.</p>
           </div>
 
+          <h2>Ton itinéraire selon ton objectif</h2>
+          <p>Les 13 pistes peuvent intimider. Selon ce que tu veux faire, tu n'as pas à tout suivre dans l'ordre&nbsp;: voici quatre parcours. Réponds au petit quiz, ou choisis directement ton profil.</p>
+
+          <div class="orient" id="orient-quiz">
+            <p class="orient-lead">🧭 Trouve ton parcours en 3 questions</p>
+            <div class="orient-q" data-q="but">
+              <p>1. Ton but principal&nbsp;?</p>
+              <div class="orient-opts">
+                <label><input type="radio" name="but" value="art"> Créer des images / assets 3D (art)</label>
+                <label><input type="radio" name="but" value="dev"> Coder le gameplay d'un jeu</label>
+                <label><input type="radio" name="but" value="projet"> Sortir un projet précis, vite</label>
+              </div>
+            </div>
+            <div class="orient-q" data-q="niveau">
+              <p>2. Ton niveau en 3D / graphisme&nbsp;?</p>
+              <div class="orient-opts">
+                <label><input type="radio" name="niveau" value="debutant"> Grand débutant</label>
+                <label><input type="radio" name="niveau" value="bases"> J'ai déjà quelques bases</label>
+              </div>
+            </div>
+            <div class="orient-q" data-q="moteur">
+              <p>3. Veux-tu utiliser un moteur (Unity / Unreal / Godot)&nbsp;?</p>
+              <div class="orient-opts">
+                <label><input type="radio" name="moteur" value="oui"> Oui, c'est le but</label>
+                <label><input type="radio" name="moteur" value="non"> Pas vraiment, surtout la 3D</label>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" id="orient-go">Voir mon itinéraire</button>
+            <div class="orient-result" id="orient-result" hidden></div>
+          </div>
+
+          <div class="itineraires">
+            <div class="itin-card" id="profil-art">
+              <span class="itin-ico">🎨</span>
+              <h3>Artiste 2D/3D débutant</h3>
+              <p class="itin-who">Tu veux apprendre la création graphique de A à Z et finir dans un moteur.</p>
+              <ol class="itin-steps">
+                <li><b>Fondamentaux</b> (F1 → F12) — les bases, dans l'ordre.</li>
+                <li><b>Logiciels</b> (L1 → L5) — le panorama des outils.</li>
+                <li><b>Blender</b> (B1 → B11) — l'outil 3D gratuit, à fond.</li>
+                <li>Un <b>moteur</b> au choix (Unity, Unreal <em>ou</em> Godot).</li>
+                <li>Le <b>projet fil rouge</b> pour tout relier.</li>
+              </ol>
+              <a class="btn btn-ghost btn-sm" href="cours/fondamentaux/f01-image-numerique.html">Commencer par F1</a>
+            </div>
+
+            <div class="itin-card" id="profil-assets">
+              <span class="itin-ico">📦</span>
+              <h3>Juste faire des assets 3D</h3>
+              <p class="itin-who">Modéliser et texturer des props/personnages, sans forcément coder ni intégrer.</p>
+              <ol class="itin-steps">
+                <li><b>Fondamentaux</b> ciblés&nbsp;: F4 (mesh), F5 (pipeline), F6 (UV), F7 (PBR), F8 (bake).</li>
+                <li><b>Blender</b> (B1 → B11) — modélisation, UV, shading, bake, export.</li>
+                <li><b>Logiciels</b> L2 (Substance / texturing) et L4 (sculpt).</li>
+                <li>Le <b>fil rouge</b> jusqu'à l'export (tu peux sauter les étapes moteur/code).</li>
+              </ol>
+              <a class="btn btn-ghost btn-sm" href="cours/fondamentaux/f04-anatomie-mesh.html">Commencer par F4</a>
+            </div>
+
+            <div class="itin-card" id="profil-dev">
+              <span class="itin-ico">🕹️</span>
+              <h3>Futur dev gameplay</h3>
+              <p class="itin-who">Le code et le moteur t'intéressent plus que la création d'art détaillé.</p>
+              <ol class="itin-steps">
+                <li><b>Fondamentaux</b> essentiels&nbsp;: F1 → F5 (assez pour comprendre les assets).</li>
+                <li>Ton <b>moteur</b>&nbsp;: Unity, Unreal ou Godot (installation → éditeur → import).</li>
+                <li>La <b>piste de code</b> associée&nbsp;: C# (Unity), C++/Blueprints (Unreal), GDScript (Godot).</li>
+                <li>Le <b>fil rouge</b> côté intégration &amp; script.</li>
+              </ol>
+              <a class="btn btn-ghost btn-sm" href="cours/fondamentaux/f01-image-numerique.html">Commencer par F1</a>
+            </div>
+
+            <div class="itin-card" id="profil-projet">
+              <span class="itin-ico">⚡</span>
+              <h3>Pressé / projet précis</h3>
+              <p class="itin-who">Tu as déjà des bases et un objectif clair&nbsp;: tu veux avancer sur ton projet.</p>
+              <ol class="itin-steps">
+                <li>Va droit au <b>projet fil rouge</b>&nbsp;: il te guide étape par étape.</li>
+                <li>À chaque étape, <b>pioche</b> la ou les leçons liées (les liens sont dans le projet).</li>
+                <li>Reviens aux <b>Fondamentaux</b> seulement quand une notion te bloque.</li>
+              </ol>
+              <a class="btn btn-ghost btn-sm" href="projet.html">Ouvrir le projet fil rouge</a>
+            </div>
+          </div>
+
+          <script>
+            (function () {
+              var MAP = {
+                but:    { art: {"profil-art":2, "profil-assets":1}, dev: {"profil-dev":3}, projet: {"profil-projet":3} },
+                niveau: { debutant: {"profil-art":1, "profil-assets":1}, bases: {"profil-dev":1, "profil-projet":1} },
+                moteur: { oui: {"profil-art":1, "profil-dev":1}, non: {"profil-assets":2} }
+              };
+              var NAMES = { "profil-art":"Artiste 2D/3D débutant", "profil-assets":"Juste faire des assets 3D", "profil-dev":"Futur dev gameplay", "profil-projet":"Pressé / projet précis" };
+              var go = document.getElementById("orient-go");
+              var res = document.getElementById("orient-result");
+              if (!go) return;
+              go.addEventListener("click", function () {
+                var scores = { "profil-art":0, "profil-assets":0, "profil-dev":0, "profil-projet":0 };
+                var answered = 0;
+                Object.keys(MAP).forEach(function (q) {
+                  var sel = document.querySelector('input[name="' + q + '"]:checked');
+                  if (!sel) return;
+                  answered++;
+                  var pts = MAP[q][sel.value] || {};
+                  Object.keys(pts).forEach(function (p) { scores[p] += pts[p]; });
+                });
+                if (answered === 0) {
+                  res.hidden = false;
+                  res.innerHTML = "Réponds à au moins une question pour obtenir une recommandation 🙂";
+                  return;
+                }
+                var order = ["profil-art","profil-assets","profil-dev","profil-projet"];
+                var best = order[0];
+                order.forEach(function (p) { if (scores[p] > scores[best]) best = p; });
+                document.querySelectorAll(".itin-card").forEach(function (c) {
+                  c.classList.remove("is-reco");
+                  var t = c.querySelector(".itin-reco-tag"); if (t) t.remove();
+                });
+                var card = document.getElementById(best);
+                card.classList.add("is-reco");
+                var tag = document.createElement("span");
+                tag.className = "itin-reco-tag"; tag.textContent = "Recommandé pour toi";
+                card.insertBefore(tag, card.firstChild);
+                res.hidden = false;
+                res.innerHTML = "D'après tes réponses, commence par le parcours <b>« " + NAMES[best] + " »</b> (surligné ci-dessous). Rien n'est figé&nbsp;: tu peux changer de cap à tout moment.";
+                card.scrollIntoView({ behavior: "smooth", block: "center" });
+              });
+            })();
+          </script>
+
           <h2>100% local, 100% hors-ligne</h2>
           <p>Ce site fonctionne en ouvrant <span class="term">index.html</span> par un simple double-clic, <b>sans serveur ni connexion internet</b>. Tout est embarqué&nbsp;: aucune police distante, aucune librairie en ligne, aucun appel réseau. Tu peux le consulter en mode avion, l'archiver sur une clé USB, l'imprimer.</p>
           <ul>

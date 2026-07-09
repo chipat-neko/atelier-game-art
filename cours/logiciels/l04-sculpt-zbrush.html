@@ -204,6 +204,11 @@
               <p>Une brosse Clay Strips de Blender, une brosse Clay Buildup de ZBrush et une brosse «&nbsp;clay&nbsp;» de Nomad font fondamentalement la même chose. Les noms et les raccourcis changent, mais la <b>logique</b> — bloquer la masse, densifier, détailler, polir — est universelle. Apprendre à <em>penser comme un sculpteur</em> compte bien plus que le logiciel précis&nbsp;; c'est cette compétence-là que vise la leçon.</p>
             </div>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans Blender, ajoute une <b>UV Sphere</b>, puis choisis <b>Sculpt Mode</b> dans le menu des modes (en haut à gauche). Avec la brosse <b>Draw</b>, clique-glisse sur la sphère&nbsp;: la matière se gonfle. Maintiens <kbd>Ctrl</kbd> pour creuser à l'inverse. Voilà le geste de base du sculpt.</p>
+            </div>
+
             <h3>5. La place dans le pipeline&nbsp;: sculpt → retopo → bake</h3>
             <p>Le sculpt n'est jamais une fin en soi pour le jeu&nbsp;: c'est le <b>premier maillon</b> d'une chaîne. Un sculpt de personnage peut peser <b>10 à 40 millions de polygones</b>&nbsp;; aucun moteur temps réel ne peut afficher cela pour une dizaine de personnages simultanés. Il faut donc transformer ce trésor de détail en quelque chose de léger.</p>
             <ol>
@@ -276,6 +281,11 @@
               <li><b>Mask</b> (maintenir <kbd>Ctrl</kbd>+tracer)&nbsp;: protège une zone&nbsp;; on ne sculpte que le reste. <kbd>Ctrl</kbd>+clic dans le vide efface le masque.</li>
             </ul>
             <p>Règles de main&nbsp;: <kbd>F</kbd> change la taille de brosse, <kbd>Maj+F</kbd> la force&nbsp;; le <b>symmetry</b> (X) sculpte les deux côtés à la fois — indispensable pour un visage.</p>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Toujours en Sculpt Mode, ouvre le menu <b>Dyntopo</b> (en haut) et coche-le, puis sculpte un pli fin&nbsp;: le maillage se subdivise tout seul là où tu ajoutes du détail. Désactive-le et réessaie&nbsp;: sans matière, la brosse ne «&nbsp;prend&nbsp;» plus. Tu vois d'où vient le détail.</p>
+            </div>
 
             <h3>8. Où trouver la matière : Dyntopo, Remesh, Multires</h3>
             <p>Le vrai problème technique du sculpt&nbsp;: une sphère n'a pas assez de polygones pour du détail fin. Trois façons d'en ajouter, à ne pas confondre&nbsp;:</p>
@@ -483,6 +493,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

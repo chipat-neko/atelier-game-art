@@ -91,28 +91,9 @@
             <h3>2. ORM&nbsp;: textures packées</h3>
             <p>Pour économiser des textures, Godot gère le packing <span class="gloss">ORM</span> (Occlusion-Roughness-Metallic dans R-G-B, comme Unreal — renvoi <a href="../../cours/logiciels/l02-substance.html">L2</a>). On active <em>AO/Roughness/Metallic</em> en mode «&nbsp;ORM&nbsp;» (le <code>ORMMaterial3D</code> ou les options dédiées) et on assigne la texture packée&nbsp;: une seule lecture pour trois canaux. Substance exporte directement un preset Godot/ORM.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 220" role="img" aria-label="StandardMaterial3D avec ses slots PBR et la texture ORM">
-                <g class="svg-text" font-size="11">
-                  <rect x="20" y="30" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="30" y="48" font-weight="700">Albedo (sRGB)</text><text x="30" y="63" class="svg-dim" font-size="10">couleur de base</text>
-                  <rect x="20" y="80" width="150" height="56" rx="6" class="svg-surface" stroke="#313c4c"/><text x="30" y="98" font-weight="700">ORM (données)</text>
-                  <text x="30" y="114" fill="#f87171" font-size="10">R · AO</text><text x="78" y="114" fill="#4ade80" font-size="10">G · Rough</text><text x="30" y="128" fill="#4f9bd9" font-size="10">B · Metal</text>
-                  <rect x="20" y="146" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="30" y="164" font-weight="700">Normal (Y+)</text><text x="30" y="179" class="svg-dim" font-size="10">relief</text>
-
-                  <rect x="380" y="60" width="220" height="100" rx="9" fill="#4f9bd9" fill-opacity="0.12" stroke="#4f9bd9" stroke-width="1.6"/>
-                  <text x="490" y="86" text-anchor="middle" font-weight="800">StandardMaterial3D</text>
-                  <text x="490" y="110" text-anchor="middle" class="svg-dim">Albedo · Metallic · Roughness</text>
-                  <text x="490" y="128" text-anchor="middle" class="svg-dim">Normal · AO · Emission</text>
-                  <text x="490" y="146" text-anchor="middle" class="svg-dim" font-size="10">→ appliqué au MeshInstance3D</text>
-                </g>
-                <defs><marker id="g6ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
-                <g stroke="#4f9bd9" stroke-width="1.7" fill="none" marker-end="url(#g6ar)">
-                  <path d="M170 50 C 280 60, 320 90, 378 95"/>
-                  <path d="M170 108 L378 110"/>
-                  <path d="M170 166 C 280 150, 320 135, 378 128"/>
-                </g>
-              </svg>
-              <figcaption>Le StandardMaterial3D&nbsp;: chaque map sur son slot, l'ORM packé alimentant AO/Roughness/Metallic en une texture.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/g06-materiaux.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'Inspector Godot : le StandardMaterial3D d'un mesh, avec son aperçu et ses canaux PBR (Albedo, Metallic, Roughness, Normal Map, Emission).">
+              <figcaption>Le matériau PBR de Godot, le <b>StandardMaterial3D</b>, dans l'Inspector&nbsp;: on le pose dans <b>Surface Material Override</b>, puis on branche ses canaux — <b>Albedo</b> (couleur de base), <b>Metallic</b>, <b>Roughness</b>, <b>Normal Map</b>, Emission… On peut aussi charger une texture <b>ORM</b> (Occlusion/Roughness/Metallic packée).</figcaption>
             </figure>
 
             <h3>3. Transparence et émission</h3>
@@ -302,6 +283,7 @@ void fragment() {
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

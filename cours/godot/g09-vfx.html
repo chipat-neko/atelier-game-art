@@ -98,29 +98,9 @@
             <h3>3. Draw passes&nbsp;: ce qui est rendu</h3>
             <p>Le <b>Draw Pass</b> définit la géométrie émise&nbsp;: le plus souvent un <b>QuadMesh</b> texturé (sprite/billboard face caméra, pour fumée/étincelles) avec un matériau adapté&nbsp;; ou un <b>mesh</b> (débris, projectiles). On peut avoir plusieurs draw passes. Le <b>matériau</b> du draw pass (renvoi <a href="../../cours/godot/g06-materiaux.html">G6</a>) décide de l'apparence&nbsp;: souvent <em>billboard</em> activé, transparence additive (feu, étincelles) ou alpha (fumée), <em>Unshaded</em> pour les effets lumineux.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 190" role="img" aria-label="Structure d'un GPUParticles3D : node, ProcessMaterial, Draw Pass">
-                <defs><marker id="g9ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
-                <g class="svg-text" font-size="11.5">
-                  <rect x="30" y="60" width="170" height="70" rx="8" fill="#4f9bd9" fill-opacity="0.12" stroke="#4f9bd9" stroke-width="1.6"/>
-                  <text x="115" y="84" text-anchor="middle" font-weight="800">GPUParticles3D</text>
-                  <text x="115" y="104" text-anchor="middle" class="svg-dim">Amount · Lifetime</text>
-                  <text x="115" y="120" text-anchor="middle" class="svg-dim">Explosiveness · One Shot</text>
-                  <rect x="250" y="30" width="180" height="60" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/>
-                  <text x="340" y="52" text-anchor="middle" font-weight="700">ProcessMaterial</text>
-                  <text x="340" y="70" text-anchor="middle" class="svg-dim" font-size="10">émission · forces</text>
-                  <text x="340" y="84" text-anchor="middle" class="svg-dim" font-size="10">scale/color over life</text>
-                  <rect x="250" y="104" width="180" height="60" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/>
-                  <text x="340" y="126" text-anchor="middle" font-weight="700">Draw Pass</text>
-                  <text x="340" y="144" text-anchor="middle" class="svg-dim" font-size="10">QuadMesh + matériau</text>
-                  <text x="340" y="158" text-anchor="middle" class="svg-dim" font-size="10">(billboard, additif)</text>
-                </g>
-                <g stroke="#4f9bd9" stroke-width="1.7" marker-end="url(#g9ar)">
-                  <path d="M200 85 C 220 70, 230 62, 248 60"/>
-                  <path d="M200 105 C 220 120, 230 128, 248 132"/>
-                </g>
-              </svg>
-              <figcaption>Un GPUParticles3D&nbsp;: le node (nombre, durée), le <b>ProcessMaterial</b> (comportement) et le <b>Draw Pass</b> (apparence).</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/g09-particules.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'Inspector Godot pour un GPUParticles3D : 1 le node et ses réglages (Amount, Emitting), 2 le Process Material, 3 les Draw Passes.">
+              <figcaption>Un système de particules dans Godot, c'est un <b>node GPUParticles3D</b>&nbsp;: ses réglages (Amount, Lifetime…), un <b>Process Material</b> qui décrit comment les particules naissent et bougent, et des <b>Draw Passes</b> qui disent quel mesh chaque particule affiche.</figcaption>
             </figure>
 
             <h3>4. Sous-émetteurs</h3>
@@ -287,6 +267,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

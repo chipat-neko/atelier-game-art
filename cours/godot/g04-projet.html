@@ -90,19 +90,9 @@
               <li>Tes dossiers&nbsp;: <code>scenes/</code>, <code>assets/</code> (ou <code>models/</code>, <code>textures/</code>), <code>materials/</code>, <code>scripts/</code>, etc.</li>
             </ul>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 200" role="img" aria-label="Structure de dossiers d'un projet Godot sous res://">
-                <g class="svg-text" font-size="12" font-family="monospace">
-                  <text x="30" y="40" font-weight="700">res://  (= dossier du projet)</text>
-                  <text x="60" y="66">project.godot   <tspan class="svg-dim" font-size="10">← définit le projet (à versionner)</tspan></text>
-                  <text x="60" y="90">.godot/         <tspan class="svg-dim" font-size="10">← cache généré (NE PAS versionner)</tspan></text>
-                  <text x="60" y="114">scenes/         <tspan class="svg-dim" font-size="10">← .tscn</tspan></text>
-                  <text x="60" y="138">assets/models/  assets/textures/</text>
-                  <text x="60" y="162">materials/   scripts/   addons/  <tspan class="svg-dim" font-size="10">← plugins (G10)</tspan></text>
-                </g>
-                <rect x="20" y="20" width="600" height="160" rx="8" fill="none" stroke="#4f9bd9" stroke-opacity="0.5"/>
-              </svg>
-              <figcaption>Une arborescence claire&nbsp;: <code>project.godot</code> et tes dossiers se versionnent&nbsp;; <code>.godot/</code> (cache) s'ignore.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/g04-projet.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'éditeur Godot : le dock FileSystem montre res:// avec des dossiers models, textures, scenes, materials et le fichier main.tscn.">
+              <figcaption>Un projet Godot vu depuis le dock <b>FileSystem</b>&nbsp;: tout est rangé sous <b>res://</b> (la racine), avec un dossier par type d'asset (<b>models</b>, <b>textures</b>, <b>scenes</b>, <b>materials</b>). La scène <b>main.tscn</b> n'est qu'un fichier parmi les autres.</figcaption>
             </figure>
 
             <h3>3. Les Project Settings</h3>
@@ -270,6 +260,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

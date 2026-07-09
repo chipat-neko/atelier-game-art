@@ -98,31 +98,9 @@
               <li>Nom propre des objets/matériaux (ils arrivent tels quels dans le moteur).</li>
             </ul>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 190" role="img" aria-label="Checklist d'export propre de Blender vers les moteurs">
-                <defs><marker id="b11ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
-                <g class="svg-text" font-size="11">
-                  <rect x="20" y="60" width="150" height="64" rx="8" fill="#e0a14b" fill-opacity="0.12" stroke="#e0a14b"/>
-                  <text x="95" y="82" text-anchor="middle" font-weight="700">Préparer</text>
-                  <text x="95" y="100" text-anchor="middle" class="svg-dim" font-size="10">Apply Transforms</text>
-                  <text x="95" y="114" text-anchor="middle" class="svg-dim" font-size="10">origine · échelle · normales</text>
-
-                  <rect x="245" y="60" width="150" height="64" rx="8" fill="#38bdf8" fill-opacity="0.12" stroke="#38bdf8"/>
-                  <text x="320" y="82" text-anchor="middle" font-weight="700">Exporter</text>
-                  <text x="320" y="100" text-anchor="middle" class="svg-dim" font-size="10">FBX / glTF</text>
-                  <text x="320" y="114" text-anchor="middle" class="svg-dim" font-size="10">axes · Apply Modifiers</text>
-
-                  <rect x="470" y="36" width="150" height="52" rx="8" fill="#818cf8" fill-opacity="0.12" stroke="#818cf8"/>
-                  <text x="545" y="58" text-anchor="middle" font-weight="700">Unity</text><text x="545" y="76" text-anchor="middle" class="svg-dim" font-size="10">1 u = 1 m · Y-up</text>
-                  <rect x="470" y="98" width="150" height="52" rx="8" fill="#c084fc" fill-opacity="0.12" stroke="#c084fc"/>
-                  <text x="545" y="120" text-anchor="middle" font-weight="700">Unreal</text><text x="545" y="138" text-anchor="middle" class="svg-dim" font-size="10">1 uu = 1 cm · Z-up</text>
-                </g>
-                <g stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b11ar)">
-                  <line x1="170" y1="92" x2="243" y2="92"/>
-                  <path d="M395 84 L468 62" /><path d="M395 100 L468 122"/>
-                </g>
-              </svg>
-              <figcaption>Le bon réflexe&nbsp;: préparer (transforms/échelle/origine) → exporter (axes, modifiers) → vérifier dans chaque moteur (renvoi C2).</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b11-rendu-export.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de la fenêtre d'export glTF de Blender : 1 le panneau d'options d'export à droite, 2 le choix du Format (glTF Binary), 3 les sections Include, Transform et Data, 4 le bouton Export glTF 2.0.">
+              <figcaption>La fenêtre d'<b>export</b>&nbsp;: choisis le <b>format</b> (glTF ou FBX), règle <b>Include / Transform / Data</b> (objets emportés, axes, modifiers), puis exporte. Le réflexe&nbsp;: <b>préparer</b> avant (transforms appliquées&nbsp;: Scale 1, Rotation 0) et <b>vérifier</b> ensuite dans le moteur.</figcaption>
             </figure>
 
             <h3>3. Exporter en FBX</h3>
@@ -333,6 +311,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

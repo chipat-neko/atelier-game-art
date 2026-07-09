@@ -264,6 +264,11 @@
               <figcaption>Le low-poly (bleu, plat) est enveloppé par une cage (violet pointillé). Depuis la cage, des rayons (vert) partent le long de la normale, frappent le high-poly ondulé (orange) et enregistrent son orientation dans une texture (normal map). Le low-poly «&nbsp;hérite&nbsp;» visuellement du relief sans gagner un seul polygone.</figcaption>
             </figure>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b08-bake.webp" width="1280" height="800" loading="lazy" alt="Capture de Blender montrant deux caisses sélectionnées : la low-poly aux arêtes vives (objet actif, qui reçoit le bake) et la high-poly aux arêtes arrondies (la source du détail).">
+              <figcaption>Le même principe dans un vrai logiciel (ici Blender)&nbsp;: on sélectionne la <b>high-poly</b> (détail, arêtes arrondies) puis la <b>low-poly</b> en dernier (objet actif), et on cuit en <b>« Selected to Active »</b>. La low-poly plate hérite alors du relief. Le pas à pas complet est en <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>.</figcaption>
+            </figure>
+
             <h3>5. Les artefacts&nbsp;: ce qui rate, et pourquoi</h3>
             <p>Comprendre <em>pourquoi</em> un bake foire permet de le réparer sans tâtonner. Voici les mécanismes physiques des artefacts les plus fréquents.</p>
 
@@ -326,6 +331,23 @@
             <div class="callout astuce">
               <div class="callout-title"><span class="ico">💡</span>Average Normals</div>
               <p>L'option <b>Average Normals</b> (normales moyennées) lisse la direction des rayons à la jonction des faces du low-poly, pour éviter les ruptures brutales de tangent space. Active-la quand ton low-poly a des surfaces lisses (cylindres, formes arrondies)&nbsp;: elle réduit fortement le skew. Sur des arêtes franches bien dotées de seams, elle change peu de choses.</p>
+            </div>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_high.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_high.png" alt="Rendu de référence de la caisse high-poly, source du bake"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse en bois</b> — la paire <b>high → low</b> prête à l'emploi pour t'exercer au bake (normal, AO, curvature) sans avoir à modéliser quoi que ce soit.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.blend" download>caisse_low.blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_high.blend" download>caisse_high.blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Low ≈ 816 tris · High ≈ 53 k tris · UV déjà faites · libre d'usage.</p>
+                </div>
+              </div>
             </div>
 
             <h2>🔧 Démonstration pas à pas</h2>
@@ -513,6 +535,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

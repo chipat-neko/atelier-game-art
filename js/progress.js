@@ -6,6 +6,7 @@
      ag-activity  { "AAAA-MM-JJ": n, ... }       journal d'activité (heatmap, séries)
      ag-last      { id, t }                      dernière leçon visitée (bandeau « Reprendre »)
      ag-quiz      { "f01": { best, total }, ... } meilleurs scores de QCM
+     ag-check     { "l01": { done:{0:1,...}, total } } critères de pratique cochés
    100% local, aucun fetch.
    ========================================================================= */
 (function () {
@@ -14,6 +15,7 @@
   var K_ACT = "ag-activity";
   var K_LAST = "ag-last";
   var K_QUIZ = "ag-quiz";
+  var K_CHECK = "ag-check";
 
   function read(key) {
     try { return JSON.parse(localStorage.getItem(key)) || {}; }
@@ -111,17 +113,56 @@
     getQuiz: function (id) { var q = read(K_QUIZ); return q[id] || null; },
     getAllQuiz: function () { return read(K_QUIZ); },
 
+    /* ----- Pratique validée (checklists « Critères de réussite ») -----
+       Stocke, par leçon, l'ensemble des critères cochés et leur total.
+       Une leçon est « pratiquée » quand tous ses critères sont cochés. ----- */
+    setCheck: function (lessonId, index, checked, total) {
+      if (!lessonId) return;
+      var c = read(K_CHECK), e = c[lessonId] || { done: {}, total: total || 0 };
+      if (total) e.total = total;
+      if (checked) e.done[index] = 1; else delete e.done[index];
+      c[lessonId] = e;
+      write(K_CHECK, c);
+    },
+    /* Renvoie la map { index: 1 } des critères cochés d'une leçon. */
+    getChecklist: function (lessonId) {
+      var c = read(K_CHECK), e = c[lessonId];
+      return e ? (e.done || {}) : {};
+    },
+    isPracticed: function (lessonId) {
+      var c = read(K_CHECK), e = c[lessonId];
+      if (!e || !e.total) return false;
+      return Object.keys(e.done || {}).length >= e.total;
+    },
+    countPracticed: function (ids) {
+      var c = read(K_CHECK), n = 0;
+      (ids || []).forEach(function (id) {
+        var e = c[id];
+        if (e && e.total && Object.keys(e.done || {}).length >= e.total) n++;
+      });
+      return n;
+    },
+
     /* ----- Stats globales (accueil / à-propos / tableau de bord) ----- */
     summary: function () {
-      if (!window.SITE_DATA) return { done: 0, total: 0, pct: 0, pistes: [] };
-      var total = window.SITE_DATA.totalLecons, done = 0, pistes = [];
+      if (!window.SITE_DATA) return { done: 0, total: 0, pct: 0, practiced: 0, pistes: [] };
+      var chk = read(K_CHECK);
+      function practicedOf(id) {
+        var e = chk[id];
+        return !!(e && e.total && Object.keys(e.done || {}).length >= e.total);
+      }
+      var total = window.SITE_DATA.totalLecons, done = 0, practiced = 0, pistes = [];
       window.SITE_DATA.pistes.forEach(function (p) {
-        var d = 0;
-        p.lecons.forEach(function (l) { if (state[l.id]) { d++; done++; } });
+        var d = 0, pr = 0;
+        p.lecons.forEach(function (l) {
+          if (state[l.id]) { d++; done++; }
+          if (practicedOf(l.id)) { pr++; practiced++; }
+        });
         pistes.push({ id: p.id, titre: p.titre, couleur: p.couleur, done: d, total: p.lecons.length,
-          pct: p.lecons.length ? Math.round(d / p.lecons.length * 100) : 0 });
+          practiced: pr, pct: p.lecons.length ? Math.round(d / p.lecons.length * 100) : 0 });
       });
-      return { done: done, total: total, pct: total ? Math.round(done / total * 100) : 0, pistes: pistes };
+      return { done: done, total: total, practiced: practiced,
+        pct: total ? Math.round(done / total * 100) : 0, pistes: pistes };
     }
   };
 })();

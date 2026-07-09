@@ -117,7 +117,8 @@
           '<div class="fr-num"><span class="fr-ico">' + s.ico + '</span><span class="fr-n">' + (i + 1) + '</span></div>' +
           '<div class="fr-body">' +
             '<h3 class="fr-title">' + s.title + '</h3>' +
-            '<p class="fr-desc">' + s.desc + '</p>';
+            '<p class="fr-desc">' + s.desc + '</p>' +
+            (s.files || '');
         if (s.lessons && s.lessons.length) {
           html += '<div class="fr-lessons">' + chips(s.lessons) + '</div>';
         }

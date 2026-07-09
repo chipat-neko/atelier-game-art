@@ -92,31 +92,9 @@
             <h3>3. L'UV Editor, le damier et le packing</h3>
             <p>Dans le Workspace <em>UV Editing</em>, l'écran se divise&nbsp;: l'UV Editor à gauche, le mesh à droite. Pour <b>vérifier la distorsion</b>, on applique un matériau avec une <span class="gloss">checker map</span> (texture damier)&nbsp;: des carreaux carrés = UV correct, rectangulaires = étirement, tailles différentes = densité incohérente. On range les îlots dans le carré <b>0–1</b> avec <span class="kbd">U</span>... non&nbsp;: dans l'UV Editor, <span class="menu-path">UV<span class="arrow">▸</span>Pack Islands</span> (avec une <em>marge</em> pour le <span class="gloss">padding</span> — évite le bleeding entre mipmaps, renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>).</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 210" role="img" aria-label="Cube déplié en UV avec damier, îlot correct vs étiré">
-                <g class="svg-text" font-size="11">
-                  <text x="120" y="26" text-anchor="middle" font-weight="700">Cube + seams</text>
-                  <path d="M70 50 h100 v80 h-100 z" fill="#0c1320" stroke="#2e425f"/>
-                  <path d="M70 50 l24 -16 h100 l-24 16" fill="#0c1320" stroke="#2e425f"/>
-                  <path d="M170 50 l24 -16 v80 l-24 16" fill="#0c1320" stroke="#2e425f"/>
-                  <path d="M70 50 h100" stroke="#e0a14b" stroke-width="2"/>
-                  <text x="120" y="150" text-anchor="middle" class="svg-dim" font-size="9">arêtes rouges = seams</text>
-
-                  <text x="340" y="26" text-anchor="middle" font-weight="700">Dépliage 0–1 (damier OK)</text>
-                  <rect x="280" y="40" width="120" height="120" fill="none" stroke="#38bdf8"/>
-                  <g fill="#38bdf8" fill-opacity="0.18">
-                    <rect x="290" y="50" width="48" height="48"/><rect x="342" y="102" width="48" height="48"/>
-                  </g>
-                  <path d="M290 50 h48 v48 h-48 z" fill="none" stroke="#4ade80"/>
-                  <text x="340" y="178" text-anchor="middle" class="svg-dim" font-size="9">carreaux carrés = pas d'étirement</text>
-
-                  <text x="540" y="26" text-anchor="middle" font-weight="700">Étirement (à éviter)</text>
-                  <rect x="480" y="40" width="120" height="120" fill="none" stroke="#f87171"/>
-                  <rect x="490" y="60" width="100" height="30" fill="#f87171" fill-opacity="0.18" stroke="#f87171"/>
-                  <text x="540" y="178" text-anchor="middle" class="svg-dim" font-size="9">carreaux rectangulaires = distorsion</text>
-                </g>
-              </svg>
-              <figcaption>Le damier révèle instantanément l'étirement&nbsp;: on vise des carreaux carrés et de taille homogène sur tout l'objet.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b06-uv.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'espace UV Editing de Blender : 1 à gauche, l'éditeur UV montre les îlots dépliés de la caisse sur une grille ; 2 à droite, le viewport montre la même caisse avec une texture damier appliquée, dont les carreaux sont réguliers.">
+              <figcaption>L'espace <b>UV Editing</b>&nbsp;: à gauche le <b>dépliage</b> (les îlots à plat), à droite le <b>damier</b> appliqué sur le modèle. Des carreaux <b>carrés et homogènes</b> = un dépliage sain&nbsp;; des carrés étirés trahissent une UV à corriger.</figcaption>
             </figure>
 
             <h3>4. Texel density</h3>
@@ -275,6 +253,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

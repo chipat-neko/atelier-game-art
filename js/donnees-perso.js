@@ -11,6 +11,7 @@
     "ag-activity": "Journal d'activité (heatmap, séries)",
     "ag-last": "Dernière leçon visitée",
     "ag-quiz": "Meilleurs scores de QCM",
+    "ag-check": "Pratique validée (critères de réussite)",
     "ag-theme": "Thème (clair / sombre)",
     "ag-accent": "Palette d'accent",
     "ag-notes": "Notes de leçon",

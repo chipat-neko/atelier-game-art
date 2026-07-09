@@ -103,6 +103,11 @@
             <p>Une lumière peut projeter des <span class="term">ombres</span> (<span class="menu-path">Shadow Type</span>). <b>Hard Shadows</b> donne un bord net&nbsp;; <b>Soft Shadows</b> adoucit le contour, plus réaliste mais plus coûteux. La netteté dépend de la <b>résolution de la shadow map</b> (la texture intermédiaire où l'ombre est calculée)&nbsp;: trop basse, l'ombre devient crénelée&nbsp;; trop haute, elle coûte de la mémoire et du temps.</p>
             <p>Le réglage piégeux est le <span class="term">bias</span> (biais). Comme l'ombre est calculée dans une texture de résolution finie, des erreurs d'arrondi font qu'une surface peut s'auto-ombrer par erreur&nbsp;: c'est le <b>shadow acne</b> (un moutonnement de points sombres). On corrige en décalant légèrement l'ombre avec le <b>Bias</b>. Mais si on pousse trop, l'ombre se <b>détache</b> de l'objet qui la projette&nbsp;: c'est le <b>peter-panning</b> (l'objet semble flotter, comme Peter Pan séparé de son ombre). Le bon réglage est le plus petit bias qui supprime l'acne sans créer de détachement visible.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sélectionne la <b>Directional Light</b> de la scène. Fais varier son <b>Intensity</b>, puis sa <b>Color</b> (bleuté → orangé)&nbsp;: toute l'ambiance bascule du matin froid au coucher de soleil. Une seule lumière donne déjà le ton d'une scène.</p>
+            </div>
+
             <h3>2. Light Mode&nbsp;: temps réel, précuit, ou mixte</h3>
             <p>Voici le cœur conceptuel de la leçon. Chaque lumière a un <span class="term">Mode</span> (<span class="menu-path">Realtime</span>, <span class="menu-path">Mixed</span> ou <span class="menu-path">Baked</span>) qui décide <b>quand</b> son influence est calculée. Ce choix gouverne à la fois le réalisme, la flexibilité et le coût.</p>
 
@@ -223,6 +228,11 @@
             <h3>6. Reflection Probes&nbsp;: des reflets justes en PBR</h3>
             <p>Le <span class="gloss">PBR</span> (vu en <a href="../../cours/fondamentaux/f07-pbr.html">F7</a>) fait que les surfaces métalliques ou lisses <b>reflètent leur environnement</b>. Mais que reflètent-elles, concrètement&nbsp;? Par défaut, seulement la skybox — ce qui donne des reflets <b>faux</b> en intérieur&nbsp;: une boule chromée dans une cave refléterait le ciel au lieu des murs de la cave.</p>
             <p>La <span class="term">Reflection Probe</span> (sonde de réflexion) résout cela&nbsp;: placée dans la scène, elle <b>capture une vue panoramique à 360°</b> (une <em>cubemap</em>) de l'environnement autour d'elle. Les matériaux réfléchissants situés dans sa zone d'influence lisent cette capture au lieu de la skybox&nbsp;: le métal reflète enfin <b>les vrais murs</b> qui l'entourent. Comme la GI, une probe peut être <b>baked</b> (capturée une fois, gratuite) ou <b>realtime</b> (mise à jour en direct, coûteuse, réservée aux miroirs animés). On en pose typiquement une par pièce ou par zone visuellement distincte.</p>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~30 s</span></p>
+              <p>Toujours sur la Directional Light, fais tourner sa <b>rotation X</b> (l'inclinaison du soleil)&nbsp;: les ombres s'allongent, l'heure de la journée change sous tes yeux. C'est le réglage le plus rentable pour poser une ambiance.</p>
+            </div>
 
             <h3>7. Skybox et environnement&nbsp;: l'ambiance globale</h3>
             <p>La <span class="term">skybox</span> est l'image de fond qui entoure toute la scène (ciel, horizon). Mais elle est bien plus qu'un décor&nbsp;: réglée dans <span class="menu-path">Window<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Lighting<span class="arrow">▸</span>Environment</span>, elle sert de <b>source de lumière ambiante</b> (l'<em>Ambient</em>, la lumière diffuse générale du ciel) <b>et</b> de source de <b>reflets par défaut</b> pour les surfaces PBR. Une skybox peut être <b>procédurale</b> (un ciel calculé selon l'angle du soleil) ou une <span class="gloss">HDRI</span> (une photo panoramique haute dynamique d'un lieu réel, qui apporte d'un coup une lumière et des reflets crédibles).</p>
@@ -480,6 +490,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

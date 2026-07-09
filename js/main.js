@@ -59,6 +59,7 @@
     { ico: "🎨", title: "Texturer en PBR",
       desc: "Crée tes maps : albedo, normal, roughness, metallic, AO. Comprends d'abord la logique PBR, puis peins.",
       action: "Crée les maps PBR de ton prop (albedo, normal, roughness, metallic, AO).",
+      files: '<div class="fr-files"><a class="fr-files-thumb" href="assets/exos/caisse/ref_low.png" target="_blank" rel="noopener"><img src="assets/exos/caisse/ref_low.png" alt="Caisse d\'exercice fournie"></a><div class="fr-files-txt"><p><b>Pas encore de prop&nbsp;?</b> Utilise la <b>caisse en bois</b> fournie&nbsp;: low-poly dépliée + high-poly à baker + rendus de référence.</p><span class="fr-files-links"><a href="assets/exos/caisse/caisse_low.fbx" download>.fbx</a><a href="assets/exos/caisse/caisse_low.glb" download>.glb</a><a href="assets/exos/caisse/caisse_low.blend" download>low.blend</a><a href="assets/exos/caisse/caisse_high.blend" download>high.blend</a><a href="assets/exos/caisse/README.md" download>README</a></span></div></div>',
       lessons: ["f07", "f08", "l02", "b08", "sh09"] },
     { ico: "📦", title: "Exporter pour le moteur",
       desc: "Choisis le bon format (FBX / glTF), vérifie l'échelle et les normales, puis exporte.",
@@ -232,6 +233,67 @@
   /* ---------- Journal des nouveautés (cloche) ----------
      À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
   var CHANGELOG = [
+    { id: 22, date: "9 juillet 2026", title: "Guides d'interface Blender &amp; Godot harmonisés", items: [
+      "Le <b>Guide de l'interface Blender</b> gagne les mêmes éléments de fin que celui de Godot&nbsp;: une <b>checklist «&nbsp;Critères de réussite&nbsp;»</b> auto-évaluée (cochable, sauvegardée) et une section <b>«&nbsp;Pour aller plus loin&nbsp;»</b> avec renvois croisés.",
+      "Les deux guides de référence ont désormais la <b>même structure de bout en bout</b>."
+    ] },
+    { id: 21, date: "9 juillet 2026", title: "Nouveau : Guide complet de l'interface Godot", items: [
+      "<b>Une leçon de référence (G2+)</b> après «&nbsp;Anatomie de l'éditeur&nbsp;»&nbsp;: chaque <b>menu</b> de Godot (Scene, Project, Debug, Editor, Help) capturé et <b>détaillé entrée par entrée</b> dans un tableau, plus les onglets, la barre d'outils 3D, les docks et les panneaux du bas.",
+      "<b>Comme le guide Blender</b> — même principe «&nbsp;la totalité du logiciel&nbsp;» pour ne plus avoir à chercher ailleurs à quoi sert un bouton. Toutes les captures sont cliquables pour agrandir.",
+      "Le programme passe à <b>154 leçons</b>."
+    ] },
+    { id: 20, date: "9 juillet 2026", title: "Piste Godot illustrée de bout en bout", items: [
+      "<b>Six leçons Godot de plus en vraies captures annotées</b>&nbsp;: <b>G4</b> (le dock FileSystem et res://), <b>G5</b> (l'import d'un glTF avec le dock Import), <b>G6</b> (le StandardMaterial3D et ses canaux PBR), <b>G7</b> (une DirectionalLight3D et ses ombres), <b>G8</b> (le node WorldEnvironment) et <b>G9</b> (un GPUParticles3D).",
+      "<b>Même caisse, même moteur</b> — toutes les captures partagent la scène de démo (la caisse de l'exercice), pour un fil cohérent&nbsp;; images cliquables pour agrandir.",
+      "<b>100% local</b> — éditeur Godot 4.7 capturé hors-ligne&nbsp;; les leçons plus conceptuelles (installation, renderers, plugins, optimisation) gardent leurs schémas, plus clairs qu'une capture."
+    ] },
+    { id: 19, date: "8 juillet 2026", title: "Godot aussi en vraies captures (éditeur)", items: [
+      "<b>Piste Godot lancée en images</b> — la leçon «&nbsp;L'éditeur&nbsp;» (G2) montre maintenant une <b>vraie capture annotée</b> de l'éditeur Godot 4.7&nbsp;: l'arbre de nodes, le viewport, le FileSystem et l'Inspector.",
+      "<b>Sans logiciel payant</b> — Godot étant libre, tout est généré ici, hors-ligne&nbsp;; les autres leçons Godot suivront sur le même modèle."
+    ] },
+    { id: 18, date: "8 juillet 2026", title: "Fondamentaux illustrés en vrai (UV &amp; baking)", items: [
+      "<b>F6 (UV)</b> et <b>F8 (baking)</b> gagnent une <b>vraie capture Blender</b> en complément de leur schéma&nbsp;: le damier sur un modèle déplié pour l'UV, et la paire high-poly / low-poly pour le bake.",
+      "<b>Théorie + réalité</b> — les schémas conceptuels restent, la capture montre à quoi ça ressemble dans le logiciel (cliquable pour agrandir)."
+    ] },
+    { id: 17, date: "8 juillet 2026", title: "Guide de l'interface — panneau Properties &amp; éditeurs", items: [
+      "<b>Properties, onglet par onglet</b> — le guide Blender détaille désormais les 13 onglets du panneau Properties (Render, Object, Modifiers, Physics, Material…) avec capture annotée.",
+      "<b>Les principaux éditeurs</b> — un tableau des éditeurs (Shader, UV, Geometry Nodes, Compositor, Timeline…) et comment changer le type d'une zone, avec deux exemples en capture."
+    ] },
+    { id: 16, date: "8 juillet 2026", title: "« Ton itinéraire » — par où commencer selon ton objectif", items: [
+      "<b>4 parcours par profil</b> — dans «&nbsp;À propos&nbsp;»&nbsp;: artiste débutant, «&nbsp;juste des assets 3D&nbsp;», futur dev gameplay, ou pressé/projet précis, chacun avec l'ordre des pistes à suivre.",
+      "<b>Mini-quiz d'orientation</b> — 3 questions et le site te surligne le parcours conseillé.",
+      "<b>Accès direct</b> — un bouton «&nbsp;Trouver mon parcours&nbsp;» sur la page d'accueil."
+    ] },
+    { id: 15, date: "8 juillet 2026", title: "Nouvelle leçon — Guide complet de l'interface Blender", items: [
+      "<b>Une leçon-référence</b> insérée juste après «&nbsp;Installation&nbsp;»&nbsp;: chaque menu de Blender est ouvert en capture et <b>chaque item est expliqué dans un tableau</b> — File, Edit, Render, Window, Help, puis View, Select, Add, Object, et l'Edit Mode (Mesh, Vertex, Edge, Face).",
+      "<b>Pour ne plus chercher ailleurs</b> — l'idée&nbsp;: retrouver n'importe quelle commande et son rôle sans quitter le cours. 13 captures de menus, cliquables pour agrandir.",
+      "<b>Images cliquables</b> — toutes les captures d'écran du site s'ouvrent maintenant en plein écran d'un clic (Échap pour fermer)."
+    ] },
+    { id: 14, date: "8 juillet 2026", title: "Toute la piste Blender illustrée en vraies captures", items: [
+      "<b>11 diagrammes remplacés</b> — chaque leçon Blender (B1 à B11) troque son schéma conceptuel pour une <b>vraie capture d'écran annotée</b>&nbsp;: interface, Edit Mode, modifiers, sculpt, UV/damier, Shader Editor, bake, Geometry Nodes, Weight Paint, export.",
+      "<b>Repères posés dessus</b> — cadres numérotés, flèches et légende explicative sur chaque image, pour ne plus chercher les boutons.",
+      "<b>Léger &amp; hors-ligne</b> — WebP compressé (~50–100 Ko), texte alternatif détaillé, généré avec Blender 4.2 LTS."
+    ] },
+    { id: 13, date: "8 juillet 2026", title: "Premières captures d'écran réelles (Blender)", items: [
+      "<b>On voit enfin l'écran</b> — la leçon Blender (L1) montre de <b>vraies captures</b> de l'interface&nbsp;: l'espace Layout, l'Edit Mode et sa topologie, et le Shader Editor avec son graphe de nœuds.",
+      "<b>Légères &amp; hors-ligne</b> — images locales en WebP compressé (~50–75 Ko), avec texte alternatif détaillé pour l'accessibilité.",
+      "<b>Prochainement</b> — d'autres captures Blender (UV, bake, export) sur le même modèle. Les autres logiciels (Unity, Substance…) suivront quand leur capture sera possible."
+    ] },
+    { id: 12, date: "8 juillet 2026", title: "Kit d'exercice : la caisse en bois (fichiers fournis)", items: [
+      "<b>Fichiers de départ téléchargeables</b> — une caisse en bois prête à l'emploi&nbsp;: low-poly dépliée (<code>.blend</code>, <code>.fbx</code>, <code>.glb</code>), high-poly à baker, dépliage UV et rendus de référence. Plus besoin de fabriquer ton matériel avant de pratiquer.",
+      "<b>Branchée là où ça compte</b> — encart «&nbsp;📦 Fichiers de l'exercice&nbsp;» dans L2 (Substance), F8 et B8 (baking), et à l'étape «&nbsp;Texturer&nbsp;» du projet fil rouge.",
+      "<b>100&nbsp;% hors-ligne &amp; libre</b> — assets stockés en local (<code>assets/exos/caisse/</code>), générés par un script Blender fourni et reproductible."
+    ] },
+    { id: 11, date: "8 juillet 2026", title: "« Essaie maintenant » — la pratique dès la lecture", items: [
+      "<b>Micro-encarts pratiques</b> — dans les leçons les plus longues (piste Logiciels et Unity), des encarts «&nbsp;🖐 Essaie maintenant&nbsp;» proposent 1 à 3 actions d'une minute, intercalées au fil du texte plutôt qu'à la seule démo finale.",
+      "<b>Faisable gratuitement</b> — les actions s'appuient sur des outils gratuits (Blender, Krita/GIMP, Material Maker, Poly Haven) et ne demandent aucun fichier préalable.",
+      "<b>On touche le logiciel toutes les 5 minutes</b> — 19 encarts pour l'instant (Blender, Substance, 2D, Sculpt, bibliothèques, éditeur Unity, matériaux, éclairage, post-processing)."
+    ] },
+    { id: 10, date: "8 juillet 2026", title: "Critères de réussite interactifs — la pratique se valide", items: [
+      "<b>Checklists de pratique</b> — sur les 153 leçons, les «&nbsp;Critères de réussite&nbsp;» deviennent des cases à cocher&nbsp;: tu t'auto-évalues étape par étape, l'état est sauvegardé dans ce navigateur.",
+      "<b>Lu vs pratiqué</b> — le tableau de bord distingue désormais les leçons <b>terminées</b> (lues) des leçons <b>pratiquées</b> (tous les critères validés), avec un décompte par parcours.",
+      "<b>100&nbsp;% hors-ligne &amp; accessible</b> — amélioration progressive&nbsp;: sans JavaScript, la liste des critères reste lisible telle quelle&nbsp;; cases au clavier et libellés inclus."
+    ] },
     { id: 9, date: "7 juillet 2026", title: "Cours : exercices alignés sur les leçons", items: [
       "<b>Audit d'alignement</b> — vérification que chaque réponse d'exercice auto-corrigé est bien enseignée dans la prose (99 leçons passées au crible).",
       "<b>21 notions ajoutées</b> là où un exercice attendait un terme jamais expliqué : collisions/triggers &amp; <code>ref</code>/<code>Func</code>/<code>sealed</code> en C#, <code>SetActorLocation</code>/<code>FVector</code> en C++, <code>texel</code>/AO/<code>length</code> en shaders, extension <code>.gd</code>, GDExtension, <code>getmetatable</code>, Blender Foundation, World Partition…"
@@ -872,4 +934,72 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
+})();
+
+
+/* =========================================================================
+   Lightbox — agrandir les captures d'écran au clic. 100% local, sans dépendance.
+   Cible les images des figures de capture ; Échap ou clic pour fermer.
+   ========================================================================= */
+(function () {
+  "use strict";
+  function initLightbox() {
+    var imgs = document.querySelectorAll("figure.screenshot img");
+    if (!imgs.length) return;
+
+    var ov = document.createElement("div");
+    ov.className = "lb-overlay";
+    ov.setAttribute("role", "dialog");
+    ov.setAttribute("aria-modal", "true");
+    ov.setAttribute("aria-label", "Image agrandie");
+    ov.innerHTML =
+      '<button class="lb-close" type="button" aria-label="Fermer (Échap)">&times;</button>' +
+      '<img class="lb-img" alt="">' +
+      '<div class="lb-cap"></div>';
+    document.body.appendChild(ov);
+
+    var big = ov.querySelector(".lb-img");
+    var cap = ov.querySelector(".lb-cap");
+    var lastFocus = null;
+
+    function open(src, alt, caption) {
+      lastFocus = document.activeElement;
+      big.src = src; big.alt = alt || "";
+      cap.textContent = caption || "";
+      ov.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+      ov.querySelector(".lb-close").focus();
+    }
+    function close() {
+      ov.classList.remove("is-open");
+      big.removeAttribute("src");
+      document.body.style.overflow = "";
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    for (var i = 0; i < imgs.length; i++) {
+      (function (im) {
+        im.setAttribute("tabindex", "0");
+        im.setAttribute("role", "button");
+        im.setAttribute("aria-label", "Agrandir l'image" + (im.alt ? " : " + im.alt.slice(0, 60) : ""));
+        im.addEventListener("click", function () {
+          var fig = im.closest("figure");
+          var fc = fig ? fig.querySelector("figcaption") : null;
+          open(im.currentSrc || im.src, im.alt, fc ? fc.textContent : "");
+        });
+        im.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); im.click(); }
+        });
+      })(imgs[i]);
+    }
+
+    // Un clic n'importe où sur la surface (image, fond, bouton) ferme.
+    ov.addEventListener("click", close);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && ov.classList.contains("is-open")) close();
+    });
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initLightbox);
+  else initLightbox();
 })();

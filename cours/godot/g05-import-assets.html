@@ -95,19 +95,9 @@
             <h3>4. Scène importée vs scène héritée</h3>
             <p>Un modèle importé devient une <b>scène</b> (un arbre de nodes&nbsp;: MeshInstance3D, etc.). Tu ne dois pas l'éditer directement (un réimport l'écraserait). Pour l'adapter (ajouter collision, script, matériau override), tu crées une <b>scène héritée</b> (clic droit ▸ <span class="menu-path">New Inherited Scene</span>) ou tu l'instancies dans une autre scène. Ainsi tes ajouts survivent aux réimports.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 190" role="img" aria-label="Flux d'import Godot : source glTF vers ressource importée vers scène héritée">
-                <defs><marker id="g5ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#4f9bd9"/></marker></defs>
-                <g class="svg-text" font-size="11.5">
-                  <rect x="20" y="66" width="150" height="58" rx="8" class="svg-surface" stroke="#313c4c"/><text x="95" y="90" text-anchor="middle" font-weight="700">model.glb</text><text x="95" y="108" text-anchor="middle" class="svg-dim">source (Blender)</text>
-                  <rect x="210" y="66" width="170" height="58" rx="8" fill="#4f9bd9" fill-opacity="0.14" stroke="#4f9bd9"/><text x="295" y="86" text-anchor="middle" font-weight="700">Import (dock)</text><text x="295" y="104" text-anchor="middle" class="svg-dim">.import + cache .godot/</text><text x="295" y="119" text-anchor="middle" class="svg-dim" font-size="10">réimport auto si source change</text>
-                  <rect x="420" y="66" width="200" height="58" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="520" y="86" text-anchor="middle" font-weight="700">Scène héritée</text><text x="520" y="104" text-anchor="middle" class="svg-dim">tes ajouts : collision,</text><text x="520" y="119" text-anchor="middle" class="svg-dim" font-size="10">script, matériau override</text>
-                </g>
-                <g stroke="#4f9bd9" stroke-width="1.8" marker-end="url(#g5ar)">
-                  <line x1="170" y1="95" x2="208" y2="95"/><line x1="380" y1="95" x2="418" y2="95"/>
-                </g>
-              </svg>
-              <figcaption>On n'édite pas la ressource importée directement&nbsp;: on travaille dans une <b>scène héritée</b> pour que les ajouts survivent aux réimports.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/g05-import.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'éditeur Godot : le dock Import affiche les réglages d'un fichier caisse.glb sélectionné, avec Import As: Scene et le bouton Reimport.">
+              <figcaption>Le flux d'import réel dans Godot&nbsp;: on sélectionne le fichier source <b>caisse.glb</b> dans FileSystem, le dock <b>Import</b> propose ses réglages (<b>Import As: Scene</b>, échelle, skeleton…), et <b>Reimport</b> régénère la ressource. Le <code>.glb</code> reste la source&nbsp;: l'import est non destructif et rejouable.</figcaption>
             </figure>
 
             <h3>5. Réglages de textures</h3>
@@ -273,6 +263,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

@@ -116,6 +116,11 @@
             <p>Pour qu'une caméra <b>affiche</b> réellement le post-processing, il ne suffit pas qu'un Volume existe&nbsp;: la caméra doit l'autoriser. Dans <span class="gloss">URP</span>, sélectionne la caméra et coche <span class="menu-path">Camera<span class="arrow">▸</span>Rendering<span class="arrow">▸</span>Post Processing</span>. Sans cette case, ta scène ignore tous les Volumes&nbsp;: c'est l'une des sources de confusion les plus fréquentes chez les débutants («&nbsp;j'ai ajouté un bloom, rien ne change&nbsp;»).</p>
             <p>De plus, le post-processing doit être activé au niveau du <b>Renderer</b> du pipeline (le <a href="../../cours/unity/u03-render-pipelines.html">render pipeline asset</a> URP), et certains effets exigent que la caméra génère le <b>Depth Texture</b> ou l'<b>Opaque Texture</b>. Retiens la chaîne d'autorisations&nbsp;: <b>pipeline → caméra → Volume</b>. Si un maillon manque, l'effet ne s'affiche pas, même parfaitement réglé.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Crée un <b>GameObject <span class="arrow">▸</span> Volume <span class="arrow">▸</span> Global Volume</b>, clique <b>New</b> pour un profil, puis <b>Add Override <span class="arrow">▸</span> Tonemapping <span class="arrow">▸</span> ACES</b>. Toute la scène gagne aussitôt en contraste et en couleurs maîtrisées. C'est le premier réglage à poser sur tout projet.</p>
+            </div>
+
             <h3>5. Le Tonemapping&nbsp;: l'effet non négociable</h3>
             <p>C'est le cœur de la leçon. Le moteur calcule l'éclairage en <span class="gloss">HDR</span> (<em>High Dynamic Range</em>, voir <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>)&nbsp;: les valeurs de luminosité ne sont pas bornées à 1,0&nbsp;: le soleil peut valoir 8, une lampe émissive 20, un reflet spéculaire 50. C'est voulu&nbsp;: cela préserve les nuances dans les hautes lumières et permet un éclairage physiquement correct. Mais un écran, lui, ne sait afficher que des valeurs <b>entre 0 et 1</b> (le noir et le blanc maximal). Il faut donc <b>traduire</b> le HDR illimité vers cette plage finie.</p>
             <p>Cette traduction s'appelle le <span class="term">tonemapping</span> (mappage tonal). Sans lui, le moteur «&nbsp;coupe&nbsp;» brutalement tout ce qui dépasse 1,0 (<em>clipping</em>)&nbsp;: une fenêtre ensoleillée, un néon, un ciel deviennent un aplat de blanc pur, sans aucune nuance. Avec un bon tonemapping, ces hautes valeurs sont <b>compressées en douceur</b>&nbsp;: le blanc reste lumineux mais garde du détail, et les couleurs saturées ne virent pas au blanc.</p>
@@ -178,6 +183,11 @@
               </svg>
               <figcaption>Le post-processing prend l'image rendue en HDR et la fait passer dans une suite d'étapes. Le tonemapping ramène d'abord le HDR à l'écran&nbsp;; le bloom ajoute les halos&nbsp;; le color grading ajuste l'ambiance&nbsp;; la vignette cadre le regard. L'ordre est imposé par le moteur, pas par l'ordre où tu ajoutes les Overrides.</figcaption>
             </figure>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~30 s</span></p>
+              <p>Sur ton Volume, fais <b>Add Override <span class="arrow">▸</span> Bloom</b> et monte <b>Intensity</b> (et baisse un peu <b>Threshold</b>)&nbsp;: les zones les plus claires — écrans, néons, ciel — se mettent à déborder en halo lumineux. Sans bloom, une émission reste plate.</p>
+            </div>
 
             <h3>7. Le Color Grading&nbsp;: l'étalonnage</h3>
             <p>Le <span class="term">color grading</span> (étalonnage) regroupe les outils qui retravaillent la couleur et le contraste de l'image, comme un coloriste de cinéma. En URP, l'essentiel se concentre dans deux Overrides&nbsp;: <b>Color Adjustments</b> et <b>White Balance</b>, complétés par <b>Shadows / Midtones / Highlights</b>, <b>Color Curves</b> et le <b>Lift / Gamma / Gain</b>.</p>
@@ -442,6 +452,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

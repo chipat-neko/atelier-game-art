@@ -103,21 +103,9 @@
             <h3>4. Les unités&nbsp;: à régler tôt pour l'export</h3>
             <p>Dans <span class="menu-path">Scene Properties<span class="arrow">▸</span>Units</span>, le <b>Unit System</b> est <em>Metric</em> par défaut, avec <b>1 unité Blender = 1 mètre</b>. Garde ce réglage&nbsp;: il est cohérent avec Unity (1 unité = 1 m) et te facilitera l'export vers les moteurs (renvoi <a href="../../cours/comparaison/c02-transfert-assets.html">C2</a> et <a href="../../cours/blender/b11-rendu-export.html">B11</a>). Modéliser à la bonne échelle dès le départ évite le fameux facteur ×100 dans Unreal.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 200" role="img" aria-label="Parcours d'installation de Blender en cinq étapes">
-                <defs><marker id="b1ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
-                <g class="svg-text" font-size="11.5">
-                  <rect x="14" y="74" width="108" height="52" rx="8" class="svg-surface" stroke="#313c4c"/><text x="68" y="96" text-anchor="middle" font-weight="700">blender.org</text><text x="68" y="113" text-anchor="middle" class="svg-dim">officiel</text>
-                  <rect x="148" y="74" width="108" height="52" rx="8" class="svg-surface" stroke="#313c4c"/><text x="202" y="96" text-anchor="middle" font-weight="700">Version</text><text x="202" y="113" text-anchor="middle" class="svg-dim">4.5 LTS / 5.0</text>
-                  <rect x="282" y="74" width="108" height="52" rx="8" class="svg-surface" stroke="#313c4c"/><text x="336" y="96" text-anchor="middle" font-weight="700">Installer</text><text x="336" y="113" text-anchor="middle" class="svg-dim">ou portable</text>
-                  <rect x="416" y="74" width="108" height="52" rx="8" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="470" y="96" text-anchor="middle" font-weight="700">Preferences</text><text x="470" y="113" text-anchor="middle" class="svg-dim">GPU, UI</text>
-                  <rect x="544" y="74" width="84" height="52" rx="8" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="586" y="96" text-anchor="middle" font-weight="700">Unités</text><text x="586" y="113" text-anchor="middle" class="svg-dim">1 u = 1 m</text>
-                </g>
-                <g stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b1ar)">
-                  <line x1="122" y1="100" x2="146" y2="100"/><line x1="256" y1="100" x2="280" y2="100"/><line x1="390" y1="100" x2="414" y2="100"/><line x1="524" y1="100" x2="542" y2="100"/>
-                </g>
-              </svg>
-              <figcaption>Cinq étapes pour partir sur des bases saines&nbsp;: source officielle → LTS → installation → préférences (GPU) → unités métriques.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b01-installation.webp" width="1280" height="800" loading="lazy" alt="Capture annotée des Préférences de Blender, section System : 1 les Cycles Render Devices pour choisir le GPU (None, CUDA, OptiX, HIP, oneAPI), 2 la liste des sections de préférences à gauche, 3 la section « System » sélectionnée.">
+              <figcaption>Après avoir installé Blender (source <b>officielle</b>, version <b>LTS</b>), une étape clé&nbsp;: <b>Edit ▸ Preferences ▸ System</b> pour activer ton <b>GPU</b> (Cycles Render Devices). Pense aussi à régler les <b>unités</b> de la scène avant de modéliser.</figcaption>
             </figure>
 
             <h2>🔧 Démonstration pas à pas</h2>
@@ -275,6 +263,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

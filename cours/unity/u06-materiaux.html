@@ -182,6 +182,11 @@
               <figcaption>Anatomie d'un matériau <b>URP/Lit</b>&nbsp;: à gauche les textures sources, au centre les slots du matériau, à droite l'espace colorimétrique attendu. Brancher une normale en sRGB ou une roughness non inversée dans le canal smoothness, et tout l'éclairage déraille.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Crée un matériau (clic droit <span class="arrow">▸</span> Create <span class="arrow">▸</span> Material), pose-le sur un objet éclairé et fais glisser <b>Smoothness</b> de 0 à 1&nbsp;: mat → miroir. Puis pousse <b>Metallic</b> à 1&nbsp;: la nature des reflets change d'un coup. Tu sens la différence PBR sans lire une ligne de plus.</p>
+            </div>
+
             <h3>3. Metallic vs Specular : deux workflows pour le même but</h3>
             <p>Unity propose deux façons de décrire la réflectivité d'une surface, choisies via le menu <span class="term">Workflow Mode</span> du matériau.</p>
             <ul>
@@ -219,6 +224,11 @@
             <h3>5. Émission : faire vivre une scène la nuit</h3>
             <p>L'émission mérite sa propre section car c'est l'outil n°1 pour le <b>sci-fi, le cyberpunk, l'horreur</b>&nbsp;: néons, écrans, panneaux d'alerte, lave. Le mécanisme&nbsp;: tu coches <b>Emission</b> dans le matériau, tu choisis une couleur, tu fixes une <b>intensité</b> en EV (exposition) ou en multiplicateur, et tu peux fournir une <b>emission map</b> pour ne faire briller que certaines zones (les lettres d'une enseigne, pas tout le panneau).</p>
             <p>Le couplage avec le post-processing est essentiel&nbsp;: c'est le <b>bloom</b> (vu en <a href="../../cours/unity/u08-post-processing.html">U8</a>) qui transforme une surface émissive en halo lumineux. Sans bloom dans la scène, ton néon sera juste «&nbsp;une couleur vive&nbsp;» sans débordement. Et si l'objet est marqué <b>Contribute GI / Baked</b>, son émission peut <b>éclairer réellement</b> les murs autour lors du calcul d'illumination globale&nbsp;: un néon rouge teinte la ruelle en rouge. C'est cette combinaison émission HDR + bloom + GI qui donne les ambiances «&nbsp;Blade Runner&nbsp;».</p>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans un projet <b>URP</b>, clic droit <span class="arrow">▸</span> Create <span class="arrow">▸</span> Shader Graph <span class="arrow">▸</span> URP <span class="arrow">▸</span> <b>Lit Shader Graph</b>. Double-clique pour ouvrir l'éditeur nodal et repère le <b>Master Stack</b> (Vertex / Fragment) à droite. Referme sans rien changer&nbsp;: tu sais maintenant à quoi ressemble l'outil.</p>
+            </div>
 
             <h3>6. Shader Graph : fabriquer ses propres shaders, sans code</h3>
             <p><span class="gloss">Shader Graph</span> est l'éditeur <b>nodal</b> de shaders d'Unity (pour URP et HDRP). Plutôt que d'écrire du <span class="term">HLSL</span>, tu relies des <b>nœuds</b> (des boîtes qui font une opération) jusqu'à un point de sortie. Sous le capot, le graphe est <b>compilé en HLSL</b> exactement comme un shader écrit à la main&nbsp;: ce n'est pas «&nbsp;moins puissant&nbsp;», c'est une autre interface (rappel <a href="../../cours/fondamentaux/f09-materiaux-shaders.html">F9</a>).</p>
@@ -490,6 +500,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

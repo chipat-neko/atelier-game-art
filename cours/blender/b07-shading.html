@@ -95,30 +95,9 @@
               <p>Les maps de <b>données</b> (normal, roughness, metallic, AO, height) doivent être en <b>Color Space = Non-Color</b> dans le nœud Image Texture. Seules les maps de <b>couleur</b> (Base Color, Emission) restent en <b>sRGB</b>. Oublier le Non-Color → Blender « décode » des nombres comme des couleurs → rendu plastique/faux (renvoi <a href="../../cours/fondamentaux/f01-image-numerique.html">F1</a>).</p>
             </div>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 250" role="img" aria-label="Graphe de nœuds Blender : Image Texture vers Principled BSDF vers Material Output">
-                <defs><marker id="b7ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
-                <g class="svg-text" font-size="11">
-                  <rect x="14" y="24" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="24" y="42" font-weight="700">Image Texture</text><text x="24" y="58" class="svg-dim" font-size="10">Base Color · sRGB</text>
-                  <rect x="14" y="74" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="24" y="92" font-weight="700">Image Texture</text><text x="24" y="108" class="svg-dim" font-size="10">Roughness · Non-Color</text>
-                  <rect x="14" y="124" width="150" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="24" y="142" font-weight="700">Image Texture</text><text x="24" y="158" class="svg-dim" font-size="10">Normal · Non-Color</text>
-                  <rect x="190" y="124" width="110" height="40" rx="6" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8"/><text x="200" y="148" font-weight="700">Normal Map</text>
-
-                  <rect x="340" y="44" width="150" height="150" rx="8" fill="#e0a14b" fill-opacity="0.10" stroke="#e0a14b" stroke-width="1.6"/>
-                  <text x="415" y="64" text-anchor="middle" font-weight="800">Principled BSDF</text>
-                  <text x="352" y="92">Base Color</text><text x="352" y="120">Roughness</text><text x="352" y="148">Metallic</text><text x="352" y="176">Normal</text>
-
-                  <rect x="520" y="100" width="106" height="40" rx="6" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="530" y="124" font-weight="700">Material Output</text>
-                </g>
-                <g stroke="#e0a14b" stroke-width="1.7" fill="none" marker-end="url(#b7ar)">
-                  <path d="M164 44 C 260 44, 280 86, 338 86"/>
-                  <path d="M164 94 C 250 110, 270 116, 338 114"/>
-                  <path d="M164 144 L188 144"/>
-                  <path d="M300 144 C 320 160, 330 172, 338 172"/>
-                  <path d="M490 120 L518 120"/>
-                </g>
-              </svg>
-              <figcaption>Branchement PBR dans Blender&nbsp;: chaque map sur son entrée, la normal map passe par un nœud <em>Normal Map</em>, et les données sont en <em>Non-Color</em>.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b07-shading.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'espace Shading de Blender : le viewport en aperçu matériau montre une caisse, et le Shader Editor en bas montre le graphe de nœuds — 1 les nœuds circulent de gauche à droite, 2 le nœud Principled BSDF (shader PBR), 3 le nœud Material Output.">
+              <figcaption>Le <b>Shader Editor</b> relie des nœuds jusqu'au <b>Principled BSDF</b> puis au <b>Material Output</b>. Pour du PBR, on branche une <b>Image Texture</b> sur chaque entrée&nbsp;: Base Color (en sRGB), Roughness et Metallic (en <b>Non-Color</b>), et la normale via un nœud <b>Normal Map</b>.</figcaption>
             </figure>
 
             <h3>3. EEVEE vs Cycles</h3>
@@ -287,6 +266,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

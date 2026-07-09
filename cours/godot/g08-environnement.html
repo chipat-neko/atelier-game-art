@@ -116,6 +116,11 @@
               <figcaption>La chaîne de post-process de l'Environment&nbsp;: effets d'écran, glow/fog, puis tonemap et color grading vers l'écran.</figcaption>
             </figure>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/g08-environnement.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'éditeur Godot : le node WorldEnvironment sélectionné, avec dans l'Inspector la ressource Environment, Camera Attributes et Compositor.">
+              <figcaption>Concrètement dans Godot&nbsp;: tout ce post-processing vit dans un seul node <b>WorldEnvironment</b>. On y branche une ressource <b>Environment</b> qui contient le fond, l'ambiance, le Tonemap, le Glow, le Fog… pour toute la scène.</figcaption>
+            </figure>
+
             <h3>3. Doser (le piège du « trop »)</h3>
             <p>Le bloom à fond, un SSAO trop sombre, une saturation excessive&nbsp;: l'image devient illisible et fatigante. Le post-processing doit <b>servir</b> la lecture, pas l'écraser. Règle d'or&nbsp;: commence par un bon Tonemap + une exposition correcte, puis ajoute les effets <b>subtilement</b>, en jugeant sur des scènes représentatives.</p>
 
@@ -274,6 +279,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

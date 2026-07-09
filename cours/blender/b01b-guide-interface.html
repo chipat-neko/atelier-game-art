@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide complet de l'interface · Atelier Game Art</title>
+  <meta name="description" content="Référence visuelle de l'interface de Blender : chaque menu (File, Edit, Render, Window, Help, View, Select, Add, Object, et les menus de l'Edit Mode) détaillé item par item, captures d'écran à l'appui.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="b1b";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/blender/b01-installation.html">Blender</a><span class="sep">/</span>
+            <span>Guide complet de l'interface</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>Guide complet de l'interface</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 2 · Blender</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/blender/b01-installation.html">B1 — Installation &amp; configuration</a>. Cette leçon est une <b>référence</b> : garde-la sous la main pour retrouver n'importe quelle commande.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif de ce guide</div>
+              <p>Ce guide te montre, <b>capture à l'appui</b>, où se trouve chaque chose dans Blender et à quoi elle sert&nbsp;: chaque menu est ouvert et <b>chaque item est expliqué dans un tableau</b>. L'idée est simple&nbsp;: quand tu cherches une commande, tu la trouves ici, sans aller sur une vidéo ou un autre site.</p>
+            </div>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Comment lire ce guide</div>
+              <p>Chaque capture est <b>cliquable</b>&nbsp;: clique dessus pour l'<b>agrandir</b> en plein écran (Échap ou un clic pour fermer). Les raccourcis sont indiqués entre parenthèses (ex. <kbd>Ctrl S</kbd>). Certains items ouvrent un <b>sous-menu</b> (petite flèche <span class="arrow">▸</span> à droite).</p>
+            </div>
+
+            <h2>La barre supérieure</h2>
+            <p>Tout en haut de la fenêtre, la <span class="term">barre supérieure</span> (Topbar) contient les menus qui agissent sur <b>tout le fichier</b> et l'application&nbsp;: ouvrir/enregistrer, préférences, rendu, fenêtres, aide. À droite se trouvent aussi les onglets d'<b>espaces de travail</b> (Layout, Modeling, Sculpting…).</p>
+
+            <h3>Menu <b>File</b> — fichiers, import/export</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-file.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu File de Blender ouvert, montrant New, Open, Open Recent, Revert, Recover, Save, Save As, Link, Append, Import, Export, Clean Up, Defaults, Quit.">
+              <figcaption>Le menu <b>File</b> — tout ce qui touche au fichier <code>.blend</code> et aux échanges avec d'autres logiciels.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>New</b> <span class="ds-dim">(Ctrl N)</span></td><td>Nouveau fichier à partir d'un modèle (General, 2D Animation, Sculpting, VFX, Video Editing).</td></tr>
+                <tr><td><b>Open…</b> <span class="ds-dim">(Ctrl O)</span></td><td>Ouvrir un fichier <code>.blend</code> existant.</td></tr>
+                <tr><td><b>Open Recent</b></td><td>Liste des fichiers récemment ouverts (accès rapide).</td></tr>
+                <tr><td><b>Revert</b></td><td>Recharger le fichier depuis le disque (annule les changements non enregistrés).</td></tr>
+                <tr><td><b>Recover</b></td><td>Récupérer la <b>dernière session</b> ou une <b>sauvegarde auto</b> après un crash.</td></tr>
+                <tr><td><b>Save</b> <span class="ds-dim">(Ctrl S)</span></td><td>Enregistrer le fichier en cours.</td></tr>
+                <tr><td><b>Save Incremental</b></td><td>Enregistre une nouvelle version numérotée (fichier_001, _002…).</td></tr>
+                <tr><td><b>Save As…</b> <span class="ds-dim">(Shift Ctrl S)</span></td><td>Enregistrer sous un nouveau nom/emplacement.</td></tr>
+                <tr><td><b>Save Copy…</b></td><td>Enregistre une copie sans changer le fichier courant.</td></tr>
+                <tr><td><b>Link…</b></td><td>Référencer (lier) des données d'un autre <code>.blend</code> (elles restent éditées dans le fichier source).</td></tr>
+                <tr><td><b>Append…</b></td><td>Importer une copie <b>indépendante</b> d'objets/matériaux d'un autre <code>.blend</code>.</td></tr>
+                <tr><td><b>Data Previews</b></td><td>Générer/actualiser les vignettes d'aperçu des données.</td></tr>
+                <tr><td><b>Import</b></td><td>Importer d'autres formats&nbsp;: <b>FBX, glTF/GLB, OBJ, USD, STL, Alembic…</b> (venu d'un autre logiciel).</td></tr>
+                <tr><td><b>Export</b></td><td>Exporter vers ces mêmes formats&nbsp;: c'est ici qu'on sort un asset vers un moteur (voir <a href="../../cours/blender/b11-rendu-export.html">B11</a>).</td></tr>
+                <tr><td><b>Export All Collections</b></td><td>Exporter chaque collection dans son propre fichier, en lot.</td></tr>
+                <tr><td><b>External Data</b></td><td>Gérer les fichiers liés&nbsp;: <b>empaqueter</b> (pack) les textures dans le .blend, ou les rendre externes.</td></tr>
+                <tr><td><b>Clean Up</b></td><td>Purger les données <b>orphelines</b> (non utilisées) pour alléger le fichier.</td></tr>
+                <tr><td><b>Defaults</b></td><td>Enregistrer le fichier de démarrage (Save Startup File) ou charger les réglages d'usine.</td></tr>
+                <tr><td><b>Quit</b> <span class="ds-dim">(Ctrl Q)</span></td><td>Quitter Blender.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Edit</b> — annuler, rechercher, préférences</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-edit.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Edit de Blender : Undo, Redo, Undo History, Adjust Last Operation, Repeat Last, Menu Search, Rename Active Item, Batch Rename, Lock Object Modes, Preferences.">
+              <figcaption>Le menu <b>Edit</b> — l'historique d'annulation, la recherche de commandes et l'accès aux Préférences.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Undo</b> <span class="ds-dim">(Ctrl Z)</span></td><td>Annuler la dernière action.</td></tr>
+                <tr><td><b>Redo</b> <span class="ds-dim">(Shift Ctrl Z)</span></td><td>Refaire l'action annulée.</td></tr>
+                <tr><td><b>Undo History</b></td><td>Liste des étapes&nbsp;: revenir plusieurs actions en arrière d'un coup.</td></tr>
+                <tr><td><b>Adjust Last Operation</b> <span class="ds-dim">(F9)</span></td><td>Rouvrir le panneau de réglages de la <b>dernière opération</b> (ex. nombre de segments d'un bevel).</td></tr>
+                <tr><td><b>Repeat Last</b> <span class="ds-dim">(Shift R)</span></td><td>Répéter la dernière commande.</td></tr>
+                <tr><td><b>Repeat History</b></td><td>Choisir dans l'historique une commande à répéter.</td></tr>
+                <tr><td><b>Menu Search…</b> <span class="ds-dim">(F3)</span></td><td>Chercher <b>n'importe quelle commande</b> par son nom&nbsp;: l'outil le plus utile quand on débute.</td></tr>
+                <tr><td><b>Rename Active Item…</b> <span class="ds-dim">(F2)</span></td><td>Renommer l'objet actif directement dans le viewport.</td></tr>
+                <tr><td><b>Batch Rename…</b> <span class="ds-dim">(Ctrl F2)</span></td><td>Renommer plusieurs éléments d'un coup avec des règles.</td></tr>
+                <tr><td><b>Lock Object Modes</b></td><td>Empêche de changer de mode en cliquant sur un autre objet (évite les erreurs).</td></tr>
+                <tr><td><b>Preferences…</b> <span class="ds-dim">(Ctrl ,)</span></td><td>Ouvrir les <b>Préférences</b>&nbsp;: GPU de rendu, add-ons, thème, raccourcis (voir <a href="../../cours/blender/b01-installation.html">B1</a>).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Render</b> — lancer et voir un rendu</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-render.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Render de Blender : Render Image, Render Animation, Render Audio, View Render, View Animation, Lock Interface.">
+              <figcaption>Le menu <b>Render</b> — produire l'image finale calculée par le moteur (EEVEE ou Cycles).</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Render Image</b> <span class="ds-dim">(F12)</span></td><td>Calculer <b>une image</b> depuis la caméra active.</td></tr>
+                <tr><td><b>Render Animation</b> <span class="ds-dim">(Ctrl F12)</span></td><td>Calculer <b>toutes les images</b> de l'animation (une séquence).</td></tr>
+                <tr><td><b>Render Audio…</b></td><td>Exporter la bande-son de la scène en fichier audio.</td></tr>
+                <tr><td><b>View Render</b> <span class="ds-dim">(F11)</span></td><td>Afficher/masquer la fenêtre du dernier rendu.</td></tr>
+                <tr><td><b>View Animation</b> <span class="ds-dim">(Ctrl F11)</span></td><td>Lire la séquence rendue.</td></tr>
+                <tr><td><b>Lock Interface</b></td><td>Verrouille l'interface pendant le rendu (évite les plantages sur les grosses scènes).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Window</b> — fenêtres et captures</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-window.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Window de Blender : New Window, New Main Window, Toggle Window Fullscreen, Next/Previous Workspace, Show Status Bar, Save Screenshot.">
+              <figcaption>Le menu <b>Window</b> — gérer les fenêtres, le plein écran et les captures d'écran.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>New Window</b></td><td>Ouvrir une seconde fenêtre (utile sur deux écrans).</td></tr>
+                <tr><td><b>New Main Window</b></td><td>Nouvelle fenêtre avec sa propre barre supérieure et ses espaces de travail.</td></tr>
+                <tr><td><b>Toggle Window Fullscreen</b></td><td>Passer la fenêtre en plein écran.</td></tr>
+                <tr><td><b>Next / Previous Workspace</b></td><td>Passer à l'espace de travail suivant/précédent (Ctrl Page Up/Down).</td></tr>
+                <tr><td><b>Show Status Bar</b></td><td>Afficher/masquer la barre d'état en bas.</td></tr>
+                <tr><td><b>Save Screenshot…</b></td><td>Enregistrer une capture de toute la fenêtre (ou d'un seul éditeur).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Help</b> — documentation et diagnostics</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-help.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Help de Blender : Manual, Tutorials, Support, Communities, Python API Reference, Operator Cheat Sheet, System, Report a Bug, About.">
+              <figcaption>Le menu <b>Help</b> — manuel officiel, communautés, référence Python et infos système.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Manual</b></td><td>Ouvre le <b>manuel officiel</b> en ligne (la référence ultime).</td></tr>
+                <tr><td><b>Tutorials / Support / Communities</b></td><td>Liens vers les tutoriels, le support et les communautés d'entraide.</td></tr>
+                <tr><td><b>Python API Reference</b></td><td>Documentation du scripting Python (pour l'automatisation, les add-ons).</td></tr>
+                <tr><td><b>Operator Cheat Sheet</b></td><td>Génère la liste de tous les opérateurs disponibles.</td></tr>
+                <tr><td><b>System</b></td><td>Infos système et options de debug (utile pour diagnostiquer un souci GPU).</td></tr>
+                <tr><td><b>Save System Info</b></td><td>Exporte un rapport système (à joindre à un rapport de bug).</td></tr>
+                <tr><td><b>Report a Bug</b></td><td>Ouvre le formulaire officiel de signalement de bug.</td></tr>
+                <tr><td><b>About Blender</b></td><td>Version, date de build, crédits.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h2>Le Viewport 3D — Object Mode</h2>
+            <p>Dans le grand <span class="term">viewport 3D</span>, une seconde barre de menus agit sur la <b>scène et les objets</b>. En <b>Object Mode</b> (le mode par défaut), on y trouve <b>View</b>, <b>Select</b>, <b>Add</b> et <b>Object</b>.</p>
+
+            <h3>Menu <b>View</b> — la caméra d'édition et les panneaux</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-view.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu View du viewport 3D : Sidebar, Toolbar, Frame All, Frame Selected, Viewpoint, Navigation, Align View, Local View, Cameras, Area.">
+              <figcaption>Le menu <b>View</b> — cadrer, changer de point de vue, et afficher/masquer les panneaux du viewport.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Toolbar</b> <span class="ds-dim">(T)</span></td><td>Afficher/masquer la barre d'outils (à gauche).</td></tr>
+                <tr><td><b>Sidebar</b> <span class="ds-dim">(N)</span></td><td>Afficher/masquer le panneau latéral (Item, Tool, View) — Transform précis, etc.</td></tr>
+                <tr><td><b>Frame All</b> <span class="ds-dim">(Home)</span></td><td>Recadrer la vue sur <b>toute</b> la scène.</td></tr>
+                <tr><td><b>Frame Selected</b> <span class="ds-dim">(Pavé num . )</span></td><td>Recadrer sur l'objet <b>sélectionné</b>.</td></tr>
+                <tr><td><b>Viewpoint</b></td><td>Vues prédéfinies&nbsp;: Front, Back, Top, Bottom, Left, Right (pavé numérique).</td></tr>
+                <tr><td><b>Navigation</b></td><td>Orbiter, panoramiquer, zoomer, voler/marcher dans la scène.</td></tr>
+                <tr><td><b>Align View</b></td><td>Aligner la vue sur la caméra, sur un axe, ou la caméra sur la vue.</td></tr>
+                <tr><td><b>Local View</b> <span class="ds-dim">(/)</span></td><td>Isoler l'objet sélectionné (cacher le reste temporairement).</td></tr>
+                <tr><td><b>Cameras</b></td><td>Choisir/poser la caméra active.</td></tr>
+                <tr><td><b>Area</b></td><td>Gérer l'éditeur&nbsp;: plein écran (Ctrl Espace), dupliquer dans une fenêtre.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Select</b> — choisir des objets</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-select.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Select du viewport 3D : All, None, Invert, Box Select, Circle Select, Select All by Trait, Select Random, Select Mirror, Select More/Less, Select Linked, Select Pattern.">
+              <figcaption>Le menu <b>Select</b> — toutes les façons de sélectionner des objets.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>All</b> <span class="ds-dim">(A)</span></td><td>Tout sélectionner.</td></tr>
+                <tr><td><b>None</b> <span class="ds-dim">(Alt A)</span></td><td>Tout désélectionner.</td></tr>
+                <tr><td><b>Invert</b> <span class="ds-dim">(Ctrl I)</span></td><td>Inverser la sélection.</td></tr>
+                <tr><td><b>Box Select</b> <span class="ds-dim">(B)</span></td><td>Sélection par rectangle.</td></tr>
+                <tr><td><b>Circle Select</b> <span class="ds-dim">(C)</span></td><td>Sélection au pinceau circulaire.</td></tr>
+                <tr><td><b>Select All by Trait</b></td><td>Par caractéristique&nbsp;: type d'objet, calques, etc.</td></tr>
+                <tr><td><b>Select Random</b></td><td>Sélection aléatoire d'une partie des objets.</td></tr>
+                <tr><td><b>Select Mirror</b></td><td>Sélectionner l'équivalent symétrique.</td></tr>
+                <tr><td><b>Select More / Less</b> <span class="ds-dim">(Ctrl +/−)</span></td><td>Étendre/réduire la sélection aux voisins.</td></tr>
+                <tr><td><b>Select Linked</b></td><td>Sélectionner les objets liés (même donnée, parent/enfant…).</td></tr>
+                <tr><td><b>Select Pattern…</b></td><td>Sélectionner par nom (avec des jokers <code>*</code>).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Add</b> — créer un nouvel objet</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-add.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Add du viewport 3D : Mesh, Curve, Surface, Metaball, Text, Volume, Grease Pencil, Armature, Lattice, Empty, Image, Light, Light Probe, Camera, Speaker, Force Field, Collection Instance.">
+              <figcaption>Le menu <b>Add</b> — ajouter n'importe quel type d'objet à la scène. (Ici le sous-menu <b>Force Field</b> est déployé.)</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Mesh</b></td><td>Objets à polygones&nbsp;: Cube, Sphere, Cylinder, Plane, Cone, Torus… — la base de la modélisation.</td></tr>
+                <tr><td><b>Curve</b></td><td>Courbes de Bézier/NURBS&nbsp;: chemins, câbles, tracés à extruder.</td></tr>
+                <tr><td><b>Surface</b></td><td>Surfaces NURBS (usage plus rare).</td></tr>
+                <tr><td><b>Metaball</b></td><td>Formes «&nbsp;liquides&nbsp;» qui fusionnent entre elles.</td></tr>
+                <tr><td><b>Text</b></td><td>Texte 3D éditable (extrudable).</td></tr>
+                <tr><td><b>Volume</b></td><td>Volumes (fumée, brouillard) importés (OpenVDB) ou vides.</td></tr>
+                <tr><td><b>Grease Pencil</b></td><td>Dessin 2D dans l'espace 3D (storyboard, animation traditionnelle).</td></tr>
+                <tr><td><b>Armature</b></td><td>Squelette d'os pour rigger et animer (voir <a href="../../cours/blender/b10-rigging-animation.html">B10</a>).</td></tr>
+                <tr><td><b>Lattice</b></td><td>Cage de déformation pour tordre un objet globalement.</td></tr>
+                <tr><td><b>Empty</b></td><td>Objet invisible servant de repère, pivot ou parent.</td></tr>
+                <tr><td><b>Image</b></td><td>Image de référence ou plan texturé (background).</td></tr>
+                <tr><td><b>Light</b></td><td>Lumières&nbsp;: Point, Sun, Spot, Area.</td></tr>
+                <tr><td><b>Light Probe</b></td><td>Sondes de réflexion/irradiance pour l'éclairage temps réel (EEVEE).</td></tr>
+                <tr><td><b>Camera</b></td><td>Une caméra (point de vue du rendu).</td></tr>
+                <tr><td><b>Speaker</b></td><td>Source sonore positionnée dans l'espace.</td></tr>
+                <tr><td><b>Force Field</b></td><td>Champs de force pour la simulation&nbsp;: Wind, Vortex, Magnetic, Turbulence…</td></tr>
+                <tr><td><b>Collection Instance</b></td><td>Instancier une collection entière (réutiliser un ensemble d'objets).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Object</b> — agir sur les objets sélectionnés</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-object.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Object du viewport 3D : Transform, Set Origin, Apply, Snap, Parent, Constraints, Join, Duplicate, Delete, Shade Smooth, Convert.">
+              <figcaption>Le menu <b>Object</b> — transformer, dupliquer, parenter, appliquer les transforms, joindre, convertir.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Transform</b></td><td>Déplacer/tourner/échelonner précisément, aligner, distribuer.</td></tr>
+                <tr><td><b>Set Origin</b></td><td>Déplacer le <b>point d'origine</b> de l'objet (au centre, au curseur 3D…).</td></tr>
+                <tr><td><b>Apply</b> <span class="ds-dim">(Ctrl A)</span></td><td><b>Appliquer</b> Location/Rotation/Scale&nbsp;: remet Scale à 1 et Rotation à 0 sans changer la forme — <b>indispensable avant export</b>.</td></tr>
+                <tr><td><b>Snap</b></td><td>Aimanter l'objet ou le curseur (sur la grille, sur un élément…).</td></tr>
+                <tr><td><b>Parent</b> <span class="ds-dim">(Ctrl P)</span></td><td>Rendre un objet enfant d'un autre (il suit ses mouvements).</td></tr>
+                <tr><td><b>Constraints</b></td><td>Ajouter des contraintes (Copy Location, Track To, Child Of…).</td></tr>
+                <tr><td><b>Collection</b> / <b>Relations</b></td><td>Ranger dans une collection, gérer les liens entre objets.</td></tr>
+                <tr><td><b>Join</b> <span class="ds-dim">(Ctrl J)</span></td><td><b>Fusionner</b> plusieurs objets en un seul (dans l'objet actif).</td></tr>
+                <tr><td><b>Duplicate Objects</b> <span class="ds-dim">(Shift D)</span></td><td>Copie <b>indépendante</b> de l'objet.</td></tr>
+                <tr><td><b>Duplicate Linked</b> <span class="ds-dim">(Alt D)</span></td><td>Copie <b>liée</b> (partage la même donnée&nbsp;: éditer l'un modifie l'autre).</td></tr>
+                <tr><td><b>Convert</b></td><td>Convertir le type (courbe → mesh, texte → mesh…).</td></tr>
+                <tr><td><b>Shade Smooth / Flat</b></td><td>Lisser ou facetter l'ombrage de l'objet.</td></tr>
+                <tr><td><b>Delete</b> <span class="ds-dim">(X)</span></td><td>Supprimer les objets sélectionnés.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h2>Le Viewport 3D — Edit Mode</h2>
+            <p>Quand tu entres en <b>Edit Mode</b> (touche <kbd>Tab</kbd>) sur un mesh, la barre de menus change&nbsp;: <b>Add</b> et <b>Object</b> laissent place à <b>Mesh</b>, <b>Vertex</b>, <b>Edge</b>, <b>Face</b> et <b>UV</b>. Ce sont les outils de <b>modélisation</b> pure (voir <a href="../../cours/blender/b03-modelisation.html">B3</a>).</p>
+
+            <h3>Menu <b>Mesh</b> — outils globaux du maillage</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-mesh.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Mesh en Edit Mode : Transform, Mirror, Snap, Duplicate, Extrude, Merge, Split, Separate, Bisect, Knife, Symmetrize, Normals, Shading, Delete.">
+              <figcaption>Le menu <b>Mesh</b> — les opérations qui agissent sur l'ensemble du maillage.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Duplicate</b> <span class="ds-dim">(Shift D)</span></td><td>Dupliquer la sélection (sommets/arêtes/faces).</td></tr>
+                <tr><td><b>Extrude</b> <span class="ds-dim">(Alt E)</span></td><td>Tirer de la nouvelle géométrie (options d'extrusion).</td></tr>
+                <tr><td><b>Merge</b> <span class="ds-dim">(M)</span></td><td>Fusionner des sommets (par distance, au centre, au curseur…).</td></tr>
+                <tr><td><b>Split</b> / <b>Separate</b> <span class="ds-dim">(P)</span></td><td>Séparer la sélection (en morceaux, ou en un nouvel objet).</td></tr>
+                <tr><td><b>Bisect</b> / <b>Knife</b></td><td>Couper le maillage par un plan (Bisect) ou au couteau libre (Knife, <kbd>K</kbd>).</td></tr>
+                <tr><td><b>Symmetrize</b> / <b>Snap to Symmetry</b></td><td>Rendre le mesh symétrique à partir d'une moitié.</td></tr>
+                <tr><td><b>Normals</b> <span class="ds-dim">(Alt N)</span></td><td>Recalculer/inverser les <b>normales</b> (Recalculate Outside corrige les faces retournées).</td></tr>
+                <tr><td><b>Shading</b></td><td>Marquer des arêtes Smooth/Flat.</td></tr>
+                <tr><td><b>Clean Up</b></td><td>Nettoyer&nbsp;: sommets isolés, faces dégénérées, doublons.</td></tr>
+                <tr><td><b>Delete</b> <span class="ds-dim">(X)</span></td><td>Supprimer sommets/arêtes/faces, ou dissoudre.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Vertex</b> — outils de sommets</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-vertex.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Vertex en Edit Mode : Extrude Vertices, New Edge/Face, Connect Vertex Path, Rip, Slide, Smooth, Merge, Bevel Vertices, Make Vertex Parent, Hooks.">
+              <figcaption>Le menu <b>Vertex</b> — tout ce qui agit spécifiquement sur les <b>points</b>.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Extrude Vertices</b></td><td>Étirer de nouveaux sommets/arêtes.</td></tr>
+                <tr><td><b>New Edge/Face from Vertices</b> <span class="ds-dim">(F)</span></td><td>Créer une arête ou une face à partir des sommets choisis.</td></tr>
+                <tr><td><b>Connect Vertex Path</b> <span class="ds-dim">(J)</span></td><td>Relier des sommets par une arête qui traverse la face.</td></tr>
+                <tr><td><b>Rip</b> <span class="ds-dim">(V)</span></td><td>Déchirer le maillage à un sommet (créer une fente).</td></tr>
+                <tr><td><b>Slide</b></td><td>Faire glisser un sommet le long des arêtes.</td></tr>
+                <tr><td><b>Smooth Vertices</b></td><td>Lisser la position des sommets (relaxation).</td></tr>
+                <tr><td><b>Merge</b> <span class="ds-dim">(M)</span></td><td>Fusionner des sommets.</td></tr>
+                <tr><td><b>Bevel Vertices</b> <span class="ds-dim">(Ctrl Shift B)</span></td><td>Chanfreiner un coin (arrondir un sommet).</td></tr>
+                <tr><td><b>Make Vertex Parent</b> <span class="ds-dim">(Ctrl P)</span></td><td>Parenter un objet à des sommets précis.</td></tr>
+                <tr><td><b>Hooks</b></td><td>Contrôler des sommets depuis un autre objet (déformation animable).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Edge</b> — outils d'arêtes</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-edge.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Edge en Edit Mode : Extrude Edges, Bevel, Bridge Edge Loops, Subdivide, Loop Cut, Mark Seam, Mark Sharp, Rotate Edge, Edge Slide.">
+              <figcaption>Le menu <b>Edge</b> — les opérations sur les <b>arêtes</b> (dont les fameuses coutures UV et le Loop Cut).</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Extrude Edges</b></td><td>Étirer de nouvelles faces depuis des arêtes.</td></tr>
+                <tr><td><b>Bevel</b> <span class="ds-dim">(Ctrl B)</span></td><td>Chanfreiner une arête en plusieurs segments (essentiel pour capter la lumière).</td></tr>
+                <tr><td><b>Bridge Edge Loops</b></td><td>Créer un pont de faces entre deux boucles d'arêtes.</td></tr>
+                <tr><td><b>Subdivide</b></td><td>Diviser les arêtes (ajouter de la définition).</td></tr>
+                <tr><td><b>Loop Cut</b> <span class="ds-dim">(Ctrl R)</span></td><td>Insérer une boucle d'arêtes complète autour du mesh.</td></tr>
+                <tr><td><b>Mark Seam / Clear Seam</b></td><td>Marquer les <b>coutures</b> pour le dépliage UV (voir <a href="../../cours/blender/b06-uv.html">B6</a>).</td></tr>
+                <tr><td><b>Mark Sharp / Clear Sharp</b></td><td>Marquer une arête vive (pour l'ombrage / Auto Smooth).</td></tr>
+                <tr><td><b>Rotate Edge</b></td><td>Faire pivoter une arête entre deux triangles.</td></tr>
+                <tr><td><b>Edge Slide</b></td><td>Faire glisser une arête le long de la surface.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Menu <b>Face</b> — outils de faces</h3>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/menu-face.webp" width="1280" height="1040" loading="lazy" alt="Capture du menu Face en Edit Mode : Extrude Faces, Inset Faces, Poke Faces, Solidify, Fill, Grid Fill, Beautify, Flip Normals, Shade Smooth/Flat.">
+              <figcaption>Le menu <b>Face</b> — les opérations sur les <b>faces</b> (dont l'Inset, si utile pour les détails).</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Item</th><th>À quoi ça sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Extrude Faces</b></td><td>Tirer des faces vers l'extérieur/intérieur.</td></tr>
+                <tr><td><b>Inset Faces</b> <span class="ds-dim">(I)</span></td><td>Créer une face plus petite à l'intérieur (préparer un bouton, un cadre).</td></tr>
+                <tr><td><b>Poke Faces</b></td><td>Découper chaque face en triangles depuis son centre.</td></tr>
+                <tr><td><b>Solidify</b></td><td>Donner une épaisseur à une surface.</td></tr>
+                <tr><td><b>Fill</b> <span class="ds-dim">(Alt F)</span> / <b>Grid Fill</b></td><td>Combler un trou (Fill) ou le remplir en quadrillage propre (Grid Fill).</td></tr>
+                <tr><td><b>Beautify Faces</b></td><td>Réorganiser les triangles pour un maillage plus régulier.</td></tr>
+                <tr><td><b>Intersect (Knife / Boolean)</b></td><td>Découper une face par une autre géométrie.</td></tr>
+                <tr><td><b>Flip Normals</b></td><td>Retourner les faces sélectionnées.</td></tr>
+                <tr><td><b>Shade Smooth / Flat</b></td><td>Ombrage lisse ou facetté par face.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h2>Les panneaux autour du viewport</h2>
+            <p>Autour du viewport, quatre zones reviennent toujours. On les repère sur la vue d'ensemble ci-dessous (revois <a href="../../cours/blender/b02-interface.html">B2</a> pour la navigation).</p>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b02-interface.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'interface de Blender rappelant les zones : barre supérieure, barre d'outils, viewport 3D, Outliner, panneau Properties, timeline.">
+              <figcaption>Rappel des zones de l'interface — chacune est un <b>éditeur</b> interchangeable.</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Panneau</th><th>Rôle</th></tr></thead>
+              <tbody>
+                <tr><td><b>Barre d'outils</b> <span class="ds-dim">(T)</span></td><td>À gauche du viewport&nbsp;: outils actifs (sélection, déplacer, tourner, échelle, annoter, mesurer…).</td></tr>
+                <tr><td><b>Outliner</b></td><td>En haut à droite&nbsp;: l'<b>arborescence</b> de la scène (objets, collections, données). On y sélectionne, range, masque.</td></tr>
+                <tr><td><b>Properties</b></td><td>À droite&nbsp;: une colonne d'<b>onglets</b> (Render, Output, View Layer, Scene, World, Object, Modifiers 🔧, Particles, Physics, Constraints, Data, Material). Chaque onglet regroupe les réglages d'un domaine.</td></tr>
+                <tr><td><b>Timeline</b></td><td>En bas&nbsp;: la lecture, les images-clés et le curseur de temps pour l'animation.</td></tr>
+              </tbody>
+            </table></div>
+
+            <h3>Le panneau <b>Properties</b>, onglet par onglet</h3>
+            <p>Le panneau <b>Properties</b> (à droite) est organisé en une <b>colonne d'onglets</b> (des icônes) qui filtrent les réglages par <b>domaine</b>. Cliquer sur une icône change tout le contenu affiché en dessous. Voici, de haut en bas, à quoi sert chaque onglet.</p>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/properties-tabs.webp" width="1280" height="800" loading="lazy" alt="Capture annotée du panneau Properties de Blender : 1 la colonne d'onglets à gauche du panneau, 2 le contenu de l'onglet actif (Object, avec Transform).">
+              <figcaption>Le panneau <b>Properties</b>&nbsp;: la fine <b>colonne d'onglets</b> (1) commande le contenu affiché (2).</figcaption>
+            </figure>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Onglet</th><th>À quoi il sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>Active Tool</b></td><td>Réglages de l'<b>outil actif</b> de la barre d'outils (rayon d'une brosse, options de l'outil de découpe…).</td></tr>
+                <tr><td><b>Render</b></td><td>Le <b>moteur de rendu</b> (EEVEE ou Cycles), le nombre d'échantillons (samples), l'anti-aliasing, la qualité globale.</td></tr>
+                <tr><td><b>Output</b></td><td>La <b>sortie</b>&nbsp;: résolution, fréquence d'images, plage (Start/End), format et dossier des fichiers rendus.</td></tr>
+                <tr><td><b>View Layer</b></td><td>Les <b>calques de rendu</b> et les <b>passes</b> (isoler diffuse, ombres… pour le compositing).</td></tr>
+                <tr><td><b>Scene</b></td><td>La <b>caméra active</b>, les <b>unités</b> de mesure, la gravité, et la <b>gestion des couleurs</b> (color management).</td></tr>
+                <tr><td><b>World</b></td><td>L'<b>environnement</b>&nbsp;: couleur ou image de ciel (HDRI), éclairage d'ambiance global.</td></tr>
+                <tr><td><b>Object</b></td><td>Le <b>Transform</b> (Location/Rotation/Scale), la visibilité, les relations (parent, collections).</td></tr>
+                <tr><td><b>Modifiers</b> <span class="ds-dim">(clé à molette)</span></td><td>La <b>pile de modifiers</b> non destructifs (Mirror, Bevel, Subdivision… — voir <a href="../../cours/blender/b04-modifiers.html">B4</a>).</td></tr>
+                <tr><td><b>Particles</b></td><td>Les <b>systèmes de particules</b>&nbsp;: cheveux/fourrure, émissions, dispersion.</td></tr>
+                <tr><td><b>Physics</b></td><td>Les <b>simulations</b>&nbsp;: corps rigides, tissu, fluide, collisions, force fields.</td></tr>
+                <tr><td><b>Object Constraints</b></td><td>Les <b>contraintes</b> (Copy Location, Track To, Child Of…) qui pilotent l'objet automatiquement.</td></tr>
+                <tr><td><b>Object Data</b> <span class="ds-dim">(triangle vert)</span></td><td>Les <b>données du maillage</b>&nbsp;: groupes de sommets, <b>UV Maps</b>, shape keys, attributs, normales.</td></tr>
+                <tr><td><b>Material</b> <span class="ds-dim">(sphère à damier)</span></td><td>Les <b>matériaux</b> de l'objet et leurs emplacements (slots) — le point d'entrée du shading (voir <a href="../../cours/blender/b07-shading.html">B7</a>).</td></tr>
+              </tbody>
+            </table></div>
+
+            <h2>Les principaux éditeurs</h2>
+            <p>Blender n'a pas de «&nbsp;fenêtres&nbsp;» fixes&nbsp;: chaque zone est un <b>éditeur</b> qu'on peut changer via le petit menu déroulant (une icône) <b>en haut à gauche de la zone</b>. C'est ainsi qu'on passe le viewport en Shader Editor, en UV Editor, etc. Les espaces de travail (Layout, Shading, UV Editing…) ne sont que des dispositions d'éditeurs préconfigurées. Voici les plus utiles.</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Éditeur</th><th>À quoi il sert</th></tr></thead>
+              <tbody>
+                <tr><td><b>3D Viewport</b></td><td>La vue 3D&nbsp;: modéliser, sculpter, animer, poser lumières et caméras.</td></tr>
+                <tr><td><b>Outliner</b></td><td>L'arborescence de la scène (objets, collections, données liées).</td></tr>
+                <tr><td><b>Properties</b></td><td>Les réglages par domaine (voir la section ci-dessus).</td></tr>
+                <tr><td><b>Shader Editor</b></td><td>Construire les <b>matériaux</b> par nœuds (voir <a href="../../cours/blender/b07-shading.html">B7</a>).</td></tr>
+                <tr><td><b>UV Editor</b></td><td>Voir et éditer le <b>dépliage UV</b> (voir <a href="../../cours/blender/b06-uv.html">B6</a>).</td></tr>
+                <tr><td><b>Image Editor</b></td><td>Voir, charger ou peindre une <b>image / texture</b>.</td></tr>
+                <tr><td><b>Geometry Node Editor</b></td><td>Géométrie <b>procédurale</b> par nœuds (voir <a href="../../cours/blender/b09-geometry-nodes.html">B9</a>).</td></tr>
+                <tr><td><b>Timeline · Dope Sheet · Graph Editor</b></td><td>L'<b>animation</b>&nbsp;: lecture, images-clés, et courbes d'interpolation.</td></tr>
+                <tr><td><b>Compositor</b></td><td>Le <b>post-traitement</b> du rendu par nœuds (glow, corrections, passes).</td></tr>
+                <tr><td><b>Video Sequencer</b></td><td>Montage <b>vidéo</b> (assembler des plans, du son).</td></tr>
+                <tr><td><b>Text Editor · Python Console</b></td><td>Écrire des <b>scripts</b> Python (automatiser, créer des add-ons).</td></tr>
+                <tr><td><b>File Browser</b></td><td>Parcourir les fichiers (s'ouvre lors d'un import/export/enregistrement).</td></tr>
+              </tbody>
+            </table></div>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/editor-shader.webp" width="1280" height="800" loading="lazy" alt="Capture de l'espace Shading de Blender : en haut le viewport en aperçu matériau, en bas le Shader Editor avec un graphe de nœuds de matériau.">
+              <figcaption>Exemple&nbsp;: l'espace <b>Shading</b> combine le viewport (haut) et le <b>Shader Editor</b> (bas), où l'on relie des nœuds pour bâtir un matériau.</figcaption>
+            </figure>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/menus/editor-uv.webp" width="1280" height="800" loading="lazy" alt="Capture de l'espace UV Editing de Blender : à gauche l'éditeur UV avec le dépliage, à droite le viewport 3D avec un damier appliqué sur le modèle.">
+              <figcaption>Exemple&nbsp;: l'espace <b>UV Editing</b> place l'<b>UV Editor</b> (gauche) à côté du viewport (droite) pour vérifier le dépliage au damier.</figcaption>
+            </figure>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>La <b>barre supérieure</b> agit sur le fichier et l'appli&nbsp;: <b>File</b> (ouvrir/enregistrer, import/export), <b>Edit</b> (annuler, F3 = chercher une commande, Préférences), <b>Render</b> (F12), <b>Window</b>, <b>Help</b> (le manuel officiel).</li>
+                <li>Le <b>viewport 3D</b> a ses propres menus&nbsp;: en Object Mode <b>View / Select / Add / Object</b>&nbsp;; en Edit Mode ils deviennent <b>Mesh / Vertex / Edge / Face</b>.</li>
+                <li>Deux réflexes qui sauvent&nbsp;: <kbd>F3</kbd> pour <b>chercher n'importe quelle commande</b>, et <b>Object ▸ Apply</b> (<kbd>Ctrl A</kbd>) pour remettre Scale à 1 avant d'exporter.</li>
+                <li>Le panneau <b>Properties</b> range les réglages par <b>onglet</b> (Render, Object, Modifiers, Material…)&nbsp;; et chaque zone est un <b>éditeur</b> qu'on change via le menu en haut à gauche (viewport, Shader Editor, UV Editor…).</li>
+                <li>Chaque capture de ce guide est <b>cliquable</b> pour l'agrandir&nbsp;: reviens ici dès que tu cherches «&nbsp;où est cette commande&nbsp;?&nbsp;».</li>
+              </ul>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel raccourci ouvre la recherche de n'importe quelle commande ?","a":["F3 (Menu Search)","Ctrl S","Tab","F12"],"correct":0,"explain":"F3 (Edit ▸ Menu Search) permet de trouver et lancer n'importe quelle commande par son nom : idéal quand on ne sait pas où elle se trouve."},
+  {"q":"Où exporte-t-on un asset vers un moteur (FBX, glTF) ?","a":["File ▸ Export","Edit ▸ Preferences","Render ▸ Render Image","Add ▸ Mesh"],"correct":0,"explain":"File ▸ Export propose FBX, glTF/GLB, OBJ, USD… C'est la sortie vers Unity/Unreal/Godot (voir B11)."},
+  {"q":"En Edit Mode, quels menus remplacent Add et Object ?","a":["Mesh, Vertex, Edge, Face","File, Edit, Render","View, Select","Render, Output"],"correct":0,"explain":"En Edit Mode, la barre du viewport propose Mesh / Vertex / Edge / Face (et UV) : les outils de modélisation."}
+]
+              </script>
+            </section>
+
+            <div class="exercice">
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Je sais ce que couvre chaque menu de la barre supérieure (File, Edit, Render, Window, Help).</li>
+                  <li>Je connais deux réflexes clés&nbsp;: <kbd>F3</kbd> (chercher une commande) et <b>Object ▸ Apply</b> (<kbd>Ctrl A</kbd>) avant d'exporter.</li>
+                  <li>Je distingue les menus du viewport en Object Mode (View / Select / Add / Object) et en Edit Mode (Mesh / Vertex / Edge / Face).</li>
+                  <li>Je situe les panneaux autour du viewport&nbsp;: barre d'outils (T), Outliner, Properties, Timeline.</li>
+                  <li>Je sais que chaque zone est un <b>éditeur</b> interchangeable (viewport, Shader Editor, UV Editor…) et je repère les onglets du panneau Properties.</li>
+                </ul>
+              </div>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/blender/b02-interface.html">B2 — L'interface de Blender</a>&nbsp;: la navigation et l'organisation des éditeurs, pas à pas.</li>
+              <li><a href="../../cours/blender/b03-modelisation.html">B3 — Modélisation</a>&nbsp;: mettre en pratique les menus Mesh / Vertex / Edge / Face.</li>
+              <li><a href="../../cours/godot/g02b-guide-interface.html">G2+ — Guide de l'interface Godot</a>&nbsp;: le même tour complet, côté moteur de jeu.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

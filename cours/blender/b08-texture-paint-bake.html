@@ -93,34 +93,32 @@
             <h3>3. La cage et la distance de rayon</h3>
             <p>La <span class="gloss">cage</span> (renvoi <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) est une enveloppe légèrement gonflée du low-poly qui contrôle d'où partent les rayons et jusqu'où ils vont. Dans les options de Bake&nbsp;: <em>Cage</em> (on peut fournir un objet cage dédié, ou laisser Blender l'extruder via <em>Extrusion</em>) et <em>Max Ray Distance</em>. Bien réglée, elle évite que les rayons d'une pièce attrapent une pièce voisine, et corrige les artefacts près des angles.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 200" role="img" aria-label="Bake high-poly vers low-poly via la cage et Selected to Active">
-                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Selected to Active : high (sélectionné) → low (actif)</text>
-                <!-- low poly -->
-                <path d="M120 150 L200 90 L300 150 Z" fill="none" stroke="#38bdf8" stroke-width="2"/>
-                <text x="210" y="170" text-anchor="middle" class="svg-text" fill="#38bdf8" font-size="11">low-poly (actif)</text>
-                <!-- high poly ondulé -->
-                <path d="M120 150 q20 -22 40 -8 q20 -34 40 -22 q20 -28 40 -6 q20 -24 40 0" fill="none" stroke="#f87171" stroke-width="1.6" transform="translate(0,-6)"/>
-                <text x="210" y="60" text-anchor="middle" class="svg-text" fill="#f87171" font-size="11">high-poly (détaillé)</text>
-                <!-- cage -->
-                <path d="M112 156 L200 80 L308 156" fill="none" stroke="#e0a14b" stroke-width="1.4" stroke-dasharray="5 4"/>
-                <text x="300" y="92" class="svg-text" fill="#e0a14b" font-size="11">cage</text>
-                <!-- rayons -->
-                <g stroke="#a6b6ca" stroke-width="0.8">
-                  <line x1="160" y1="135" x2="160" y2="108"/><line x1="200" y1="120" x2="200" y2="86"/><line x1="240" y1="135" x2="240" y2="104"/>
-                </g>
-                <!-- texture cible -->
-                <rect x="420" y="70" width="120" height="80" rx="6" fill="#0c1320" stroke="#2e425f"/>
-                <text x="480" y="106" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Normal map</text>
-                <text x="480" y="124" text-anchor="middle" class="svg-dim" font-size="10">écrite sur les UV du low</text>
-                <path d="M310 110 C 360 100, 380 105, 418 108" fill="none" stroke="#e0a14b" stroke-width="1.8" marker-end="url(#b8a)"/>
-                <defs><marker id="b8a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
-              </svg>
-              <figcaption>Les rayons partent du low (le long de la cage) vers le high&nbsp;; le détail capté est écrit dans la texture sur les UV du low-poly.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b08-bake.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de Blender montrant deux caisses sélectionnées : 1 la low-poly, objet actif qui reçoit le bake ; 2 la high-poly aux arêtes arrondies, source du détail ; 3 les deux objets listés dans l'Outliner.">
+              <figcaption>Le bake projette le détail de la <b>high-poly</b> sur la texture de la <b>low-poly</b>. On sélectionne d'abord la high, puis la low en <b>dernier</b> (objet actif), et on lance un bake <b>« Selected to Active »</b> — une <b>cage</b> évite les artefacts de projection.</figcaption>
             </figure>
 
             <h3>4. Quelles maps baker</h3>
             <p>Les types de bake utiles (menu <em>Bake Type</em>)&nbsp;: <b>Normal</b> (le détail de relief — image en <em>Non-Color</em> !), <b>Ambient Occlusion</b>, <b>Combined</b>/<b>Diffuse</b>, et via des configurations dédiées <em>Curvature</em>/<em>Position</em> (souvent obtenues par des nœuds ou des add-ons). Détail crucial&nbsp;: l'image de la <b>normal map doit être en Non-Color</b> (renvoi <a href="../../cours/blender/b07-shading.html">B7</a>) et baker avec un <em>Margin</em> (padding) pour éviter les coutures (renvoi <a href="../../cours/blender/b06-uv.html">B6</a>).</p>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_high.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_high.png" alt="Rendu de référence de la caisse high-poly, source du bake"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse en bois</b> — une <b>low-poly</b> plate et une <b>high-poly</b> aux arêtes arrondies&nbsp;: exactement la paire dont tu as besoin pour baker, sans rien modéliser d'abord.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.blend" download>caisse_low.blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_high.blend" download>caisse_high.blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Low ≈ 816 tris · High ≈ 53 k tris · UV déjà faites · libre d'usage. Les arêtes de <code>ref_high.png</code> doivent apparaître sur la low après le bake.</p>
+                </div>
+              </div>
+            </div>
 
             <h2>🔧 Démonstration pas à pas&nbsp;: baker une normal map</h2>
             <ol>
@@ -246,38 +244,4 @@
 
             <h2>Pour aller plus loin</h2>
             <ul>
-              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Le baking</a>&nbsp;: la théorie (tangent space, cage, artefacts, conventions).</li>
-              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance Painter</a>&nbsp;: l'alternative dédiée au texturing/bake.</li>
-              <li><a href="../../cours/blender/b11-rendu-export.html">B11 — Rendu &amp; export</a>&nbsp;: exporter le low-poly + ses maps vers le moteur.</li>
-            </ul>
-
-          </div>
-
-          <div class="lesson-done">
-            <label>
-              <input type="checkbox" id="lesson-done-cb">
-              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
-            </label>
-          </div>
-
-          <nav class="lesson-nav" id="lesson-nav"></nav>
-        </article>
-
-        <aside class="toc" id="toc">
-          <h2>Sur cette page</h2>
-          <ul id="toc-list"></ul>
-        </aside>
-      </div>
-    </main>
-  </div>
-
-  <script src="../../js/site-data.js"></script>
-  <script src="../../js/glossaire-data.js"></script>
-  <script src="../../js/progress.js"></script>
-  <script src="../../js/search-index.js"></script>
-  <script src="../../js/main.js"></script>
-  <script src="../../js/quiz.js"></script>
-  <script src="../../assets/vendor/highlight-mini.js"></script>
-</body>
-</html>
+         

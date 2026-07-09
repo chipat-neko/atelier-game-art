@@ -166,6 +166,11 @@
               <figcaption>Carte mentale de l'écran par défaut. Tout est un <b>éditeur</b> dans une zone redimensionnable&nbsp;; les Workspaces ne font que pré-arranger ces zones selon la tâche.</figcaption>
             </figure>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/bl_interface.webp" width="1280" height="800" loading="lazy" alt="Capture de l'interface de Blender en espace Layout : barre de menus en haut, onglets d'espaces de travail (Layout, Modeling, Sculpting…), grand viewport 3D central affichant une caisse en bois sélectionnée, Outliner (liste des objets) en haut à droite, panneau Properties à droite avec les valeurs de Transform, et timeline en bas.">
+              <figcaption>L'écran attendu au démarrage (<b>espace Layout</b>)&nbsp;: le grand <b>viewport 3D</b> au centre, l'<b>Outliner</b> en haut à droite, le panneau <b>Properties</b> à droite (ici Transform&nbsp;: Scale 1, Rotation 0), et la <b>timeline</b> en bas.</figcaption>
+            </figure>
+
             <h3>3. Naviguer&nbsp;: orbiter, panoramiquer, zoomer, et le curseur 3D</h3>
             <p>La navigation 3D repose sur la <b>molette de la souris</b> qui sert aussi de bouton central (MMB).</p>
             <ul>
@@ -179,6 +184,11 @@
             <div class="callout astuce">
               <div class="callout-title"><span class="ico">💡</span>Pas de molette&nbsp;? Émule le pavé numérique</div>
               <p>Sur un portable sans pavé numérique ni vraie molette, va dans <span class="menu-path">Edit<span class="arrow">▸</span>Preferences<span class="arrow">▸</span>Input</span> et coche <b>Emulate Numpad</b> (les chiffres du clavier principal font les vues) et <b>Emulate 3 Button Mouse</b> (<kbd>Alt</kbd>+clic gauche remplace la molette pour orbiter). Tu peux travailler entièrement sans matériel dédié.</p>
+            </div>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~30 s</span></p>
+              <p>Ouvre Blender (scène par défaut). <b>Molette pressée</b> pour orbiter, <b>Shift+molette pressée</b> pour te déplacer, <b>molette</b> pour zoomer. Puis <kbd>1</kbd> / <kbd>7</kbd> du pavé numérique pour la vue de face / de dessus. Tu apprivoises la navigation avant d'y revenir plus bas.</p>
             </div>
 
             <h3>4. Modéliser&nbsp;: Object Mode vs Edit Mode</h3>
@@ -202,6 +212,11 @@
               </table>
             </div>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/bl_edit-mode.webp" width="1280" height="800" loading="lazy" alt="Blender en Edit Mode : l'en-tête affiche « Edit Mode », la barre d'outils de modélisation apparaît à gauche (extrude, inset, bevel…), et tout le maillage de la caisse est sélectionné (arêtes et sommets en orange), révélant sa topologie.">
+              <figcaption>La même caisse en <b>Edit Mode</b> (touche <kbd>Tab</kbd>)&nbsp;: l'en-tête passe à « Edit Mode », la <b>barre d'outils de modélisation</b> s'affiche à gauche, et la <b>topologie</b> (sommets/arêtes) devient éditable — ici tout est sélectionné (orange).</figcaption>
+            </figure>
+
             <h3>5. Les modifiers&nbsp;: éditer sans détruire</h3>
             <p>Un <span class="term">modifier</span> est une opération <b>non destructive</b> empilée sur l'objet&nbsp;: il transforme l'apparence du mesh <b>au moment de l'affichage/rendu</b>, sans toucher à la géométrie de base que tu continues d'éditer. On les ajoute dans l'onglet <b>Modifiers</b> (icône clé à molette) du panneau Properties. L'analogie&nbsp;: ce sont des «&nbsp;calques de réglage&nbsp;» comme dans Photoshop — tu peux les régler, les réordonner ou les supprimer à tout moment, et l'original reste intact. Les trois incontournables&nbsp;:</p>
             <ul>
@@ -212,6 +227,11 @@
             <div class="callout info">
               <div class="callout-title"><span class="ico">ℹ️</span>«&nbsp;Apply&nbsp;» fige le modifier</div>
               <p>Tant qu'un modifier n'est pas appliqué (<em>Apply</em>), il reste vivant et réglable mais n'existe pas «&nbsp;en dur&nbsp;». Pour exporter vers un moteur, on <b>applique</b> souvent les modifiers (ou l'exporteur le fait) afin que le fichier contienne la vraie géométrie finale. Le Mirror non appliqué exporté tel quel peut surprendre&nbsp;: vérifie toujours le résultat.</p>
+            </div>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sur le cube par défaut, appuie sur <kbd>Tab</kbd> pour entrer en <b>Edit Mode</b>. Sélectionne une face, presse <kbd>E</kbd> puis bouge la souris pour l'<b>extruder</b>, clic gauche pour valider. <kbd>Tab</kbd> pour ressortir&nbsp;: tu viens de modéliser une forme.</p>
             </div>
 
             <h3>6. Sculpter&nbsp;: quand et comment</h3>
@@ -296,6 +316,11 @@
             </ul>
             <p>Conséquence pratique&nbsp;: un même matériau peut paraître différent entre EEVEE et Cycles. Pour du game art, EEVEE est ton ami au quotidien (il imite le moteur de jeu)&nbsp;; Cycles sert aux rendus de présentation et au <b>baking</b> de cartes de haute qualité.</p>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/bl_shading.webp" width="1280" height="800" loading="lazy" alt="Blender en espace Shading : le viewport 3D en aperçu matériau en haut, et le Shader Editor en bas montrant le graphe de nœuds du matériau bois — Noise Texture reliée à un Color Ramp, puis au Principled BSDF, puis au Material Output.">
+              <figcaption>L'espace <b>Shading</b>&nbsp;: en bas, le <b>Shader Editor</b> montre le graphe de nœuds du matériau — une <b>Noise Texture</b> → <b>Color Ramp</b> → <b>Principled BSDF</b> → <b>Material Output</b>. C'est ici qu'on branche ses maps PBR.</figcaption>
+            </figure>
+
             <h3>9. Exporter proprement vers un moteur</h3>
             <p>C'est l'étape qui fait la différence entre un pro et un débutant. Deux formats dominent (voir <a href="../../cours/fondamentaux/f03-formats-fichiers.html">F3</a>)&nbsp;:</p>
             <ul>
@@ -317,6 +342,11 @@
               <li><b>Add-on tiers</b> — un fichier <code>.zip</code> que tu installes via le bouton <b>Install…</b> (ou <em>Install from Disk</em> selon la version), puis que tu coches.</li>
             </ul>
             <p>Deux add-ons intégrés à connaître&nbsp;: <b>Node Wrangler</b> (raccourcis surpuissants dans le Shader Editor&nbsp;: <kbd>Ctrl+Shift+T</kbd> branche automatiquement un jeu complet de textures PBR sur le Principled BSDF) et <b>LoopTools</b> (outils de boucles d'arêtes&nbsp;: arrondir, espacer, ponter). Active-les une fois, ils te font gagner un temps fou.</p>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sélectionne le cube, va dans l'onglet <b>clé à molette</b> (Modifiers) <span class="arrow">▸</span> Add Modifier <span class="arrow">▸</span> <b>Bevel</b>. Monte <b>Amount</b> à ~0,05 et <b>Segments</b> à 2&nbsp;: les arêtes s'adoucissent, et la géométrie d'origine reste modifiable (non destructif).</p>
+            </div>
 
             <h3>11. Éclairer, cadrer et lancer un rendu</h3>
             <p>Un modèle bien texturé mais mal éclairé rend mal. Voici la chaîne complète pour obtenir une image finale (l'objectif de l'exercice 2).</p>
@@ -529,6 +559,7 @@ Rendu      : Numpad 0 = vue caméra · F12 = rendre l'image</code></pre>
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

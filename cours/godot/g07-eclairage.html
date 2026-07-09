@@ -110,6 +110,11 @@
               <figcaption>Trois GI pour trois besoins&nbsp;: LightmapGI (statique, mobile), VoxelGI (intérieurs), SDFGI (mondes dynamiques, Forward+).</figcaption>
             </figure>
 
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/godot/g07-eclairage.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de l'éditeur Godot : le node Soleil sélectionné, l'Inspector affiche un DirectionalLight3D avec sa section Shadow activée et sa rotation dans Transform.">
+              <figcaption>Concrètement, une lumière directe dans Godot est un node <b>DirectionalLight3D</b> (le soleil, rayons parallèles). Dans l'Inspector on active <b>Shadow: On</b> pour les ombres portées (Bias, Blur…), et c'est sa <b>rotation</b> dans Transform qui donne l'angle du soleil. La GI ci-dessus gère, elle, la lumière <em>indirecte</em>.</figcaption>
+            </figure>
+
             <h3>3. Le WorldEnvironment et le ciel</h3>
             <p>Le node <span class="term">WorldEnvironment</span> porte une ressource <em>Environment</em> qui définit l'ambiance globale&nbsp;: le <b>ciel</b> (procédural <em>ProceduralSkyMaterial</em>, ou une <span class="gloss">HDRI</span> via <em>PanoramaSkyMaterial</em> — renvoi <a href="../../cours/logiciels/l05-bibliotheques-assets.html">L5</a>), l'éclairage <b>ambiant</b> et les <b>reflets</b> issus du ciel, et c'est aussi là qu'on active <b>SDFGI</b> et le post-processing (renvoi <a href="../../cours/godot/g08-environnement.html">G8</a>). Sans ciel/ambiant, les zones d'ombre sont anormalement noires (même logique que le SkyLight d'Unreal, renvoi <a href="../../cours/unreal/e06-eclairage.html">E6</a>).</p>
 
@@ -277,6 +282,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

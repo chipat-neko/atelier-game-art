@@ -101,23 +101,9 @@
             </div>
             <p>Les <b>instances</b> sont essentielles à la performance&nbsp;: comme l'<span class="gloss">instancing</span> en jeu (renvoi <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>), elles affichent des milliers de copies à coût réduit, tant qu'on ne les «&nbsp;réalise&nbsp;» pas inutilement.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 200" role="img" aria-label="Réseau Geometry Nodes : distribuer des points puis instancier des cailloux">
-                <defs><marker id="b9ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#e0a14b"/></marker></defs>
-                <g class="svg-text" font-size="10.5">
-                  <rect x="14" y="80" width="96" height="40" rx="6" class="svg-surface" stroke="#313c4c"/><text x="62" y="104" text-anchor="middle" font-weight="700">Group Input</text>
-                  <rect x="130" y="80" width="130" height="40" rx="6" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8"/><text x="195" y="98" text-anchor="middle" font-weight="700">Distribute Points</text><text x="195" y="113" text-anchor="middle" class="svg-dim">on Faces</text>
-                  <rect x="282" y="80" width="130" height="40" rx="6" fill="#c084fc" fill-opacity="0.14" stroke="#c084fc"/><text x="347" y="98" text-anchor="middle" font-weight="700">Instance on Points</text><text x="347" y="113" text-anchor="middle" class="svg-dim">caillou</text>
-                  <rect x="434" y="80" width="120" height="40" rx="6" fill="#e0a14b" fill-opacity="0.14" stroke="#e0a14b"/><text x="494" y="98" text-anchor="middle" font-weight="700">Rotate/Scale</text><text x="494" y="113" text-anchor="middle" class="svg-dim">+ Random</text>
-                  <rect x="566" y="80" width="60" height="40" rx="6" fill="#4ade80" fill-opacity="0.14" stroke="#4ade80"/><text x="596" y="104" text-anchor="middle" font-weight="700">Output</text>
-                </g>
-                <g stroke="#e0a14b" stroke-width="1.7" marker-end="url(#b9ar)">
-                  <line x1="110" y1="100" x2="128" y2="100"/><line x1="260" y1="100" x2="280" y2="100"/><line x1="412" y1="100" x2="432" y2="100"/><line x1="554" y1="100" x2="564" y2="100"/>
-                </g>
-                <text x="320" y="160" text-anchor="middle" class="svg-dim" font-size="11">Sème des points → pose un caillou sur chacun → varie rotation/échelle par instance.</text>
-                <text x="320" y="180" text-anchor="middle" class="svg-dim" font-size="11">Tout reste non destructif et réglable.</text>
-              </svg>
-              <figcaption>Un scatter type en quelques nœuds&nbsp;: distribuer, instancier, varier. Le même réseau marche sur n'importe quelle surface.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b09-geometry-nodes.webp" width="1600" height="1000" loading="lazy" alt="Capture annotée de l'espace Geometry Nodes de Blender : 4 le viewport montre un plan couvert de petites sphères dispersées ; 1 en bas, le réseau de nœuds va de Group Input à Group Output, en passant par 2 Distribute Points on Faces et 3 Instance on Points.">
+              <figcaption>Un <b>scatter</b> en quelques nœuds&nbsp;: <b>Distribute Points on Faces</b> sème des points sur la surface, puis <b>Instance on Points</b> pose une forme sur chacun. Le même réseau <b>non destructif</b> fonctionne sur n'importe quelle surface.</figcaption>
             </figure>
 
             <h3>4. Exposer des paramètres</h3>
@@ -278,6 +264,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

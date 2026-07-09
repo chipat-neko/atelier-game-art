@@ -98,30 +98,9 @@
             </div>
             <p>L'astuce mentale&nbsp;: la plupart des objets hard-surface se construisent en partant d'une primitive, puis en alternant <b>Extrude</b> (pousser la forme), <b>Loop Cut</b> (ajouter du contrôle) et <b>Bevel</b> (adoucir les arêtes).</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 200" role="img" aria-label="Effet de extrude, inset, bevel et loop cut sur une face">
-                <g class="svg-text" font-size="11">
-                  <text x="80" y="28" text-anchor="middle" font-weight="700">Extrude (E)</text>
-                  <rect x="40" y="40" width="80" height="50" fill="none" stroke="#2e425f"/>
-                  <rect x="40" y="40" width="80" height="50" fill="#e0a14b" fill-opacity="0.2" stroke="#e0a14b" transform="translate(0,-22)"/>
-                  <line x1="40" y1="40" x2="40" y2="18" stroke="#e0a14b"/><line x1="120" y1="40" x2="120" y2="18" stroke="#e0a14b"/>
-
-                  <text x="240" y="28" text-anchor="middle" font-weight="700">Inset (I)</text>
-                  <rect x="200" y="40" width="80" height="50" fill="none" stroke="#2e425f"/>
-                  <rect x="214" y="50" width="52" height="30" fill="#38bdf8" fill-opacity="0.2" stroke="#38bdf8"/>
-
-                  <text x="400" y="28" text-anchor="middle" font-weight="700">Bevel (Ctrl+B)</text>
-                  <path d="M360 90 L360 55 L370 45 L430 45 L440 55 L440 90 Z" fill="#4ade80" fill-opacity="0.18" stroke="#4ade80"/>
-                  <text x="400" y="108" text-anchor="middle" class="svg-dim" font-size="9">arête vive → chanfrein</text>
-
-                  <text x="560" y="28" text-anchor="middle" font-weight="700">Loop Cut (Ctrl+R)</text>
-                  <rect x="520" y="40" width="80" height="50" fill="none" stroke="#2e425f"/>
-                  <line x1="560" y1="40" x2="560" y2="90" stroke="#c084fc" stroke-width="2"/>
-                </g>
-                <text x="320" y="150" text-anchor="middle" class="svg-dim" font-size="11">Quatre opérations, et déjà presque tout le hard-surface : pousser, creuser, adoucir, subdiviser.</text>
-                <text x="320" y="172" text-anchor="middle" class="svg-dim" font-size="11">On modélise en quads pour garder un maillage propre (renvoi F4).</text>
-              </svg>
-              <figcaption>Les opérations de base et leur effet. En les combinant sur des quads, on construit la majorité des objets.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/blender/b03-modelisation.webp" width="1280" height="800" loading="lazy" alt="Capture annotée de Blender en Edit Mode : 1 le mode « Edit Mode » dans l'en-tête, 2 la barre d'outils de modélisation à gauche (extrude, inset, bevel, loop cut), 3 la topologie éditable d'une caisse dont tous les sommets et arêtes sont sélectionnés.">
+              <figcaption>En <b>Edit Mode</b> (<kbd>Tab</kbd>), on manipule la <b>topologie</b> avec quelques opérations qui couvrent 90&nbsp;% du travail&nbsp;: <b>Extrude</b> (E), <b>Inset</b> (I), <b>Bevel</b> (Ctrl+B) et <b>Loop Cut</b> (Ctrl+R).</figcaption>
             </figure>
 
             <h3>3. Snapping et précision</h3>
@@ -286,6 +265,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>

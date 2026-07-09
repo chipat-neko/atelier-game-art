@@ -133,6 +133,11 @@
   <li><b>Smart mask</b>&nbsp;: un masque complet (avec ses générateurs et réglages) sauvegardé pour être réutilisé sur n'importe quel objet — il se réadapte aux mesh maps du nouvel objet.</li>
 </ul>
 
+<div class="essaie">
+  <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+  <p>Dans Painter — ou <b>Material Maker</b> / <b>ArmorPaint</b> (gratuits) — ajoute un <b>fill layer</b>, puis clic droit dessus <span class="arrow">▸</span> Add <b>black mask</b>. Prends un pinceau blanc et peins sur l'objet&nbsp;: la matière n'apparaît que là où tu peins. Tu tiens le principe du masque en 30 secondes.</p>
+</div>
+
 <h3>Smart materials&nbsp;: la matière qui s'adapte</h3>
 <p>Un <b>smart material</b> est une pile de calques complète (un matériau «&nbsp;rouillé&nbsp;», par exemple) empaquetée et réutilisable. Sa magie&nbsp;: il est construit sur les mesh maps, donc quand tu le glisses sur un <em>autre</em> objet, l'usure se replace toute seule sur les nouvelles arêtes, la saleté retombe dans les nouveaux creux. Tu obtiens 80&nbsp;% du résultat en un glisser-déposer, et tu finis à la main les 20&nbsp;% spécifiques. C'est ce qui fait la productivité de Painter en studio.</p>
 
@@ -167,6 +172,25 @@
   <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Les détails d'une pièce «&nbsp;saignent&nbsp;» sur une autre.</div><div class="pi-cause"><b>Cause</b>Bake global sans séparation des objets.</div><div class="pi-fix"><b>Correction</b>Nomme tes meshes avec les suffixes <code>_low</code> / <code>_high</code> et coche <i>By Mesh Name</i>.</div></div>
   <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Les générateurs n'ont aucun effet.</div><div class="pi-cause"><b>Cause</b>Mesh maps non bakées (Curvature / AO absentes).</div><div class="pi-fix"><b>Correction</b>Texture Set Settings ▸ <i>Bake Mesh Maps</i> avant de texturer.</div></div>
   <div class="piege-item"><div class="pi-sym"><b>Symptôme</b>Coutures visibles sur la texture finale.</div><div class="pi-cause"><b>Cause</b>Îlots UV trop serrés / padding insuffisant.</div><div class="pi-fix"><b>Correction</b>Redéplie avec plus de marge (voir <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) ou augmente le <i>Dilation/Padding</i> à l'export.</div></div>
+</div>
+
+<div class="exo-files">
+  <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+  <div class="exo-files-body">
+    <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_low.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_low.png" alt="Rendu de référence de la caisse low-poly de départ"></a>
+    <div class="exo-files-links">
+      <p><b>La caisse en bois</b> — matériel prêt à texturer&nbsp;: low-poly dépliée, high-poly à baker, rendus de référence. Plus besoin de fabriquer ton objet.</p>
+      <ul>
+        <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>caisse_low.fbx</a></li>
+        <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>.glb</a></li>
+        <li><a class="dl" href="../../assets/exos/caisse/caisse_low.blend" download>.blend</a></li>
+        <li><a class="dl" href="../../assets/exos/caisse/caisse_high.blend" download>caisse_high.blend</a></li>
+        <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+        <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+      </ul>
+      <p class="exo-files-note">Low ≈ 816 tris · High ≈ 53 k tris · UV box-map · libre d'usage. Cible du bake&nbsp;: <code>ref_high.png</code>.</p>
+    </div>
+  </div>
 </div>
 
 <h2>🔧 Démonstration pas à pas</h2>
@@ -227,6 +251,11 @@
   </svg>
   <figcaption>Pile de calques&nbsp;: le fill «&nbsp;métal nu&nbsp;» est masqué par un generator de courbure qui lit la mesh map <b>Curvature</b> et ne révèle le métal que sur les arêtes saillantes.</figcaption>
 </figure>
+
+<div class="essaie">
+  <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~30 s</span></p>
+  <p>Ouvre le panneau <b>Layers</b> et repère la barre des <b>canaux</b> (Base Color, Roughness, Metallic, Normal, Height). Clique de l'un à l'autre&nbsp;: chaque calque peut agir sur un ou plusieurs canaux à la fois. Visualise où part réellement ta peinture avant de lire l'export.</p>
+</div>
 
 <h3>Export&nbsp;: channel packing et espaces couleur</h3>
 <p>Les moteurs n'aiment pas gaspiller&nbsp;: lire trois textures séparées pour Occlusion, Roughness et Metallic, c'est trois échantillonnages. On les <b>compacte</b> donc dans une seule texture RVB&nbsp;: c'est le <b>channel packing</b>. Chaque canal de la texture (Rouge, Vert, Bleu) porte une map différente en niveaux de gris.</p>
@@ -458,6 +487,7 @@
   <script src="../../js/search-index.js"></script>
   <script src="../../js/main.js"></script>
   <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
   <script src="../../assets/vendor/highlight-mini.js"></script>
 </body>
 </html>
