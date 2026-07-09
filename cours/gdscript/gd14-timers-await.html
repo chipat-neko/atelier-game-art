@@ -154,6 +154,11 @@ func attendre_signal():
               <figcaption>Le moteur continue d'afficher pendant qu'une fonction est «&nbsp;en pause&nbsp;» sur un <code>await</code>.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans <code>_ready()</code>&nbsp;: <code>print("avant")</code>, puis <code>await get_tree().create_timer(1.0).timeout</code>, puis <code>print("après 1s")</code>. Lance&nbsp;: la 2ᵉ ligne arrive une seconde plus tard, <b>sans figer</b> le jeu.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Une fonction <code>ouvrir_apres_delai()</code> qui <code>await</code> un timer de 3 s puis logge.</li>

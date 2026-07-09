@@ -108,6 +108,11 @@ float3 couleur = albedo * lerp(_Ombre, 1.0, bandes);</code></pre>
               <figcaption>Le cel shading remplace le dégradé d'éclairage par quelques bandes nettes (seuils).</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Le rendu <b>toon</b> quantifie l'éclairage en paliers (<code>step</code>/<code>floor</code>). Que renvoie <code>step(0.5, x)</code> pour x = 0.3 puis 0.7&nbsp;? (0 puis 1&nbsp;: deux bandes d'ombre nettes.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Calcule le diffus, puis applique <code>step(0.5, diffus)</code>&nbsp;: deux tons nets apparaissent.</li>

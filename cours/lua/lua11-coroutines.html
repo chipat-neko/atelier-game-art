@@ -129,6 +129,11 @@ local dlg = coroutine.create(sequenceDialogue)
               <figcaption><code>resume</code> ↔ <code>yield</code>&nbsp;: une exécution coopérative que l'on met en pause.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Une coroutine&nbsp;: <code>local co = coroutine.create(function() print("a"); coroutine.yield(); print("b") end)</code>. Après <b>deux</b> <code>coroutine.resume(co)</code>, qu'a-t-on affiché&nbsp;? (a, puis b.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée une coroutine avec <code>coroutine.create</code>.</li>

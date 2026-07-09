@@ -123,6 +123,11 @@ print(a == b)   -- true : même table</code></pre>
               <figcaption>Chaque module retourne sa table&nbsp;; <code>require</code> les assemble.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Un module Lua&nbsp;: <code>local M = {}; function M.saluer() print("hi") end; return M</code>. Comment l'utiliser ailleurs&nbsp;? (<code>local mod = require("monmodule"); mod.saluer()</code>.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée <code>mathutils.lua</code> avec une table locale <code>M</code> et <code>return M</code>.</li>

@@ -154,6 +154,11 @@ GetWorldTimerManager().ClearTimer(Handle);</code></pre>
               <figcaption>Le C++ et le Blueprint collaborent&nbsp;: chacun appelle l'autre via les bons spécificateurs.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Avec <code>GetWorldTimerManager().SetTimer(Handle, this, &AMaClasse::Tic, 1.0f, true);</code>, que se passe-t-il&nbsp;? (<code>Tic()</code> est appelée chaque seconde, en boucle.) Mets le dernier argument à <code>false</code> pour un one-shot.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Marque <code>Tirer()</code> en <code>BlueprintCallable</code> et appelle-la depuis un Blueprint.</li>

@@ -184,6 +184,11 @@ if (IDamageable* Cible = Cast&lt;IDamageable&gt;(Acteur))
               <figcaption>Le composant de santé diffuse&nbsp;; UI, audio et Blueprints réagissent sans qu'il les connaisse.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>À quoi sert un <code>DECLARE_DYNAMIC_MULTICAST_DELEGATE</code>&nbsp;? (diffuser un événement à plusieurs abonnés, exposable au Blueprint.) C'est l'équivalent des <code>event</code> C# et des signaux Godot.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée un <code>USante</code> avec <code>FOnVieChangee</code> (<code>BlueprintAssignable</code>) et déclenche-le dans <code>Subir</code>.</li>

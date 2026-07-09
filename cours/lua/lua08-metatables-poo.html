@@ -140,6 +140,11 @@ gob:recevoir(10)   -- méthode héritée de Personnage → Gobelin : 20 PV</code
               <figcaption>Clé absente → Lua remonte la chaîne des <code>__index</code>.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Rappelle le rôle de <code>setmetatable</code> et de <code>__index</code>&nbsp;: ils permettent l'<b>héritage</b>. Une «&nbsp;classe&nbsp;» Lua est une table dont <code>__index</code> pointe vers elle-même, partagée par ses instances.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée une «&nbsp;classe&nbsp;» <code>Personnage</code> avec <code>new</code> et <code>__index</code>.</li>

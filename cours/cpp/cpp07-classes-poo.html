@@ -164,6 +164,11 @@ Arme-&gt;Tirer();   // ...mais c'est AFusil::Tirer() qui s'exécute</code></pre>
               <figcaption>L'héritage forme une hiérarchie «&nbsp;est-un(e)&nbsp;». Tes classes prolongent celles d'Unreal.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Pour <code>class Arme { public: int32 Degats = 10; void Tirer(); };</code>, où mets-tu la <b>déclaration</b> et l'<b>implémentation</b>&nbsp;? (déclaration dans le <code>.h</code>, corps de <code>Tirer()</code> dans le <code>.cpp</code>.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Écris une classe <code>FPersonnage</code> avec <code>Nom</code>/<code>PV</code> privés, un constructeur et <code>SubirDegats</code>/<code>GetPV</code>.</li>

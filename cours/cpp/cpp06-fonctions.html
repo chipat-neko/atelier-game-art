@@ -175,6 +175,11 @@ void Log(const FString&amp; Texte);   // le compilateur choisit selon le type pa
               <figcaption>Le <code>.h</code> dit <em>ce qui existe</em>&nbsp;; le <code>.cpp</code> dit <em>ce que ça fait</em>.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Mentalement&nbsp;: <code>int32 Double(int32 n) { return n * 2; }</code>. Ajoute un défaut <code>int32 Double(int32 n, int32 Fois = 2)</code>&nbsp;: que renvoie <code>Double(10, 3)</code>&nbsp;? (30.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Déclare dans un <code>.h</code> une fonction <code>int32 CalculerScore(int32 Base, int32 Multi = 1) const;</code>.</li>

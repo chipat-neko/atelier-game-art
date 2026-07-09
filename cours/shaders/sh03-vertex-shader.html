@@ -129,6 +129,11 @@ Sortie vert(Entree v)
               <figcaption>Le vertex shader enchaîne Model → View → Projection pour amener chaque sommet à l'écran (clip space).</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>À quoi sert d'écrire dans <code>gl_Position</code> (ou son équivalent) dans un vertex shader&nbsp;? (placer le sommet à l'écran.) Que se passe-t-il si tu ajoutes un léger décalage sinusoïdal à Y&nbsp;? (l'objet ondule.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Dans un shader (code ou graph), repère la transformation de position (souvent une fonction utilitaire « Object → Clip »).</li>

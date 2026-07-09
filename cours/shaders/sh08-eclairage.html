@@ -116,6 +116,11 @@ float3 couleur = albedo * diffus + couleurLumiere * spec;</code></pre>
               <figcaption>Le diffus dépend de l'angle N·L&nbsp;; le spéculaire ajoute l'influence de la vue V (via H).</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Le produit scalaire <code>dot(N, L)</code> (normale · direction de lumière) donne l'intensité diffuse. Que vaut-il quand la surface fait <b>face</b> à la lumière&nbsp;? (1, éclairé au max.) De côté&nbsp;? (0.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Calcule le diffus <code>max(0, dot(N, L))</code> et multiplie l'albédo&nbsp;: l'objet prend du volume.</li>

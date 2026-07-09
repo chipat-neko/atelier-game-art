@@ -177,6 +177,11 @@ void Toucher(IDamageable cible)
               <figcaption><b>Héritage</b> (trait plein) = «&nbsp;est un&nbsp;»&nbsp;; <b>interface</b> (pointillés) = «&nbsp;sait faire&nbsp;», transversale (le joueur peut aussi être IDamageable).</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Fais <code>class Ennemi { public virtual void Cri() => Debug.Log("..."); }</code> et <code>class Boss : Ennemi { public override void Cri() => Debug.Log("GROAR"); }</code>. Appelle <code>Cri()</code> sur un <code>Boss</code>&nbsp;: quelle version s'exécute&nbsp;? (celle du Boss.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée une classe <code>Ennemi : MonoBehaviour</code> avec <code>vie</code>, <code>SubirDegats</code>, et un <code>virtual void Mourir()</code>.</li>

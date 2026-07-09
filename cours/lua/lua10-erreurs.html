@@ -135,6 +135,11 @@ print(ok, info)</code></pre>
               <figcaption><code>pcall</code> transforme une erreur en valeur de retour&nbsp;: pas de crash.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prédis&nbsp;: <code>local ok, err = pcall(function() error("boum") end)</code> — que valent <code>ok</code> et <code>err</code>&nbsp;? (<code>false</code> et le message «&nbsp;boum&nbsp;».) <code>pcall</code> capture l'erreur sans planter le jeu.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Écris <code>diviser(a, b)</code> qui lève une erreur si <code>b == 0</code>.</li>

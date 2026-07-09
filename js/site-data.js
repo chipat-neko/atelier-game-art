@@ -6,9 +6,25 @@
 window.SITE_DATA = {
   pistes: [
     {
+      id: "logiciels",
+      titre: "Logiciels de création (DCC)",
+      kicker: "Piste 0",
+      couleur: "var(--piste-logiciels)",
+      dossier: "cours/logiciels/",
+      icone: "tools",
+      desc: "Les outils du game artist : Blender, Substance 3D, logiciels 2D, sculpt, et bibliothèques d'assets.",
+      lecons: [
+        { id:"l01", fichier:"l01-blender.html",         titre:"Blender",                     niveau:"Débutant",      duree:"55 min", desc:"Installation, interface, navigation, modélisation, sculpt, UV unwrap, matériaux Eevee/Cycles, export FBX/glTF, add-ons.", motscles:["Blender","installation","interface","modélisation","sculpt","UV","Eevee","Cycles","export FBX","glTF","add-on"] },
+        { id:"l02", fichier:"l02-substance.html",       titre:"Substance 3D Painter & Designer", niveau:"Intermédiaire", duree:"50 min", desc:"Texturing PBR, smart materials, peinture de textures, export des maps prêtes pour Unity/Unreal.", motscles:["Substance","Painter","Designer","texturing","smart material","peinture","export maps","PBR"] },
+        { id:"l03", fichier:"l03-logiciels-2d.html",    titre:"Logiciels 2D (Krita, GIMP, Photoshop)", niveau:"Débutant", duree:"40 min", desc:"Édition de textures, gestion de l'alpha, textures tileable répétables, concept et UI.", motscles:["Krita","GIMP","Photoshop","2D","texture","alpha","tileable","répétable","seamless"] },
+        { id:"l04", fichier:"l04-sculpt-zbrush.html",   titre:"Sculpt avancé / ZBrush (panorama)", niveau:"Intermédiaire", duree:"35 min", desc:"Principe du sculpt haute résolution, quand c'est utile, alternative gratuite (mode sculpt de Blender).", motscles:["sculpt","ZBrush","high-poly","dynatopo","multires","brosse","détail"] },
+        { id:"l05", fichier:"l05-bibliotheques-assets.html", titre:"Bibliothèques d'assets & scans", niveau:"Débutant",  duree:"30 min", desc:"Fab (marketplace Epic), Poly Haven, import, et lecture des licences.", motscles:["Fab","Poly Haven","Megascans","scan","HDRI","licence","marketplace","asset gratuit"] }
+      ]
+    },
+    {
       id: "fondamentaux",
       titre: "Fondamentaux universels",
-      kicker: "Piste 0",
+      kicker: "Piste 1",
       couleur: "var(--piste-fondamentaux)",
       dossier: "cours/fondamentaux/",
       icone: "cube",
@@ -26,22 +42,6 @@ window.SITE_DATA = {
         { id:"f10", fichier:"f10-rigging-animation.html",  titre:"Rigging, skinning & animation",    niveau:"Intermédiaire", duree:"45 min", desc:"Squelette, bones, weight painting, IK vs FK, keyframes, courbes, animation squelettale vs blendshapes.", motscles:["rigging","skinning","bones","squelette","weight painting","IK","FK","keyframe","blendshape","morph target","animation"] },
         { id:"f11", fichier:"f11-vfx-particules.html",     titre:"VFX & particules (concepts)",      niveau:"Intermédiaire", duree:"35 min", desc:"Systèmes de particules, sprites vs meshes émis, shaders VFX, flipbooks et atlas d'animation.", motscles:["VFX","particules","sprite","flipbook","atlas","émetteur","billboard","effet"] },
         { id:"f12", fichier:"f12-optimisation.html",       titre:"Optimisation graphique",          niveau:"Avancé",        duree:"50 min", desc:"Budget de polygones, draw calls, LOD, atlasing, compression (BCn, ASTC), mipmaps, overdraw, instancing.", motscles:["optimisation","draw call","budget polygones","LOD","atlas","compression","BCn","DXT","ASTC","mipmap","overdraw","instancing","performance"] }
-      ]
-    },
-    {
-      id: "logiciels",
-      titre: "Logiciels de création (DCC)",
-      kicker: "Piste 1",
-      couleur: "var(--piste-logiciels)",
-      dossier: "cours/logiciels/",
-      icone: "tools",
-      desc: "Les outils du game artist : Blender, Substance 3D, logiciels 2D, sculpt, et bibliothèques d'assets.",
-      lecons: [
-        { id:"l01", fichier:"l01-blender.html",         titre:"Blender",                     niveau:"Débutant",      duree:"55 min", desc:"Installation, interface, navigation, modélisation, sculpt, UV unwrap, matériaux Eevee/Cycles, export FBX/glTF, add-ons.", motscles:["Blender","installation","interface","modélisation","sculpt","UV","Eevee","Cycles","export FBX","glTF","add-on"] },
-        { id:"l02", fichier:"l02-substance.html",       titre:"Substance 3D Painter & Designer", niveau:"Intermédiaire", duree:"50 min", desc:"Texturing PBR, smart materials, peinture de textures, export des maps prêtes pour Unity/Unreal.", motscles:["Substance","Painter","Designer","texturing","smart material","peinture","export maps","PBR"] },
-        { id:"l03", fichier:"l03-logiciels-2d.html",    titre:"Logiciels 2D (Krita, GIMP, Photoshop)", niveau:"Débutant", duree:"40 min", desc:"Édition de textures, gestion de l'alpha, textures tileable répétables, concept et UI.", motscles:["Krita","GIMP","Photoshop","2D","texture","alpha","tileable","répétable","seamless"] },
-        { id:"l04", fichier:"l04-sculpt-zbrush.html",   titre:"Sculpt avancé / ZBrush (panorama)", niveau:"Intermédiaire", duree:"35 min", desc:"Principe du sculpt haute résolution, quand c'est utile, alternative gratuite (mode sculpt de Blender).", motscles:["sculpt","ZBrush","high-poly","dynatopo","multires","brosse","détail"] },
-        { id:"l05", fichier:"l05-bibliotheques-assets.html", titre:"Bibliothèques d'assets & scans", niveau:"Débutant",  duree:"30 min", desc:"Fab (marketplace Epic), Poly Haven, import, et lecture des licences.", motscles:["Fab","Poly Haven","Megascans","scan","HDRI","licence","marketplace","asset gratuit"] }
       ]
     },
     {

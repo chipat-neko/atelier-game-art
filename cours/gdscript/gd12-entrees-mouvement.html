@@ -139,6 +139,11 @@ func _physics_process(delta):
               <figcaption>Le flux du contrôle&nbsp;: actions nommées → <code>velocity</code> → <code>move_and_slide()</code> dans <code>_physics_process</code>.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sur un Sprite2D, dans <code>_process(delta)</code>&nbsp;: <code>if Input.is_action_pressed("ui_right"): position.x += 200 * delta</code>. Lance et maintiens Flèche droite&nbsp;: il glisse. Le <code>* delta</code> rend le mouvement indépendant du framerate.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée les actions <code>move_left/right/up/down</code> dans l'Input Map.</li>

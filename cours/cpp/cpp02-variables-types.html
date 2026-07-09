@@ -152,6 +152,11 @@ const float Pi = 3.14159f;</code></pre>
               <figcaption>Les variables locales (pile) se nettoient seules&nbsp;; les objets de jeu (tas) vivent jusqu'à leur destruction.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prédis&nbsp;: <code>int32 x = 7 / 2;</code> vs <code>float y = 7.0f / 2;</code>. (<code>x</code> = 3, <code>y</code> = 3.5.) Unreal privilégie <code>int32</code>/<code>float</code> à <code>int</code>/<code>double</code> pour la portabilité.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Dans <code>BeginPlay()</code>, déclare <code>int32 score = 0;</code> et <code>FString nom = TEXT("Joueur");</code>.</li>

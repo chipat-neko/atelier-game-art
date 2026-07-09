@@ -169,6 +169,11 @@ StopAllCoroutines();     // arrêter toutes celles de ce MonoBehaviour</code></p
               <figcaption>Le moteur continue d'afficher les frames pendant que la coroutine est «&nbsp;en pause&nbsp;» sur son <code>yield</code>.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Écris une coroutine&nbsp;: <code>IEnumerator Attendre() { Debug.Log("avant"); yield return new WaitForSeconds(1f); Debug.Log("après"); }</code> et lance-la avec <code>StartCoroutine(Attendre());</code>&nbsp;: la 2ᵉ ligne arrive 1 s plus tard.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Écris <code>IEnumerator OuvrirApresDelai()</code> qui logge, attend 3 s, puis logge. Lance-la dans Start avec <code>StartCoroutine</code>.</li>

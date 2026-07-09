@@ -155,6 +155,11 @@ public class Joueur : MonoBehaviour
             </div>
             <p>Préfère <code>[SerializeField] private</code> à <code>public</code>&nbsp;: tu gardes le réglage dans l'Inspector <b>tout en protégeant</b> la variable contre des modifications accidentelles par d'autres scripts (principe d'<b>encapsulation</b>, voir <a href="../../cours/csharp/cs08-classes-poo.html">CS8</a>). Détail crucial&nbsp;: une valeur réglée dans l'Inspector <b>écrase</b> la valeur du code — l'Inspector «&nbsp;gagne&nbsp;».</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prédis&nbsp;: <code>int x = 7 / 2;</code> puis <code>float y = 7f / 2;</code>. (Réponses&nbsp;: <code>x</code> = 3, <code>y</code> = 3.5.) La division de deux <b>int</b> tronque&nbsp;; le suffixe <code>f</code> force un float.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée un script <code>Joueur</code>, colle le code ci-dessus, sauvegarde.</li>

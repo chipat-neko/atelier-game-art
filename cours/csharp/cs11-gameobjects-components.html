@@ -154,6 +154,11 @@ void OnDejaTouche()
               <figcaption>Depuis un script&nbsp;: <code>transform</code> donne sa position&nbsp;; <code>GetComponent&lt;T&gt;()</code> donne accès aux autres Components.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans <code>Start()</code>&nbsp;: <code>Debug.Log(gameObject.name);</code> puis <code>Debug.Log(transform.position);</code>. Déplace l'objet dans la scène, relance&nbsp;: la position change. Tu lis le Component depuis le code.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée un script <code>Deplacement</code> sur un cube&nbsp;: dans <code>Update</code>, <code>transform.Translate(Vector3.right * 2f * Time.deltaTime);</code> — le cube glisse.</li>

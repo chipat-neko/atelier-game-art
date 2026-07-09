@@ -118,6 +118,11 @@ frac(x);              // partie fractionnaire (x - floor(x)) : motifs répétés
               <figcaption><code>step</code> crée un bord net&nbsp;; <code>smoothstep</code> une transition progressive — deux outils omniprésents.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prédis&nbsp;: <code>mix(a, b, 0.0)</code>, <code>mix(a, b, 1.0)</code>, <code>mix(a, b, 0.5)</code>&nbsp;? (a, b, le milieu.) Et <code>clamp(x, 0.0, 1.0)</code> sert à&nbsp;? (borner une valeur entre 0 et 1.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Fais un dégradé puis applique <code>step(0.5, uv.x)</code>&nbsp;: tu obtiens deux zones nettes.</li>

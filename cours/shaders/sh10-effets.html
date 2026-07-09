@@ -111,6 +111,11 @@ float3 couleur = albedo + _CouleurRim * rim;</code></pre>
               <figcaption>Dissolve&nbsp;: un seuil sur le bruit fait disparaître la surface, avec un bord lumineux. Rim&nbsp;: les contours s'illuminent.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Un effet de <b>Fresnel</b> renforce les bords vus de biais&nbsp;; il vient de l'angle entre la <b>normale</b> et la <b>vue</b>. Où l'effet est-il le plus fort&nbsp;? (sur les silhouettes/contours de l'objet.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Branche une texture de bruit, ajoute un paramètre <em>Seuil</em> et utilise <code>clip</code> pour faire disparaître les pixels.</li>

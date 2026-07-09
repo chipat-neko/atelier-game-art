@@ -126,6 +126,11 @@ function love.keypressed(k) if k == "escape" then love.event.quit() end end</cod
               <figcaption>Lua est embarqué&nbsp;: il pilote l'API du moteur, qui en retour appelle ses callbacks.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Beaucoup de moteurs exposent une API Lua (LÖVE, Defold, Roblox…). Dans ta doc, repère la fonction appelée <b>chaque frame</b> (souvent <code>update(dt)</code>) et celle appelée <b>une fois</b> au départ (souvent <code>load</code>/<code>init</code>).</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Écris un script Roblox qui équipe chaque joueur à l'arrivée.</li>

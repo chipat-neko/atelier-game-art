@@ -180,6 +180,11 @@ Ennemi gobelin = new Ennemi("Gobelin", 30);</code></pre>
               <figcaption>La <b>classe</b> est le moule&nbsp;; chaque <code>new</code> produit un <b>objet</b> indépendant avec ses propres valeurs.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Crée <code>class Arme { public int degats = 10; public void Tirer() => Debug.Log("pan " + degats); }</code>, puis quelque part&nbsp;: <code>new Arme().Tirer();</code>. Tu instancies ta propre classe.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée une classe <code>Item</code> (PAS un MonoBehaviour) avec <code>nom</code> (string), <code>prix</code> (int), et un constructeur.</li>

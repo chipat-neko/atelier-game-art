@@ -162,6 +162,11 @@ SetLifeSpan(3.0f);            // ou : auto-destruction de CET Actor dans 3 s</co
               <figcaption>Constructeur (création) → BeginPlay (départ) → Tick (chaque frame) → EndPlay (destruction).</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans <code>BeginPlay()</code> tu écrirais <code>UE_LOG(LogTemp, Warning, TEXT("Nom : %s"), *GetName());</code>. Quel événement Unreal correspond au <code>Start()</code> d'Unity&nbsp;? (<code>BeginPlay</code>&nbsp;; <code>Tick</code> = Update.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée <code>ACoffre</code> avec une racine et un <code>UStaticMeshComponent</code> attaché&nbsp;; assigne un mesh dans l'éditeur.</li>

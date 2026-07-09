@@ -153,6 +153,11 @@ void Attaquer()
               <figcaption>Le GC conserve les objets atteignables par une <code>UPROPERTY()</code> et détruit les autres. D'où l'importance de la macro.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prédis&nbsp;: après <code>AActor* P = nullptr;</code>, un <code>if (P) {…}</code> entre-t-il&nbsp;? (Non.) Pourquoi toujours tester un pointeur avant de le déréférencer&nbsp;? (éviter un crash sur <code>nullptr</code>.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Déclare <code>UPROPERTY() TObjectPtr&lt;AArme&gt; ArmeEquipee;</code> et équipe une arme par <code>SpawnActor</code>.</li>

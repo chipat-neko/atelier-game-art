@@ -144,6 +144,11 @@ void Update()
             <h3>4. Update vs FixedUpdate</h3>
             <p><code>Update</code> suit le framerate (variable)&nbsp;; <code>FixedUpdate</code> tourne à intervalle <b>fixe</b> (par défaut 50×/s), synchronisé avec le moteur physique. <b>Règle</b>&nbsp;: la <b>physique</b> (forces, vélocité d'un <code>Rigidbody</code>) va dans <code>FixedUpdate</code>&nbsp;; la <b>lecture des entrées</b> et la logique vont dans <code>Update</code> (renvoi <a href="../../cours/csharp/cs12-entrees-mouvement.html">CS12</a>).</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans un MonoBehaviour&nbsp;: <code>Debug.Log("start");</code> dans <code>Start()</code> et <code>Debug.Log(Time.deltaTime);</code> dans <code>Update()</code>. Lance&nbsp;: «&nbsp;start&nbsp;» une fois, <code>deltaTime</code> à chaque frame.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Crée un script avec un <code>Debug.Log</code> dans <code>Awake</code>, <code>Start</code> et <code>Update</code>. Attache-le, Play&nbsp;: observe l'ordre (Awake → Start, puis Update en boucle).</li>

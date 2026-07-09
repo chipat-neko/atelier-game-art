@@ -111,6 +111,11 @@ float fresnel = pow(1.0 - saturate(dot(N, V)), 5.0);</code></pre>
               <figcaption>La <b>roughness</b> étale le reflet&nbsp;; le <b>metallic</b> en colore l'intensité (réflexions teintées par l'albédo).</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Associe&nbsp;: <b>albedo</b> (couleur de base), <b>metallic</b> (métal ou non), <b>roughness</b> (rugosité). Une surface roughness = 0 donne un reflet&nbsp;? (net, miroir.) Et roughness = 1&nbsp;? (diffus, mat.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Sur un matériau PBR, fais varier la <b>roughness</b> de 0 à 1&nbsp;: observe le reflet passer de net à diffus.</li>

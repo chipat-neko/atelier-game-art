@@ -233,6 +233,15 @@
   /* ---------- Journal des nouveautés (cloche) ----------
      À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
   var CHANGELOG = [
+    { id: 24, date: "9 juillet 2026", title: "Ordre des pistes : Logiciels avant Fondamentaux", items: [
+      "La piste <b>Logiciels de création (DCC)</b> passe <b>avant</b> les <b>Fondamentaux universels</b> dans le programme&nbsp;: on démarre par l'outil, puis on approfondit la théorie.",
+      "Les numéros de piste et les badges de leçon suivent le nouvel ordre (Logiciels = Piste 0, Fondamentaux = Piste 1)."
+    ] },
+    { id: 23, date: "9 juillet 2026", title: "« Essaie maintenant » dans toutes les pistes de code", items: [
+      "Les <b>90 leçons de programmation</b> (C#, C++, GDScript, Lua, Shaders, Blueprints) gagnent chacune un encart <b>«&nbsp;🖐 Essaie maintenant&nbsp;»</b>&nbsp;: un micro-défi d'une minute (prédire une sortie, modifier une ligne, tester dans l'éditeur) placé au cœur de la théorie.",
+      "Objectif&nbsp;: <b>toucher le code</b> tout de suite au lieu de seulement lire — chaque encart est ciblé sur le concept de la leçon (ex. la division entière, le modulo, <code>delta</code>, les signaux, le Fresnel, l'Event Dispatcher…).",
+      "Les pistes de code rejoignent ainsi Logiciels et Unity, déjà dotées de ces encarts."
+    ] },
     { id: 22, date: "9 juillet 2026", title: "Guides d'interface Blender &amp; Godot harmonisés", items: [
       "Le <b>Guide de l'interface Blender</b> gagne les mêmes éléments de fin que celui de Godot&nbsp;: une <b>checklist «&nbsp;Critères de réussite&nbsp;»</b> auto-évaluée (cochable, sauvegardée) et une section <b>«&nbsp;Pour aller plus loin&nbsp;»</b> avec renvois croisés.",
       "Les deux guides de référence ont désormais la <b>même structure de bout en bout</b>."

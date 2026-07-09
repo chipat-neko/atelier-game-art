@@ -122,6 +122,11 @@ float4 frag(float3 normalWS : TEXCOORD1) : SV_Target
               <figcaption>La même donnée vit dans différents espaces&nbsp;; la normale (à droite) est perpendiculaire à la surface.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Les UV vont de 0 à 1. Que représentent <code>vec2(0,0)</code> et <code>vec2(1,1)</code>&nbsp;? (deux coins opposés de la texture.) Multiplier les UV par 2 fait quoi à une texture répétée&nbsp;? (elle se répète 2×2.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Affiche les UV en couleur (rappel <a href="../../cours/shaders/sh04-fragment-shader.html">SH4</a>) pour vérifier le dépliage.</li>

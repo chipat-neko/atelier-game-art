@@ -113,6 +113,11 @@ col = lerp(b, a, step(0.5, uv.x));</code></pre>
               <figcaption>L'overdraw&nbsp;: trois transparents superposés = le fragment exécuté trois fois sur ces pixels.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Prédis le coût&nbsp;: un calcul lourd est-il moins cher dans le <b>vertex</b> ou le <b>fragment</b> shader&nbsp;? (dans le vertex&nbsp;: bien moins d'exécutions que de pixels.) D'où la règle&nbsp;: calcule au sommet quand tu peux.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Active la visualisation d'overdraw/Shader Complexity du moteur pour repérer les zones coûteuses.</li>
