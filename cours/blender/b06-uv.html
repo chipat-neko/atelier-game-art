@@ -100,6 +100,11 @@
             <h3>4. Texel density</h3>
             <p>La <span class="gloss">texel density</span> (densité de texels, renvoi <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6</a>) doit être <b>cohérente</b> entre objets d'une même scène, sinon certains paraissent flous à côté d'autres nets. L'add-on gratuit <em>Texel Density Checker</em> (ou un damier de référence à l'échelle) aide à l'uniformiser. On donne un peu plus de densité aux zones vues de près (visage d'un perso, façade d'un bâtiment).</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>En Edit Mode, sélectionne quelques arêtes ▸ <kbd>Ctrl E</kbd> ▸ <b>Mark Seam</b>. Puis <kbd>A</kbd> (tout sélectionner) ▸ <kbd>U</kbd> ▸ <b>Unwrap</b>. Ouvre l'<b>UV Editor</b>&nbsp;: le dépliage suit exactement les coutures que tu as posées.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Sur ta caisse de <a href="../../cours/blender/b03-modelisation.html">B3</a>, entre en Edit Mode, mode arêtes. Sélectionne les arêtes des coins et fais <span class="menu-path">Edge<span class="arrow">▸</span>Mark Seam</span> pour pouvoir déplier les faces.</li>
@@ -130,6 +135,25 @@
                 <div class="pi-sym"><b>Symptôme</b>Mes îlots se chevauchent sans le vouloir.</div>
                 <div class="pi-cause"><b>Cause</b>Chevauchement après dépliage/packing automatique.</div>
                 <div class="pi-fix"><b>Correction</b>Active l'overlay <em>Display Stretching</em> / <em>Overlap</em>, sépare les îlots, repack.</div>
+              </div>
+            </div>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/jerrican/silhouette_cible.webp" target="_blank" rel="noopener"><img src="../../assets/exos/jerrican/silhouette_cible.webp" alt="Silhouette cible du jerrican (face et profil), prop à déplier en UV"></a>
+                <div class="exo-files-links">
+                  <p><b>Le jerrican</b> — une fois modélisé (voir <a href="../../cours/blender/b03-modelisation.html">B3</a>), <b>déplie-le</b>&nbsp;: pose tes <b>seams</b>, <b>Unwrap</b>, et vise une densité de texels homogène.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/jerrican/jerrican_blockout.blend" download>blockout .blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/jerrican_blockout.fbx" download>.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/jerrican_blockout.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/silhouette_cible.webp" download>silhouette</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/ref_cible.webp" download>référence</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Blockout ≈ 84 tris · cible ≈ 230 tris · libre d'usage. Astuce&nbsp;: marque les seams sur les arêtes «&nbsp;cachées&nbsp;» (arrière, dessous).</p>
+                </div>
               </div>
             </div>
 

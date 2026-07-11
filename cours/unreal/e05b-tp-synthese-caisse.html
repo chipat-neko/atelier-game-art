@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E5+ — TP de synthèse : intégrer la caisse (Unreal) · Atelier Game Art</title>
+  <meta name="description" content="Travaux pratiques Unreal : importer la caisse et sa texture ORM, reconstruire le Material (split ORM), éclairer en Lumen et comparer au rendu de référence.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="e5b";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unreal/e01-installation.html">Unreal</a><span class="sep">/</span>
+            <span>TP de synthèse : la caisse</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>E5+ — TP de synthèse&nbsp;: intégrer la caisse</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 4 · Unreal</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unreal/e04-import-assets.html">E4 — Import</a>, <a href="../../cours/unreal/e05-material-editor.html">E5 — Material Editor</a> et <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c — Bake &amp; export</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif du TP</div>
+              <p>Boucler le pipeline dans Unreal&nbsp;: <b>importer la caisse</b> et sa <b>texture ORM</b>, <b>reconstruire le Material</b> (avec le split ORM), <b>éclairer en Lumen</b> et <b>comparer</b> au rendu de référence <code>ref_high.png</code>. Tu vérifies concrètement le packing ORM vu en <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a>.</p>
+            </div>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_high.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_high.png" alt="Rendu de référence de la caisse texturée à reproduire dans Unreal"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse</b> — importe le mesh, et utilise les <b>maps que tu as exportées en <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a></b> (preset Unreal Packed&nbsp;: Base Color, Normal, <b>ORM</b>).</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>caisse_low.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Cible visuelle&nbsp;: <code>ref_high.png</code>. ORM&nbsp;: Occlusion (R), Roughness (G), Metallic (B).</p>
+                </div>
+              </div>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li><b>Importer.</b> Dans le <b>Content Drawer</b>, <b>Import</b> ▸ <code>caisse_low.fbx</code> (coche Import Normals) et tes textures (Base Color, Normal, ORM).</li>
+              <li><b>Régler les textures.</b> Ouvre la <b>Base Color</b>&nbsp;: laisse <b>sRGB coché</b>. Ouvre l'<b>ORM</b>&nbsp;: <b>décoche sRGB</b> (données linéaires). La <b>Normal</b> doit avoir <b>Compression = Normalmap</b> (Unreal le détecte souvent au nom <code>_N</code>).</li>
+              <li><b>Créer le Material.</b> Clic droit ▸ <b>Material</b>, double-clique pour l'ouvrir. Ajoute trois <b>Texture Sample</b>&nbsp;: Base Color → <b>Base Color</b>&nbsp;; Normal → <b>Normal</b>.</li>
+              <li><b>Splitter l'ORM.</b> Pose le Texture Sample de l'ORM (sampler type <b>Linear Color</b> ou <b>Masks</b>). Relie ses sorties&nbsp;: <b>R → Ambient Occlusion</b>, <b>G → Roughness</b>, <b>B → Metallic</b>. C'est le cœur du TP.</li>
+              <li><b>Appliquer.</b> Save, puis assigne le Material au static mesh de la caisse dans la scène.</li>
+              <li><b>Éclairer (Lumen).</b> Une <b>DirectionalLight</b> + une <b>SkyLight</b> (Lumen actif&nbsp;: Project Settings ▸ Rendering ▸ GI = Lumen, voir <a href="../../cours/unreal/e06-eclairage.html">E6</a>). Oriente le soleil pour révéler la Normal.</li>
+              <li><b>Comparer.</b> Place <code>ref_high.png</code> à côté de la Viewport&nbsp;: matières, usure, reflets. Ajuste si besoin.</li>
+            </ol>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans le Material, débranche momentanément le <b>G (Roughness)</b> de l'ORM et mets une constante <b>0.1</b>&nbsp;: toute la caisse devient brillante comme un miroir. Rebranche&nbsp;: la rugosité peinte revient. Tu vois ce que le canal Roughness pilote réellement.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Roughness et métal ont l'air faux, couleurs bizarres.</div>
+                <div class="pi-cause"><b>Cause</b> ORM importée en <b>sRGB</b> (c'est une donnée linéaire).</div>
+                <div class="pi-fix"><b>Correction</b> Décoche <b>sRGB</b> sur l'ORM&nbsp;; sampler type Linear Color/Masks dans le Material.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> J'ai branché l'ORM directement sur Base Color.</div>
+                <div class="pi-cause"><b>Cause</b> ORM confondue avec une texture couleur.</div>
+                <div class="pi-fix"><b>Correction</b> L'ORM se <b>splitte</b> : R→AO, G→Roughness, B→Metallic. La couleur vient de la Base Color.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> L'éclairage semble plat, la Normal ne se voit pas.</div>
+                <div class="pi-cause"><b>Cause</b> Texture Normal non réglée en <b>Normalmap</b>.</div>
+                <div class="pi-fix"><b>Correction</b> Compression Settings ▸ <b>Normalmap</b>&nbsp;; branche-la sur l'entrée Normal.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Scène trop sombre malgré la lumière.</div>
+                <div class="pi-cause"><b>Cause</b> Pas de <b>SkyLight</b> / ambiance&nbsp;: les ombres deviennent noires.</div>
+                <div class="pi-fix"><b>Correction</b> Ajoute une SkyLight (et vérifie que Lumen est actif) pour la lumière indirecte.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Intègre la caisse texturée dans Unreal et rapproche-toi de <code>ref_high.png</code>.</p>
+              <ol>
+                <li>Importe le mesh et tes maps L2c (Base Color sRGB, ORM linéaire, Normal en Normalmap).</li>
+                <li>Construis le Material avec le <b>split ORM</b> (R→AO, G→Roughness, B→Metallic).</li>
+                <li>Éclaire en <b>Lumen</b> (Directional + SkyLight).</li>
+                <li>Compare à la référence et ajuste.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>L'ORM est importée en linéaire et correctement splittée (R/G/B → AO/Roughness/Metallic).</li>
+                  <li>La Base Color est en sRGB, la Normal en Normalmap.</li>
+                  <li>Bois et métal sont aux bons endroits, avec l'usure&nbsp;; le relief se lit.</li>
+                  <li>La scène est éclairée en Lumen (Directional + SkyLight).</li>
+                  <li>Le rendu Unreal ressemble à <code>ref_high.png</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment branche-t-on une texture ORM dans un Material Unreal ?","a":["On splitte ses canaux : R→Occlusion, G→Roughness, B→Metallic","On la branche sur Base Color","On l'ignore","On la met en Normal"],"correct":0,"explain":"L'ORM compacte trois maps de données. Dans le Material, on relie R→Ambient Occlusion, G→Roughness, B→Metallic. La couleur vient de la Base Color séparée."},
+  {"q":"L'ORM doit-elle être importée en sRGB ?","a":["Non : ce sont des données, sRGB décoché (linéaire)","Oui, toujours","Seulement le canal R","Peu importe"],"correct":0,"explain":"L'ORM contient des données (occlusion, rugosité, métal), pas des couleurs. Elle s'importe en linéaire (sRGB décoché), sinon le rendu est faux."},
+  {"q":"Pourquoi ajouter une SkyLight en plus de la DirectionalLight ?","a":["Pour la lumière indirecte/ambiante : sans elle, les ombres deviennent noires","Pour accélérer le rendu","Pour compresser les textures","Ce n'est pas utile"],"correct":0,"explain":"La DirectionalLight est le soleil direct ; la SkyLight apporte l'ambiance et les reflets du ciel. Sans elle (et sans GI), les zones d'ombre sont anormalement noires."}
+]
+              </script>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>L'<b>ORM se splitte</b> dans le Material&nbsp;: R→AO, G→Roughness, B→Metallic.</li>
+                <li><b>Espaces couleur</b>&nbsp;: Base Color en sRGB, ORM en linéaire, Normal en Normalmap.</li>
+                <li>Éclaire en <b>Lumen</b> avec Directional + SkyLight pour une ambiance correcte.</li>
+                <li>La <b>référence</b> valide le résultat&nbsp;: compare matières, usure et reflets.</li>
+              </ul>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unreal/e06-eclairage.html">E6 — Éclairage (Lumen)</a> et <a href="../../cours/unreal/e07-nanite.html">E7 — Nanite</a>&nbsp;: pousser le rendu.</li>
+              <li><a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a>&nbsp;: refaire l'export ORM si besoin.</li>
+              <li><a href="../../projet.html">Projet fil rouge</a>&nbsp;: la caisse dans une vraie scène.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

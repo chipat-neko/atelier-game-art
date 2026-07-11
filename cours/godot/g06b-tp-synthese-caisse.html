@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>G6+ — TP de synthèse : intégrer la caisse (Godot) · Atelier Game Art</title>
+  <meta name="description" content="Travaux pratiques Godot : importer la caisse en glTF, reconstruire un StandardMaterial3D (albedo, normal, metallic, roughness, AO), éclairer et comparer au rendu de référence.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="g6b";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/godot/g01-installation.html">Godot</a><span class="sep">/</span>
+            <span>TP de synthèse : la caisse</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>G6+ — TP de synthèse&nbsp;: intégrer la caisse</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 5 · Godot</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/godot/g05-import-assets.html">G5 — Import</a>, <a href="../../cours/godot/g06-materiaux.html">G6 — Matériaux</a> et <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c — Bake &amp; export</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif du TP</div>
+              <p>Boucler le pipeline dans Godot&nbsp;: <b>importer la caisse</b> en glTF, <b>reconstruire son <code>StandardMaterial3D</code></b> (albedo, normal, metallic, roughness, AO), <b>éclairer</b> et <b>comparer</b> au rendu de référence <code>ref_high.png</code>.</p>
+            </div>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_high.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_high.png" alt="Rendu de référence de la caisse texturée à reproduire dans Godot"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse</b> — le <code>.glb</code> s'importe directement (mesh + UV, et un matériau de base). Pour le rendu final, branche les <b>maps de <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a></b>.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>caisse_low.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Cible visuelle&nbsp;: <code>ref_high.png</code>. Godot lit des maps séparées (ou une ORM via canaux).</p>
+                </div>
+              </div>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li><b>Importer.</b> Glisse <code>caisse_low.glb</code> dans le <b>FileSystem</b>&nbsp;: Godot l'importe (mesh + UV). Glisse-le dans la scène pour l'instancier. Le <code>.glb</code> porte déjà un matériau basique — bon point de départ.</li>
+              <li><b>Créer le matériau.</b> Sélectionne le <b>MeshInstance3D</b> ▸ Inspector ▸ <b>Surface Material Override</b> ▸ New <b>StandardMaterial3D</b>. Déplie-le.</li>
+              <li><b>Brancher les maps.</b> <b>Albedo</b> ▸ Texture = ta Base Color. Section <b>Normal Map</b> ▸ coche <b>Enabled</b> + charge la Normal. <b>Metallic</b> ▸ Texture + règle le <b>canal</b> (Blue si tu utilises une ORM). <b>Roughness</b> ▸ Texture + canal (Green pour ORM). <b>Ambient Occlusion</b> ▸ coche Enabled + Texture + canal (Red pour ORM).</li>
+              <li><b>Vérifier les imports.</b> Sélectionne la Base Color dans le FileSystem ▸ onglet <b>Import</b>&nbsp;: elle est en <b>sRGB</b>. Les maps de données (Normal/Metallic/Roughness/AO)&nbsp;: <b>sRGB désactivé</b> (Godot le gère souvent automatiquement selon l'usage).</li>
+              <li><b>Éclairer.</b> Ajoute une <b>DirectionalLight3D</b> (ombres activées) et un <b>WorldEnvironment</b> (ciel + ambiance, voir <a href="../../cours/godot/g07-eclairage.html">G7</a>). Oriente le soleil pour révéler la Normal.</li>
+              <li><b>Comparer.</b> Mets <code>ref_high.png</code> à côté du viewport&nbsp;: matières, usure, reflets. Ajuste la Roughness et l'angle du soleil.</li>
+            </ol>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Une ORM dans Godot</div>
+              <p>Si tu as exporté une <b>ORM</b> (comme pour Unreal), tu peux la réutiliser dans Godot&nbsp;: charge la <em>même</em> texture ORM dans Metallic, Roughness et AO, et règle le <b>canal</b> de chacun (Metallic = Blue, Roughness = Green, AO = Red). Un seul fichier alimente trois canaux.</p>
+            </div>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Dans le StandardMaterial3D, décoche <b>Normal Map ▸ Enabled</b> puis recoche&nbsp;: la surface passe de lisse à «&nbsp;planches marquées&nbsp;». Puis pousse la <b>Metallic</b> à 1 sur tout l'objet&nbsp;: observe comment la couleur cède la place aux reflets. Remets la texture ensuite.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> La Normal ne fait rien.</div>
+                <div class="pi-cause"><b>Cause</b> Section <b>Normal Map</b> non <b>Enabled</b>, ou texture importée en Normal Map non signalée.</div>
+                <div class="pi-fix"><b>Correction</b> Coche <b>Enabled</b> sous Normal Map&nbsp;; vérifie l'import (onglet Import ▸ Normal Map).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Metallic/Roughness donnent un résultat inversé ou faux.</div>
+                <div class="pi-cause"><b>Cause</b> Mauvais <b>canal</b> choisi (Red/Green/Blue) pour une ORM.</div>
+                <div class="pi-fix"><b>Correction</b> Metallic = Blue, Roughness = Green, AO = Red (packing ORM).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Couleurs délavées.</div>
+                <div class="pi-cause"><b>Cause</b> Base Color importée en linéaire, ou données en sRGB.</div>
+                <div class="pi-fix"><b>Correction</b> Base Color en <b>sRGB</b>&nbsp;; maps de données sans sRGB (onglet Import).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Zones d'ombre anormalement noires.</div>
+                <div class="pi-cause"><b>Cause</b> Pas de <b>WorldEnvironment</b> (ni ciel ni ambiance).</div>
+                <div class="pi-fix"><b>Correction</b> Ajoute un WorldEnvironment avec un ciel pour la lumière ambiante et les reflets.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Intègre la caisse texturée dans Godot et rapproche-toi de <code>ref_high.png</code>.</p>
+              <ol>
+                <li>Importe le <code>.glb</code> et instancie-le dans une scène.</li>
+                <li>Construis un <b>StandardMaterial3D</b> avec Albedo, Normal (Enabled), Metallic, Roughness et AO (bons canaux si ORM).</li>
+                <li>Éclaire avec DirectionalLight3D + WorldEnvironment.</li>
+                <li>Compare à la référence et ajuste.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le matériau utilise Albedo + Normal (Enabled) + Metallic + Roughness + AO.</li>
+                  <li>Si ORM&nbsp;: les canaux sont corrects (Metallic=Blue, Roughness=Green, AO=Red).</li>
+                  <li>Base Color en sRGB, maps de données en linéaire.</li>
+                  <li>La scène a un WorldEnvironment (pas d'ombres 100&nbsp;% noires).</li>
+                  <li>Le rendu Godot ressemble à <code>ref_high.png</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Quel node de matériau reconstruit-on dans Godot ?","a":["StandardMaterial3D (albedo, normal, metallic, roughness, AO)","Un shader audio","Un CanvasItem","Un GPUParticles3D"],"correct":0,"explain":"Le StandardMaterial3D est le matériau PBR par défaut de Godot : on y branche albedo, normal (à activer), metallic, roughness et occlusion."},
+  {"q":"Comment réutiliser une ORM dans Godot ?","a":["Charger la même texture dans Metallic/Roughness/AO et régler le canal (B/G/R)","La brancher sur Albedo","Impossible, il faut 3 fichiers","La convertir en Normal"],"correct":0,"explain":"Godot lit un canal précis d'une texture : on assigne la même ORM à Metallic (Blue), Roughness (Green) et AO (Red). Un fichier, trois canaux."},
+  {"q":"Pourquoi ajouter un WorldEnvironment ?","a":["Fournir ciel et lumière ambiante : sinon les ombres sont anormalement noires","Accélérer l'import","Compresser le mesh","Changer le renderer"],"correct":0,"explain":"Le WorldEnvironment porte le ciel et l'éclairage ambiant/réflexions. Sans lui, les zones non éclairées directement deviennent noires."}
+]
+              </script>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>On reconstruit un <b>StandardMaterial3D</b>&nbsp;: albedo + normal (Enabled) + metallic + roughness + AO.</li>
+                <li>Une <b>ORM</b> se réutilise par <b>canaux</b>&nbsp;: Metallic=Blue, Roughness=Green, AO=Red.</li>
+                <li><b>Base Color en sRGB</b>, données en linéaire (onglet Import).</li>
+                <li>Un <b>WorldEnvironment</b> évite les ombres 100&nbsp;% noires et donne les reflets.</li>
+              </ul>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/godot/g07-eclairage.html">G7 — Éclairage</a> et <a href="../../cours/godot/g08-environnement.html">G8 — Environnement</a>&nbsp;: pousser le rendu.</li>
+              <li><a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a>&nbsp;: refaire l'export si les maps posent problème.</li>
+              <li><a href="../../projet.html">Projet fil rouge</a>&nbsp;: la caisse dans une vraie scène.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

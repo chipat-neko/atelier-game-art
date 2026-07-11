@@ -121,6 +121,11 @@
             <h3>4. Reflets&nbsp;: ReflectionProbe</h3>
             <p>Pour des reflets locaux précis (intérieur, surface lisse), on ajoute un node <code>ReflectionProbe</code> qui capture l'environnement autour d'un point (équivalent des Reflection Probes Unity, renvoi <a href="../../cours/unity/u07-eclairage.html">U7</a>). Le ciel fournit les reflets globaux&nbsp;; les probes affinent localement.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Ajoute un <b>DirectionalLight3D</b> (le soleil). Dans l'Inspector, coche <b>Shadow ▸ Enabled</b> et fais tourner le node&nbsp;: l'ombre portée suit l'angle. Ajoute un <b>WorldEnvironment</b> pour la lumière ambiante.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas&nbsp;: une scène éclairée en SDFGI</h2>
             <ol>
               <li>Assure-toi d'être en renderer <b>Forward+</b> (renvoi <a href="../../cours/godot/g03-renderers.html">G3</a>).</li>
@@ -261,28 +266,4 @@
             <label>
               <input type="checkbox" id="lesson-done-cb">
               <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
-            </label>
-          </div>
-
-          <nav class="lesson-nav" id="lesson-nav"></nav>
-        </article>
-
-        <aside class="toc" id="toc">
-          <h2>Sur cette page</h2>
-          <ul id="toc-list"></ul>
-        </aside>
-      </div>
-    </main>
-  </div>
-
-  <script src="../../js/site-data.js"></script>
-  <script src="../../js/glossaire-data.js"></script>
-  <script src="../../js/progress.js"></script>
-  <script src="../../js/search-index.js"></script>
-  <script src="../../js/main.js"></script>
-  <script src="../../js/quiz.js"></script>
-  <script src="../../js/checklist.js"></script>
-  <script src="../../assets/vendor/highlight-mini.js"></script>
-</body>
-</html>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée

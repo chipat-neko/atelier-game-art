@@ -233,6 +233,31 @@
   /* ---------- Journal des nouveautés (cloche) ----------
      À chaque évolution du site, ajoute une entrée EN TÊTE (id le plus grand). */
   var CHANGELOG = [
+    { id: 29, date: "11 juillet 2026", title: "Unity en vraies captures (éditeur, import, matériaux, éclairage)", items: [
+      "La piste <b>Unity</b> passe aux <b>vraies captures annotées</b> pour ses quatre leçons clés&nbsp;: <b>U2</b> (l'éditeur et les components), <b>U5</b> (les réglages d'import d'un FBX), <b>U6</b> (un matériau Lit et ses slots PBR) et <b>U7</b> (une scène éclairée par une Directional Light).",
+      "Les captures réutilisent le <b>jerrican</b> du kit d'exercice, dans un vrai projet Unity 6 — même fil rouge visuel que Blender et Godot.",
+      "Les schémas conceptuels (axes de pipelines, gamma vs linéaire, light modes…) restent en SVG, plus clairs qu'une capture."
+    ] },
+    { id: 28, date: "9 juillet 2026", title: "Nouveau kit d'exercice : le jerrican (modélisation & UV)", items: [
+      "Un deuxième prop rejoint la Phase 2&nbsp;: un <b>jerrican</b> fourni en <b>blockout</b> (massing brut à raffiner) avec sa <b>silhouette cible</b> (face + profil) et un rendu de référence — branché dans <b>B3 (modélisation)</b> et <b>B6 (UV)</b>.",
+      "L'élève part des boîtes brutes et sculpte la forme vers la silhouette (extrude, inset, bevel, loop cut, modifiers), puis déplie les UV. Fichiers <code>.blend</code>/<code>.fbx</code>/<code>.glb</code> + le script Blender qui les génère.",
+      "Généré 100&nbsp;% en local (Blender headless), rendus en WebP légers."
+    ] },
+    { id: 27, date: "9 juillet 2026", title: "TP de synthèse : la caisse intégrée dans les 3 moteurs", items: [
+      "Chaque piste moteur gagne un <b>TP de synthèse à mi-parcours</b> qui reprend la caisse texturée en L2c et la <b>fait vivre dans le moteur</b>&nbsp;: <a href=\"cours/unity/u06b-tp-synthese-caisse.html\">U6+ (Unity)</a>, <a href=\"cours/unreal/e05b-tp-synthese-caisse.html\">E5+ (Unreal)</a>, <a href=\"cours/godot/g06b-tp-synthese-caisse.html\">G6+ (Godot)</a>.",
+      "Même exercice, trois moteurs&nbsp;: importer, <b>reconstruire le matériau</b> (URP Lit, split ORM, StandardMaterial3D), éclairer, puis <b>comparer au rendu de référence</b>. C'est là que modélisation, UV, texturing et export se vérifient enfin.",
+      "Le programme passe à <b>159 leçons</b>."
+    ] },
+    { id: 26, date: "9 juillet 2026", title: "Texturing renforcé : deux TP progressifs (Phase 5)", items: [
+      "La leçon Substance (L2) est prolongée par <b>deux travaux pratiques</b> sur la caisse fournie&nbsp;: <a href=\"cours/logiciels/l02b-tp-texturing-sans-bake.html\">L2b — texturer sans bake</a> (fill, smart material, masques, height), puis <a href=\"cours/logiciels/l02c-tp-bake-export.html\">L2c — bake high→low + export</a> vers Unity, Unreal et Godot.",
+      "Chaque TP a sa <b>variante 100&nbsp;% gratuite</b> (Blender, ArmorPaint, Material Maker)&nbsp;: l'énoncé — pas seulement la théorie — est faisable sans abonnement.",
+      "Le programme passe à <b>156 leçons</b>."
+    ] },
+    { id: 25, date: "9 juillet 2026", title: "« Essaie maintenant » sur tout le cours (Phase 4 terminée)", items: [
+      "L'encart <b>«&nbsp;🖐 Essaie maintenant&nbsp;»</b> couvre désormais <b>toutes les pistes</b>&nbsp;: Fondamentaux, Blender, Unity, Unreal, Godot, Comparaison — en plus des Logiciels et des 6 pistes de code déjà faites.",
+      "Chaque leçon propose un <b>micro-défi d'une minute</b> adapté&nbsp;: une manip concrète dans l'éditeur (Blender/Unity/Unreal/Godot) ou une question «&nbsp;prédis puis vérifie&nbsp;» pour les Fondamentaux.",
+      "Objectif atteint&nbsp;: on <b>touche l'outil (ou on raisonne)</b> régulièrement au fil de la lecture, plus seulement à la fin."
+    ] },
     { id: 24, date: "9 juillet 2026", title: "Ordre des pistes : Logiciels avant Fondamentaux", items: [
       "La piste <b>Logiciels de création (DCC)</b> passe <b>avant</b> les <b>Fondamentaux universels</b> dans le programme&nbsp;: on démarre par l'outil, puis on approfondit la théorie.",
       "Les numéros de piste et les badges de leçon suivent le nouvel ordre (Logiciels = Piste 0, Fondamentaux = Piste 1)."

@@ -262,6 +262,11 @@
             <h3>6. Performance&nbsp;: l'overdraw, toujours</h3>
             <p>Le principal coût d'un VFX n'est presque jamais le nombre de particules en soi, mais l'<span class="gloss">overdraw</span> (vu en F11 et <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a>)&nbsp;: chaque quad transparent oblige le GPU à <b>relire et recombiner</b> le pixel déjà dessiné. Empile 30 grandes particules plein écran et chaque pixel est traité 30 fois&nbsp;: le <em>fill rate</em> explose. Un VFX Graph qui simule un million de minuscules étincelles peut coûter <em>moins</em> qu'une poignée de gros quads de fumée qui couvrent l'écran. La leçon&nbsp;: surveille la <b>surface couverte × le nombre de couches</b>, pas seulement le compteur de particules. Unity offre une vue de débogage <em>Overdraw</em> pour visualiser ces zones rouges.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p><b>GameObject ▸ Effects ▸ Particle System</b>. Dans l'Inspector, modifie <b>Start Lifetime</b>, <b>Start Speed</b> et <b>Emission ▸ Rate over Time</b>&nbsp;: le jet de particules réagit en direct dans la vue Scene.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Construisons un effet d'<b>étincelles de feu de camp</b> avec le <b>Particle System</b>&nbsp;: de fines braises chaudes qui montent du foyer, ondulent un peu, puis s'éteignent en fondu. Chaque étape dit <em>ce qui se passe</em> et <em>pourquoi</em>, pas juste «&nbsp;clique&nbsp;».</p>
             <ol>

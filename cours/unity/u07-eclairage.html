@@ -253,65 +253,9 @@
             </ol>
             <p>Ce que tu as vraiment fait&nbsp;: tu as réparti le coût intelligemment. Le décor coûte presque rien (lightmaps), le personnage reste dynamique sans rester sombre (probes), et les reflets sont locaux et crédibles (reflection probe) — exactement l'architecture d'éclairage d'une vraie scène de production.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 320" role="img" aria-label="Scène type annotée : un mur statique en lightmap, un personnage dynamique éclairé par light probes, un coffre réfléchissant servi par une reflection probe, sous un soleil mixed et une skybox">
-                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Qui reçoit quoi dans une scène type</text>
-
-                <!-- soleil + skybox -->
-                <g transform="translate(70,60)">
-                  <circle cx="0" cy="0" r="16" fill="#f2b441"/>
-                  <g stroke="#f2b441" stroke-width="2">
-                    <line x1="0" y1="-24" x2="0" y2="-32"/><line x1="0" y1="24" x2="0" y2="32"/>
-                    <line x1="-24" y1="0" x2="-32" y2="0"/><line x1="24" y1="0" x2="32" y2="0"/>
-                    <line x1="-17" y1="-17" x2="-23" y2="-23"/><line x1="17" y1="17" x2="23" y2="23"/>
-                  </g>
-                  <text x="0" y="52" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Directional (Mixed)</text>
-                  <text x="0" y="66" text-anchor="middle" class="svg-dim" font-size="9.5">+ skybox = ambiance</text>
-                </g>
-
-                <!-- sol -->
-                <rect x="40" y="250" width="560" height="14" rx="3" class="svg-surface" stroke="#313c4c"/>
-
-                <!-- mur statique avec lightmap -->
-                <g transform="translate(150,150)">
-                  <rect x="0" y="0" width="90" height="100" rx="4" fill="#5ad19a" fill-opacity="0.45" stroke="#5ad19a" stroke-width="2"/>
-                  <!-- degrade lightmap -->
-                  <rect x="6" y="6" width="78" height="40" rx="2" fill="#5ad19a" fill-opacity="0.35"/>
-                  <text x="45" y="120" text-anchor="middle" class="svg-text" fill="#5ad19a" font-size="11" font-weight="700">Mur STATIC</text>
-                  <text x="45" y="134" text-anchor="middle" class="svg-dim" font-size="9.5">→ lightmap (UV2)</text>
-                </g>
-
-                <!-- personnage dynamique + probes -->
-                <g transform="translate(330,170)">
-                  <!-- probes autour -->
-                  <g fill="#c89bff">
-                    <circle cx="-30" cy="-10" r="4"/><circle cx="30" cy="-10" r="4"/>
-                    <circle cx="-30" cy="60" r="4"/><circle cx="30" cy="60" r="4"/>
-                    <circle cx="0" cy="-20" r="4"/><circle cx="0" cy="70" r="4"/>
-                  </g>
-                  <g stroke="#c89bff" stroke-width="0.8" stroke-dasharray="3 3" fill="none">
-                    <path d="M-30 -10 L30 -10 L30 60 L-30 60 Z"/>
-                  </g>
-                  <!-- capsule -->
-                  <rect x="-12" y="0" width="24" height="60" rx="12" fill="#59b0ff" fill-opacity="0.85" stroke="#313c4c"/>
-                  <text x="0" y="92" text-anchor="middle" class="svg-text" fill="#59b0ff" font-size="11" font-weight="700">Perso DYNAMIQUE</text>
-                  <text x="0" y="106" text-anchor="middle" class="svg-dim" font-size="9.5">→ Light Probes (violet)</text>
-                </g>
-
-                <!-- coffre reflechissant + reflection probe -->
-                <g transform="translate(490,200)">
-                  <rect x="-26" y="0" width="52" height="40" rx="4" fill="#313c4c" stroke="#59b0ff" stroke-width="2"/>
-                  <!-- reflets -->
-                  <line x1="-18" y1="8" x2="-4" y2="32" stroke="#f2b441" stroke-width="2"/>
-                  <line x1="2" y1="6" x2="16" y2="30" stroke="#5ad19a" stroke-width="2"/>
-                  <!-- icone probe -->
-                  <circle cx="0" cy="-26" r="13" fill="none" stroke="#f2b441" stroke-width="2"/>
-                  <path d="M-13 -26 H13 M0 -39 V-13" stroke="#f2b441" stroke-width="1"/>
-                  <text x="0" y="62" text-anchor="middle" class="svg-text" fill="#f2b441" font-size="11" font-weight="700">Coffre BRILLANT</text>
-                  <text x="0" y="76" text-anchor="middle" class="svg-dim" font-size="9.5">→ Reflection Probe</text>
-                </g>
-              </svg>
-              <figcaption>La même scène répartit l'éclairage&nbsp;: le <b>mur statique</b> lit sa <b>lightmap</b>, le <b>personnage dynamique</b> s'éclaire via les <b>Light Probes</b> (violet) qui l'entourent, et le <b>coffre réfléchissant</b> reflète les murs grâce à la <b>Reflection Probe</b>, le tout sous un soleil Mixed et une skybox d'ambiance.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/unity/u07-eclairage.webp" width="1600" height="645" loading="lazy" alt="Capture annotée d'une scène Unity éclairée : 1 le node Sun (Directional Light) dans la Hierarchy, 2 son component Light avec Type Directional et Mode Realtime, 3 la scène éclairée sous un ciel.">
+              <figcaption>L'éclairage d'une scène Unity, en vrai. Le node <b>Sun</b> est une <b>Directional Light</b> (le soleil)&nbsp;: dans l'Inspector on règle son <b>Type</b> et surtout son <b>Mode</b> (<b>Realtime</b> / <b>Mixed</b> / <b>Baked</b>) et ses <b>ombres</b>. La scène est éclairée sous un ciel (Sky and Fog / skybox).</figcaption>
             </figure>
 
             <h2>⚠️ Pièges &amp; erreurs courantes</h2>
@@ -468,29 +412,4 @@
           <div class="lesson-done">
             <label>
               <input type="checkbox" id="lesson-done-cb">
-              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
-            </label>
-          </div>
-
-          <nav class="lesson-nav" id="lesson-nav"></nav>
-        </article>
-
-        <aside class="toc" id="toc">
-          <h2>Sur cette page</h2>
-          <ul id="toc-list"></ul>
-        </aside>
-      </div>
-    </main>
-  </div>
-
-  <script src="../../js/site-data.js"></script>
-  <script src="../../js/glossaire-data.js"></script>
-  <script src="../../js/progress.js"></script>
-  <script src="../../js/search-index.js"></script>
-  <script src="../../js/main.js"></script>
-  <script src="../../js/quiz.js"></script>
-  <script src="../../js/checklist.js"></script>
-  <script src="../../assets/vendor/highlight-mini.js"></script>
-</body>
-</html>
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline 

@@ -236,6 +236,11 @@
             <p>Comment le moteur sait-il s'il doit rendre en URP ou en HDRP&nbsp;? Grâce à un fichier précis&nbsp;: le <span class="term">Render Pipeline Asset</span>. C'est un <span class="gloss">asset</span> (un fichier dans la fenêtre Project) qui <b>contient la configuration du pipeline</b> et que l'on <b>assigne</b> au moteur dans <span class="menu-path">Edit<span class="arrow">▸</span>Project Settings<span class="arrow">▸</span>Graphics</span> (réglages <em>Scriptable Render Pipeline</em>, sous Unity 6) — ainsi que par niveau de qualité dans <span class="menu-path">Project Settings<span class="arrow">▸</span>Quality</span>.</p>
             <p>Tant qu'un Render Pipeline Asset URP est assigné là, Unity rend en URP. Si ce champ est <b>vide</b>, Unity retombe sur le Built-in. C'est exactement ce levier que tu peux observer pour <em>savoir</em> dans quel pipeline tu travailles, et c'est lui qu'on inspectera dans la démonstration. Les templates du Unity Hub créent et assignent ce fichier automatiquement&nbsp;; tu peux aussi le faire à la main après avoir installé le package URP ou HDRP via le <em>Package Manager</em>.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Ouvre <b>Edit ▸ Project Settings ▸ Graphics</b> et regarde le <b>Render Pipeline Asset</b>&nbsp;: vide → <b>Built-in</b>&nbsp;; un asset <b>URP</b>/<b>HDRP</b> → cette pipeline est active. Tu sais maintenant lire, en 20 secondes, la config de rendu d'un projet.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>On va créer un projet <b>URP</b> depuis le Unity Hub, puis aller <em>voir</em> le Render Pipeline Asset qui prouve que le pipeline est bien actif. On terminera par le scénario du matériau rose et sa conversion.</p>
             <ol>

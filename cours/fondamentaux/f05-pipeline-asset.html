@@ -313,6 +313,11 @@
               <p>Chaque étape <b>impose des contraintes à la suivante</b>. Retopo <b>avant</b> UV (il faut le mesh final pour le déplier). UV <b>avant</b> bake (le bake écrit dans l'espace UV). Bake <b>avant</b> texturing (le texturing exploite les cartes cuites). Inverser cet ordre, c'est se condamner à tout refaire.</p>
             </div>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Remets dans l'ordre&nbsp;: UV, high-poly, low-poly, texturing, bake, export. (high-poly → low-poly → UV → bake → texturing → export.) Où intervient la <b>retopologie</b>&nbsp;? (créer le low-poly à partir du high.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Faisons le pipeline complet, à blanc, sur un asset simple&nbsp;: une <b>caisse en bois cerclée de métal</b>. L'objectif n'est pas de tout réaliser ici (chaque étape a sa leçon dédiée), mais de <b>vivre l'enchaînement</b> et les passages de relais.</p>
             <ol>

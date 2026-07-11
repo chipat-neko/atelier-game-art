@@ -155,58 +155,9 @@
             <p>Un FBX référence souvent des matériaux. Par défaut, Unity peut <b>générer des matériaux automatiquement</b> à l'import — et c'est une source de frustration majeure. Le réglage <b>Material Creation Mode</b> et le bouton <b>Extract Materials…</b> sont là pour reprendre le contrôle.</p>
             <p>Le bon réflexe&nbsp;: cliquer <b>Extract Materials…</b> pour <b>sortir les matériaux générés dans de vrais fichiers</b> <code>.mat</code> de ton projet (un dossier <code>Materials/</code>, par exemple). Une fois extraits, ils t'appartiennent&nbsp;: tu peux les éditer, leur brancher tes textures, et ils <b>survivent aux réimports</b>. Le panneau de <b>remapping</b> (<em>On Demand Remap</em> / <em>Search and Remap</em>) permet, en cas de réimport, de <b>réutiliser un matériau existant</b> au lieu d'en recréer un. Sans cette étape, chaque <b>Apply</b> peut <b>régénérer et écraser</b> tes réglages de matériau&nbsp;: c'est le fameux «&nbsp;mes matériaux se réinitialisent tout seuls&nbsp;».</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 360" role="img" aria-label="Maquette de l'Inspector d'un FBX dans Unity, avec les quatre onglets Model, Rig, Animation, Materials et leurs réglages clés annotés">
-                <text x="320" y="24" text-anchor="middle" class="svg-text" font-weight="700" font-size="15">Inspector d'un FBX — les 4 onglets</text>
-                <!-- cadre inspector -->
-                <rect x="40" y="40" width="560" height="296" rx="10" class="svg-surface" stroke="#313c4c" stroke-width="2"/>
-                <!-- barre d'onglets -->
-                <rect x="40" y="40" width="560" height="34" rx="10" fill="#59b0ff" opacity="0.16"/>
-                <text x="92" y="62" text-anchor="middle" class="svg-text" font-size="12" font-weight="700">Model</text>
-                <text x="200" y="62" text-anchor="middle" class="svg-dim" font-size="12">Rig</text>
-                <text x="320" y="62" text-anchor="middle" class="svg-dim" font-size="12">Animation</text>
-                <text x="470" y="62" text-anchor="middle" class="svg-dim" font-size="12">Materials</text>
-                <rect x="56" y="70" width="72" height="4" rx="2" fill="#59b0ff"/>
-                <!-- colonne Model -->
-                <text x="60" y="100" class="svg-text" font-size="12" font-weight="700" fill="#f2b441">▸ Model</text>
-                <g class="svg-dim" font-size="11.5">
-                  <text x="70" y="124">Scale Factor</text>
-                  <text x="70" y="146">Convert Units</text>
-                  <text x="70" y="168">Bake Axis Conversion</text>
-                  <text x="70" y="190">Mesh Compression</text>
-                  <text x="70" y="212">Read/Write</text>
-                  <text x="70" y="234">Normals : Import</text>
-                  <text x="70" y="256">Tangents : Calculate</text>
-                  <text x="70" y="278">Import BlendShapes</text>
-                </g>
-                <!-- valeurs / annotations -->
-                <rect x="250" y="113" width="40" height="16" rx="3" class="svg-surface" stroke="#5ad19a"/>
-                <text x="270" y="125" text-anchor="middle" class="svg-text" font-size="11">1.0</text>
-                <text x="300" y="125" class="svg-dim" font-size="10">← 1 u = 1 m</text>
-                <rect x="250" y="135" width="16" height="16" rx="3" fill="#5ad19a"/><text x="259" y="148" text-anchor="middle" font-size="11" fill="#0a0f14" font-weight="700">✓</text>
-                <text x="272" y="148" class="svg-dim" font-size="10">réconcilie les unités</text>
-                <text x="250" y="234" class="svg-text" font-size="10" fill="#f2b441">garde le lissage du modeleur</text>
-                <text x="250" y="256" class="svg-text" font-size="10" fill="#f2b441">requis pour normal maps</text>
-                <!-- panneau droit : onglets résumés -->
-                <line x1="430" y1="86" x2="430" y2="320" stroke="#313c4c" stroke-width="1" stroke-dasharray="3 3"/>
-                <text x="446" y="104" class="svg-text" font-size="11.5" font-weight="700" fill="#c89bff">Rig</text>
-                <text x="446" y="122" class="svg-dim" font-size="10">Animation Type :</text>
-                <text x="446" y="138" class="svg-text" font-size="10">None / Generic /</text>
-                <text x="446" y="152" class="svg-text" font-size="10">Humanoid → Avatar</text>
-                <text x="446" y="184" class="svg-text" font-size="11.5" font-weight="700" fill="#f2b441">Animation</text>
-                <text x="446" y="202" class="svg-dim" font-size="10">Clips, Loop Time,</text>
-                <text x="446" y="216" class="svg-dim" font-size="10">Root Transform</text>
-                <text x="446" y="248" class="svg-text" font-size="11.5" font-weight="700" fill="#5ad19a">Materials</text>
-                <text x="446" y="266" class="svg-dim" font-size="10">Extract Materials…</text>
-                <text x="446" y="280" class="svg-dim" font-size="10">→ ne pas dupliquer</text>
-                <text x="446" y="294" class="svg-dim" font-size="10">au réimport</text>
-                <!-- bouton Apply -->
-                <rect x="470" y="305" width="58" height="20" rx="5" fill="#59b0ff"/>
-                <text x="499" y="319" text-anchor="middle" font-size="11" font-weight="700" fill="#0a0f14">Apply</text>
-                <rect x="534" y="305" width="54" height="20" rx="5" class="svg-surface" stroke="#313c4c"/>
-                <text x="561" y="319" text-anchor="middle" class="svg-dim" font-size="11">Revert</text>
-              </svg>
-              <figcaption>Vue simplifiée de l'Inspector d'un FBX. Onglet <b>Model</b> à gauche (échelle, normales, tangentes), résumé des trois autres à droite. Rien n'est appliqué tant que tu n'as pas cliqué <b>Apply</b>.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/unity/u05-import.webp" width="1600" height="648" loading="lazy" alt="Capture annotée de l'Inspector Unity pour un FBX : 1 les quatre onglets Model/Rig/Animation/Materials, 2 les réglages du Model (échelle, normales, UV, colliders), 3 le fichier source dans Project, 4 l'aperçu du mesh.">
+              <figcaption>Les réglages d'import d'un FBX dans Unity. On sélectionne le fichier dans <b>Project</b>&nbsp;: l'Inspector affiche ses <b>Import Settings</b> répartis en quatre onglets — <b>Model</b> (échelle, normales, UV, colliders…), <b>Rig</b>, <b>Animation</b>, <b>Materials</b> — avec un aperçu du mesh en bas.</figcaption>
             </figure>
 
             <h3>7. Textures — le réglage qui change tout&nbsp;: Texture Type</h3>
@@ -288,6 +239,11 @@
               <li><b>Ne déplace/renomme jamais un asset hors de Unity</b> si tu peux faire autrement&nbsp;: dans l'explorateur Windows, tu risques de séparer le fichier de son <code>.meta</code>. Fais-le <b>depuis la fenêtre Project</b>, qui déplace les deux ensemble.</li>
               <li><b>Le <code>.gitignore</code> Unity</b> ignore <code>Library/</code> (le cache, régénérable) mais <b>conserve les <code>.meta</code></b>. C'est la règle inverse de l'intuition&nbsp;: on jette le compilé, on garde la recette.</li>
             </ul>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Glisse un <b>.fbx</b> ou <b>.glb</b> dans la fenêtre <b>Project</b>. Sélectionne-le ▸ Inspector (Import Settings)&nbsp;: règle le <b>Scale Factor</b>, coche <b>Import Materials</b>, puis <b>Apply</b>. Enfin, dépose-le dans la scène.</p>
+            </div>
 
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Importons un personnage FBX (en réglant l'échelle et le rig) puis son set de textures PBR (en réglant sRGB et la normale). Crée d'abord un dossier propre&nbsp;: dans la fenêtre <span class="menu-path">Project</span>, <span class="menu-path">+ (Create)<span class="arrow">▸</span>Folder</span>, nomme-le <code>Personnages/Heros</code>.</p>

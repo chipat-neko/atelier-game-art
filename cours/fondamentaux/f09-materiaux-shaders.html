@@ -270,6 +270,11 @@ void main() {
             <p>D'abord, la <b>complexité d'un shader</b> se mesure (entre autres) en <span class="term">nombre d'instructions</span> exécutées par pixel et en nombre de <em>texture samples</em>. Un shader truffé de branches conditionnelles, de boucles et de calculs de bruit peut être plusieurs dizaines de fois plus cher qu'un shader simple — et comme cela tourne par pixel, le coût explose en plein écran. Unreal propose une vue «&nbsp;Shader Complexity&nbsp;» (du vert au rouge) précisément pour repérer les matériaux trop lourds.</p>
             <p>Ensuite, l'<span class="term">ordre de rendu</span> et la <b>transparence</b>. Les objets opaques sont dessinés en premier et trient leur profondeur tout seuls grâce au <span class="gloss">Z-buffer</span> (un tampon qui retient «&nbsp;quel pixel est le plus proche&nbsp;»). Mais les objets <b>transparents</b> doivent se mélanger avec ce qui est <em>derrière</em> eux&nbsp;: il faut donc les dessiner <b>après</b> les opaques, et <b>du plus lointain au plus proche</b>. Si l'ordre est faux, une vitre proche peut «&nbsp;effacer&nbsp;» une vitre lointaine, ou un effet de fumée disparaître devant un objet qu'il devrait recouvrir. C'est l'origine du fameux bug «&nbsp;ma transparence clignote / le tri se trompe&nbsp;», traité en profondeur en <a href="../../cours/fondamentaux/f12-optimisation.html">F12</a> et <a href="../../cours/fondamentaux/f11-vfx-particules.html">F11</a>.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Distingue en une phrase&nbsp;: <b>texture</b> (l'image), <b>matériau</b> (l'ensemble des maps/réglages), <b>shader</b> (le programme GPU qui calcule le pixel). Lequel s'exécute <b>par pixel</b>&nbsp;? (le fragment / pixel shader.)</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <p>Construisons un matériau dans le <b>Shader Editor de Blender</b> pour <em>voir</em> la hiérarchie shader → matériau → texture, et le rôle des entrées. La logique est strictement la même dans le <a href="../../cours/unity/u06-materiaux.html">Shader Graph d'Unity</a> et le <a href="../../cours/unreal/e05-material-editor.html">Material Editor d'Unreal</a>&nbsp;; seuls les noms changent.</p>
             <ol>

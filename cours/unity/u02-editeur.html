@@ -117,73 +117,9 @@
             <h4>La Console&nbsp;: ne jamais la masquer</h4>
             <p>La <span class="term">Console</span> reçoit trois types de messages&nbsp;: les <b>logs</b> (gris, informatifs), les <b>warnings</b> (jaunes, «&nbsp;ça marche mais attention&nbsp;») et les <b>erreurs</b> (rouges, «&nbsp;ça ne compile pas / ça plante&nbsp;»). Une erreur de compilation rouge <b>empêche d'entrer en Play</b>&nbsp;: tant qu'elle est là, le moteur refuse de lancer le jeu. Le débutant qui ignore la Console passe des minutes à se demander «&nbsp;pourquoi rien ne se passe&nbsp;» alors que la réponse y est écrite en rouge. Garde-la visible.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 380" role="img" aria-label="Carte de la disposition par défaut de l'éditeur Unity : Hierarchy à gauche, Scene et Game au centre, Inspector à droite, Project et Console en bas">
-                <text x="320" y="24" text-anchor="middle" class="svg-text" font-size="14" font-weight="700">Disposition par défaut de l'éditeur Unity</text>
-                <text x="320" y="40" text-anchor="middle" class="svg-dim" font-size="10">chaque zone est un onglet ancrable, déplaçable et redimensionnable</text>
-
-                <!-- barre d'outils -->
-                <rect x="20" y="52" width="600" height="26" rx="5" class="svg-surface" stroke="#313c4c"/>
-                <circle cx="300" cy="65" r="7" fill="#5ad19a"/><text x="300" y="69" text-anchor="middle" font-size="9" font-weight="700" fill="#0b0f14">▶</text>
-                <text x="320" y="69" class="svg-dim" font-size="9">⏸ ⏭  ← boutons Play / Pause / Step (lancent le jeu dans la vue Game)</text>
-                <text x="34" y="69" class="svg-dim" font-size="9">↖ ✥ ↻ ⤢  (Q W E R)</text>
-
-                <!-- Hierarchy (gauche) -->
-                <rect x="20" y="86" width="138" height="184" rx="6" fill="#59b0ff" fill-opacity="0.10" stroke="#59b0ff"/>
-                <text x="89" y="104" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Hierarchy</text>
-                <text x="89" y="120" text-anchor="middle" class="svg-dim" font-size="8.5">arbre des objets</text>
-                <text x="32" y="142" class="svg-text" font-size="9">▸ Main Camera</text>
-                <text x="32" y="158" class="svg-text" font-size="9">▸ Directional Light</text>
-                <text x="32" y="174" class="svg-text" font-size="9">▾ Player</text>
-                <text x="44" y="190" class="svg-dim" font-size="9">↳ Arme (enfant)</text>
-                <text x="32" y="206" class="svg-text" font-size="9">▸ Sol</text>
-
-                <!-- Scene / Game (centre) -->
-                <rect x="166" y="86" width="296" height="184" rx="6" fill="#5ad19a" fill-opacity="0.08" stroke="#5ad19a"/>
-                <rect x="172" y="92" width="56" height="18" rx="4" fill="#5ad19a" fill-opacity="0.30" stroke="#5ad19a"/>
-                <text x="200" y="105" text-anchor="middle" class="svg-text" font-size="9.5" font-weight="700">Scene</text>
-                <rect x="232" y="92" width="56" height="18" rx="4" class="svg-surface" stroke="#313c4c"/>
-                <text x="260" y="105" text-anchor="middle" class="svg-dim" font-size="9.5">Game</text>
-                <text x="314" y="106" class="svg-dim" font-size="8.5">← onglets superposés</text>
-                <!-- mini-scène -->
-                <line x1="180" y1="240" x2="450" y2="240" stroke="#313c4c" stroke-width="1"/>
-                <polygon points="300,150 340,210 260,210" fill="#5ad19a" fill-opacity="0.35" stroke="#5ad19a"/>
-                <circle cx="300" cy="150" r="4" fill="#f2b441"/>
-                <text x="314" y="124" class="svg-text" font-size="9" font-weight="700">vue d'ÉDITION 3D</text>
-                <text x="172" y="262" class="svg-dim" font-size="8.5">caméra libre · gizmos · icônes invisibles en jeu</text>
-
-                <!-- Inspector (droite) -->
-                <rect x="470" y="86" width="150" height="184" rx="6" fill="#c89bff" fill-opacity="0.10" stroke="#c89bff"/>
-                <text x="545" y="104" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Inspector</text>
-                <text x="545" y="120" text-anchor="middle" class="svg-dim" font-size="8.5">propriétés du sélectionné</text>
-                <rect x="480" y="130" width="130" height="22" rx="3" class="svg-surface" stroke="#313c4c"/>
-                <text x="488" y="145" class="svg-dim" font-size="8.5">Transform</text>
-                <rect x="480" y="156" width="130" height="22" rx="3" class="svg-surface" stroke="#313c4c"/>
-                <text x="488" y="171" class="svg-dim" font-size="8.5">Mesh Renderer</text>
-                <rect x="480" y="182" width="130" height="22" rx="3" class="svg-surface" stroke="#313c4c"/>
-                <text x="488" y="197" class="svg-dim" font-size="8.5">Collider</text>
-                <rect x="480" y="216" width="130" height="20" rx="4" fill="#c89bff" fill-opacity="0.25" stroke="#c89bff"/>
-                <text x="545" y="230" text-anchor="middle" class="svg-text" font-size="8.5">+ Add Component</text>
-
-                <!-- Project / Console (bas) -->
-                <rect x="20" y="278" width="380" height="86" rx="6" fill="#f2b441" fill-opacity="0.10" stroke="#f2b441"/>
-                <text x="210" y="296" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Project</text>
-                <text x="210" y="311" text-anchor="middle" class="svg-dim" font-size="8.5">les ASSETS sur le disque (dossier Assets/)</text>
-                <rect x="34" y="320" width="40" height="34" rx="4" class="svg-surface" stroke="#313c4c"/>
-                <rect x="82" y="320" width="40" height="34" rx="4" class="svg-surface" stroke="#313c4c"/>
-                <rect x="130" y="320" width="40" height="34" rx="4" class="svg-surface" stroke="#313c4c"/>
-                <text x="54" y="340" text-anchor="middle" class="svg-dim" font-size="13">📁</text>
-                <text x="102" y="340" text-anchor="middle" class="svg-dim" font-size="13">🖼</text>
-                <text x="150" y="340" text-anchor="middle" class="svg-dim" font-size="13">📄</text>
-
-                <rect x="408" y="278" width="212" height="86" rx="6" fill="#ff6b6b" fill-opacity="0.08" stroke="#ff6b6b"/>
-                <text x="514" y="296" text-anchor="middle" class="svg-text" font-size="11" font-weight="700">Console</text>
-                <text x="514" y="311" text-anchor="middle" class="svg-dim" font-size="8.5">logs · warnings · erreurs</text>
-                <circle cx="420" cy="326" r="4" fill="#ff6b6b"/><text x="430" y="329" class="svg-dim" font-size="8.5">erreur (bloque le Play)</text>
-                <circle cx="420" cy="342" r="4" fill="#f2b441"/><text x="430" y="345" class="svg-dim" font-size="8.5">warning</text>
-                <circle cx="420" cy="358" r="4" fill="#8a93a3"/><text x="430" y="361" class="svg-dim" font-size="8.5">log informatif</text>
-              </svg>
-              <figcaption>La carte mentale à mémoriser&nbsp;: <b>Hierarchy</b> (arbre des objets) à gauche, <b>Scene/Game</b> au centre (édition vs rendu joueur), <b>Inspector</b> (propriétés) à droite, <b>Project</b> (disque) et <b>Console</b> (messages) en bas. Tu peux tout réorganiser&nbsp;; cette disposition n'est qu'un point de départ.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/unity/u02-editeur.webp" width="1600" height="646" loading="lazy" alt="Capture annotée de l'éditeur Unity : 1 la Hierarchy à gauche, 2 la vue Scene/Game au centre, 3 l'Inspector à droite avec les components du GameObject sélectionné, 4 la fenêtre Project en bas.">
+              <figcaption>L'éditeur Unity, en vrai. Un <b>GameObject</b> (ici un jerrican importé) sélectionné dans la <b>Hierarchy</b> affiche ses <b>components</b> dans l'<b>Inspector</b> — Transform, Mesh Filter, Mesh Renderer, Material… La <b>Scene</b> montre la vue d'édition, la fenêtre <b>Project</b> les assets.</figcaption>
             </figure>
 
             <div class="essaie">
@@ -505,29 +441,4 @@
           <div class="lesson-done">
             <label>
               <input type="checkbox" id="lesson-done-cb">
-              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
-            </label>
-          </div>
-
-          <nav class="lesson-nav" id="lesson-nav"></nav>
-        </article>
-
-        <aside class="toc" id="toc">
-          <h2>Sur cette page</h2>
-          <ul id="toc-list"></ul>
-        </aside>
-      </div>
-    </main>
-  </div>
-
-  <script src="../../js/site-data.js"></script>
-  <script src="../../js/glossaire-data.js"></script>
-  <script src="../../js/progress.js"></script>
-  <script src="../../js/search-index.js"></script>
-  <script src="../../js/main.js"></script>
-  <script src="../../js/quiz.js"></script>
-  <script src="../../js/checklist.js"></script>
-  <script src="../../assets/vendor/highlight-mini.js"></script>
-</body>
-</html>
+              <span class="check-box"><svg 

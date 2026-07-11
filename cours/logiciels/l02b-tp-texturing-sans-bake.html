@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2b — TP : texturer sans bake · Atelier Game Art</title>
+  <meta name="description" content="Travaux pratiques : texturer la caisse en PBR sans bake ni high-poly — fill layers, smart material, masques peints à la main et relief par height. Version gratuite Material Maker / ArmorPaint / Blender.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l2b";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>TP : texturer sans bake</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L2b — TP&nbsp;: texturer sans bake</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-debutant"><span class="badge-dot"></span>Débutant</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>35 min</span>
+              <span class="badge">Piste 0 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/logiciels/l02-substance.html">L2 — Substance (concepts)</a> et <a href="../../cours/fondamentaux/f07-pbr.html">F7 — PBR</a>. Aucun high-poly requis.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif du TP</div>
+              <p>Produire une <b>caisse texturée crédible</b> en PBR <b>sans bake ni high-poly</b>. C'est le premier des trois TP de texturing&nbsp;: on obtient déjà 80&nbsp;% d'un résultat convaincant avec trois briques simples — <b>fill layer</b>, <b>smart material</b> et <b>masques peints à la main</b> — plus un peu de relief par <b>height</b>. Le bake viendra au TP suivant (<a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a>).</p>
+            </div>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Faisable 100&nbsp;% gratuitement</div>
+              <p>Les étapes sont décrites pour <b>Substance 3D Painter</b>, mais chaque geste a son équivalent gratuit&nbsp;: <b>ArmorPaint</b>, <b>Material Maker</b> ou le <b>Texture Paint</b> de <a href="../../cours/logiciels/l01-blender.html">Blender</a>. Un encart «&nbsp;sans abonnement&nbsp;» te donne la marche à suivre plus bas.</p>
+            </div>
+
+            <h2>Pourquoi commencer sans bake</h2>
+            <p>Le <b>bake</b> (cuisson des mesh maps depuis un high-poly, voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>) est l'étape qui bloque le plus de débutants&nbsp;: cage mal réglée, artefacts, high-poly à préparer… Résultat, beaucoup n'atteignent jamais la partie <em>plaisante</em> — donner de la matière. Ce TP renverse l'ordre&nbsp;: tu textures d'abord, tu bakes ensuite. Tu apprends la <b>pile de calques</b> (le cœur du non-destructif) sur un objet simple, sans dépendre d'un bake réussi.</p>
+            <p>Et ce n'est pas un pis-aller&nbsp;: beaucoup d'assets de production (surtout stylisés, mobiles ou props secondaires) sont texturés <b>sans bake</b>, à partir de fill layers et de masques. Savoir le faire proprement est une compétence à part entière.</p>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_low.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_low.png" alt="Rendu de référence de la caisse low-poly à atteindre"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse en bois</b> — pour ce TP, tu n'as besoin que du <b>low-poly déplié</b>. Importe-le tel quel&nbsp;: les UV sont déjà faits.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>caisse_low.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Low ≈ 816 tris · UV box-map · libre d'usage. Objectif visuel&nbsp;: s'approcher de <code>ref_low.png</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <p>Objectif&nbsp;: une caisse «&nbsp;bois usé + cerclage métal&nbsp;» propre, obtenue sans aucune cuisson. On empile trois calques et un peu de relief.</p>
+            <ol>
+              <li><b>Créer le projet.</b> <span class="menu-path">File<span class="arrow">▸</span>New</span> ▸ template <b>PBR — Metallic Roughness</b> ▸ charge <code>caisse_low.fbx</code> dans <b>Mesh</b>. Résolution&nbsp;: 2048&nbsp;px. <em>On ne bake rien</em>&nbsp;: on saute l'étape «&nbsp;Bake Mesh Maps&nbsp;».</li>
+              <li><b>Poser la base bois (fill).</b> Ajoute un <b>Fill layer</b>&nbsp;: règle une <b>Base Color</b> brun bois, une <b>Roughness</b> assez haute (0,7) et <b>Metallic</b> à 0. Toute la caisse devient un bois mat uniforme — ta fondation.</li>
+              <li><b>Ajouter le cerclage métal (fill + masque à la main).</b> Nouveau <b>Fill layer</b> métal (Metallic 1, Roughness 0,4, couleur gris). Clic droit <span class="arrow">▸</span> <b>Add black mask</b> pour le cacher, puis <b>peins en blanc</b> les bandes et coins métalliques directement sur l'objet. Le métal n'apparaît que là où tu peins.</li>
+              <li><b>Donner de la vie (smart material ou variation).</b> Glisse un <b>smart material</b> «&nbsp;bois&nbsp;» au-dessus si tu en as un&nbsp;; sinon ajoute un <b>Fill</b> de teinte plus foncée en mode <em>Multiply</em>, masqué par un <b>Grunge</b> (texture procédurale de saleté) pour casser l'uniformité. La matière cesse d'être «&nbsp;plate&nbsp;».</li>
+              <li><b>Usure sur les arêtes (courbure «&nbsp;douce&nbsp;»).</b> Même <b>sans high-poly</b>, Painter calcule une <b>Curvature</b> approximative depuis la normale du mesh. Ajoute un <b>Fill</b> clair (bois éclairci/écaillé) + masque noir + <b>generator Curvature</b>&nbsp;: l'usure se pose sur les angles. Faible&nbsp;? Peins un renfort d'usure <b>à la main</b> sur les coins les plus exposés.</li>
+              <li><b>Relief sans géométrie (height).</b> Ajoute un <b>Paint layer</b> et n'active que le canal <b>Height</b>&nbsp;: peins quelques <b>rayures</b> et <b>joints</b> entre planches. Painter les convertit en Normal à la volée&nbsp;— du relief crédible sans toucher au maillage.</li>
+              <li><b>Comparer.</b> Ouvre <code>ref_low.png</code> à côté de ton viewport&nbsp;: mêmes zones métal&nbsp;? usure aux bons endroits&nbsp;? Ajuste tes masques (c'est non destructif, tout reste réglable).</li>
+            </ol>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">🆓</span>Sans abonnement — la même chose gratuitement</div>
+              <p><b>Blender (Texture Paint)</b>&nbsp;: importe la caisse, crée un matériau + une image, peins par calques via l'add-on gratuit <em>Paint System</em> ou en empilant des Mix Nodes (base bois → masque peint → métal). Le <b>height</b> se simule avec un Bump node.<br>
+              <b>ArmorPaint</b>&nbsp;: reprend presque à l'identique le flux fill + black mask + brosse.<br>
+              <b>Material Maker</b>&nbsp;: reconstruis la matière en <b>procédural</b> (nœuds bruit → couleur → mélange), puis exporte les maps (approche «&nbsp;Designer&nbsp;»).</p>
+            </div>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sur ton fill «&nbsp;métal&nbsp;» masqué, prends un pinceau blanc à <b>faible flux</b> (20&nbsp;%) et repasse plusieurs fois sur un coin&nbsp;: l'apparition est <b>progressive</b>. Passe le pinceau en <b>noir</b> pour effacer&nbsp;: le masque se peint dans les deux sens, sans jamais abîmer le calque.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Tout est peint sur <b>un seul calque</b> et je ne peux plus rien reprendre.</div>
+                <div class="pi-cause"><b>Cause</b> Réflexe «&nbsp;2D&nbsp;»&nbsp;: peindre à plat au lieu d'empiler fill + masques.</div>
+                <div class="pi-fix"><b>Correction</b> Un calque = une intention (base, métal, usure). On masque, on ne mélange pas tout.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Le generator Curvature ne donne presque rien.</div>
+                <div class="pi-cause"><b>Cause</b> Sans high-poly, la courbure du low-poly est faible (arêtes vives, peu de biseau).</div>
+                <div class="pi-fix"><b>Correction</b> Renforce à la main sur les coins, ou attends le TP <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a> (bake) pour une usure nette.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Le métal a l'air en plastique gris.</div>
+                <div class="pi-cause"><b>Cause</b> <b>Metallic</b> laissé à 0, ou Roughness trop haute.</div>
+                <div class="pi-fix"><b>Correction</b> Metal = Metallic 1 + Roughness basse (0,2–0,4)&nbsp;; la couleur du métal vient surtout des reflets.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Les rayures «&nbsp;height&nbsp;» ne se voient pas.</div>
+                <div class="pi-cause"><b>Cause</b> Canal Height désactivé sur le calque, ou intensité trop faible.</div>
+                <div class="pi-fix"><b>Correction</b> Active <b>uniquement</b> Height sur le paint layer et monte l'intensité&nbsp;; oriente une lumière pour vérifier.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Texture la caisse fournie <b>sans bake</b> et rapproche-toi du rendu <code>ref_low.png</code>.</p>
+              <ol>
+                <li>Crée le projet en PBR Metallic Roughness et importe <code>caisse_low.fbx</code>.</li>
+                <li>Empile&nbsp;: <b>fill bois</b> (base) → <b>fill métal</b> masqué à la main (cerclage) → <b>variation</b> (grunge) → <b>usure Curvature</b> → <b>height</b> (rayures).</li>
+                <li>Garde chaque intention sur son propre calque&nbsp;; rien n'est aplati.</li>
+                <li>Optionnel&nbsp;: refais la même chose dans un outil gratuit (Blender/ArmorPaint/Material Maker).</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Le bois et le métal occupent les bonnes zones (métal sur les cerclages et coins).</li>
+                  <li>Le métal se lit comme du métal (Metallic 1, reflets), pas comme du plastique.</li>
+                  <li>Une usure discrète marque les arêtes/coins exposés.</li>
+                  <li>Au moins un détail en <b>height</b> (rayure ou joint) est visible.</li>
+                  <li>Rien n'est «&nbsp;aplati&nbsp;»&nbsp;: chaque calque reste réglable.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Peut-on texturer un asset crédible sans baker de mesh maps ?","a":["Oui : fill layers, masques peints et height suffisent pour beaucoup de props","Non, le bake est toujours obligatoire","Seulement en 2D","Uniquement pour les personnages"],"correct":0,"explain":"Beaucoup d'assets (stylisés, mobiles, props secondaires) se texturent sans bake, avec des fill layers, des masques et un peu de height. Le bake améliore l'usure procédurale mais n'est pas indispensable."},
+  {"q":"Comment fait-on apparaître le métal seulement sur les cerclages ?","a":["Un fill métal caché par un masque noir, qu'on peint en blanc sur les zones voulues","En changeant la couleur de tout l'objet","En supprimant le bois","En baissant la résolution"],"correct":0,"explain":"On empile un fill « métal » et on l'affiche via un masque : blanc = visible. On peint le masque à la main sur les bandes et coins métalliques."},
+  {"q":"À quoi sert le canal Height sur un paint layer ?","a":["Créer du relief (rayures, joints) converti en Normal, sans toucher la géométrie","Changer la couleur de base","Rendre l'objet métallique","Exporter en ORM"],"correct":0,"explain":"Le Height est un relief en niveaux de gris que le logiciel convertit en Normal à la volée : idéal pour des rayures et joints sans ajouter de polygones."}
+]
+              </script>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>On peut obtenir <b>80&nbsp;%</b> d'un bon texturing <b>sans bake</b>&nbsp;: fill + masques + un peu de height.</li>
+                <li><b>Un calque = une intention</b> (base, métal, usure)&nbsp;; on masque, on n'aplati jamais.</li>
+                <li>Le <b>metallic</b> se règle à 1 pour du vrai métal&nbsp;; sa couleur vient des reflets.</li>
+                <li>Le <b>height</b> donne du relief crédible sans ajouter de géométrie.</li>
+                <li>Tout est reproductible <b>gratuitement</b> (Blender, ArmorPaint, Material Maker).</li>
+              </ul>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c — TP&nbsp;: bake high→low + export moteurs</a>&nbsp;: on ajoute la cuisson et on sort les maps vers Unity/Unreal/Godot.</li>
+              <li><a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a> et <a href="../../cours/blender/b08-texture-paint-bake.html">B8 — Texture Paint &amp; Baking</a>&nbsp;: la théorie et la version Blender.</li>
+              <li><a href="../../cours/logiciels/l02-substance.html">L2 — Substance (concepts)</a>&nbsp;: la théorie des calques, masques et générateurs.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

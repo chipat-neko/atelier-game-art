@@ -154,6 +154,11 @@
               <figcaption>Le mode Shader Complexity colore la scène par coût pixel&nbsp;: les zones rouges (typiquement la transparence superposée) sont tes priorités.</figcaption>
             </figure>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Ouvre la console (<kbd>~</kbd>) et tape <code>stat unit</code>&nbsp;: tu vois <b>Frame</b>, <b>Game</b>, <b>Draw</b>, <b>GPU</b> en millisecondes. Ajoute <code>stat rhi</code> pour les <b>draw calls</b>. Voilà ton tableau de bord de performance.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas</h2>
             <ol>
               <li>Dans une scène chargée, ouvre la console (touche <span class="kbd">²</span> / <span class="kbd">~</span>) et tape <code>stat unit</code>. Note quel poste (Game / Draw / GPU) est proche de Frame&nbsp;: c'est ton goulot.</li>

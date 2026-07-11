@@ -109,6 +109,11 @@
             <h3>4. Exposer des paramètres</h3>
             <p>Comme un Master Material expose des paramètres (renvoi <a href="../../cours/unreal/e05-material-editor.html">E5</a>), un réseau Geometry Nodes peut exposer des <b>entrées</b> (densité, échelle min/max, seed) dans le panneau du modifier. On les crée dans le <em>Group Input</em> / l'onglet <em>Group</em>. Ton réseau devient alors un <b>outil réutilisable</b> que tu (ou un collègue) règle sans toucher au graphe — on peut même le sauver en asset dans la bibliothèque.</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sélectionne un objet ▸ onglet <b>Geometry Nodes</b> ▸ New. Ajoute <b>Distribute Points on Faces</b> puis <b>Instance on Points</b> (avec un petit cube)&nbsp;: la surface se couvre d'instances, <b>procéduralement</b> et sans rien modéliser à la main.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas&nbsp;: éparpiller des cailloux</h2>
             <ol>
               <li>Crée un plan (le sol). <span class="menu-path">Modifier Properties<span class="arrow">▸</span>Add Modifier<span class="arrow">▸</span>Geometry Nodes</span> ▸ <em>New</em>. Passe au Workspace <em>Geometry Nodes</em>.</li>

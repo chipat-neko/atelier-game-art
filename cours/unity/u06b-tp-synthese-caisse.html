@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U6+ — TP de synthèse : intégrer la caisse (Unity) · Atelier Game Art</title>
+  <meta name="description" content="Travaux pratiques Unity : importer la caisse et ses maps PBR, reconstruire un matériau URP Lit, éclairer une scène simple et comparer au rendu de référence.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="u6b";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="18.4" y1="18.4" x2="19.8" y2="19.8"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/unity/u01-installation.html">Unity</a><span class="sep">/</span>
+            <span>TP de synthèse : la caisse</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>U6+ — TP de synthèse&nbsp;: intégrer la caisse</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>40 min</span>
+              <span class="badge">Piste 3 · Unity</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/unity/u05-import-assets.html">U5 — Import</a>, <a href="../../cours/unity/u06-materiaux.html">U6 — Matériaux</a> et <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c — Bake &amp; export</a> (pour tes maps).</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif du TP</div>
+              <p>Boucler le pipeline côté moteur&nbsp;: <b>importer la caisse</b> et ses <b>maps PBR</b>, <b>reconstruire son matériau</b> en URP, <b>éclairer</b> une petite scène et <b>comparer</b> au rendu de référence <code>ref_high.png</code>. C'est le point où tout ce que tu as fait en amont (modélisation, UV, texturing, export) se vérifie enfin dans le moteur.</p>
+            </div>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_high.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_high.png" alt="Rendu de référence de la caisse texturée à reproduire dans Unity"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse</b> — importe le mesh, et utilise les <b>maps que tu as exportées en <a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a></b> (preset Unity URP). Pas encore fait&nbsp;? Le <code>.glb</code> embarque déjà un matériau de base pour dépanner.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>caisse_low.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Cible visuelle&nbsp;: <code>ref_high.png</code>. Maps attendues&nbsp;: Base Color, Normal, Metallic (Smoothness en alpha), Occlusion.</p>
+                </div>
+              </div>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <ol>
+              <li><b>Importer le mesh et les maps.</b> Glisse <code>caisse_low.fbx</code> et tes textures dans la fenêtre <b>Project</b>. Dans les <b>Import Settings</b> du FBX, règle le <b>Scale Factor</b> si besoin (la caisse doit faire ~1&nbsp;m).</li>
+              <li><b>Régler les espaces couleur.</b> Sélectionne la <b>Base Color</b>&nbsp;: <b>sRGB coché</b>. La <b>Normal</b>&nbsp;: passe son <b>Texture Type</b> sur <b>Normal map</b>. La <b>Metallic</b> et l'<b>Occlusion</b>&nbsp;: <b>sRGB décoché</b> (ce sont des données, pas des couleurs). <em>C'est l'erreur n°1 des imports.</em></li>
+              <li><b>Créer le matériau.</b> Clic droit dans Project ▸ <b>Create ▸ Material</b>, shader <b>Universal Render Pipeline/Lit</b>. Assigne&nbsp;: <b>Base Map</b>, <b>Normal Map</b>, <b>Occlusion Map</b>, et <b>Metallic Map</b> avec <b>Smoothness Source = Metallic Alpha</b>.</li>
+              <li><b>Poser dans la scène.</b> Glisse le mesh dans la vue Scene, puis glisse le matériau dessus. La caisse prend sa matière.</li>
+              <li><b>Éclairer.</b> Assure-toi d'avoir une <b>Directional Light</b> (le «&nbsp;soleil&nbsp;») avec les <b>ombres</b> activées, et un <b>skybox</b>/environnement pour la lumière ambiante et les reflets (voir <a href="../../cours/unity/u07-eclairage.html">U7</a>). Oriente la lumière pour révéler le relief de la Normal.</li>
+              <li><b>Comparer.</b> Place <code>ref_high.png</code> à côté de la vue Game&nbsp;: mêmes matières, même usure, même intensité de reflets&nbsp;? Ajuste le <b>Smoothness</b> et l'angle de lumière.</li>
+            </ol>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sur le matériau, décoche puis recoche la <b>Normal Map</b>&nbsp;: sans elle, la caisse redevient lisse&nbsp;; avec elle, planches et joints réapparaissent. Tu vois exactement ce que le faux relief apporte, sans un seul polygone en plus.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> L'éclairage de la caisse semble «&nbsp;plat&nbsp;» ou faux.</div>
+                <div class="pi-cause"><b>Cause</b> La Normal n'est pas déclarée comme <b>Normal map</b> (Unity la lit comme une couleur).</div>
+                <div class="pi-fix"><b>Correction</b> Texture Type ▸ <b>Normal map</b> ▸ Apply. Unity propose souvent «&nbsp;Fix now&nbsp;».</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Couleurs délavées / rugosité fausse.</div>
+                <div class="pi-cause"><b>Cause</b> sRGB coché sur Metallic/Occlusion (des données).</div>
+                <div class="pi-fix"><b>Correction</b> Décoche sRGB sur toutes les maps sauf Base Color.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Le mat paraît brillant, le brillant paraît mat.</div>
+                <div class="pi-cause"><b>Cause</b> <b>Smoothness Source</b> mal réglée ou map non inversée à l'export.</div>
+                <div class="pi-fix"><b>Correction</b> Smoothness Source = <b>Metallic Alpha</b>&nbsp;; exporte depuis Painter avec le preset URP.</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> La caisse est minuscule ou géante.</div>
+                <div class="pi-cause"><b>Cause</b> Échelle non appliquée avant export, ou Scale Factor d'import.</div>
+                <div class="pi-fix"><b>Correction</b> Applique l'échelle dans Blender (Ctrl A) et ajuste le Scale Factor à l'import.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Intègre la caisse texturée dans Unity et rapproche-toi de <code>ref_high.png</code>.</p>
+              <ol>
+                <li>Importe le mesh et tes maps L2c avec les <b>bons espaces couleur</b>.</li>
+                <li>Construis un matériau <b>URP/Lit</b> (Base, Normal, Metallic+Smoothness, Occlusion).</li>
+                <li>Éclaire avec une Directional Light + skybox&nbsp;; active les ombres.</li>
+                <li>Compare à la référence et ajuste Smoothness + lumière.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les maps sont importées avec les bons espaces couleur (Normal en Normal map).</li>
+                  <li>Le matériau URP/Lit montre bois + métal aux bons endroits, avec l'usure.</li>
+                  <li>Le relief (Normal/Height) est visible sous un éclairage rasant.</li>
+                  <li>Le rendu Unity ressemble à <code>ref_high.png</code>.</li>
+                  <li>Tu sais expliquer le rôle de la Smoothness (= 1 − Roughness) dans Unity.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Comment doit-on importer une Normal map dans Unity ?","a":["En réglant son Texture Type sur « Normal map »","En cochant sRGB","En la nommant _BaseColor","En la compressant en JPG"],"correct":0,"explain":"Unity doit savoir qu'une texture est une Normal map (Texture Type ▸ Normal map). Sinon il la lit comme une couleur et l'éclairage est faux."},
+  {"q":"Où Unity URP range-t-il la Smoothness ?","a":["Dans le canal alpha de la Metallic Map (Smoothness Source = Metallic Alpha)","Dans une texture séparée sRGB","Dans la Base Color","Elle n'existe pas dans Unity"],"correct":0,"explain":"Le shader URP/Lit lit la Smoothness dans l'alpha de la Metallic Map. Smoothness = 1 − Roughness : c'est l'inverse d'Unreal."},
+  {"q":"Quelles maps ne doivent PAS être en sRGB ?","a":["Metallic, Occlusion, Normal — tout sauf Base Color","Toutes","Aucune","Seulement la Base Color"],"correct":0,"explain":"Seule la Base Color (couleur) est en sRGB. Metallic, Occlusion et Normal sont des données : sRGB décoché, sinon le rendu est faux."}
+]
+              </script>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>Un asset ne «&nbsp;marche&nbsp;» vraiment qu'une fois <b>intégré et éclairé</b> dans le moteur.</li>
+                <li><b>Normal map</b> = Texture Type Normal map&nbsp;; <b>données</b> (Metallic/Occlusion) = sRGB décoché.</li>
+                <li>URP range la <b>Smoothness</b> dans l'alpha de la Metallic (= 1 − Roughness).</li>
+                <li>La <b>référence</b> guide les réglages&nbsp;: compare et ajuste Smoothness + lumière.</li>
+              </ul>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../cours/unity/u07-eclairage.html">U7 — Éclairage</a> et <a href="../../cours/unity/u08-post-processing.html">U8 — Post-processing</a>&nbsp;: pousser le rendu.</li>
+              <li><a href="../../cours/logiciels/l02c-tp-bake-export.html">L2c</a>&nbsp;: refaire l'export si les maps posent problème.</li>
+              <li><a href="../../projet.html">Projet fil rouge</a>&nbsp;: la caisse dans une vraie scène.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

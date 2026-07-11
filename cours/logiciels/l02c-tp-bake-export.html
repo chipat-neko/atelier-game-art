@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2c — TP : bake high→low + export moteurs · Atelier Game Art</title>
+  <meta name="description" content="Travaux pratiques : baker les mesh maps depuis le high-poly, poser une usure procédurale, puis exporter et brancher les textures dans Unity, Unreal et Godot. Version gratuite Blender / Material Maker.">
+  <script>(function(){try{var t=localStorage.getItem('ag-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/atelier-studio.css">
+  <link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+  <script>window.SITE_ROOT="../../";window.CURRENT_LESSON="l2c";</script>
+</head>
+<body>
+
+  <header class="site-header">
+    <button id="menu-toggle" class="icon-btn" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <a class="brand" href="../../index.html">
+      <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05M12 22.08V12"/></svg></span>
+      <span><b>Atelier Game Art</b><br><span class="brand-sub">Graphisme &amp; assets</span></span>
+    </a>
+    <div class="header-spacer"></div>
+    <div class="header-search" id="search-trigger" role="button" tabindex="0" aria-label="Rechercher">
+      <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher…" readonly tabindex="-1" aria-hidden="true"><kbd>/</kbd>
+    </div>
+    <button id="theme-toggle" class="icon-btn theme-toggle" aria-label="Changer de thème">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.2" y1="4.2" x2="5.6" y2="5.6"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.2" y1="19.8" x2="5.6" y2="18.4"/><line x1="18.4" y1="5.6" x2="19.8" y2="4.2"/></svg>
+    </button>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>Programme</h2></div>
+      <div class="global-progress">
+        <div class="gp-label"><span>Progression</span><span id="global-num">0 / 153</span></div>
+        <div class="progress-track"><div class="progress-fill" id="global-fill"></div></div>
+      </div>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <main class="content-wrap">
+      <div class="lesson-layout">
+        <article class="content">
+
+          <nav class="breadcrumb">
+            <a href="../../index.html">Accueil</a><span class="sep">/</span>
+            <a href="../../cours/logiciels/l01-blender.html">Logiciels</a><span class="sep">/</span>
+            <span>TP : bake &amp; export moteurs</span>
+          </nav>
+
+          <header class="lesson-head">
+            <h1>L2c — TP&nbsp;: bake high→low + export moteurs</h1>
+            <div class="lesson-meta">
+              <span class="badge niv-intermediaire"><span class="badge-dot"></span>Intermédiaire</span>
+              <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14" stroke-linecap="round" stroke-linejoin="round"/></svg>45 min</span>
+              <span class="badge">Piste 0 · Logiciels (DCC)</span>
+            </div>
+            <div class="prereqs"><b>Prérequis</b><a href="../../cours/logiciels/l02b-tp-texturing-sans-bake.html">L2b — TP sans bake</a>, <a href="../../cours/fondamentaux/f08-baking.html">F8 — Baking</a> et <a href="../../cours/fondamentaux/f06-uv-mapping.html">F6 — UV</a>.</div>
+          </header>
+
+          <div class="prose">
+
+            <div class="callout objectif">
+              <div class="callout-title"><span class="ico">🎯</span>Objectif du TP</div>
+              <p>Passer au niveau «&nbsp;propre&nbsp;»&nbsp;: <b>baker les mesh maps</b> depuis le high-poly, poser une <b>usure procédurale nette</b> (courbure + saleté), ajouter des <b>variantes d'usure</b>, puis <b>exporter</b> et <b>brancher</b> les textures dans <b>Unity</b>, <b>Unreal</b> et <b>Godot</b> — en comparant au rendu de référence <code>ref_high.png</code>. C'est le TP qui boucle le pipeline de texturing.</p>
+            </div>
+
+            <div class="callout astuce">
+              <div class="callout-title"><span class="ico">💡</span>Faisable 100&nbsp;% gratuitement</div>
+              <p>Pas de Substance&nbsp;? Le <b>bake high→low</b> se fait très bien dans <b>Blender</b> (Cycles) — détaillé en <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a> — et l'export glTF alimente les trois moteurs. Un encart «&nbsp;sans abonnement&nbsp;» récapitule la marche à suivre.</p>
+            </div>
+
+            <h2>Pourquoi le bake change tout</h2>
+            <p>Au TP précédent (<a href="../../cours/logiciels/l02b-tp-texturing-sans-bake.html">L2b</a>), l'usure de courbure était molle&nbsp;: le low-poly a des arêtes vives et peu d'information de forme. Le <b>bake</b> règle ça en <b>reportant les détails du high-poly</b> (arêtes biseautées, chanfreins, vis) sur des <b>mesh maps</b> — Normal, AO, Curvature — que les générateurs vont lire pour placer l'usure <em>exactement</em> sur les bords, et la saleté <em>exactement</em> dans les creux (voir <a href="../../cours/fondamentaux/f08-baking.html">F8</a>). C'est ce qui sépare un asset «&nbsp;correct&nbsp;» d'un asset «&nbsp;pro&nbsp;».</p>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/caisse/ref_high.png" target="_blank" rel="noopener"><img src="../../assets/exos/caisse/ref_high.png" alt="Rendu de référence de la caisse texturée (cible du bake)"></a>
+                <div class="exo-files-links">
+                  <p><b>La caisse en bois</b> — ici tu as besoin du <b>low-poly</b> (à texturer) <b>et</b> du <b>high-poly</b> (à baker). Cible visuelle&nbsp;: <code>ref_high.png</code>.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.fbx" download>caisse_low.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_low.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/caisse_high.blend" download>caisse_high.blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/uv_layout.png" download>UV</a></li>
+                    <li><a class="dl" href="../../assets/exos/caisse/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Low ≈ 816 tris · High ≈ 53 k tris · suffixes <code>_low</code>/<code>_high</code> conseillés. Exporte le high en <code>.fbx</code> depuis Blender pour le donner à Painter.</p>
+                </div>
+              </div>
+            </div>
+
+            <h2>🔧 Démonstration pas à pas</h2>
+            <h3>Partie A — Baker &amp; texturer</h3>
+            <ol>
+              <li><b>Préparer le high.</b> Ouvre <code>caisse_high.blend</code> et exporte l'objet en <code>caisse_high.fbx</code> (<span class="menu-path">File<span class="arrow">▸</span>Export<span class="arrow">▸</span>FBX</span>, <em>Selected Objects</em>). Applique bien l'échelle avant (<kbd>Ctrl A</kbd> ▸ Scale).</li>
+              <li><b>Créer le projet &amp; baker.</b> Dans Painter&nbsp;: New ▸ PBR Metallic Roughness ▸ charge <code>caisse_low.fbx</code>. Puis <span class="menu-path">Texture Set Settings<span class="arrow">▸</span>Bake Mesh Maps</span>&nbsp;: dans <b>High poly mesh</b>, charge <code>caisse_high.fbx</code>, règle <b>Max Frontal/Rear Distance</b> (la cage) et lance <b>Bake</b>. <em>Vérifie</em> que <b>Curvature</b> et <b>AO</b> ne sont pas noires.</li>
+              <li><b>Base + smart material.</b> Reprends ta base bois/métal de <a href="../../cours/logiciels/l02b-tp-texturing-sans-bake.html">L2b</a> (ou un smart material «&nbsp;Wood&nbsp;»/«&nbsp;Painted Metal&nbsp;»). Cette fois, tout va s'appuyer sur les mesh maps.</li>
+              <li><b>Usure de courbure (nette).</b> Fill «&nbsp;métal nu&nbsp;» + masque noir + <b>generator Curvature</b> (ou <b>Metal Edge Wear</b>)&nbsp;: l'usure se pose <em>franchement</em> sur les arêtes cette fois — c'est le gain du bake.</li>
+              <li><b>Saleté dans les creux.</b> Fill sombre + masque noir + <b>generator Dirt</b> (basé sur l'<b>AO</b>)&nbsp;: la crasse s'accumule dans les recoins et sous les cerclages.</li>
+              <li><b>Variantes d'usure.</b> Duplique le générateur de courbure et ajoute un <b>filtre</b> (Levels, Warp) pour une seconde passe plus fine&nbsp;; ou baisse l'opacité pour une usure «&nbsp;jeune&nbsp;» vs «&nbsp;très abîmée&nbsp;». Tu tiens deux ambiances à partir de la même pile.</li>
+              <li><b>Comparer.</b> Mets <code>ref_high.png</code> à côté&nbsp;: l'usure tombe-t-elle aux mêmes endroits&nbsp;? Ajuste les curseurs des générateurs.</li>
+            </ol>
+
+            <h3>Partie B — Exporter vers les trois moteurs</h3>
+            <p>Un seul texturing, trois sorties. Le principe&nbsp;: choisir le <b>preset du moteur cible</b> et respecter les <b>espaces couleur</b> (Base Color en sRGB, le reste en linéaire).</p>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Cible</th><th>Preset d'export</th><th>Packing attendu</th><th>Branchement</th></tr></thead>
+              <tbody>
+                <tr><td><b>Unreal</b></td><td>Unreal Engine 4/5 (Packed)</td><td><b>ORM</b> : Occlusion (R), Roughness (G), Metallic (B)</td><td>Voir <a href="../../cours/unreal/e04-import-assets.html">E4</a> / <a href="../../cours/unreal/e05-material-editor.html">E5</a></td></tr>
+                <tr><td><b>Unity (URP)</b></td><td>Unity URP (Metallic Standard)</td><td>Metallic (R) + <b>Smoothness</b> (A) = 1&nbsp;−&nbsp;Roughness</td><td>Voir <a href="../../cours/unity/u05-import-assets.html">U5</a> / <a href="../../cours/unity/u06-materiaux.html">U6</a></td></tr>
+                <tr><td><b>Godot</b></td><td>glTF PBR Metal Rough (maps séparées, ou ORM)</td><td>Base Color, Normal, Metallic, Roughness (Godot lit aussi une ORM)</td><td>Voir <a href="../../cours/godot/g05-import-assets.html">G5</a> / <a href="../../cours/godot/g06-materiaux.html">G6</a></td></tr>
+              </tbody>
+            </table></div>
+            <ol start="8">
+              <li><b>Exporter (3 fois).</b> <span class="menu-path">File<span class="arrow">▸</span>Export Textures</span>&nbsp;: exporte une fois par preset ci-dessus, en 2048&nbsp;px, dans trois dossiers distincts.</li>
+              <li><b>Brancher dans chaque moteur.</b> Importe les maps (renvois U5/E4/G5), crée un matériau et branche&nbsp;: Base Color (sRGB), Normal, et la map packée/roughness-metallic (linéaire). Vérifie que l'aspect colle à ton viewport Painter.</li>
+              <li><b>Comparer au référentiel.</b> Place ton rendu moteur à côté de <code>ref_high.png</code>&nbsp;: mêmes matières, même usure&nbsp;? Les écarts viennent presque toujours d'un <b>espace couleur</b> ou d'un <b>preset</b> mal choisi.</li>
+            </ol>
+
+            <div class="callout info">
+              <div class="callout-title"><span class="ico">🆓</span>Sans abonnement — bake &amp; export gratuits</div>
+              <p><b>Blender (Cycles)</b>&nbsp;: sélectionne high puis low, <em>Selected to Active</em>, coche <b>Cage</b> et bake <b>Normal</b> puis <b>AO</b> (détaillé en <a href="../../cours/blender/b08-texture-paint-bake.html">B8</a>). Peins/mélange tes matières par nodes, puis <b>exporte en glTF</b>&nbsp;: le <code>.glb</code> embarque déjà Base Color + Normal + Metallic/Roughness, prêt pour Godot, Unity et Unreal.<br>
+              <b>Material Maker</b>&nbsp;: génère l'usure en procédural et exporte les maps (dont une ORM) vers le preset voulu.</p>
+            </div>
+
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Ouvre ta map <b>Curvature</b> bakée (dans la liste des mesh maps)&nbsp;: les arêtes doivent ressortir en <b>clair</b>, les creux en <b>sombre</b>. Si elle est presque grise/noire, le bake a échoué (cage trop courte ou high non chargé)&nbsp;: aucun générateur ne marchera tant qu'elle est vide.</p>
+            </div>
+
+            <h2>⚠️ Pièges &amp; erreurs courantes</h2>
+            <div class="piege-grid">
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Halos/traits sombres sur la Normal ou l'AO bakées.</div>
+                <div class="pi-cause"><b>Cause</b> Cage de projection trop courte&nbsp;: le high déborde du low.</div>
+                <div class="pi-fix"><b>Correction</b> Augmente <i>Max Frontal/Rear Distance</i> (Painter) ou l'<i>Extrusion</i> de la cage (Blender).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Les détails d'une planche «&nbsp;saignent&nbsp;» sur une autre.</div>
+                <div class="pi-cause"><b>Cause</b> Bake global sans séparation des pièces.</div>
+                <div class="pi-fix"><b>Correction</b> Nomme les meshes <code>*_low</code>/<code>*_high</code> et coche <i>By Mesh Name</i> (Match by name).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Dans Unity, le mat paraît brillant et vice-versa.</div>
+                <div class="pi-cause"><b>Cause</b> Confusion Roughness/Smoothness ou mauvais preset.</div>
+                <div class="pi-fix"><b>Correction</b> Preset <b>Unity URP</b> (calcule <code>smoothness = 1 − roughness</code>).</div>
+              </div>
+              <div class="piege-item">
+                <div class="pi-sym"><b>Symptôme</b> Couleurs délavées / rugosité fausse dans le moteur.</div>
+                <div class="pi-cause"><b>Cause</b> sRGB coché sur des maps de données (Roughness, Normal, ORM).</div>
+                <div class="pi-fix"><b>Correction</b> sRGB uniquement sur Base Color/Emissive&nbsp;; le reste en <b>linéaire</b>.</div>
+              </div>
+            </div>
+
+            <div class="exercice">
+              <h4><span>🔧</span>Exercice pratique</h4>
+              <p>Boucle le pipeline complet sur la caisse&nbsp;: du bake jusqu'aux trois moteurs.</p>
+              <ol>
+                <li>Exporte <code>caisse_high.fbx</code> depuis Blender, puis <b>bake</b> les mesh maps sur le low dans Painter (ou Blender).</li>
+                <li>Texture avec usure de <b>courbure</b> + <b>saleté</b> (AO), plus une <b>variante</b> d'usure.</li>
+                <li>Exporte pour <b>Unreal</b> (ORM), <b>Unity URP</b> (Metallic+Smoothness) et <b>Godot</b> (glTF/maps séparées).</li>
+                <li>Branche dans <b>au moins un</b> des trois moteurs et compare à <code>ref_high.png</code>.</li>
+              </ol>
+              <div class="reussite">
+                <b>Critères de réussite</b>
+                <ul>
+                  <li>Les mesh maps Curvature et AO sont bakées et non vides.</li>
+                  <li>L'usure est <b>nette sur les arêtes</b> et la saleté <b>dans les creux</b> (pas au hasard).</li>
+                  <li>L'export Unreal contient une <b>ORM</b> packée&nbsp;; l'export Unity une Metallic+Smoothness.</li>
+                  <li>Dans le moteur testé, l'aspect correspond au viewport de texturing (espaces couleur corrects).</li>
+                  <li>Le résultat se rapproche visiblement de <code>ref_high.png</code>.</li>
+                </ul>
+              </div>
+            </div>
+
+            <section class="lesson-check">
+              <h2>Vérifie ta compréhension</h2>
+              <p class="lesson-check-intro">Clique sur la réponse que tu penses correcte&nbsp;: la bonne réponse et une explication s'affichent aussitôt.</p>
+              <script type="application/json" data-quiz>
+[
+  {"q":"Qu'apporte le bake par rapport au texturing sans bake ?","a":["Des mesh maps (Curvature, AO, Normal) qui placent l'usure et la saleté précisément","Une meilleure résolution d'écran","La suppression des UV","Un export plus rapide"],"correct":0,"explain":"Le bake reporte les détails du high-poly sur des mesh maps. Les générateurs les lisent pour poser l'usure sur les arêtes et la saleté dans les creux, avec une netteté impossible sans bake."},
+  {"q":"Quelle texture packée attend Unreal ?","a":["ORM : Occlusion (R), Roughness (G), Metallic (B)","Une seule image RVBA de couleur","Un fichier audio","La Normal uniquement"],"correct":0,"explain":"Unreal lit une ORM : Occlusion dans le rouge, Roughness dans le vert, Metallic dans le bleu — trois maps de données compactées dans une texture."},
+  {"q":"Quelles maps doivent être en espace linéaire (pas sRGB) ?","a":["Roughness, Metallic, Normal, AO, ORM — tout sauf Base Color/Emissive","Toutes les maps","Aucune","Seulement la Normal"],"correct":0,"explain":"Seules la Base Color et l'Emissive sont des couleurs (sRGB). Roughness, Metallic, Normal, AO, ORM sont des données : elles doivent rester en linéaire, sinon le moteur les 'corrige' à tort."}
+]
+              </script>
+            </section>
+
+            <div class="callout retenir">
+              <div class="callout-title"><span class="ico">📌</span>À retenir</div>
+              <ul>
+                <li>On <b>bake d'abord</b> (Normal, AO, Curvature)&nbsp;: c'est ce qui rend l'usure procédurale nette.</li>
+                <li>Vérifie toujours que <b>Curvature/AO ne sont pas vides</b> avant de texturer.</li>
+                <li>Un seul texturing → <b>trois exports</b>&nbsp;: ORM (Unreal), Metallic+Smoothness (Unity), glTF/maps (Godot).</li>
+                <li><b>Espace couleur</b>&nbsp;: Base Color en sRGB, toutes les données en linéaire — la cause n°1 des imports ratés.</li>
+                <li>La <b>référence</b> (<code>ref_high.png</code>) est ton juge&nbsp;: compare, ajuste, recommence.</li>
+              </ul>
+            </div>
+
+            <h2>Pour aller plus loin</h2>
+            <ul>
+              <li><a href="../../projet.html">Projet fil rouge</a>&nbsp;: réutilise cette caisse texturée dans le projet complet.</li>
+              <li><a href="../../cours/unity/u06-materiaux.html">U6</a> · <a href="../../cours/unreal/e05-material-editor.html">E5</a> · <a href="../../cours/godot/g06-materiaux.html">G6</a>&nbsp;: reconstruire le matériau dans chaque moteur.</li>
+              <li><a href="../../cours/blender/b08-texture-paint-bake.html">B8 — Texture Paint &amp; Baking</a>&nbsp;: le bake, version Blender gratuite.</li>
+            </ul>
+
+          </div>
+
+          <div class="lesson-done">
+            <label>
+              <input type="checkbox" id="lesson-done-cb">
+              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
+            </label>
+          </div>
+
+          <nav class="lesson-nav" id="lesson-nav"></nav>
+        </article>
+
+        <aside class="toc" id="toc">
+          <h2>Sur cette page</h2>
+          <ul id="toc-list"></ul>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../js/site-data.js"></script>
+  <script src="../../js/glossaire-data.js"></script>
+  <script src="../../js/progress.js"></script>
+  <script src="../../js/search-index.js"></script>
+  <script src="../../js/main.js"></script>
+  <script src="../../js/quiz.js"></script>
+  <script src="../../js/checklist.js"></script>
+  <script src="../../assets/vendor/highlight-mini.js"></script>
+</body>
+</html>

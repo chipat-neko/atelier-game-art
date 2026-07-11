@@ -109,6 +109,11 @@
             <h3>4. Garder une topologie propre</h3>
             <p>On modélise en <b>quads</b> autant que possible (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>)&nbsp;: ils se subdivisent et se déforment proprement. On évite les <span class="gloss">n-gon</span> sur les surfaces qui seront déformées ou subdivisées. On surveille les <b>doubles vertices</b> (Merge by Distance pour les fusionner) et on recalcule les <b>normales</b> (<span class="kbd">Maj</span>+<span class="kbd">N</span>) si des faces s'affichent sombres (renvoi <a href="../../cours/fondamentaux/f04-anatomie-mesh.html">F4</a>).</p>
 
+            <div class="essaie">
+              <p class="essaie-head"><span class="ico">🖐</span>Essaie maintenant<span class="essaie-time">~1 min</span></p>
+              <p>Sur le cube par défaut&nbsp;: <kbd>Tab</kbd> pour entrer en <b>Edit Mode</b>, sélectionne une face, <kbd>E</kbd> et bouge la souris (tu <b>extrudes</b>). Puis <kbd>Ctrl R</kbd> et survole une face&nbsp;: un <b>Loop Cut</b> apparaît. Les deux gestes de base de la modé.</p>
+            </div>
+
             <h2>🔧 Démonstration pas à pas&nbsp;: une caisse en bois</h2>
             <ol>
               <li>Pars du cube de départ. <span class="kbd">Tab</span> pour entrer en Edit Mode. Passe en sélection de faces (<span class="kbd">3</span>).</li>
@@ -140,6 +145,25 @@
                 <div class="pi-sym"><b>Symptôme</b>Les arêtes sont parfaitement vives et l'objet paraît « CGI cheap ».</div>
                 <div class="pi-cause"><b>Cause</b>Aucun bevel&nbsp;: dans la réalité aucune arête n'est infiniment vive.</div>
                 <div class="pi-fix"><b>Correction</b>Ajoute un léger bevel sur les arêtes principales pour qu'elles accrochent la lumière.</div>
+              </div>
+            </div>
+
+            <div class="exo-files">
+              <div class="exo-files-head"><span class="ico">📦</span>Fichiers de l'exercice</div>
+              <div class="exo-files-body">
+                <a class="exo-files-thumb" href="../../assets/exos/jerrican/silhouette_cible.webp" target="_blank" rel="noopener"><img src="../../assets/exos/jerrican/silhouette_cible.webp" alt="Silhouette cible du jerrican (face et profil) à atteindre en modélisant"></a>
+                <div class="exo-files-links">
+                  <p><b>Le jerrican</b> — un <b>blockout</b> (massing brut) à raffiner en <b>Edit Mode</b> (extrude, inset, bevel, loop cut) jusqu'à la <b>silhouette cible</b>.</p>
+                  <ul>
+                    <li><a class="dl" href="../../assets/exos/jerrican/jerrican_blockout.blend" download>blockout .blend</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/jerrican_blockout.fbx" download>.fbx</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/jerrican_blockout.glb" download>.glb</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/silhouette_cible.webp" download>silhouette</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/ref_cible.webp" download>référence</a></li>
+                    <li><a class="dl" href="../../assets/exos/jerrican/README.md" download>README</a></li>
+                  </ul>
+                  <p class="exo-files-note">Blockout ≈ 84 tris · cible ≈ 230 tris · libre d'usage. But&nbsp;: retrouver la <code>silhouette_cible</code>, puis (en <a href="../../cours/blender/b06-uv.html">B6</a>) déplier les UV.</p>
+                </div>
               </div>
             </div>
 

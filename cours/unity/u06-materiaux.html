@@ -137,49 +137,9 @@
             <h4>Emission (couleur + intensité HDR)</h4>
             <p>L'<span class="term">émission</span> fait qu'une surface <b>émet de la lumière</b> au lieu de seulement la recevoir&nbsp;: l'écran d'un ordinateur, un néon, de la lave. On fournit une couleur (et/ou une emission map qui dit <em>où</em> ça brille) et surtout une <b>intensité HDR</b>. C'est ce facteur HDR (supérieur à 1) qui déclenche le <span class="gloss">bloom</span> en post-processing et, si activé, qui nourrit la <span class="gloss">GI</span> (illumination globale&nbsp;: l'émission éclaire les objets autour). Une émission à intensité 1 ne «&nbsp;glow&nbsp;» pas&nbsp;; il faut pousser à 3, 5, 10 pour un vrai effet lumineux.</p>
 
-            <figure class="schema">
-              <svg viewBox="0 0 640 340" role="img" aria-label="Matériau URP Lit au centre avec ses slots Base, Metallic-Smoothness, Normal, Occlusion, Emission, chacun relié à une texture source et annoté de son espace colorimétrique">
-                <defs>
-                  <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#717c8c"/></marker>
-                </defs>
-                <!-- matériau central -->
-                <rect x="230" y="40" width="180" height="260" rx="12" fill="#59b0ff" fill-opacity="0.12" stroke="#59b0ff" stroke-width="2"/>
-                <text x="320" y="62" text-anchor="middle" class="svg-text" font-weight="700" font-size="13">Matériau</text>
-                <text x="320" y="78" text-anchor="middle" class="svg-dim" font-size="10.5">shader URP / Lit</text>
-                <!-- slots -->
-                <g font-size="11" font-weight="700">
-                  <rect x="246" y="92" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="111" text-anchor="middle" class="svg-text">Base Map</text>
-                  <rect x="246" y="128" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="147" text-anchor="middle" class="svg-text">Metallic + Smooth.</text>
-                  <rect x="246" y="164" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="183" text-anchor="middle" class="svg-text">Normal Map</text>
-                  <rect x="246" y="200" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="219" text-anchor="middle" class="svg-text">Occlusion</text>
-                  <rect x="246" y="236" width="148" height="30" rx="6" class="svg-surface" stroke="#313c4c"/><text x="320" y="255" text-anchor="middle" class="svg-text">Emission</text>
-                  <rect x="246" y="272" width="148" height="22" rx="6" fill="#5ad19a" fill-opacity="0.14" stroke="#5ad19a"/><text x="320" y="287" text-anchor="middle" class="svg-text" font-size="10">→ Surface éclairée</text>
-                </g>
-                <!-- textures à gauche -->
-                <g font-size="10" font-weight="700">
-                  <rect x="20" y="92" width="44" height="30" rx="5" fill="#f2b441" fill-opacity="0.6"/><text x="42" y="112" text-anchor="middle" class="svg-text">RVB</text>
-                  <rect x="20" y="128" width="44" height="30" rx="5" fill="#9a9a9a"/><text x="42" y="148" text-anchor="middle" class="svg-text">gris</text>
-                  <rect x="20" y="164" width="44" height="30" rx="5" fill="#7f8cff" fill-opacity="0.75"/><text x="42" y="184" text-anchor="middle" class="svg-text">nrm</text>
-                  <rect x="20" y="200" width="44" height="30" rx="5" fill="#5a5a5a"/><text x="42" y="220" text-anchor="middle" class="svg-text">AO</text>
-                  <rect x="20" y="236" width="44" height="30" rx="5" fill="#f2b441" fill-opacity="0.8"/><text x="42" y="256" text-anchor="middle" class="svg-text">emit</text>
-                </g>
-                <!-- flèches textures -> slots -->
-                <line x1="64" y1="107" x2="244" y2="107" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
-                <line x1="64" y1="143" x2="244" y2="143" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
-                <line x1="64" y1="179" x2="244" y2="179" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
-                <line x1="64" y1="215" x2="244" y2="215" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
-                <line x1="64" y1="251" x2="244" y2="251" stroke="#717c8c" stroke-width="1.4" marker-end="url(#ar)"/>
-                <!-- annotations espace colorimétrique à droite -->
-                <g font-size="10" class="svg-dim">
-                  <text x="420" y="111">sRGB · couleur diffuse</text>
-                  <text x="420" y="147">linéaire · 1=métal 0=non</text>
-                  <text x="420" y="183">linéaire · « Normal map »</text>
-                  <text x="420" y="219">linéaire · recoins sombres</text>
-                  <text x="420" y="255">HDR · &gt;1 = bloom + GI</text>
-                </g>
-                <text x="320" y="324" text-anchor="middle" class="svg-dim" font-size="10.5">Chaque slot attend un type de donnée précis, dans le bon espace colorimétrique.</text>
-              </svg>
-              <figcaption>Anatomie d'un matériau <b>URP/Lit</b>&nbsp;: à gauche les textures sources, au centre les slots du matériau, à droite l'espace colorimétrique attendu. Brancher une normale en sRGB ou une roughness non inversée dans le canal smoothness, et tout l'éclairage déraille.</figcaption>
+            <figure class="screenshot">
+              <img src="../../assets/img/screens/unity/u06-materiau.webp" width="1600" height="643" loading="lazy" alt="Capture annotée de l'Inspector d'un matériau Lit dans Unity : 1 le shader Lit, 2 les Surface Inputs (Base Map, Mask Map, Metallic, Smoothness, Normal Map), 3 les Emission Inputs, 4 l'aperçu du matériau sur une sphère.">
+              <figcaption>Un matériau <b>Lit</b> dans l'Inspector Unity (ici en HDRP&nbsp;; l'URP Lit est identique dans l'esprit). Ses <b>Surface Inputs</b> portent les canaux PBR — <b>Base Map</b>, <b>Mask Map</b> (métal/rugosité/AO packés), <b>Metallic</b>, <b>Smoothness</b>, <b>Normal Map</b> — plus les <b>Emission Inputs</b>. L'aperçu se met à jour sur une sphère.</figcaption>
             </figure>
 
             <div class="essaie">
@@ -475,32 +435,4 @@
 
           </div>
 
-          <div class="lesson-done">
-            <label>
-              <input type="checkbox" id="lesson-done-cb">
-              <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-              <span class="ld-text">Marquer cette leçon comme terminée<small>Ta progression est sauvegardée dans ce navigateur (localStorage).</small></span>
-            </label>
-          </div>
-
-          <nav class="lesson-nav" id="lesson-nav"></nav>
-        </article>
-
-        <aside class="toc" id="toc">
-          <h2>Sur cette page</h2>
-          <ul id="toc-list"></ul>
-        </aside>
-      </div>
-    </main>
-  </div>
-
-  <script src="../../js/site-data.js"></script>
-  <script src="../../js/glossaire-data.js"></script>
-  <script src="../../js/progress.js"></script>
-  <script src="../../js/search-index.js"></script>
-  <script src="../../js/main.js"></script>
-  <script src="../../js/quiz.js"></script>
-  <script src="../../js/checklist.js"></script>
-  <script src="../../assets/vendor/highlight-mini.js"></script>
-</body>
-</html>
+          <div class="less
